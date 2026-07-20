@@ -27,8 +27,8 @@ importers:
         specifier: 3.3.1
         version: 3.3.1
       primeicons:
-        specifier: 7.0.0
-        version: 7.0.0
+        specifier: 8.0.0
+        version: 8.0.0
       primelocale:
         specifier: github:primefaces/primelocale#2.4.0
         version: https://codeload.github.com/primefaces/primelocale/tar.gz/1facb95b6d204de019cfb564eb910cc44597d54e
@@ -2267,8 +2267,8 @@ packages:
   primeflex@3.3.1:
     resolution: {integrity: sha512-zaOq3YvcOYytbAmKv3zYc+0VNS9Wg5d37dfxZnveKBFPr7vEIwfV5ydrpiouTft8MVW6qNjfkaQphHSnvgQbpQ==}
 
-  primeicons@7.0.0:
-    resolution: {integrity: sha512-jK3Et9UzwzTsd6tzl2RmwrVY/b8raJ3QZLzoDACj+oTJ0oX7L9Hy+XnVwgo4QVKlKpnP/Ur13SXV/pVh4LzaDw==}
+  primeicons@8.0.0:
+    resolution: {integrity: sha512-eZGk+Mgb4fE+LkJi9LvllbnB4RVUF9kzmnLVnT3ZMY6stqKVh7TUJ0mFoMNIEgTnJSvhaGcJotDiSvtVvkHd7g==}
 
   primelocale@https://codeload.github.com/primefaces/primelocale/tar.gz/1facb95b6d204de019cfb564eb910cc44597d54e:
     resolution: {gitHosted: true, integrity: sha512-UeQIZ+3Q3aMvE/7tppS8te8KkV2hMWNAUVMWZVyhP6AD8IyhpZS5OAKV17Epo90dzmXe8ZdBIRS4wdKkSOpCkg==, tarball: https://codeload.github.com/primefaces/primelocale/tar.gz/1facb95b6d204de019cfb564eb910cc44597d54e}
@@ -5111,7 +5111,7 @@ snapshots:
 
   primeflex@3.3.1: {}
 
-  primeicons@7.0.0: {}
+  primeicons@8.0.0: {}
 
   primelocale@https://codeload.github.com/primefaces/primelocale/tar.gz/1facb95b6d204de019cfb564eb910cc44597d54e: {}
 
