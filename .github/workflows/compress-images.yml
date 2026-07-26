@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: Checkout Branch
-        uses: actions/checkout@v7.0.0
+        uses: actions/checkout@v7.0.1
       - name: Compress Images
         uses: calibreapp/image-actions@main
         with:
