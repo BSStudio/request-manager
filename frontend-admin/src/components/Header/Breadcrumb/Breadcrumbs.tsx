@@ -10,7 +10,7 @@ type BreadcrumbsType = {
 }[];
 
 type ReactRouterUseMatchesType = {
-  data: unknown;
+  data?: unknown;
   handle?: {
     crumb: (data?: unknown) => string;
   };
