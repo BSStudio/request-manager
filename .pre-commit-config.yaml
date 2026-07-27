@@ -82,7 +82,7 @@ repos:
         name: 'Check Python security issues'
         args: [-c, ./backend/pyproject.toml]
   - repo: https://github.com/rbubley/mirrors-prettier
-    rev: v3.9.5
+    rev: v3.9.6
     hooks:
       - id: prettier
         name: 'Format JavaScript and TypeScript code'
@@ -91,7 +91,7 @@ repos:
           - python
         args: [--config, ./frontend/.prettierrc]
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v10.7.0
+    rev: v10.8.0
     hooks:
       - id: eslint
         name: 'Lint JavaScript code (Frontend)'
