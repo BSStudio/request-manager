@@ -917,14 +917,14 @@ drf = ["djangorestframework"]
 
 [[package]]
 name = "django-health-check"
-version = "4.4.3"
+version = "4.4.4"
 description = "Monitor the health of your Django app and its connected services."
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "django_health_check-4.4.3-py3-none-any.whl", hash = "sha256:dfbb27e4c63e8e419a4852f0d9c1c49d6de342e1b00438144905761c2a1386a7"},
-    {file = "django_health_check-4.4.3.tar.gz", hash = "sha256:a99fe9f13da26cf055d81e90f237ef3ad40a31f365b280812a590707854b8d2b"},
+    {file = "django_health_check-4.4.4-py3-none-any.whl", hash = "sha256:22a4807e06bb60ba98bb35c7c5a625db1a845fc373de3cad6e9d675939dbfe4d"},
+    {file = "django_health_check-4.4.4.tar.gz", hash = "sha256:4d84f3b0e3015568023f111bc8b3ef5e5094556637e1e0f6202b2eca80c07b9b"},
 ]
 
 [package.dependencies]
@@ -2444,14 +2444,14 @@ files = [
 
 [[package]]
 name = "social-auth-app-django"
-version = "6.0.0"
+version = "6.0.1"
 description = "Python Social Authentication, Django integration."
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "social_auth_app_django-6.0.0-py3-none-any.whl", hash = "sha256:6974cb00bb462149b8384448c0aff6fb8e6c2b00efacca40d0270695d416cceb"},
-    {file = "social_auth_app_django-6.0.0.tar.gz", hash = "sha256:421916bf136c77a8683cac7505a3b2ecf7d5c8ec18455ffa883f2cb5161847b1"},
+    {file = "social_auth_app_django-6.0.1-py3-none-any.whl", hash = "sha256:652ec21105ef58a34ffd223a02c338bc03e5f56d357ee69c33283afd08442065"},
+    {file = "social_auth_app_django-6.0.1.tar.gz", hash = "sha256:43002de0530e2ad13ef067f54aba7185a05fc8527310006c5328dc0b5e7a4cfd"},
 ]
 
 [package.dependencies]
@@ -2460,7 +2460,7 @@ Django = ">=5.2"
 social-auth-core = ">=5.0.0,<6.0.0"
 
 [package.extras]
-dev = ["coverage (>=3.6)", "django-stubs (==6.0.6)", "django-stubs-ext (==6.0.6)", "mypy (==2.1.0)", "pre-commit", "pyright (==1.1.410)", "tox"]
+dev = ["coverage (>=3.6)", "django-stubs (==6.0.7)", "django-stubs-ext (==6.0.7)", "mypy (==2.3.0)", "pre-commit", "pyright (==1.1.411)", "tox"]
 
 [[package]]
 name = "social-auth-core"
@@ -2763,4 +2763,4 @@ brotli = ["brotli"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14,<4.0"
-content-hash = "2f2a0209ec1389a7fd6b4ed12a029841e5b198f0a3be623ce99cbff2a9c8c8a4"
+content-hash = "a0b0b1c0fb7cbd2b737b0f9ca1c013a2cc376fc241bf5184d05a3a01923e8f67"
