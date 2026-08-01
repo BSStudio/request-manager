@@ -10,6 +10,7 @@
 .idea
 .pre-commit-config.yaml
 .vscode
+CODEOWNERS
 docker-compose*.yaml
 Dockerfile
 
