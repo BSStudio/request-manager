@@ -19,7 +19,7 @@ dependencies = [
     "django-celery-results==2.6.0",
     "django-cors-headers==4.9.0",
     "django-filter==26.1",
-    "django-health-check[celery,redis]==4.4.3",
+    "django-health-check[celery,redis]==4.4.4",
     "django-phonenumber-field[phonenumbers]==8.5.0",
     "django-simple-history==3.13.0",
     "drf-spectacular==0.30.0",
@@ -31,7 +31,7 @@ dependencies = [
     "python-decouple==3.8",
     "requests==2.34.2",
     "sentry-sdk==2.66.1",
-    "social-auth-app-django==6.0.0",
+    "social-auth-app-django==6.0.1",
     "whitenoise[brotli]==6.12.0"
 ]
 
