@@ -10,10 +10,10 @@ type BreadcrumbsType = {
 }[];
 
 type ReactRouterUseMatchesType = {
-  data?: unknown;
   handle?: {
-    crumb: (data?: unknown) => string;
+    crumb: (loaderData?: unknown) => string;
   };
+  loaderData?: unknown;
   pathname: string;
 }[];
 
@@ -30,7 +30,7 @@ const Breadcrumbs = () => {
     // data to each one
     .map((match) => {
       return {
-        name: match.handle?.crumb(match.data) || '',
+        name: match.handle?.crumb(match.loaderData) || '',
         path: match.pathname,
       };
     });
