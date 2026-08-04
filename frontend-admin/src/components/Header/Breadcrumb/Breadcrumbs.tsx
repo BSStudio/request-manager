@@ -2,20 +2,26 @@ import { Fragment } from 'react';
 
 import { useIsFetching } from '@tanstack/react-query';
 import { ProgressSpinner } from 'primereact/progressspinner';
-import { href, Link, useMatches, useRouteError } from 'react-router';
+import {
+  href,
+  Link,
+  type UIMatch,
+  useMatches,
+  useRouteError,
+} from 'react-router';
 
 type BreadcrumbsType = {
   name: string;
   path: string;
 }[];
 
-type ReactRouterUseMatchesType = {
-  handle?: {
-    crumb: (loaderData?: unknown) => string;
-  };
-  loaderData?: unknown;
-  pathname: string;
-}[];
+type CrumbHandle =
+  | {
+      crumb: (loaderData?: unknown) => string;
+    }
+  | undefined;
+
+type ReactRouterUseMatchesType = UIMatch<unknown, CrumbHandle>[];
 
 const Breadcrumbs = () => {
   const error = useRouteError();
