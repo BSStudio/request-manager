@@ -127,6 +127,17 @@
       "groupName": "Node.js runtime version",
       "matchDepNames": ["node"],
       "matchManagers": ["custom.regex", "dockerfile", "nvm"]
+    },
+    {
+      "description": "PrimeReact/PrimeIcons majors past these are proprietary under the PrimeUI license and incompatible with our GPL-3.0 licensing. Stay on the MIT-licensed releases.",
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["primereact"],
+      "allowedVersions": "<11"
+    },
+    {
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["primeicons"],
+      "allowedVersions": "<8"
     }
   ],
   "rebaseWhen": "conflicted",
