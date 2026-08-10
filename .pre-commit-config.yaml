@@ -14,7 +14,7 @@ repos:
         name: 'Replace mixed line endings'
         args: [--fix=lf]
   - repo: https://github.com/python-jsonschema/check-jsonschema
-    rev: 0.37.4
+    rev: 0.38.0
     hooks:
       - id: check-github-workflows
       - id: check-renovate
@@ -51,7 +51,7 @@ repos:
       - id: pycln
         name: 'Remove unused Python imports'
   - repo: https://github.com/PyCQA/isort
-    rev: 9.0.0b1
+    rev: 9.0.0b2
     hooks:
       - id: isort
         name: 'Sort Python imports'
@@ -91,7 +91,7 @@ repos:
           - python
         args: [--config, ./frontend/.prettierrc]
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v10.8.0
+    rev: v10.8.1
     hooks:
       - id: eslint
         name: 'Lint JavaScript code (Frontend)'
