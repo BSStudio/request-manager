@@ -40,7 +40,7 @@ repos:
         name: 'Upgrade Python syntax to newer versions'
         args: [--py314-plus]
   - repo: https://github.com/adamchainz/django-upgrade
-    rev: 1.31.1
+    rev: 1.32.0
     hooks:
       - id: django-upgrade
         name: 'Upgrade Django syntax to newer versions'
@@ -91,7 +91,7 @@ repos:
           - python
         args: [--config, ./frontend/.prettierrc]
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v10.8.1
+    rev: v10.9.0
     hooks:
       - id: eslint
         name: 'Lint JavaScript code (Frontend)'
