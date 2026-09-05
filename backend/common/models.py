@@ -1,5 +1,5 @@
+from django.conf import settings
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -44,7 +44,9 @@ def validate_profile_avatar(value):
 
 
 class UserProfile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    user = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, primary_key=True
+    )
     avatar = JSONField(
         encoder=DjangoJSONEncoder,
         validators=[validate_profile_avatar],
@@ -75,9 +77,13 @@ class UserProfile(models.Model):
 
 
 class Ban(models.Model):
-    receiver = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
+    receiver = models.OneToOneField(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, primary_key=True
+    )
     creator = models.ForeignKey(
-        User, related_name="ban_creator", on_delete=models.SET(get_sentinel_user)
+        settings.AUTH_USER_MODEL,
+        related_name="ban_creator",
+        on_delete=models.SET(get_sentinel_user),
     )
     reason = models.CharField(max_length=100, blank=True)
     created = models.DateTimeField(auto_now_add=True)
@@ -92,7 +98,9 @@ class Ban(models.Model):
 
 
 class AbstractComment(models.Model):
-    author = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user))
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET(get_sentinel_user)
+    )
     created = models.DateTimeField(auto_now_add=True)
     text = models.TextField()
     internal = models.BooleanField(default=False)
@@ -106,7 +114,9 @@ class AbstractComment(models.Model):
 
 
 class AbstractRating(models.Model):
-    author = models.ForeignKey(User, on_delete=models.SET(get_sentinel_user))
+    author = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET(get_sentinel_user)
+    )
     rating = models.PositiveSmallIntegerField(
         validators=[MaxValueValidator(5), MinValueValidator(1)]
     )
@@ -122,10 +132,12 @@ class AbstractRating(models.Model):
 
 
 class AbstractTodo(models.Model):
-    assignees = models.ManyToManyField(User, blank=True)
+    assignees = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
     created = models.DateTimeField(auto_now_add=True)
     creator = models.ForeignKey(
-        User, on_delete=models.SET(get_sentinel_user), related_name="todo_creator"
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET(get_sentinel_user),
+        related_name="todo_creator",
     )
     description = models.TextField()
 
