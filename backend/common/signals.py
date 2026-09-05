@@ -1,10 +1,9 @@
-from django.contrib.auth.models import User
 from django.db.models.signals import post_delete, post_save
 from django.dispatch import receiver
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from common.models import Ban, UserProfile
+from common.models import Ban, User, UserProfile
 
 
 @receiver(post_save, sender=User)

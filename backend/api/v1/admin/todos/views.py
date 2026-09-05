@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.db.models import Prefetch
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
@@ -18,6 +17,7 @@ from api.v1.admin.todos.serializers import (
     TodoAdminCreateUpdateSerializer,
     TodoAdminListRetrieveSerializer,
 )
+from common.models import User
 from common.rest_framework.pagination import ExtendedPagination
 from common.rest_framework.permissions import IsStaffSelfOrAdmin, IsStaffUser
 from video_requests.models import Request, Todo, Video

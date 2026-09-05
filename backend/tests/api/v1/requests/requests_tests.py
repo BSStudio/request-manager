@@ -3,7 +3,6 @@ from itertools import combinations
 from uuid import uuid4
 
 import pytest
-from django.contrib.auth.models import User
 from django.utils.timezone import localtime, make_aware
 from model_bakery import baker
 from rest_framework.exceptions import ErrorDetail
@@ -18,7 +17,7 @@ from rest_framework.status import (
     is_success,
 )
 
-from common.models import get_anonymous_user
+from common.models import User, get_anonymous_user
 from tests.api.helpers import assert_fields_exist, do_login, login
 from video_requests.models import Comment, Request
 

@@ -141,6 +141,9 @@ CACHEOPS = {
     # Cache all queries to Permission
     # 'all' is an alias for {'get', 'fetch', 'count', 'aggregate', 'exists'}
     "auth.permission": {"ops": "all", "timeout": 60 * 60},
+    # The user model lives in the common app but needs the same caching as
+    # the rest of the auth models
+    "common.user": {"ops": {"fetch", "get"}, "timeout": 60 * 60},
     # Enable manual caching on all other models with default timeout of an hour
     # Invalidation is still automatic
     "*.*": {"timeout": 60 * 60},
@@ -215,6 +218,7 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/6.0/ref/settings/#authentication-backends
 
 AUTHENTICATION_BACKENDS = []
+AUTH_USER_MODEL = "common.User"
 ADMIN_GROUP = config("ADMIN_GROUP", default="Administrators")
 SERVICE_ACCOUNTS_GROUP = config("SERVICE_ACCOUNTS_GROUP", default="Service Accounts")
 

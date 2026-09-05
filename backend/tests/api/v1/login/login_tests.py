@@ -2,12 +2,13 @@ from time import sleep
 
 import pytest
 from django.conf import settings
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
 from rest_framework.exceptions import ErrorDetail
 from rest_framework.reverse import reverse
 from rest_framework.status import HTTP_200_OK, HTTP_401_UNAUTHORIZED
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
+from common.models import User
 from tests.api.helpers import login
 
 pytestmark = pytest.mark.django_db

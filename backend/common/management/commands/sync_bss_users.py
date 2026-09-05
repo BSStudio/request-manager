@@ -3,11 +3,10 @@ from urllib.parse import urlparse
 
 import requests
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.core.management.base import BaseCommand
 from django.db.models import Q
 
-from common.models import UserProfile
+from common.models import User, UserProfile
 from common.social_core.backends import BSSLoginOAuth2
 from common.social_core.pipeline import set_groups_and_permissions_for_staff
 

@@ -3,7 +3,6 @@ from datetime import timedelta
 from itertools import combinations
 
 import pytest
-from django.contrib.auth.models import User
 from django.utils.timezone import localtime
 from model_bakery import baker
 from rest_framework.exceptions import ErrorDetail
@@ -19,6 +18,7 @@ from rest_framework.status import (
     is_success,
 )
 
+from common.models import User
 from tests.api.helpers import assert_fields_exist, do_login, get_response
 from video_requests.models import Comment, Video
 

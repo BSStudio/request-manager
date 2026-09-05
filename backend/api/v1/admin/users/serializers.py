@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework.fields import (
     BooleanField,
@@ -11,7 +10,7 @@ from rest_framework.fields import (
 from rest_framework.serializers import ModelSerializer, Serializer
 
 from api.v1.me.serializers import UserSerializer
-from common.models import Ban
+from common.models import Ban, User
 
 
 class UserNestedDetailSerializer(Serializer):

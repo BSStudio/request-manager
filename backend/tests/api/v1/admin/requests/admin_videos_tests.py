@@ -1,7 +1,6 @@
 from random import randint
 
 import pytest
-from django.contrib.auth.models import User
 from model_bakery import baker
 from rest_framework.reverse import reverse
 from rest_framework.status import (
@@ -15,6 +14,7 @@ from rest_framework.status import (
     is_success,
 )
 
+from common.models import User
 from tests.api.helpers import assert_fields_exist, do_login, get_response
 from video_requests.models import Video
 

@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.db.models import Q
 from django.forms import IntegerField
 from django_filters.rest_framework import (
@@ -12,6 +11,7 @@ from django_filters.rest_framework import (
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 
+from common.models import User
 from video_requests.models import Request, Todo, Video
 
 

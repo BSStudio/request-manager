@@ -1,7 +1,8 @@
 import pytest
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from model_bakery import baker
+
+from common.models import User
 
 
 @pytest.mark.django_db

@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework.exceptions import ValidationError
@@ -7,7 +6,7 @@ from rest_framework.relations import SlugRelatedField
 from rest_framework.serializers import ModelSerializer, Serializer
 from social_django.models import UserSocialAuth
 
-from common.models import UserProfile
+from common.models import User, UserProfile
 
 
 class OAuth2ConnectSerializer(Serializer):

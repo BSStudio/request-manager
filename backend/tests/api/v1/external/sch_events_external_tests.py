@@ -3,7 +3,6 @@ from datetime import timedelta
 
 import pytest
 import responses
-from django.contrib.auth.models import User
 from django.utils.timezone import localtime
 from django_celery_results.models import TaskResult
 from model_bakery import baker
@@ -17,6 +16,7 @@ from rest_framework.status import (
     is_success,
 )
 
+from common.models import User
 from tests.api.helpers import assert_fields_exist, do_login, login
 from video_requests.models import Comment, Request
 

@@ -2,17 +2,14 @@ import logging
 
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
-from django.contrib.auth import get_user_model
 from django.contrib.auth.admin import UserAdmin
 from django.db import IntegrityError
 from django.urls import reverse
 from django.utils.html import format_html
 
-from common.models import Ban, UserProfile
+from common.models import Ban, User, UserProfile
 
 logger = logging.getLogger(__name__)
-
-USER_MODEL = get_user_model()
 
 
 @admin.register(UserProfile)
@@ -22,10 +19,11 @@ class UserProfileAdmin(ModelAdmin):
 
     @admin.display(description="Link to User")
     def user_link(self, obj):
-        url = reverse("admin:auth_user_change", args=(obj.user.id,))
+        url = reverse("admin:common_user_change", args=(obj.user.id,))
         return format_html('<a href="{}">{}</a>', url, obj.user.get_full_name())
 
 
+@admin.register(User)
 class ExtendedUserAdmin(UserAdmin):
     actions = [
         "ban_selected_users",
@@ -53,7 +51,3 @@ class ExtendedUserAdmin(UserAdmin):
 @admin.register(Ban)
 class BanAdmin(admin.ModelAdmin):
     list_display = ("receiver", "created", "reason", "creator")
-
-
-admin.site.unregister(USER_MODEL)
-admin.site.register(USER_MODEL, ExtendedUserAdmin)

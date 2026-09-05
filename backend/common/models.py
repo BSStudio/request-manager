@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.validators import MaxValueValidator, MinValueValidator
@@ -41,6 +42,62 @@ def validate_profile_avatar(value):
         validate(value, USER_PROFILE_AVATAR_SCHEMA, format_checker=FormatChecker())
     except JsonValidationError as e:
         raise ValidationError(e)
+
+
+class User(AbstractUser):
+    """
+    Custom user model replacing django.contrib.auth.models.User.
+
+    It keeps the original ``auth_user`` table and its join tables so that
+    switching to it does not require moving any data.
+    """
+
+    groups = models.ManyToManyField(
+        Group,
+        verbose_name=_("groups"),
+        blank=True,
+        help_text=_(
+            "The groups this user belongs to. A user will get all permissions "
+            "granted to each of their groups."
+        ),
+        related_name="user_set",
+        related_query_name="user",
+        db_table="auth_user_groups",
+    )
+    user_permissions = models.ManyToManyField(
+        Permission,
+        verbose_name=_("user permissions"),
+        blank=True,
+        help_text=_("Specific permissions for this user."),
+        related_name="user_set",
+        related_query_name="user",
+        db_table="auth_user_user_permissions",
+    )
+
+    class Meta(AbstractUser.Meta):
+        db_table = "auth_user"
+
+    @property
+    def is_admin(self) -> bool:
+        return self.is_staff and (
+            self.groups.filter(name=settings.ADMIN_GROUP).exists() or self.is_superuser
+        )
+
+    @property
+    def is_service_account(self) -> bool:
+        return self.groups.filter(name=settings.SERVICE_ACCOUNTS_GROUP).exists()
+
+    @property
+    def role(self) -> str:
+        if self.is_admin:
+            return "admin"
+        elif self.is_staff:
+            return "staff"
+        else:
+            return "user"
+
+    def get_full_name_eastern_order(self) -> str:
+        return f"{self.last_name} {self.first_name}".strip()
 
 
 class UserProfile(models.Model):

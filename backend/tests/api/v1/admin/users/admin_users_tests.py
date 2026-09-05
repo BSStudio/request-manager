@@ -1,7 +1,7 @@
 from datetime import date, datetime, timedelta
 
 import pytest
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
 from django.utils.timezone import localtime, make_aware
 from model_bakery import baker
 from rest_framework.exceptions import ErrorDetail
@@ -18,6 +18,7 @@ from rest_framework.status import (
 )
 from social_django.models import UserSocialAuth
 
+from common.models import User
 from tests.api.helpers import assert_fields_exist, do_login, get_response, login
 
 pytestmark = pytest.mark.django_db

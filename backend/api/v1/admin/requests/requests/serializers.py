@@ -1,4 +1,3 @@
-from django.contrib.auth.models import User
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
@@ -26,6 +25,7 @@ from api.v1.admin.users.serializers import (
     UserNestedDetailSerializer,
     UserNestedListSerializer,
 )
+from common.models import User
 from common.utilities import create_calendar_event, update_calendar_event
 from video_requests.emails import (
     email_crew_request_modified,

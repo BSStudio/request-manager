@@ -1,7 +1,6 @@
 from datetime import date, timedelta
 
 from decouple import strtobool
-from django.contrib.auth.models import User
 from django.db.models import Value
 from django.db.models.functions import Concat
 from django.utils.timezone import localdate
@@ -26,6 +25,7 @@ from api.v1.admin.users.serializers import (
     UserAdminWorkedOnSerializer,
 )
 from common.models import Ban as BanModel
+from common.models import User
 from common.rest_framework.pagination import ExtendedPagination
 from common.rest_framework.permissions import (
     IsAdminUser,

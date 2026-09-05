@@ -1,9 +1,10 @@
 from random import randint
 
 import pytest
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
 from rest_framework.test import APIClient
 
+from common.models import User
 from video_requests.models import Comment, Request, Todo, Video
 
 

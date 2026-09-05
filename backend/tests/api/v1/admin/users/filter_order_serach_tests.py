@@ -2,13 +2,14 @@ from datetime import date, datetime, timedelta
 
 import pytest
 from django.conf import settings
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
 from django.utils.timezone import make_aware
 from model_bakery import baker
 from rest_framework.exceptions import ErrorDetail
 from rest_framework.reverse import reverse
 from rest_framework.status import HTTP_400_BAD_REQUEST, is_success
 
+from common.models import User
 from tests.api.helpers import login
 
 pytestmark = pytest.mark.django_db

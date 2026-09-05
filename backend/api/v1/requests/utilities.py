@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from common.models import User
 
 
 def create_user(validated_data: dict) -> tuple[User, dict | None]:
