@@ -991,16 +991,50 @@ And the standalone function/property definitions that were being patched in.
 
 Since `AbstractUser` has the same fields as `auth.User`, and we set
 `db_table = "auth_user"`, the database doesn't change. But Django's migration
-system needs a careful transition:
+system needs a careful transition.
 
-1. Create the custom user model with `db_table = "auth_user"`.
+**`SeparateDatabaseAndState` does not work here.** Once `AUTH_USER_MODEL` points
+away from `auth.User`, that model's `_meta.swapped` is truthy, so `can_migrate()`
+returns `False` and `auth/0001` stops creating the `auth_user` table. A state-only
+migration would therefore leave every fresh database — CI, tests, new developers —
+with no user table at all.
+
+What was done instead:
+
+1. Create `common.User` with `db_table = "auth_user"`, redeclaring the `groups` and
+   `user_permissions` M2M fields with `db_table="auth_user_groups"` /
+   `db_table="auth_user_user_permissions"` so the join tables keep their names.
 2. Set `AUTH_USER_MODEL = "common.User"`.
-3. Create a migration that uses `SeparateDatabaseAndState` to tell Django
-   the model moved without touching the actual table.
-4. Update all ForeignKey references in migrations.
+3. Add the `CreateModel("User", …)` operation to the **existing**
+   `common/0001_initial.py`, ahead of the other models, and point that file's two
+   literal `to="auth.user"` references at `settings.AUTH_USER_MODEL`.
+4. Add `common/0004_move_user_content_type.py`, moving the `auth|user` content type
+   to `common|user` so the permission rows and admin log entries attached to it are
+   not orphaned next to a freshly created one.
 
-This is the most involved migration in the plan. Consider doing it on a separate
-branch with thorough testing. Django's docs cover this:
+Editing an applied migration is safe here because `django_migrations` stores only
+`(app, name, applied)` — no checksum — and the schema the edit describes already
+exists. The result:
+
+- **Existing databases**: `common.0001` is already recorded, so it never re-runs. No
+  `--fake`, no manual SQL. Only the new migrations apply.
+- **Fresh databases**: `common.0001` creates `auth_user` in the right order.
+- **Dependency graph**: `swappable_dependency` from every other app resolves to
+  `("common", "__first__")` — that is `common.0001`, which is already applied, so
+  `check_consistent_history()` passes. (Django's `MigrationLoader.check_key()`
+  ignores `__first__` self-references, so `common.0001` does not depend on itself.)
+
+Verified by building a database from the pre-change code in a temporary worktree,
+seeding a user with a group and a permission, then migrating with the new code:
+only the content-type migration ran, the tables and content type ID were unchanged,
+and the permissions survived without duplicates.
+
+One new footgun: migration state now says `common.0001` created `auth_user`, so
+`manage.py migrate common zero` would drop the user table rather than leaving it to
+the auth app. Never a normal operation, but worth remembering before squashing
+`common`'s migrations.
+
+Django's docs on the general problem:
 https://docs.djangoproject.com/en/6.0/topics/auth/customizing/#changing-to-a-custom-user-model-mid-project
 
 ---
@@ -1181,18 +1215,84 @@ auth migration also touches user-related code.
 
 - [x] Create `video_requests/services.py`
 - [x] Extract `create_comment()` service (replaced 3 duplicate static methods)
-- [x] Move avatar provider validation from serializer to `UserProfile.clean()`
-- [ ] Move email uniqueness validation to model (blocked by Phase 7 — custom user model)
+- [x] Move avatar provider validation from serializer to `UserProfile.clean()` (now
+      `User.clean()` — `UserProfile` was merged into `User` in Phase 7)
+- [x] Move email uniqueness validation to model — partial, case-insensitive
+      `UniqueConstraint` on `User.email`
 - [x] Simplify `Request.clean()` conditionals (done in Phase 5)
 
 ### Phase 7: Custom user model
 
-- [ ] Create `common.User` extending `AbstractUser` (with `db_table = "auth_user"`)
-- [ ] Set `AUTH_USER_MODEL = "common.User"` in settings
-- [ ] Create `SeparateDatabaseAndState` migration
-- [ ] Update all `ForeignKey(User, ...)` to use `settings.AUTH_USER_MODEL`
-- [ ] Update all `from django.contrib.auth.models import User` imports
-- [ ] Remove monkey-patching from `common/utilities.py`
+- [x] Create `common.User` extending `AbstractUser` (with `db_table = "auth_user"`)
+- [x] Set `AUTH_USER_MODEL = "common.User"` in settings
+- [x] ~~Create `SeparateDatabaseAndState` migration~~ — not viable, see 7.6. Added
+      `CreateModel` to the existing `common/0001_initial.py` plus
+      `0004_move_user_content_type`
+- [x] Update all `ForeignKey(User, ...)` to use `settings.AUTH_USER_MODEL`
+- [x] Update all `from django.contrib.auth.models import User` imports
+- [x] Remove monkey-patching from `common/utilities.py`
+- [x] Add `common.user` to `CACHEOPS` — the existing `auth.*` rule no longer matches
+      the user model
+- [x] Merge `UserProfile` into `User` (`avatar`, `phone_number`) and drop the
+      `create_or_save_user_profile` signal. The API keeps its nested `profile`
+      object via `source="*"`, so no frontend change
+- [x] Add `Roles` TextChoices, `is_banned`, and unusable passwords for the
+      sentinel / anonymous / system accounts (`0006`)
+- [x] Rename `ExtendedUserAdmin` → `UserAdmin`, `validate_profile_avatar` →
+      `validate_avatar`, `USER_PROFILE_AVATAR_SCHEMA` → `USER_AVATAR_SCHEMA`
+- [x] Cache the group names on the user. `is_admin` / `is_service_account` / `role`
+      each ran their own `groups.filter(...).exists()`: 3 queries, none of them
+      cached (cacheops `auth.*` covers `fetch`/`get`, not `exists`) and none of them
+      able to use `prefetch_related("groups")`. A `group_names` cached property read
+      through `groups.all()` brings that to 1 query, or 0 on a prefetched queryset.
+      Call `invalidate_group_names()` after changing a user's groups — the ban signal
+      and the BSS group sync both do
+- [x] Finish the `related_name` cleanup Phase 5 started on `Request`:
+      `ban_creator` → `created_bans`, `todo_creator` → `created_todos`, and
+      `Todo.assignees` gains `assigned_todos` (was the default `todo_set`)
+
+#### Deploy pre-check: duplicate e-mail addresses
+
+`0007_add_unique_user_email_constraint` creates a unique index and **will fail** if
+any two accounts share an address. `associate_by_email` already treats that as an
+error at login time, so it may well exist in production. Check before deploying:
+
+```sql
+SELECT lower(email) AS email, count(*) AS rows, array_agg(username ORDER BY id)
+FROM auth_user
+WHERE email <> ''
+GROUP BY lower(email)
+HAVING count(*) > 1
+ORDER BY 2 DESC;
+```
+
+Resolve every row this returns first. Blank addresses are exempt from the constraint,
+so the sentinel / anonymous / system accounts are fine.
+
+#### Follow-up: revisit `User.save()` validation
+
+`User.save()` calls `full_clean()` scoped to `avatar` and `phone_number` only, with
+`validate_unique=False`. That reproduces exactly what `UserProfile.save()` used to
+validate, and nothing more.
+
+A bare `full_clean()` is the obvious simplification, but it is blocked on three
+things:
+
+- `password` is `CharField(max_length=128)` with no `blank=True`, and the sentinel /
+  anonymous / system accounts plus `sync_bss_users` are created through
+  `get_or_create()` without one. Verified: swapping in a bare `full_clean()` fails 11
+  tests, all with `{'password': ['This field cannot be blank.']}`. Migration
+  `0006_set_unusable_password_on_system_accounts` fixes the existing rows, but the
+  field still needs `blank=True` for future `get_or_create()` calls.
+- It would start validating `username` and `email`, which arrive unchecked from the
+  identity providers (`sync_bss_users` assigns `result["email"]` directly;
+  `disconnect_all_other_profiles_and_change_username_on_first_bss_login` assigns
+  `details["username"]` directly). Existing rows holding values that fail those
+  validators would become unsaveable.
+- `validate_unique=True` adds a `SELECT` to every save, including `update_last_login`
+  on every login, and turns `IntegrityError` into `ValidationError`.
+
+Worth revisiting once Phase 1 lands and the login paths are simpler.
 
 ### Phase 1: Backend auth (JWT → sessions)
 
@@ -1201,7 +1301,10 @@ auth migration also touches user-related code.
 - [ ] Create new login/logout views
 - [ ] Rewrite login serializers
 - [ ] Update login URLs (remove refresh)
-- [ ] Simplify ban signal
+- [ ] Simplify ban signal. Note: the signal clearing `is_staff`, `is_superuser` and
+      the group membership is deliberate, not a bug — `set_groups_and_permissions_for_staff`
+      restores all three from BSS on the next `bss-login`, so an unbanned staff member
+      only has to log in again. Keep that behaviour when simplifying
 - [ ] Fix Microsoft avatar (smaller size, no base64 in JWT)
 - [ ] Remove `SIMPLE_JWT` config
 - [ ] Remove `token_blacklist` from `INSTALLED_APPS`
@@ -1220,6 +1323,11 @@ auth migration also touches user-related code.
 - [ ] Update `AuthenticatedRoute` / `AuthenticationProvider`
 - [ ] Remove `jwt-decode` dependency
 - [ ] Apply same changes to `frontend-admin`
+- [ ] Flatten the `profile` object into plain user fields. `avatar`, `avatar_url` and
+      `phone_number` are ordinary `User` fields since Phase 7; the nesting survives
+      only because `UserProfileSerializer` is attached with `source="*"` to keep the
+      wire format stable. Dropping it changes `GET`/`PATCH /me/me/` and the admin
+      user endpoints, so it has to land with the frontend work rather than before it
 
 ### Final
 
