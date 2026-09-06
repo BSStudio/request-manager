@@ -7,6 +7,7 @@ from django.core.serializers.json import DjangoJSONEncoder
 from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import JSONField
+from django.db.models.functions import Lower
 from django.utils.translation import gettext_lazy as _
 from jsonschema import FormatChecker
 from jsonschema import ValidationError as JsonValidationError
@@ -105,6 +106,16 @@ class User(AbstractUser):
 
     class Meta(AbstractUser.Meta):
         db_table = "auth_user"
+        constraints = [
+            # Blank e-mail addresses are excluded: the sentinel, anonymous and
+            # system accounts all share one.
+            models.UniqueConstraint(
+                Lower("email"),
+                condition=~models.Q(email=""),
+                name="unique_user_email",
+                violation_error_message=_("E-mail address already in use."),
+            )
+        ]
 
     def clean(self):
         super().clean()

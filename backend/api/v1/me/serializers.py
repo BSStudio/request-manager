@@ -74,7 +74,12 @@ class UserSerializer(ModelSerializer):
 
     def update(self, instance, validated_data):
         email = validated_data.get("email")
-        if email and User.objects.filter(email=email).exclude(pk=instance.pk).exists():
+        if (
+            email
+            and User.objects.filter(email__iexact=email)
+            .exclude(pk=instance.pk)
+            .exists()
+        ):
             raise ValidationError({"email": [_("E-mail address already in use.")]})
         avatar_provider = validated_data.pop("avatar_provider", None)
         if avatar_provider:
