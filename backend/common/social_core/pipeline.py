@@ -242,6 +242,7 @@ def set_groups_and_permissions_for_staff(backend, response, user, *args, **kwarg
         ]
 
         user.groups.set(existing_groups + new_groups)
+        user.invalidate_group_names()
 
     user.is_staff = True
     user.is_superuser = (

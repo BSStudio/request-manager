@@ -12,6 +12,7 @@ def post_save_ban(sender, instance, **kwargs):
     instance.receiver.is_staff = False
     instance.receiver.is_superuser = False
     instance.receiver.groups.clear()
+    instance.receiver.invalidate_group_names()
     for token in instance.receiver.outstandingtoken_set.all():
         try:
             refresh_token = RefreshToken(token.token)

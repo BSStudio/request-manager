@@ -8,6 +8,7 @@ from django.core.validators import MaxValueValidator, MinValueValidator
 from django.db import models
 from django.db.models import JSONField
 from django.db.models.functions import Lower
+from django.utils.functional import cached_property
 from django.utils.translation import gettext_lazy as _
 from jsonschema import FormatChecker
 from jsonschema import ValidationError as JsonValidationError
@@ -142,10 +143,18 @@ class User(AbstractUser):
     def avatar_url(self) -> str:
         return self.avatar.get(self.avatar.get("provider", None), None)
 
+    @cached_property
+    def group_names(self) -> frozenset[str]:
+        # groups.all() rather than a filtered exists(): prefetch and cacheops apply.
+        return frozenset(group.name for group in self.groups.all())
+
+    def invalidate_group_names(self) -> None:
+        self.__dict__.pop("group_names", None)
+
     @property
     def is_admin(self) -> bool:
         return self.is_staff and (
-            self.groups.filter(name=settings.ADMIN_GROUP).exists() or self.is_superuser
+            settings.ADMIN_GROUP in self.group_names or self.is_superuser
         )
 
     @property
@@ -154,7 +163,7 @@ class User(AbstractUser):
 
     @property
     def is_service_account(self) -> bool:
-        return self.groups.filter(name=settings.SERVICE_ACCOUNTS_GROUP).exists()
+        return settings.SERVICE_ACCOUNTS_GROUP in self.group_names
 
     @property
     def role(self) -> str:
@@ -175,7 +184,7 @@ class Ban(models.Model):
     )
     creator = models.ForeignKey(
         settings.AUTH_USER_MODEL,
-        related_name="ban_creator",
+        related_name="created_bans",
         on_delete=models.SET(get_sentinel_user),
     )
     reason = models.CharField(max_length=100, blank=True)
@@ -225,12 +234,14 @@ class AbstractRating(models.Model):
 
 
 class AbstractTodo(models.Model):
-    assignees = models.ManyToManyField(settings.AUTH_USER_MODEL, blank=True)
+    assignees = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, related_name="assigned_todos", blank=True
+    )
     created = models.DateTimeField(auto_now_add=True)
     creator = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.SET(get_sentinel_user),
-        related_name="todo_creator",
+        related_name="created_todos",
     )
     description = models.TextField()
 
