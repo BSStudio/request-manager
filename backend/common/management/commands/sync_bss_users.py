@@ -53,7 +53,7 @@ class Command(BaseCommand):
             # In really rare cases e-mail address might exist for a different user
             # We want manual interaction and validation here, so we raise exception and continue
             if (
-                User.objects.filter(email=result["email"])
+                User.objects.filter(email__iexact=result["email"])
                 .exclude(username=result["username"])
                 .exists()
             ):
