@@ -1,4 +1,4 @@
-import { QueryObserverResult } from '@tanstack/react-query';
+import type { QueryObserverResult } from '@tanstack/react-query';
 
 import TimeAgo from 'helpers/TimeAgo';
 

@@ -23,9 +23,10 @@ export async function loader({ params }: LoaderFunctionArgs) {
   if (!params.userId) {
     throw new Error('No user ID provided');
   }
-  const user = await queryClient.ensureQueryData(
-    usersRetrieveQuery(params.userId),
-  );
+  const user = await queryClient.query({
+    ...usersRetrieveQuery(params.userId),
+    staleTime: 'static',
+  });
   return {
     userFullName: `${user.last_name} ${user.first_name}`,
     userId: params.userId,
