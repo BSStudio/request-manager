@@ -50,12 +50,12 @@ def create_user(
         groups.append("Administrators")
 
     # Set user's profile
-    user.userprofile.avatar = {
+    user.avatar = {
         "provider": "gravatar",
         "microsoft-graph": "https://via.placeholder.com/150",
         "gravatar": "https://via.placeholder.com/200",
     }
-    user.userprofile.phone_number = "+36701234567"
+    user.phone_number = "+36701234567"
 
     # Get or create groups and add user to them
     for group in groups:

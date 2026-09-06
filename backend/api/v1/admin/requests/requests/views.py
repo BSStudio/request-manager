@@ -73,13 +73,11 @@ class RequestAdminViewSet(ModelViewSet):
     def get_queryset(self):
         if self.action == "list":
             return (
-                Request.objects.select_related("responsible__userprofile")
+                Request.objects.select_related("responsible")
                 .prefetch_related(
                     Prefetch(
                         "crew",
-                        queryset=CrewMember.objects.select_related(
-                            "member__userprofile"
-                        ),
+                        queryset=CrewMember.objects.select_related("member"),
                     ),
                 )
                 .annotate(video_count=Count("videos"))
@@ -87,13 +85,13 @@ class RequestAdminViewSet(ModelViewSet):
             )
 
         return (
-            Request.objects.select_related("requester__userprofile")
-            .select_related("requested_by__userprofile")
-            .select_related("responsible__userprofile")
+            Request.objects.select_related("requester")
+            .select_related("requested_by")
+            .select_related("responsible")
             .prefetch_related(
                 Prefetch(
                     "crew",
-                    queryset=CrewMember.objects.select_related("member__userprofile"),
+                    queryset=CrewMember.objects.select_related("member"),
                 ),
             )
             .prefetch_related("videos")

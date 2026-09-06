@@ -6,7 +6,7 @@ from rest_framework.relations import SlugRelatedField
 from rest_framework.serializers import ModelSerializer, Serializer
 from social_django.models import UserSocialAuth
 
-from common.models import User, UserProfile
+from common.models import User
 
 
 class OAuth2ConnectSerializer(Serializer):
@@ -28,7 +28,7 @@ class UserProfileSerializer(ModelSerializer):
     phone_number = PhoneNumberField(required=False)
 
     class Meta:
-        model = UserProfile
+        model = User
         fields = (
             "avatar",
             "avatar_provider",
@@ -37,11 +37,6 @@ class UserProfileSerializer(ModelSerializer):
         )
         read_only_fields = ("avatar", "avatar_url")
         write_only_fields = ("avatar_provider",)
-
-    def update(self, instance, validated_data):
-        if "avatar_provider" in validated_data:
-            instance.avatar["provider"] = validated_data.pop("avatar_provider")
-        return super().update(instance, validated_data)
 
 
 class UserSocialAuthSerializer(ModelSerializer):
@@ -56,7 +51,7 @@ class UserSerializer(ModelSerializer):
     first_name = CharField(max_length=150, required=False)
     groups = SlugRelatedField(many=True, read_only=True, slug_field="name")
     last_name = CharField(max_length=150, required=False)
-    profile = UserProfileSerializer(source="userprofile")
+    profile = UserProfileSerializer(source="*")
     role = CharField(read_only=True)
     social_accounts = UserSocialAuthSerializer(
         many=True, read_only=True, source="social_auth"
@@ -81,8 +76,7 @@ class UserSerializer(ModelSerializer):
         email = validated_data.get("email")
         if email and User.objects.filter(email=email).exclude(pk=instance.pk).exists():
             raise ValidationError({"email": [_("E-mail address already in use.")]})
-        profile_data = validated_data.pop("userprofile")
-        UserProfileSerializer.update(
-            UserProfileSerializer(), instance.userprofile, profile_data
-        )
+        avatar_provider = validated_data.pop("avatar_provider", None)
+        if avatar_provider:
+            instance.avatar["provider"] = avatar_provider
         return super().update(instance, validated_data)

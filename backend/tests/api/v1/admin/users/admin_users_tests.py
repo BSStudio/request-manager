@@ -170,8 +170,7 @@ def test_retrieve_user(
             ban.refresh_from_db()
             assert response.data["ban"]["created"] == localtime(ban.created).isoformat()
             assert (
-                response.data["ban"]["creator"]["avatar_url"]
-                == ban.creator.userprofile.avatar_url
+                response.data["ban"]["creator"]["avatar_url"] == ban.creator.avatar_url
             )
             assert (
                 response.data["ban"]["creator"]["full_name"]
@@ -349,8 +348,8 @@ def test_update_user_avatar(admin_user, api_client, method):
         "microsoft-graph": "https://example.com/picture1.png",
     }
 
-    user.userprofile.avatar = avatar_data
-    user.userprofile.save()
+    user.avatar = avatar_data
+    user.save()
 
     url = reverse("api:v1:admin:users:user-detail", kwargs={"pk": user.id})
 
@@ -435,7 +434,7 @@ def test_create_user_ban(api_client, data, expected, request, user):
 
         data = data or {}
         assert response.data["reason"] == data.get("reason", "")
-        assert response.data["creator"]["avatar_url"] == own_user.userprofile.avatar_url
+        assert response.data["creator"]["avatar_url"] == own_user.avatar_url
         assert (
             response.data["creator"]["full_name"]
             == own_user.get_full_name_eastern_order()

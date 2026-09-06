@@ -1,26 +1,12 @@
 import logging
 
 from django.contrib import admin
-from django.contrib.admin import ModelAdmin
 from django.contrib.auth.admin import UserAdmin
 from django.db import IntegrityError
-from django.urls import reverse
-from django.utils.html import format_html
 
-from common.models import Ban, User, UserProfile
+from common.models import Ban, User
 
 logger = logging.getLogger(__name__)
-
-
-@admin.register(UserProfile)
-class UserProfileAdmin(ModelAdmin):
-    list_display = ["user", "phone_number", "avatar_url", "user_link"]
-    search_fields = ["user__username"]
-
-    @admin.display(description="Link to User")
-    def user_link(self, obj):
-        url = reverse("admin:common_user_change", args=(obj.user.id,))
-        return format_html('<a href="{}">{}</a>', url, obj.user.get_full_name())
 
 
 @admin.register(User)
@@ -28,11 +14,15 @@ class ExtendedUserAdmin(UserAdmin):
     actions = [
         "ban_selected_users",
     ]
+    fieldsets = UserAdmin.fieldsets + (
+        ("Profile", {"fields": ("phone_number", "avatar")}),
+    )
     list_display = (
         "username",
         "email",
         "first_name",
         "last_name",
+        "phone_number",
         "is_staff",
         "is_admin",
         "is_superuser",

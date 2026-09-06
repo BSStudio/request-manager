@@ -6,25 +6,25 @@ from common.models import User
 
 
 @pytest.mark.django_db
-class TestUserProfileClean:
+class TestUserClean:
     def test_avatar_must_be_dict(self):
-        profile = baker.make(User).userprofile
-        profile.avatar = "not a dict"
+        user = baker.make(User)
+        user.avatar = "not a dict"
         with pytest.raises(ValidationError, match="Avatar must be an object"):
-            profile.clean()
+            user.clean()
 
     def test_avatar_invalid_provider_reference(self):
-        profile = baker.make(User).userprofile
-        profile.avatar = {"provider": "google-oauth2"}
+        user = baker.make(User)
+        user.avatar = {"provider": "google-oauth2"}
         with pytest.raises(
             ValidationError, match="Avatar does not exist for this provider"
         ):
-            profile.clean()
+            user.clean()
 
     def test_avatar_valid_provider_reference(self):
-        profile = baker.make(User).userprofile
-        profile.avatar = {
+        user = baker.make(User)
+        user.avatar = {
             "provider": "gravatar",
             "gravatar": "https://example.com/avatar.png",
         }
-        profile.clean()  # Should not raise
+        user.clean()  # Should not raise

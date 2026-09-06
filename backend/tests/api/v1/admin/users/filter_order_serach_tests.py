@@ -62,7 +62,7 @@ def test_filter_users(admin_user, api_client, filters, expected, pagination):
         ("email", [1, 2, 6, 3, 5, 4]),
         ("full_name", [2, 6, 4, 3, 5, 1]),
         ("is_staff,full_name", [4, 3, 2, 6, 5, 1]),
-        ("userprofile__phone_number", [6, 5, 4, 3, 2, 1]),
+        ("phone_number", [6, 5, 4, 3, 2, 1]),
     ],
 )
 @pytest.mark.parametrize("pagination", [True, False])
@@ -113,8 +113,8 @@ def test_order_users(admin_user, api_client, expected, ordering, pagination):
 
     counter = 9
     for user in users:
-        user.userprofile.phone_number = f"+3650123456{counter}"
-        user.userprofile.save()
+        user.phone_number = f"+3650123456{counter}"
+        user.save()
         counter = counter - 1
 
     login(api_client, admin_user)

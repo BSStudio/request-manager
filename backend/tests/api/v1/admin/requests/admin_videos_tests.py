@@ -386,7 +386,7 @@ def test_create_update_video_editor(
     if is_success(response.status_code):
         assert_retrieve_response_keys(response.data)
 
-        assert response.data["editor"]["avatar_url"] == test_user.userprofile.avatar_url
+        assert response.data["editor"]["avatar_url"] == test_user.avatar_url
         assert (
             response.data["editor"]["full_name"]
             == test_user.get_full_name_eastern_order()

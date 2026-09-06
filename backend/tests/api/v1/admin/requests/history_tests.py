@@ -51,7 +51,7 @@ def assert_response(history, fields_changed, new_values, old_values, user):
     if history["user"]:
         assert_fields_exist(history["user"], ["avatar_url", "full_name", "id"])
 
-        assert history["user"]["avatar_url"] == user.userprofile.avatar_url
+        assert history["user"]["avatar_url"] == user.avatar_url
         assert history["user"]["full_name"] == user.get_full_name_eastern_order()
         assert history["user"]["id"] == user.id
 

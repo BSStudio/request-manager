@@ -73,9 +73,46 @@ class User(AbstractUser):
         related_query_name="user",
         db_table="auth_user_user_permissions",
     )
+    avatar = JSONField(
+        encoder=DjangoJSONEncoder,
+        validators=[validate_profile_avatar],
+        default=dict,
+        blank=True,
+    )
+    phone_number = PhoneNumberField(blank=True)
+
+    # Fields validated on every save. The inherited user fields are left out on
+    # purpose: the OAuth2 pipeline and the BSS sync command both create users
+    # without a password, which full model validation rejects.
+    VALIDATED_ON_SAVE = ("avatar", "phone_number")
 
     class Meta(AbstractUser.Meta):
         db_table = "auth_user"
+
+    def clean(self):
+        super().clean()
+        if not isinstance(self.avatar, dict):
+            raise ValidationError({"avatar": [_("Avatar must be an object.")]})
+        provider = self.avatar.get("provider")
+        if provider and not self.avatar.get(provider):
+            raise ValidationError(
+                {"avatar": [_("Avatar does not exist for this provider.")]}
+            )
+
+    def save(self, *args, **kwargs):
+        self.full_clean(
+            exclude=[
+                field.name
+                for field in self._meta.fields
+                if field.name not in self.VALIDATED_ON_SAVE
+            ],
+            validate_unique=False,
+        )
+        return super().save(*args, **kwargs)
+
+    @property
+    def avatar_url(self) -> str:
+        return self.avatar.get(self.avatar.get("provider", None), None)
 
     @property
     def is_admin(self) -> bool:
@@ -98,39 +135,6 @@ class User(AbstractUser):
 
     def get_full_name_eastern_order(self) -> str:
         return f"{self.last_name} {self.first_name}".strip()
-
-
-class UserProfile(models.Model):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, primary_key=True
-    )
-    avatar = JSONField(
-        encoder=DjangoJSONEncoder,
-        validators=[validate_profile_avatar],
-        default=dict,
-        blank=True,
-    )
-    phone_number = PhoneNumberField(blank=True)
-
-    def clean(self):
-        if not isinstance(self.avatar, dict):
-            raise ValidationError({"avatar": [_("Avatar must be an object.")]})
-        provider = self.avatar.get("provider")
-        if provider and not self.avatar.get(provider):
-            raise ValidationError(
-                {"avatar": [_("Avatar does not exist for this provider.")]}
-            )
-
-    def save(self, *args, **kwargs):
-        self.full_clean()
-        return super().save(*args, **kwargs)
-
-    def __str__(self):
-        return f"{self.user.get_full_name()}'s ({self.user.username}) profile"
-
-    @property
-    def avatar_url(self) -> str:
-        return self.avatar.get(self.avatar.get("provider", None), None)
 
 
 class Ban(models.Model):

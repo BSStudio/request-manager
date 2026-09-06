@@ -32,6 +32,12 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_SECRET = "27c7dFrK6aYsuvHLmV5Be3zU"  # nosec
 SOCIAL_AUTH_MICROSOFT_GRAPH_KEY = "9cf7a0de-7bb8-0bd1-ec3a-925173e652ee"  # nosec
 SOCIAL_AUTH_MICROSOFT_GRAPH_SECRET = "FYT8Q~pV~qBOa0jEr9N8yf0qOa7yPnZa1xf1daNF"  # nosec
 
+# Model Bakery
+# https://model-bakery.readthedocs.io/en/latest/how_bakery_behaves.html
+BAKER_CUSTOM_FIELDS_GEN = {
+    "phonenumber_field.modelfields.PhoneNumberField": "tests.helpers.baker_generators.gen_phone_number",
+}
+
 # Use faster password hashing algorithm
 PASSWORD_HASHERS = ["django.contrib.auth.hashers.MD5PasswordHasher"]
 

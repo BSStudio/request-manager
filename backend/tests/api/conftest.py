@@ -30,8 +30,8 @@ def admin_user(settings):
 
     user.save()
 
-    user.userprofile.phone_number = "+36509999999"
-    user.userprofile.save()
+    user.phone_number = "+36509999999"
+    user.save()
 
     return user
 
@@ -47,8 +47,8 @@ def staff_user():
         username="staff",
     )
 
-    user.userprofile.phone_number = "+36509999999"
-    user.userprofile.save()
+    user.phone_number = "+36509999999"
+    user.save()
     return user
 
 
@@ -63,8 +63,8 @@ def basic_user():
         username="basic",
     )
 
-    user.userprofile.phone_number = "+36509999999"
-    user.userprofile.save()
+    user.phone_number = "+36509999999"
+    user.save()
     return user
 
 
@@ -83,8 +83,8 @@ def service_account(settings):
     user.groups.add(grp)
     user.save()
 
-    user.userprofile.phone_number = "+36509999999"
-    user.userprofile.save()
+    user.phone_number = "+36509999999"
+    user.save()
 
     return user
 

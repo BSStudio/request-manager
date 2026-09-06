@@ -105,7 +105,7 @@ def test_create_rating(api_client, expected, rating_data, request, user):
     if is_success(response.status_code):
         assert_response_keys(response.data)
 
-        assert response.data["author"]["avatar_url"] == user.userprofile.avatar_url
+        assert response.data["author"]["avatar_url"] == user.avatar_url
         assert (
             response.data["author"]["full_name"] == user.get_full_name_eastern_order()
         )

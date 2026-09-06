@@ -36,13 +36,13 @@ class TodoAdminViewSet(RetrieveUpdateDestroyAPIView, ListModelMixin, GenericView
     ]
     pagination_class = ExtendedPagination
     queryset = (
-        Todo.objects.select_related("creator__userprofile")
+        Todo.objects.select_related("creator")
         .select_related("request")
         .select_related("video")
         .prefetch_related(
             Prefetch(
                 "assignees",
-                queryset=User.objects.select_related("userprofile"),
+                queryset=User.objects.all(),
             ),
         )
         .all()
@@ -118,13 +118,13 @@ class TodoAdminRequestVideoViewSet(ListCreateAPIView, GenericViewSet):
             return Todo.objects.none()
         if self.kwargs.get("video_pk"):
             return (
-                Todo.objects.select_related("creator__userprofile")
+                Todo.objects.select_related("creator")
                 .select_related("request")
                 .select_related("video")
                 .prefetch_related(
                     Prefetch(
                         "assignees",
-                        queryset=User.objects.select_related("userprofile"),
+                        queryset=User.objects.all(),
                     )
                 )
                 .filter(
@@ -133,13 +133,13 @@ class TodoAdminRequestVideoViewSet(ListCreateAPIView, GenericViewSet):
                 )
             )
         return (
-            Todo.objects.select_related("creator__userprofile")
+            Todo.objects.select_related("creator")
             .select_related("request")
             .select_related("video")
             .prefetch_related(
                 Prefetch(
                     "assignees",
-                    queryset=User.objects.select_related("userprofile"),
+                    queryset=User.objects.all(),
                 )
             )
             .filter(

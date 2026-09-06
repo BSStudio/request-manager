@@ -49,12 +49,11 @@ class UserAdminViewSet(
         "email",
         "full_name",
         "is_staff",
-        "userprofile__phone_number",
+        "phone_number",
     ]
     pagination_class = ExtendedPagination
     queryset = (
-        User.objects.select_related("userprofile")
-        .prefetch_related("groups")
+        User.objects.prefetch_related("groups")
         .annotate(full_name=Concat("last_name", Value(" "), "first_name"))
         .all()
         .cache()

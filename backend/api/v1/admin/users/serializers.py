@@ -14,16 +14,16 @@ from common.models import Ban, User
 
 
 class UserNestedDetailSerializer(Serializer):
-    avatar_url = URLField(read_only=True, source="userprofile.avatar_url")
+    avatar_url = URLField(read_only=True)
     email = EmailField(read_only=True)
     full_name = CharField(read_only=True, source="get_full_name_eastern_order")
     id = IntegerField(read_only=True)
     is_staff = BooleanField(read_only=True)
-    phone_number = PhoneNumberField(read_only=True, source="userprofile.phone_number")
+    phone_number = PhoneNumberField(read_only=True)
 
 
 class UserNestedListSerializer(Serializer):
-    avatar_url = URLField(read_only=True, source="userprofile.avatar_url")
+    avatar_url = URLField(read_only=True)
     full_name = CharField(read_only=True, source="get_full_name_eastern_order")
     id = IntegerField(read_only=True)
 

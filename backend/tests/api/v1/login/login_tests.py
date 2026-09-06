@@ -59,7 +59,7 @@ def test_custom_jwt_claims(api_client, expected, user, request):
     assert response.status_code == HTTP_200_OK
 
     token = AccessToken(response.data["access"])
-    assert token.payload["avatar"] == user.userprofile.avatar_url
+    assert token.payload["avatar"] == user.avatar_url
     for group in groups:
         assert group in token.payload["groups"]
     assert token.payload["name"] == user.get_full_name_eastern_order()

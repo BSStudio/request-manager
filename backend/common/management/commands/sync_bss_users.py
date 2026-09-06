@@ -6,7 +6,7 @@ from django.conf import settings
 from django.core.management.base import BaseCommand
 from django.db.models import Q
 
-from common.models import User, UserProfile
+from common.models import User
 from common.social_core.backends import BSSLoginOAuth2
 from common.social_core.pipeline import set_groups_and_permissions_for_staff
 
@@ -70,28 +70,19 @@ class Command(BaseCommand):
             user.first_name = result["attributes"].get("first_name")
             user.last_name = result["attributes"].get("last_name")
             user.email = result["email"]
-            user.save()
-
-            try:
-                profile = user.userprofile  # Check if profile really exist
-            except UserProfile.DoesNotExist:
-                profile = UserProfile.objects.create(
-                    user=user
-                )  # Create profile if it does not exist
-
-            profile.phone_number = result["attributes"].get("mobile")
+            user.phone_number = result["attributes"].get("mobile")
 
             avatar_url_hostname = urlparse(result.get("avatar", "")).hostname
             if avatar_url_hostname and (
                 avatar_url_hostname == "gravatar.com"
                 or avatar_url_hostname.endswith(".gravatar.com")
             ):
-                profile.avatar["gravatar"] = result["avatar"]
+                user.avatar["gravatar"] = result["avatar"]
 
-                if not profile.avatar.get("provider", None):
-                    profile.avatar["provider"] = "gravatar"
+                if not user.avatar.get("provider", None):
+                    user.avatar["provider"] = "gravatar"
 
-            profile.save()
+            user.save()
 
             # Use the social-auth pipeline function to set the groups, but we need some transformation
             groups = [group["name"] for group in result["groups_obj"]]

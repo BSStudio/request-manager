@@ -333,8 +333,8 @@ def test_create_request_user_info_validation(api_client, request_create_data):
                 username=uuid4(),
             )
 
-            user.userprofile.phone_number = data.get("phone_number", "")
-            user.userprofile.save()
+            user.phone_number = data.get("phone_number", "")
+            user.save()
 
             login(api_client, user)
             response = api_client.post(url, request_create_data)

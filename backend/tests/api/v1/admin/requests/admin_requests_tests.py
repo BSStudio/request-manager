@@ -274,7 +274,7 @@ def test_create_update_request(
             new_user = User.objects.get(email=data["requester_email"])
             assert new_user.first_name == data["requester_first_name"]
             assert new_user.last_name == data["requester_last_name"]
-            assert new_user.userprofile.phone_number == data["requester_mobile"]
+            assert new_user.phone_number == data["requester_mobile"]
             assert response.data["requester"]["id"] == new_user.id
 
         elif scenario == "requester-with-id":

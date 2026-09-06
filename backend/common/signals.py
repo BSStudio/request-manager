@@ -3,15 +3,7 @@ from django.dispatch import receiver
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from common.models import Ban, User, UserProfile
-
-
-@receiver(post_save, sender=User)
-def create_or_save_user_profile(sender, instance, created, **kwargs):
-    if created:
-        UserProfile.objects.create(user=instance)
-    elif hasattr(instance, "userprofile"):
-        instance.userprofile.save()
+from common.models import Ban
 
 
 @receiver(post_save, sender=Ban)

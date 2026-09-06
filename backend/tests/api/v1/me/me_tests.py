@@ -212,8 +212,8 @@ def test_update_me_avatar(api_client, method, user, request):
         "microsoft-graph": "https://example.com/picture1.png",
     }
 
-    user.userprofile.avatar = avatar_data
-    user.userprofile.save()
+    user.avatar = avatar_data
+    user.save()
 
     url = reverse("api:v1:me:me-detail")
 

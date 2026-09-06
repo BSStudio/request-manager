@@ -68,9 +68,9 @@ class RequestViewSet(CreateModelMixin, ReadOnlyModelViewSet):
             return Request.objects.filter(requester=self.request.user)
 
         return (
-            Request.objects.select_related("requester__userprofile")
-            .select_related("requested_by__userprofile")
-            .select_related("responsible__userprofile")
+            Request.objects.select_related("requester")
+            .select_related("requested_by")
+            .select_related("responsible")
             .filter(requester=self.request.user)
         )
 
