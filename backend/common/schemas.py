@@ -1,4 +1,4 @@
-USER_PROFILE_AVATAR_SCHEMA = {
+USER_AVATAR_SCHEMA = {
     "type": "object",
     "properties": {
         "provider": {"enum": ["google-oauth2", "gravatar", "microsoft-graph"]},

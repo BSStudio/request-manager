@@ -38,7 +38,7 @@ class Migration(migrations.Migration):
                 blank=True,
                 default=dict,
                 encoder=django.core.serializers.json.DjangoJSONEncoder,
-                validators=[common.models.validate_profile_avatar],
+                validators=[common.models.validate_avatar],
             ),
         ),
         migrations.AddField(

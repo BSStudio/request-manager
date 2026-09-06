@@ -1,7 +1,7 @@
 import logging
 
 from django.contrib import admin
-from django.contrib.auth.admin import UserAdmin
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.db import IntegrityError
 
 from common.models import Ban, User
@@ -10,11 +10,11 @@ logger = logging.getLogger(__name__)
 
 
 @admin.register(User)
-class ExtendedUserAdmin(UserAdmin):
+class UserAdmin(BaseUserAdmin):
     actions = [
         "ban_selected_users",
     ]
-    fieldsets = UserAdmin.fieldsets + (
+    fieldsets = BaseUserAdmin.fieldsets + (
         ("Profile", {"fields": ("phone_number", "avatar")}),
     )
     list_display = (

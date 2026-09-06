@@ -41,7 +41,7 @@ def associate_by_email(backend, details, user=None, *args, **kwargs):
 
 
 def check_if_user_is_banned(backend, user=None, *args, **kwargs):
-    if bool(user and hasattr(user, "ban")):
+    if user and user.is_banned:
         raise AuthenticationFailed(detail="Your account is suspended.")
 
 

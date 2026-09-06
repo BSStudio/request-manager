@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
@@ -13,33 +14,45 @@ from jsonschema import validate
 from phonenumber_field.modelfields import PhoneNumberField
 from simple_history.models import HistoricalRecords
 
-from common.schemas import USER_PROFILE_AVATAR_SCHEMA
+from common.schemas import USER_AVATAR_SCHEMA
 
 
 def get_sentinel_user():
     return get_user_model().objects.get_or_create(
         username="deleted",
-        defaults={"first_name": "Felhasználó", "last_name": "Törölt"},
+        defaults={
+            "first_name": "Felhasználó",
+            "last_name": "Törölt",
+            "password": make_password(None),
+        },
     )[0]
 
 
 def get_anonymous_user():
     return get_user_model().objects.get_or_create(
         username="anonymous",
-        defaults={"first_name": "Felhasználó", "last_name": "Nem Azonosított"},
+        defaults={
+            "first_name": "Felhasználó",
+            "last_name": "Nem Azonosított",
+            "password": make_password(None),
+        },
     )[0]
 
 
 def get_system_user():
     return get_user_model().objects.get_or_create(
         username="system",
-        defaults={"first_name": "Automatizáció", "last_name": "Rendszer"},
+        defaults={
+            "first_name": "Automatizáció",
+            "last_name": "Rendszer",
+            "password": make_password(None),
+        },
     )[0]
 
 
-def validate_profile_avatar(value):
+def validate_avatar(value):
     try:
-        validate(value, USER_PROFILE_AVATAR_SCHEMA, format_checker=FormatChecker())
+        validate(value, USER_AVATAR_SCHEMA, format_checker=FormatChecker())
     except JsonValidationError as e:
         raise ValidationError(e)
 
@@ -75,16 +88,20 @@ class User(AbstractUser):
     )
     avatar = JSONField(
         encoder=DjangoJSONEncoder,
-        validators=[validate_profile_avatar],
+        validators=[validate_avatar],
         default=dict,
         blank=True,
     )
     phone_number = PhoneNumberField(blank=True)
 
-    # Fields validated on every save. The inherited user fields are left out on
-    # purpose: the OAuth2 pipeline and the BSS sync command both create users
-    # without a password, which full model validation rejects.
+    # Validated on every save, like UserProfile.save() did. The inherited fields
+    # stay out: username and e-mail arrive unchecked from the identity providers.
     VALIDATED_ON_SAVE = ("avatar", "phone_number")
+
+    class Roles(models.TextChoices):
+        ADMIN = "admin", _("Admin")
+        STAFF = "staff", _("Staff")
+        USER = "user", _("User")
 
     class Meta(AbstractUser.Meta):
         db_table = "auth_user"
@@ -121,17 +138,21 @@ class User(AbstractUser):
         )
 
     @property
+    def is_banned(self) -> bool:
+        return hasattr(self, "ban")
+
+    @property
     def is_service_account(self) -> bool:
         return self.groups.filter(name=settings.SERVICE_ACCOUNTS_GROUP).exists()
 
     @property
     def role(self) -> str:
         if self.is_admin:
-            return "admin"
+            return self.Roles.ADMIN
         elif self.is_staff:
-            return "staff"
+            return self.Roles.STAFF
         else:
-            return "user"
+            return self.Roles.USER
 
     def get_full_name_eastern_order(self) -> str:
         return f"{self.last_name} {self.first_name}".strip()

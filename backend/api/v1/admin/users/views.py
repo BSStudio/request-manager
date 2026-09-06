@@ -24,8 +24,7 @@ from api.v1.admin.users.serializers import (
     UserAdminRetrieveUpdateSerializer,
     UserAdminWorkedOnSerializer,
 )
-from common.models import Ban as BanModel
-from common.models import User
+from common.models import Ban, User
 from common.rest_framework.pagination import ExtendedPagination
 from common.rest_framework.permissions import (
     IsAdminUser,
@@ -86,7 +85,7 @@ class UserAdminViewSet(
     @extend_schema()
     @ban.mapping.delete
     def delete_ban(self, request, pk=None):
-        instance = get_object_or_404(BanModel, receiver__pk=pk)
+        instance = get_object_or_404(Ban, receiver__pk=pk)
         instance.delete()
         return Response(status=HTTP_204_NO_CONTENT)
 

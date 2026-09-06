@@ -3,6 +3,7 @@ from urllib.parse import urlparse
 
 import requests
 from django.conf import settings
+from django.contrib.auth.hashers import make_password
 from django.core.management.base import BaseCommand
 from django.db.models import Q
 
@@ -64,7 +65,8 @@ class Command(BaseCommand):
                 continue
 
             user, created = User.objects.get_or_create(
-                username=result["username"], defaults={"is_staff": True}
+                username=result["username"],
+                defaults={"is_staff": True, "password": make_password(None)},
             )
 
             user.first_name = result["attributes"].get("first_name")

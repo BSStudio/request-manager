@@ -49,7 +49,7 @@ def create_user(
     if is_admin:
         groups.append("Administrators")
 
-    # Set user's profile
+    # Set user's avatar and phone number
     user.avatar = {
         "provider": "gravatar",
         "microsoft-graph": "https://via.placeholder.com/150",

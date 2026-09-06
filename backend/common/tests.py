@@ -91,7 +91,7 @@ class CommonTestCase(TestCase):
             self.assertIn("Storage(alias='default')", out.getvalue())
             self.assertRegex(out.getvalue(), r"Redis\(host='[^']+', port=6379\)")
 
-    def test_user_profile_avatar_json_validation(self):
+    def test_user_avatar_json_validation(self):
         self.user.refresh_from_db()
         self.user.full_clean()
 
