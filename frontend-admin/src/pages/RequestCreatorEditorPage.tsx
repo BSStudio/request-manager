@@ -13,7 +13,7 @@ import { ProgressBar } from 'primereact/progressbar';
 import { SelectButton } from 'primereact/selectbutton';
 import { SplitButton } from 'primereact/splitbutton';
 import type { IconType } from 'primereact/utils';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import type { SubmitHandler } from 'react-hook-form';
 import {
   type LoaderFunctionArgs,
@@ -94,7 +94,7 @@ const RequestCreatorEditorPage = () => {
     };
   }, []);
 
-  const { control, handleSubmit, reset, setError, setValue, watch } =
+  const { control, handleSubmit, reset, setError, setValue } =
     useForm<IRequestCreator>({
       defaultValues,
       mode: 'onChange',
@@ -126,8 +126,8 @@ const RequestCreatorEditorPage = () => {
   const navigate = useNavigate();
   const revalidator = useRevalidator();
 
-  const watchCreateMore = watch('createMore');
-  const watchRequesterType = watch('requesterType');
+  const watchCreateMore = useWatch({ control, name: 'createMore' });
+  const watchRequesterType = useWatch({ control, name: 'requesterType' });
 
   useEffect(() => {
     if (loaderData) {
