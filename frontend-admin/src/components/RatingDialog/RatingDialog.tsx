@@ -1,10 +1,7 @@
 import { forwardRef, useEffect, useState } from 'react';
 
-import {
-  FetchQueryOptions,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import type { QueryExecuteOptions } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { Button } from 'primereact/button';
 import { ConfirmPopup, confirmPopup } from 'primereact/confirmpopup';
@@ -84,16 +81,16 @@ const RatingDialog = forwardRef<React.Ref<HTMLDivElement>, RatingDialogProps>(
 
     useEffect(() => {
       const fetchData = async (
-        query: FetchQueryOptions<RatingAdminListRetrieve>,
+        query: QueryExecuteOptions<RatingAdminListRetrieve>,
       ) => {
-        await queryClient.fetchQuery(query).then((data) => {
+        await queryClient.query(query).then((data) => {
           setRatingId(data.id);
           setLoading(false);
           reset({ ...data });
         });
       };
 
-      let query: FetchQueryOptions<RatingAdminListRetrieve> | undefined =
+      let query: QueryExecuteOptions<RatingAdminListRetrieve> | undefined =
         undefined;
 
       if (visible) {

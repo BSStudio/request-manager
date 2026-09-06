@@ -64,7 +64,10 @@ export interface IRequestCreator {
 
 export async function loader({ params }: LoaderFunctionArgs) {
   if (params.requestId) {
-    return queryClient.ensureQueryData(requestRetrieveQuery(params.requestId));
+    return queryClient.query({
+      ...requestRetrieveQuery(params.requestId),
+      staleTime: 'static',
+    });
   }
   return null;
 }

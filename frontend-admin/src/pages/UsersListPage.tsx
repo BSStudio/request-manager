@@ -15,7 +15,7 @@ import UsersDataTable from 'components/UsersDataTable/UsersDataTable';
 import { queryClient } from 'router';
 
 export async function loader() {
-  return queryClient.ensureQueryData(usersListQuery());
+  return queryClient.query({ ...usersListQuery(), staleTime: 'static' });
 }
 
 const UsersListPage = () => {

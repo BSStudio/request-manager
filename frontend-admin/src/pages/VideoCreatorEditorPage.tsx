@@ -52,9 +52,10 @@ export interface IVideoCreator {
 
 export async function loader({ params }: LoaderFunctionArgs) {
   if (params.requestId && params.videoId) {
-    return queryClient.ensureQueryData(
-      requestVideoRetrieveQuery(params.requestId, params.videoId),
-    );
+    return queryClient.query({
+      ...requestVideoRetrieveQuery(params.requestId, params.videoId),
+      staleTime: 'static',
+    });
   }
   return null;
 }

@@ -29,9 +29,10 @@ export async function requestLoader({ params }: LoaderFunctionArgs) {
   if (!params.requestId) {
     throw new Error('No request ID provided');
   }
-  const request = await queryClient.ensureQueryData(
-    requestRetrieveQuery(params.requestId),
-  );
+  const request = await queryClient.query({
+    ...requestRetrieveQuery(params.requestId),
+    staleTime: 'static',
+  });
   return { requestId: params.requestId, requestTitle: request.title };
 }
 
@@ -42,9 +43,10 @@ export async function videoLoader({ params }: LoaderFunctionArgs) {
   if (!params.videoId) {
     throw new Error('No video ID provided');
   }
-  const video = await queryClient.ensureQueryData(
-    requestVideoRetrieveQuery(params.requestId, params.videoId),
-  );
+  const video = await queryClient.query({
+    ...requestVideoRetrieveQuery(params.requestId, params.videoId),
+    staleTime: 'static',
+  });
   return {
     requestId: params.requestId,
     videoId: params.videoId,

@@ -12,7 +12,10 @@ export async function loader({ params }: LoaderFunctionArgs) {
   if (!params.requestId) {
     throw new Error('No request ID provided');
   }
-  return queryClient.ensureQueryData(requestVideosListQuery(params.requestId));
+  return queryClient.query({
+    ...requestVideosListQuery(params.requestId),
+    staleTime: 'static',
+  });
 }
 
 const VideosListPage = () => {
