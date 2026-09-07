@@ -1,9 +1,12 @@
+from unittest.mock import patch
+
 import pytest
 from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 from model_bakery import baker
 
-from common.models import User
+from common.models import Ban, User
+from tests.helpers.users_test_utils import create_user
 
 
 @pytest.mark.django_db
@@ -78,3 +81,21 @@ class TestUserGroupNames:
 
         user.groups.clear()
         assert user.group_names == frozenset()
+
+
+@pytest.mark.django_db
+class TestBanSave:
+    def test_a_ban_is_rolled_back_when_deactivating_the_receiver_fails(self):
+        creator = create_user(username="banning_admin", is_admin=True)
+        receiver = create_user(username="to_ban", groups=["Gyártásvezető"])
+
+        # post_save runs after the insert, so everything it touches has to go
+        # with the ban when it blows up.
+        with patch.object(User, "save", side_effect=ValidationError("Nope.")):
+            with pytest.raises(ValidationError):
+                Ban.objects.create(receiver=receiver, creator=creator)
+
+        assert not Ban.objects.filter(receiver=receiver).exists()
+        receiver.refresh_from_db()
+        assert receiver.is_active
+        assert set(receiver.groups.values_list("name", flat=True)) == {"Gyártásvezető"}

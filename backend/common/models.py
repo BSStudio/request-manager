@@ -7,7 +7,7 @@ from django.contrib.auth.models import AbstractUser, Group, Permission
 from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django.db import models
+from django.db import models, transaction
 from django.db.models import JSONField
 from django.db.models.functions import Lower
 from django.utils.functional import cached_property
@@ -212,7 +212,10 @@ class Ban(models.Model):
 
     def save(self, *args, **kwargs):
         self.full_clean()
-        return super().save(*args, **kwargs)
+        # Django sends post_save outside of any transaction, so a failure while
+        # it deactivates the receiver would otherwise leave the ban behind.
+        with transaction.atomic():
+            return super().save(*args, **kwargs)
 
 
 class AbstractComment(models.Model):
