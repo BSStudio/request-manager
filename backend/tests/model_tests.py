@@ -1,4 +1,5 @@
 import pytest
+from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 from model_bakery import baker
 
@@ -41,3 +42,21 @@ class TestUserSave:
     def test_blank_emails_are_allowed_for_several_users(self):
         User.objects.create_user(username="first", email="")
         User.objects.create_user(username="second", email="")  # Should not raise
+
+
+@pytest.mark.django_db
+class TestUserGroupNames:
+    def test_group_names_follows_every_group_change(self):
+        user = baker.make(User)
+        group = Group.objects.create(name="Testers")
+        other_group = Group.objects.create(name="Reviewers")
+        assert user.group_names == frozenset()
+
+        user.groups.add(group)
+        assert user.group_names == frozenset({"Testers"})
+
+        user.groups.set([other_group])
+        assert user.group_names == frozenset({"Reviewers"})
+
+        user.groups.clear()
+        assert user.group_names == frozenset()
