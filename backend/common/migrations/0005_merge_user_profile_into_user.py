@@ -10,10 +10,17 @@ import common.models
 def copy_profiles_to_users(apps, schema_editor):
     User = apps.get_model("common", "User")
     UserProfile = apps.get_model("common", "UserProfile")
-    for profile in UserProfile.objects.all().iterator():
-        User.objects.filter(pk=profile.user_id).update(
-            avatar=profile.avatar, phone_number=profile.phone_number
-        )
+    User.objects.bulk_update(
+        (
+            User(
+                pk=profile.user_id,
+                avatar=profile.avatar,
+                phone_number=profile.phone_number,
+            )
+            for profile in UserProfile.objects.all().iterator()
+        ),
+        ["avatar", "phone_number"],
+    )
 
 
 def copy_users_to_profiles(apps, schema_editor):

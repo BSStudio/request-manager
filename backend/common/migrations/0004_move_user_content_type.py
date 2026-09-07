@@ -1,3 +1,4 @@
+from django.contrib.contenttypes.models import ContentType as LiveContentType
 from django.db import migrations
 
 
@@ -14,7 +15,9 @@ def move_user_content_type(apps, schema_editor):
     ContentType.objects.filter(app_label="auth", model="user").update(
         app_label="common"
     )
-    ContentType.objects.clear_cache()
+    # The historical manager carries its own empty cache; the one the
+    # post-migrate handlers read is on the real model.
+    LiveContentType.objects.clear_cache()
 
 
 def restore_user_content_type(apps, schema_editor):
@@ -24,7 +27,7 @@ def restore_user_content_type(apps, schema_editor):
     ContentType.objects.filter(app_label="common", model="user").update(
         app_label="auth"
     )
-    ContentType.objects.clear_cache()
+    LiveContentType.objects.clear_cache()
 
 
 class Migration(migrations.Migration):
