@@ -64,6 +64,24 @@ class Command(BaseCommand):
                 )
                 continue
 
+            # These columns are NOT NULL, so the entry cannot be written.
+            # Report it and let it be fixed in the directory.
+            missing_attributes = [
+                attribute
+                for attribute in ("first_name", "last_name", "mobile")
+                if not result["attributes"].get(attribute)
+            ]
+            if missing_attributes:
+                logger.exception(
+                    "User %s is missing attributes in the directory: %s.",
+                    result["username"],
+                    ", ".join(missing_attributes),
+                )
+                # Counted as found so that a directory problem cannot demote
+                # somebody who really is staff.
+                users_found.append(result["username"])
+                continue
+
             user, created = User.objects.get_or_create(
                 username=result["username"],
                 defaults={"is_staff": True, "password": make_password(None)},
