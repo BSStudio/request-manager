@@ -1,4 +1,5 @@
 from types import SimpleNamespace
+from unittest.mock import patch
 
 import pytest
 from django.contrib.auth.models import AnonymousUser
@@ -120,14 +121,33 @@ def test_add_phone_number_keeps_an_existing_number():
 def test_set_groups_and_permissions_skips_the_update_when_groups_match():
     user = create_user(groups=["Gyártásvezető"])
 
-    set_groups_and_permissions_for_staff(
-        FakeBackend("bss-login"), {"groups": ["Gyártásvezető"]}, user
-    )
+    with patch.object(type(user.groups), "set") as set_groups:
+        set_groups_and_permissions_for_staff(
+            FakeBackend("bss-login"), {"groups": ["Gyártásvezető"]}, user
+        )
 
+    set_groups.assert_not_called()
     user.refresh_from_db()
     assert user.is_staff
     assert not user.is_superuser
     assert set(user.groups.values_list("name", flat=True)) == {"Gyártásvezető"}
+
+
+@pytest.mark.django_db
+def test_set_groups_and_permissions_replaces_the_groups_when_they_differ():
+    user = create_user(groups=["Gyártásvezető"])
+    assert user.group_names == frozenset({"Gyártásvezető"})
+
+    set_groups_and_permissions_for_staff(
+        FakeBackend("bss-login"), {"groups": ["Riporter", "Admin"]}, user
+    )
+
+    assert user.group_names == frozenset({"Riporter"})
+    user.refresh_from_db()
+    assert user.is_staff
+    assert user.is_superuser  # Admin is the superuser group
+    # Admin is excluded from mirroring, so it does not become a group
+    assert set(user.groups.values_list("name", flat=True)) == {"Riporter"}
 
 
 @pytest.mark.django_db
