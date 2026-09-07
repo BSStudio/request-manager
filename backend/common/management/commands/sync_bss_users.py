@@ -44,9 +44,10 @@ class Command(BaseCommand):
             if User.objects.filter(
                 username=result["username"], is_staff=False
             ).exists():
-                logger.exception(
+                logger.error(
                     "User with username %s already exists as non-staff.",
                     result["username"],
+                    stack_info=True,
                 )
                 continue
 
@@ -57,10 +58,11 @@ class Command(BaseCommand):
                 .exclude(username=result["username"])
                 .exists()
             ):
-                logger.exception(
+                logger.error(
                     "E-mail address %s is already assigned to a different user (sync user: %s).",
                     result["email"],
                     result["username"],
+                    stack_info=True,
                 )
                 continue
 
@@ -72,10 +74,11 @@ class Command(BaseCommand):
                 if not result["attributes"].get(attribute)
             ]
             if missing_attributes:
-                logger.exception(
+                logger.error(
                     "User %s is missing attributes in the directory: %s.",
                     result["username"],
                     ", ".join(missing_attributes),
+                    stack_info=True,
                 )
                 # Counted as found so that a directory problem cannot demote
                 # somebody who really is staff.

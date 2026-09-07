@@ -73,3 +73,27 @@ def test_sync_does_not_demote_a_user_with_missing_attributes():
 
     user.refresh_from_db()
     assert user.is_staff
+
+
+@pytest.mark.django_db
+@responses.activate
+def test_sync_reports_conflicts_without_a_fabricated_traceback(caplog):
+    create_user(username="taken_username")
+    email_owner = create_user(username="email_owner")
+    email_owner.email = "conflicting@example.com"
+    email_owner.save()
+
+    mock_directory(
+        directory_user("taken_username", COMPLETE_ATTRIBUTES),
+        directory_user("conflicting", COMPLETE_ATTRIBUTES),
+        directory_user("no_attributes", {}),
+    )
+
+    with caplog.at_level(logging.ERROR):
+        call_command("sync_bss_users")
+
+    assert len(caplog.records) == 3
+    # These reach Sentry as alerts. stack_info keeps the stack trace that
+    # logger.exception used to provide, without its "NoneType: None" traceback.
+    assert all(record.exc_info is None for record in caplog.records)
+    assert all(record.stack_info for record in caplog.records)
