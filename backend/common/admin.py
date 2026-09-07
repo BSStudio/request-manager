@@ -2,6 +2,7 @@ import logging
 
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 
 from common.models import Ban, User
@@ -32,8 +33,8 @@ class UserAdmin(BaseUserAdmin):
         for user in queryset:
             try:
                 Ban.objects.create(receiver=user, creator=request.user)
-            except IntegrityError:
-                logger.warning("User %s is already banned, skipping.", user.username)
+            except (ValidationError, IntegrityError) as error:
+                logger.warning("Skipping ban for %s: %s", user.username, error)
                 continue
         self.message_user(request, "Successfully banned selected users.")
 
