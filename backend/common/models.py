@@ -138,8 +138,12 @@ class User(AbstractUser):
         )
         # Constraints are validated separately: the exclude list above covers
         # e-mail, which would skip the unique constraint and let it surface as
-        # an IntegrityError instead.
-        self.validate_constraints()
+        # an IntegrityError instead. The e-mail address is the only field the
+        # constraints touch, so saves that leave it alone (the last_login write
+        # on every login) do not pay for the extra query.
+        update_fields = kwargs.get("update_fields")
+        if update_fields is None or "email" in update_fields:
+            self.validate_constraints()
         return super().save(*args, **kwargs)
 
     @property

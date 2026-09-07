@@ -43,6 +43,24 @@ class TestUserSave:
         User.objects.create_user(username="first", email="")
         User.objects.create_user(username="second", email="")  # Should not raise
 
+    def test_a_save_that_leaves_the_email_alone_skips_the_constraint_query(
+        self, django_assert_num_queries
+    ):
+        user = User.objects.create_user(username="first", email="first@example.com")
+
+        # Only the write. update_last_login saves this way on every single
+        # login, and the e-mail constraint has nothing to check there.
+        with django_assert_num_queries(1):
+            user.save(update_fields=["last_login"])
+
+    def test_a_duplicate_email_is_still_rejected_when_only_the_email_is_saved(self):
+        User.objects.create_user(username="first", email="Duplicate@example.com")
+        second = User.objects.create_user(username="second")
+
+        second.email = "duplicate@example.com"
+        with pytest.raises(ValidationError, match="E-mail address already in use."):
+            second.save(update_fields=["email"])
+
 
 @pytest.mark.django_db
 class TestUserGroupNames:
