@@ -1,3 +1,5 @@
+from functools import cache
+
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
@@ -130,11 +132,7 @@ class User(AbstractUser):
 
     def save(self, *args, **kwargs):
         self.full_clean(
-            exclude=[
-                field.name
-                for field in self._meta.fields
-                if field.name not in self.VALIDATED_ON_SAVE
-            ],
+            exclude=fields_excluded_from_clean(),
             validate_unique=False,
             validate_constraints=False,
         )
@@ -181,6 +179,15 @@ class User(AbstractUser):
 
     def get_full_name_eastern_order(self) -> str:
         return f"{self.last_name} {self.first_name}".strip()
+
+
+@cache
+def fields_excluded_from_clean() -> list[str]:
+    return [
+        field.name
+        for field in User._meta.fields
+        if field.name not in User.VALIDATED_ON_SAVE
+    ]
 
 
 class Ban(models.Model):

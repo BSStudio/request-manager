@@ -28,8 +28,6 @@ def admin_user(settings):
     group = Group.objects.get_or_create(name=settings.ADMIN_GROUP)[0]
     user.groups.add(group)
 
-    user.save()
-
     user.phone_number = "+36509999999"
     user.save()
 
@@ -81,7 +79,6 @@ def service_account(settings):
 
     grp = Group.objects.get_or_create(name=settings.SERVICE_ACCOUNTS_GROUP)[0]
     user.groups.add(grp)
-    user.save()
 
     user.phone_number = "+36509999999"
     user.save()

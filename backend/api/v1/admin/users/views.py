@@ -55,7 +55,6 @@ class UserAdminViewSet(
         User.objects.prefetch_related("groups")
         .annotate(full_name=Concat("last_name", Value(" "), "first_name"))
         .all()
-        .cache()
     )
     search_fields = ["first_name", "last_name"]
 
