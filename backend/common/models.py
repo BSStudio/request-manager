@@ -153,6 +153,8 @@ class User(AbstractUser):
     @cached_property
     def group_names(self) -> frozenset[str]:
         # groups.all() rather than a filtered exists(): prefetch and cacheops apply.
+        # Only user.groups changes refresh this: a group.user_set one cannot reach
+        # the instance holding the cache.
         return frozenset(group.name for group in self.groups.all())
 
     def invalidate_group_names(self) -> None:

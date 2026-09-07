@@ -28,10 +28,12 @@ def admin_request(user):
 
 
 def ban_users(admin, usernames):
+    request = admin_request(admin)
     UserAdmin(User, AdminSite()).ban_selected_users(
-        admin_request(admin),
+        request,
         User.objects.filter(username__in=usernames).order_by("username"),
     )
+    return [message.message for message in request._messages]
 
 
 @pytest.mark.django_db
@@ -40,11 +42,12 @@ def test_ban_selected_users_skips_an_already_banned_user():
     create_user(username="already_banned", banned=True)
     create_user(username="to_ban")
 
-    ban_users(admin, ["already_banned", "to_ban"])
+    reported = ban_users(admin, ["already_banned", "to_ban"])
 
     # The already banned user is processed first, so the second one proves that
     # the action did not stop there.
     assert Ban.objects.filter(receiver__username="to_ban").exists()
+    assert reported == ["Banned 1 user(s), skipped 1: already_banned."]
 
 
 @pytest.mark.django_db
@@ -52,10 +55,19 @@ def test_ban_selected_users_skips_a_self_ban():
     admin = create_user(username="admin_banning_himself", is_admin=True)
     create_user(username="to_ban")
 
-    ban_users(admin, ["admin_banning_himself", "to_ban"])
+    reported = ban_users(admin, ["admin_banning_himself", "to_ban"])
 
     assert not Ban.objects.filter(receiver=admin).exists()
     assert Ban.objects.filter(receiver__username="to_ban").exists()
+    assert reported == ["Banned 1 user(s), skipped 1: admin_banning_himself."]
+
+
+@pytest.mark.django_db
+def test_ban_selected_users_reports_a_run_without_skips():
+    admin = create_user(username="banning_admin", is_admin=True)
+    create_user(username="to_ban")
+
+    assert ban_users(admin, ["to_ban"]) == ["Successfully banned 1 user(s)."]
 
 
 @pytest.mark.django_db

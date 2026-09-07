@@ -1,6 +1,6 @@
 import logging
 
-from django.contrib import admin
+from django.contrib import admin, messages
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
@@ -30,13 +30,26 @@ class UserAdmin(BaseUserAdmin):
     )
 
     def ban_selected_users(self, request, queryset):
+        banned = 0
+        skipped = []
         for user in queryset:
             try:
                 Ban.objects.create(receiver=user, creator=request.user)
             except (ValidationError, IntegrityError) as error:
                 logger.warning("Skipping ban for %s: %s", user.username, error)
+                skipped.append(user.username)
                 continue
-        self.message_user(request, "Successfully banned selected users.")
+            banned += 1
+
+        if skipped:
+            self.message_user(
+                request,
+                f"Banned {banned} user(s), skipped {len(skipped)}: "
+                f"{', '.join(skipped)}.",
+                messages.WARNING,
+            )
+        else:
+            self.message_user(request, f"Successfully banned {banned} user(s).")
 
 
 @admin.register(Ban)
