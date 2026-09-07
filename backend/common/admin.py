@@ -29,6 +29,10 @@ class UserAdmin(BaseUserAdmin):
         "is_superuser",
     )
 
+    def get_queryset(self, request):
+        # is_admin in list_display reads group_names on every staff row.
+        return super().get_queryset(request).prefetch_related("groups")
+
     def ban_selected_users(self, request, queryset):
         banned = 0
         skipped = []

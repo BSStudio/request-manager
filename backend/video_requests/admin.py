@@ -1,3 +1,5 @@
+from functools import cache
+
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
 from django.contrib.auth import get_user_model
@@ -10,12 +12,15 @@ from simple_history.admin import SimpleHistoryAdmin
 from video_requests.models import Comment, CrewMember, Rating, Request, Todo, Video
 
 
-def user_change_url(user_id):
+@cache
+def user_change_url_name():
     # Built from the model so that swapping AUTH_USER_MODEL cannot break the link.
     options = get_user_model()._meta
-    return reverse(
-        f"admin:{options.app_label}_{options.model_name}_change", args=(user_id,)
-    )
+    return f"admin:{options.app_label}_{options.model_name}_change"
+
+
+def user_change_url(user_id):
+    return reverse(user_change_url_name(), args=(user_id,))
 
 
 @admin.register(Request)

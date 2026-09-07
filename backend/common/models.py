@@ -99,7 +99,8 @@ class User(AbstractUser):
     phone_number = PhoneNumberField(blank=True)
 
     # Validated on every save, like UserProfile.save() did. The inherited fields
-    # stay out: username and e-mail arrive unchecked from the identity providers.
+    # are not: username and e-mail arrive unchecked from the identity providers.
+    # Model.clean() still normalises both.
     VALIDATED_ON_SAVE = ("avatar", "phone_number")
 
     class Roles(models.TextChoices):
@@ -163,7 +164,7 @@ class User(AbstractUser):
     @property
     def is_admin(self) -> bool:
         return self.is_staff and (
-            settings.ADMIN_GROUP in self.group_names or self.is_superuser
+            self.is_superuser or settings.ADMIN_GROUP in self.group_names
         )
 
     @property
