@@ -12,7 +12,7 @@ import { Tag } from 'primereact/tag';
 import { Tooltip } from 'primereact/tooltip';
 import { classNames } from 'primereact/utils';
 import type { IconType } from 'primereact/utils';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import type { Control } from 'react-hook-form';
 
 import {
@@ -283,10 +283,11 @@ const CommentCardEdit = ({
   text,
 }: CommentCardProps) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const { control, handleSubmit, setError, watch } = useForm<IComment>({
+  const { control, handleSubmit, setError } = useForm<IComment>({
     defaultValues: { internal: !!isInternal, text: text },
     shouldFocusError: false,
   });
+  const isInternalWatched = useWatch({ control, name: 'internal' });
   const { mutateAsync } = useMutation(
     requestCommentUpdateMutation(requestId, commentId),
   );
@@ -321,7 +322,7 @@ const CommentCardEdit = ({
   };
 
   return (
-    <CommentCardWrapper isInternal={watch('internal')}>
+    <CommentCardWrapper isInternal={isInternalWatched}>
       <CommentCardHeader
         authorName={authorName}
         avatarUrl={avatarUrl}
@@ -398,10 +399,11 @@ const CommentCardNew = ({
   requestId,
 }: CommentCardCreateProps) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const { control, handleSubmit, reset, setError, watch } = useForm<IComment>({
+  const { control, handleSubmit, reset, setError } = useForm<IComment>({
     defaultValues: { internal: false, text: '' },
     shouldFocusError: false,
   });
+  const isInternalWatched = useWatch({ control, name: 'internal' });
   const { mutateAsync } = useMutation(requestCommentCreateMutation(requestId));
   const queryClient = useQueryClient();
 
@@ -433,7 +435,7 @@ const CommentCardNew = ({
   };
 
   return (
-    <CommentCardWrapper isInternal={watch('internal')} isLastItem>
+    <CommentCardWrapper isInternal={isInternalWatched} isLastItem>
       <div className="grid pb-2">
         <div className="align-items-center col-6 flex">
           <Avatar

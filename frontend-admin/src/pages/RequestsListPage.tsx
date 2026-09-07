@@ -15,7 +15,10 @@ import {
 import { queryClient } from 'router';
 
 export async function loader() {
-  return queryClient.ensureQueryData(requestsListQuery(getLatestSemester()));
+  return queryClient.query({
+    ...requestsListQuery(getLatestSemester()),
+    staleTime: 'static',
+  });
 }
 
 const RequestsListPage = () => {

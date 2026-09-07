@@ -1,10 +1,7 @@
 import { forwardRef, useEffect, useState } from 'react';
 
-import {
-  FetchQueryOptions,
-  useMutation,
-  useQueryClient,
-} from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import type { QueryExecuteOptions } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { Button } from 'primereact/button';
 import { ConfirmPopup } from 'primereact/confirmpopup';
@@ -68,7 +65,8 @@ const TodoDialog = forwardRef<
   );
 
   useEffect(() => {
-    let query: FetchQueryOptions<TodoAdminListRetrieve> | undefined = undefined;
+    let query: QueryExecuteOptions<TodoAdminListRetrieve> | undefined =
+      undefined;
 
     if (visible) {
       const defaultValues: ITodo = {
@@ -83,7 +81,7 @@ const TodoDialog = forwardRef<
         query = todoRetrieveQuery(todoId);
 
         queryClient
-          .fetchQuery(query)
+          .query(query)
           .then((data) => {
             setLoading(false);
             reset({ ...data });

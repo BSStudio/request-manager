@@ -66,7 +66,7 @@ class CommonTestCase(TestCase):
         self.assertIn("Cache(alias='default')", response.data)
         self.assertIn("Database(alias='default')", response.data)
         self.assertIn(
-            "Mail(backend='django.core.mail.backends.dummy.EmailBackend')",
+            "Mail(alias='default')",
             response.data,
         )
         self.assertIn("Storage(alias='default')", response.data)
@@ -85,7 +85,7 @@ class CommonTestCase(TestCase):
             self.assertIn("Cache(alias='default')", out.getvalue())
             self.assertIn("Database(alias='default')", out.getvalue())
             self.assertIn(
-                "Mail(backend='django.core.mail.backends.dummy.EmailBackend')",
+                "Mail(alias='default')",
                 out.getvalue(),
             )
             self.assertIn("Storage(alias='default')", out.getvalue())
