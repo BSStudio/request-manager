@@ -451,6 +451,10 @@ class EmailSendingTestCase(APITestCase):
         self.assertEqual(
             mail.outbox[1].subject, f"{request.title} | Hozzászólás érkezett"
         )
+        # Both templates show the commenter's avatar
+        avatar_url = self.staff_user.avatar_url
+        self.assertIn(avatar_url, mail.outbox[0].alternatives[0].content)
+        self.assertIn(avatar_url, mail.outbox[1].alternatives[0].content)
 
     def test_new_comment_email_sent_to_crew_admin_endpoint_internal(self):
         # Setup data - Create a Request, add Crew members and Responsible
