@@ -7,6 +7,7 @@ from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from social_core.exceptions import NotAllowedToDisconnect
 from social_django.models import DjangoStorage, UserSocialAuth
 
+from common.models import User
 from common.social_core.pipeline import (
     add_phone_number_to_profile,
     allowed_to_disconnect,
@@ -249,3 +250,19 @@ def test_delete_avatar_falls_back_to_another_provider_without_a_gravatar():
         "provider": "google-oauth2",
         "google-oauth2": "https://example.com/b.png",
     }
+
+
+@pytest.mark.django_db
+def test_delete_avatar_clears_a_provider_pointing_at_a_blank_image():
+    user = create_user()
+    # A blank image is not a valid URI, so it can only be written past the
+    # model's validation, the way a legacy row would have been.
+    User.objects.filter(pk=user.pk).update(
+        avatar={"provider": "microsoft-graph", "microsoft-graph": ""}
+    )
+    user.refresh_from_db()
+
+    delete_avatar(anonymous_strategy(), user, "microsoft-graph", DjangoStorage.user)
+
+    user.refresh_from_db()
+    assert user.avatar == {}
