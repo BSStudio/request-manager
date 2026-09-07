@@ -131,6 +131,13 @@ class User(AbstractUser):
                 {"avatar": [_("Avatar does not exist for this provider.")]}
             )
 
+    @classmethod
+    def from_db(cls, db, field_names, values):
+        instance = super().from_db(db, field_names, values)
+        if "email" in field_names:
+            instance._loaded_email = instance.email
+        return instance
+
     def save(self, *args, **kwargs):
         self.full_clean(
             exclude=fields_excluded_from_clean(),
@@ -139,13 +146,14 @@ class User(AbstractUser):
         )
         # Constraints are validated separately: the exclude list above covers
         # e-mail, which would skip the unique constraint and let it surface as
-        # an IntegrityError instead. The e-mail address is the only field the
-        # constraints touch, so saves that leave it alone (the last_login write
-        # on every login) do not pay for the extra query.
-        update_fields = kwargs.get("update_fields")
-        if update_fields is None or "email" in update_fields:
+        # an IntegrityError instead. The e-mail address is the only field they
+        # touch, so only a save that changes it pays for the query. An unset
+        # _loaded_email means an insert or a deferred column: validate.
+        if self.email != getattr(self, "_loaded_email", None):
             self.validate_constraints()
-        return super().save(*args, **kwargs)
+        result = super().save(*args, **kwargs)
+        self._loaded_email = self.email
+        return result
 
     @property
     def avatar_url(self) -> str:
