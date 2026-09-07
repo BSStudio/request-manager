@@ -28,3 +28,16 @@ class TestUserClean:
             "gravatar": "https://example.com/avatar.png",
         }
         user.clean()  # Should not raise
+
+
+@pytest.mark.django_db
+class TestUserSave:
+    def test_duplicate_email_raises_a_validation_error(self):
+        User.objects.create_user(username="first", email="Duplicate@example.com")
+
+        with pytest.raises(ValidationError, match="E-mail address already in use."):
+            User.objects.create_user(username="second", email="duplicate@example.com")
+
+    def test_blank_emails_are_allowed_for_several_users(self):
+        User.objects.create_user(username="first", email="")
+        User.objects.create_user(username="second", email="")  # Should not raise

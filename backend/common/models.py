@@ -136,7 +136,12 @@ class User(AbstractUser):
                 if field.name not in self.VALIDATED_ON_SAVE
             ],
             validate_unique=False,
+            validate_constraints=False,
         )
+        # Constraints are validated separately: the exclude list above covers
+        # e-mail, which would skip the unique constraint and let it surface as
+        # an IntegrityError instead.
+        self.validate_constraints()
         return super().save(*args, **kwargs)
 
     @property
