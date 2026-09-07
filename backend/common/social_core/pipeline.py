@@ -265,5 +265,16 @@ def allowed_to_disconnect(
 def delete_avatar(
     strategy, user, name, user_storage, association_id=None, *args, **kwargs
 ):
-    if user.avatar.pop(name, None):
-        user.save()
+    if not user.avatar.pop(name, None):
+        return
+
+    if user.avatar.get("provider") == name:
+        remaining = sorted(key for key in user.avatar if key != "provider")
+        if "gravatar" in remaining:
+            user.avatar["provider"] = "gravatar"
+        elif remaining:
+            user.avatar["provider"] = remaining[0]
+        else:
+            user.avatar = {}
+
+    user.save()

@@ -176,3 +176,56 @@ def test_delete_avatar_is_a_no_op_without_an_image_for_the_provider():
         "provider": "gravatar",
         "gravatar": "https://example.com/a.png",
     }
+
+
+@pytest.mark.django_db
+def test_delete_avatar_hands_the_provider_slot_to_a_remaining_image():
+    user = create_user()
+    user.avatar = {
+        "provider": "microsoft-graph",
+        "microsoft-graph": "https://example.com/a.png",
+        "gravatar": "https://example.com/b.png",
+    }
+    user.save()
+
+    delete_avatar(anonymous_strategy(), user, "microsoft-graph", DjangoStorage.user)
+
+    user.refresh_from_db()
+    assert user.avatar == {
+        "provider": "gravatar",
+        "gravatar": "https://example.com/b.png",
+    }
+
+
+@pytest.mark.django_db
+def test_delete_avatar_clears_the_avatar_when_the_last_image_goes():
+    user = create_user()
+    user.avatar = {
+        "provider": "microsoft-graph",
+        "microsoft-graph": "https://example.com/a.png",
+    }
+    user.save()
+
+    delete_avatar(anonymous_strategy(), user, "microsoft-graph", DjangoStorage.user)
+
+    user.refresh_from_db()
+    assert user.avatar == {}
+
+
+@pytest.mark.django_db
+def test_delete_avatar_falls_back_to_another_provider_without_a_gravatar():
+    user = create_user()
+    user.avatar = {
+        "provider": "microsoft-graph",
+        "microsoft-graph": "https://example.com/a.png",
+        "google-oauth2": "https://example.com/b.png",
+    }
+    user.save()
+
+    delete_avatar(anonymous_strategy(), user, "microsoft-graph", DjangoStorage.user)
+
+    user.refresh_from_db()
+    assert user.avatar == {
+        "provider": "google-oauth2",
+        "google-oauth2": "https://example.com/b.png",
+    }
