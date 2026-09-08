@@ -33,6 +33,10 @@ class UserAdmin(BaseUserAdmin):
         # is_admin in list_display reads group_names on every staff row.
         return super().get_queryset(request).prefetch_related("groups")
 
+    @admin.display(boolean=True, description="Is admin")
+    def is_admin(self, obj):
+        return obj.is_admin
+
     def ban_selected_users(self, request, queryset):
         banned = 0
         skipped = []
