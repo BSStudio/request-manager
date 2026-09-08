@@ -39,3 +39,25 @@ def service_account():
         last_name="Account",
         is_service_account=True,
     )
+
+
+@pytest.fixture
+def requester():
+    """Somebody outside the studio who asked us to film something."""
+    return make_user(username="requester", first_name="Requester")
+
+
+@pytest.fixture
+def editor_in_chief():
+    """Copied in on everything the crew is told; the group name is load-bearing."""
+    return make_user(is_staff=True, groups=("Főszerkesztő",))
+
+
+@pytest.fixture
+def production_manager():
+    return make_user(is_staff=True, groups=("Gyártásvezető",))
+
+
+@pytest.fixture
+def pr_responsible():
+    return make_user(is_staff=True, groups=("PR felelős",))

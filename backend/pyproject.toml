@@ -41,11 +41,11 @@ ignore_errors = true
 show_missing = true
 skip_covered = true
 omit = [
+    "conftest.py",
     "core/*",
     "tests/*",
     "*/migrations/*",
     "*/admin.py",
-    "*/tests.py",
     "manage.py",
 ]
 exclude_lines = [
@@ -110,4 +110,7 @@ typing_extensions = "4.16.0" # TODO: Remove when social-core no longer supports 
 [tool.pytest]
 addopts = ["--cov", "--cov-report=html", "--cov-report=term", "--cov-report=xml", "-n=auto"]
 DJANGO_SETTINGS_MODULE = "core.settings.test"
-python_files = ["tests.py", "test_*.py", "*_tests.py"]
+python_files = ["test_*.py", "*_tests.py"]
+markers = [
+    "emails: renders a real e-mail; --save-emails writes these to logs/emails.",
+]
