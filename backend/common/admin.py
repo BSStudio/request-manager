@@ -4,6 +4,8 @@ from django.contrib import admin, messages
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.core.exceptions import ValidationError
 from django.db import IntegrityError
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ngettext
 
 from common.models import Ban, User
 
@@ -16,7 +18,7 @@ class UserAdmin(BaseUserAdmin):
         "ban_selected_users",
     ]
     fieldsets = BaseUserAdmin.fieldsets + (
-        ("Profile", {"fields": ("phone_number", "avatar")}),
+        (_("Profile"), {"fields": ("phone_number", "avatar")}),
     )
     list_display = (
         "username",
@@ -33,10 +35,11 @@ class UserAdmin(BaseUserAdmin):
         # is_admin in list_display reads group_names on every staff row.
         return super().get_queryset(request).prefetch_related("groups")
 
-    @admin.display(boolean=True, description="Is admin")
+    @admin.display(boolean=True, description=_("Is admin"))
     def is_admin(self, obj):
         return obj.is_admin
 
+    @admin.action(description=_("Ban selected users"))
     def ban_selected_users(self, request, queryset):
         banned = 0
         skipped = []
@@ -52,12 +55,28 @@ class UserAdmin(BaseUserAdmin):
         if skipped:
             self.message_user(
                 request,
-                f"Banned {banned} user(s), skipped {len(skipped)}: "
-                f"{', '.join(skipped)}.",
+                ngettext(
+                    "Banned %(count)d user, skipped %(skipped)d: %(usernames)s.",
+                    "Banned %(count)d users, skipped %(skipped)d: %(usernames)s.",
+                    banned,
+                )
+                % {
+                    "count": banned,
+                    "skipped": len(skipped),
+                    "usernames": ", ".join(skipped),
+                },
                 messages.WARNING,
             )
         else:
-            self.message_user(request, f"Successfully banned {banned} user(s).")
+            self.message_user(
+                request,
+                ngettext(
+                    "Successfully banned %(count)d user.",
+                    "Successfully banned %(count)d users.",
+                    banned,
+                )
+                % {"count": banned},
+            )
 
 
 @admin.register(Ban)

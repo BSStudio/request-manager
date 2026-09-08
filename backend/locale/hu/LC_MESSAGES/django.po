@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: BSS Request Manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-08-07 01:42+0200\n"
+"POT-Creation-Date: 2026-09-08 11:03+0200\n"
 "PO-Revision-Date: 2023-09-07 03:30+0200\n"
 "Last-Translator: Olivér Kecskeméty <kecskemety.oliver@simonyi.bme.hu>\n"
 "Language: Hungarian\n"
@@ -26,28 +26,31 @@ msgstr "A videó még nincs megvágva."
 msgid "You have already posted a rating."
 msgstr "Már adtál le értékelést."
 
-#: .\api\v1\admin\requests\requests\serializers.py:163
+#: .\api\v1\admin\requests\requests\serializers.py:165
 msgid "Either define the requester by its id or its details but not both."
-msgstr "A felkérőt vagy az id-ja vagy adatai segítségével add meg, de ne egyszerre mindkettővel."
+msgstr ""
+"A felkérőt vagy az id-ja vagy adatai segítségével add meg, de ne egyszerre "
+"mindkettővel."
 
-#: .\api\v1\admin\requests\requests\serializers.py:174
+#: .\api\v1\admin\requests\requests\serializers.py:176
 msgid "All requester data fields must be present if one is present."
-msgstr "A felkérő minden adatát szükséges kitölteni ha bármely közülük meg van adva."
+msgstr ""
+"A felkérő minden adatát szükséges kitölteni ha bármely közülük meg van adva."
 
-#: .\api\v1\admin\users\views.py:134 .\api\v1\admin\users\views.py:146
-#: .\api\v1\admin\users\views.py:156
+#: .\api\v1\admin\users\views.py:131 .\api\v1\admin\users\views.py:143
+#: .\api\v1\admin\users\views.py:153
 msgid "Invalid filter."
 msgstr "Érvénytelen szűrő."
 
-#: .\api\v1\admin\users\views.py:163
+#: .\api\v1\admin\users\views.py:160
 msgid "Must be earlier than start_datetime_before."
 msgstr "Korábbinak kell lennie mint a start_datetime_before."
 
-#: .\api\v1\admin\users\views.py:176
+#: .\api\v1\admin\users\views.py:177
 msgid "Responsible"
 msgstr "Felelős"
 
-#: .\api\v1\admin\users\views.py:194
+#: .\api\v1\admin\users\views.py:203
 msgid "Editor"
 msgstr "Vágó"
 
@@ -55,11 +58,7 @@ msgstr "Vágó"
 msgid "Invalid provider."
 msgstr "Érvénytelen szogláltató."
 
-#: .\api\v1\me\serializers.py:46
-msgid "Avatar does not exist for this provider."
-msgstr "Nem létezik avatar ehhez a szolgáltatóhoz."
-
-#: .\api\v1\me\serializers.py:88
+#: .\api\v1\me\serializers.py:83 .\common\models.py:121
 msgid "E-mail address already in use."
 msgstr "Az e-mail cím már használatban van."
 
@@ -67,15 +66,88 @@ msgstr "Az e-mail cím már használatban van."
 msgid "The video has not been published yet."
 msgstr "A videó még nem került publikálásra."
 
-#: .\api\v1\requests\requests\serializers.py:76
+#: .\api\v1\requests\requests\serializers.py:68
 msgid "Must be later than current time."
 msgstr "Későbbinek kell lennie mint a jelenlegi idő."
 
-#: .\api\v1\requests\requests\serializers.py:86
+#: .\api\v1\requests\requests\serializers.py:78
 msgid "Please fill all data in your profile before sending a request."
-msgstr "Kérlek tölts ki minden adatot a profilodban mielőtt felkérést küldenél be."
+msgstr ""
+"Kérlek tölts ki minden adatot a profilodban mielőtt felkérést küldenél be."
 
-#: .\common\models.py:76
+#: .\common\admin.py:21
+msgid "Profile"
+msgstr "Profil"
+
+#: .\common\admin.py:38
+msgid "Is admin"
+msgstr "Adminisztrátor státusz"
+
+#: .\common\admin.py:42
+msgid "Ban selected users"
+msgstr "Kiválasztott felhasználók kitiltása"
+
+#: .\common\admin.py:59
+#, python-format
+msgid "Banned %(count)d user, skipped %(skipped)d: %(usernames)s."
+msgid_plural "Banned %(count)d users, skipped %(skipped)d: %(usernames)s."
+msgstr[0] "%(count)d felhasználó kitiltva, %(skipped)d kihagyva: %(usernames)s."
+msgstr[1] "%(count)d felhasználó kitiltva, %(skipped)d kihagyva: %(usernames)s."
+
+#: .\common\admin.py:74
+#, python-format
+msgid "Successfully banned %(count)d user."
+msgid_plural "Successfully banned %(count)d users."
+msgstr[0] "%(count)d felhasználó sikeresen kitiltva."
+msgstr[1] "%(count)d felhasználó sikeresen kitiltva."
+
+#: .\common\models.py:74
+msgid "groups"
+msgstr ""
+
+#: .\common\models.py:77
+msgid ""
+"The groups this user belongs to. A user will get all permissions granted to "
+"each of their groups."
+msgstr ""
+
+#: .\common\models.py:86
+msgid "user permissions"
+msgstr ""
+
+#: .\common\models.py:88
+msgid "Specific permissions for this user."
+msgstr ""
+
+#: .\common\models.py:94
+msgid "avatar"
+msgstr "avatar"
+
+#: .\common\models.py:100
+msgid "phone number"
+msgstr "telefonszám"
+
+#: .\common\models.py:108
+msgid "Admin"
+msgstr "Adminisztrátor"
+
+#: .\common\models.py:109
+msgid "Staff"
+msgstr "Stábtag"
+
+#: .\common\models.py:110
+msgid "User"
+msgstr "Felhasználó"
+
+#: .\common\models.py:128
+msgid "Avatar must be an object."
+msgstr "Az avatarnak objektumnak kell lennie."
+
+#: .\common\models.py:132
+msgid "Avatar does not exist for this provider."
+msgstr "Nem létezik avatar ehhez a szolgáltatóhoz."
+
+#: .\common\models.py:228
 msgid "Users cannot ban themselves."
 msgstr "A felhasználók nem tilthatják ki saját magukat."
 
@@ -83,22 +155,91 @@ msgstr "A felhasználók nem tilthatják ki saját magukat."
 msgid "Return paginated response."
 msgstr "Lapokra tördelt választ ad vissza."
 
-#: .\core\settings\base.py:237
+#: .\common\rest_framework\turnstile.py:15
+msgid "Error verifying captcha, please try again."
+msgstr "Hiba a captcha ellenőrzésekor, kérlek próbáld újra."
+
+#: .\core\settings\base.py:259
 msgid "English"
 msgstr "angol"
 
-#: .\core\settings\base.py:238
+#: .\core\settings\base.py:260
 msgid "Hungarian"
 msgstr "magyar"
 
-#: .\templates\admin\login.html:8
+#: .\templates\admin\login.html:9
 msgid "Log in"
 msgstr "Bejelentkezés"
 
-#: .\video_requests\models.py:103
+#: .\video_requests\models.py:47
+msgid "Elutasítva"
+msgstr ""
+
+#: .\video_requests\models.py:48
+msgid "Felkérés"
+msgstr ""
+
+#: .\video_requests\models.py:49
+msgid "Elvállalva"
+msgstr ""
+
+#: .\video_requests\models.py:50
+msgid "Leforgatva"
+msgstr ""
+
+#: .\video_requests\models.py:51
+msgid "Beírva"
+msgstr ""
+
+#: .\video_requests\models.py:52 .\video_requests\models.py:137
+msgid "Megvágva"
+msgstr ""
+
+#: .\video_requests\models.py:53
+msgid "Archiválva"
+msgstr ""
+
+#: .\video_requests\models.py:54 .\video_requests\models.py:140
+#: .\video_requests\models.py:209
+msgid "Lezárva"
+msgstr ""
+
+#: .\video_requests\models.py:55
+msgid "Szervezők által lemondva"
+msgstr ""
+
+#: .\video_requests\models.py:56
+msgid "Meghiúsult"
+msgstr ""
+
+#: .\video_requests\models.py:104
 msgid "Must be later than the start of the event."
 msgstr "Későbbinek kell lennie mint az esemény kezdése."
 
-#: .\video_requests\models.py:107
+#: .\video_requests\models.py:108
 msgid "Must be later than the end of the event."
 msgstr "Későbbinek kell lennie mint az esemény vége."
+
+#: .\video_requests\models.py:135
+msgid "Vágásra vár"
+msgstr ""
+
+#: .\video_requests\models.py:136
+msgid "Vágás alatt"
+msgstr ""
+
+#: .\video_requests\models.py:138
+msgid "Kikódolva"
+msgstr ""
+
+#: .\video_requests\models.py:139
+msgid "Közzétéve"
+msgstr ""
+
+#: .\video_requests\models.py:208
+msgid "Nyitva"
+msgstr ""
+
+#: .\video_requests\models.py:210
+msgid "Elvetve"
+msgstr ""

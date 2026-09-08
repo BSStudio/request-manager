@@ -91,12 +91,13 @@ class User(AbstractUser):
         db_table="auth_user_user_permissions",
     )
     avatar = JSONField(
+        verbose_name=_("avatar"),
         encoder=DjangoJSONEncoder,
         validators=[validate_avatar],
         default=dict,
         blank=True,
     )
-    phone_number = PhoneNumberField(blank=True)
+    phone_number = PhoneNumberField(verbose_name=_("phone number"), blank=True)
 
     # Validated on every save, like UserProfile.save() did. The inherited fields
     # are not: username and e-mail arrive unchecked from the identity providers.

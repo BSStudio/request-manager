@@ -47,7 +47,7 @@ def test_ban_selected_users_skips_an_already_banned_user():
     # The already banned user is processed first, so the second one proves that
     # the action did not stop there.
     assert Ban.objects.filter(receiver__username="to_ban").exists()
-    assert reported == ["Banned 1 user(s), skipped 1: already_banned."]
+    assert reported == ["Banned 1 user, skipped 1: already_banned."]
 
 
 @pytest.mark.django_db
@@ -59,7 +59,7 @@ def test_ban_selected_users_skips_a_self_ban():
 
     assert not Ban.objects.filter(receiver=admin).exists()
     assert Ban.objects.filter(receiver__username="to_ban").exists()
-    assert reported == ["Banned 1 user(s), skipped 1: admin_banning_himself."]
+    assert reported == ["Banned 1 user, skipped 1: admin_banning_himself."]
 
 
 @pytest.mark.django_db
@@ -67,7 +67,18 @@ def test_ban_selected_users_reports_a_run_without_skips():
     admin = create_user(username="banning_admin", is_admin=True)
     create_user(username="to_ban")
 
-    assert ban_users(admin, ["to_ban"]) == ["Successfully banned 1 user(s)."]
+    assert ban_users(admin, ["to_ban"]) == ["Successfully banned 1 user."]
+
+
+@pytest.mark.django_db
+def test_ban_selected_users_reports_the_plural_form():
+    admin = create_user(username="banning_admin", is_admin=True)
+    create_user(username="first_to_ban")
+    create_user(username="second_to_ban")
+
+    reported = ban_users(admin, ["first_to_ban", "second_to_ban"])
+
+    assert reported == ["Successfully banned 2 users."]
 
 
 @pytest.mark.django_db
