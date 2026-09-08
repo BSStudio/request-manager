@@ -147,12 +147,17 @@ class User(AbstractUser):
         # Constraints are validated separately: the exclude list above covers
         # e-mail, which would skip the unique constraint and let it surface as
         # an IntegrityError instead. The e-mail address is the only field they
-        # touch, so only a save that changes it pays for the query. An unset
-        # _loaded_email means an insert or a deferred column: validate.
-        if self.email != getattr(self, "_loaded_email", None):
+        # touch, so only a save that writes a changed one pays for the query.
+        # An unset _loaded_email means an insert or a deferred column: validate.
+        update_fields = kwargs.get("update_fields")
+        writes_email = update_fields is None or "email" in update_fields
+        if writes_email and self.email != getattr(self, "_loaded_email", None):
             self.validate_constraints()
         result = super().save(*args, **kwargs)
-        self._loaded_email = self.email
+        if writes_email:
+            # A save that left the column alone keeps the stored value as the
+            # baseline, so a later one still validates against the database.
+            self._loaded_email = self.email
         return result
 
     @property
