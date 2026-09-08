@@ -14,7 +14,7 @@ from rest_framework.status import (
 )
 
 from tests.api.asserts import assert_exact_fields
-from tests.api.helpers import do_login, get_response
+from tests.api.helpers import do_login, get_response, login
 from tests.api.matrix import admin_only, staff_only
 from video_requests.models import Rating, Video
 
@@ -510,16 +510,14 @@ def test_retrieve_own_rating_error(api_client, expected, request, user):
         assert_response_keys(response.data)
 
 
-@staff_only(HTTP_400_BAD_REQUEST)
+# Who may rate at all is settled by the create and update tests above.
 @pytest.mark.parametrize("method", ["PATCH", "POST", "PUT"])
 @pytest.mark.parametrize("rating_value", [-10, 10])
 def test_create_update_rating_invalid_rating(
     api_client,
-    expected,
     method,
     rating_value,
-    request,
-    user,
+    staff_user,
 ):
     data = {"rating": rating_value, "review": "Failure"}
 
@@ -528,10 +526,10 @@ def test_create_update_rating_invalid_rating(
         "video_requests.Video", request=video_request, status=Video.Statuses.DONE
     )
 
-    user = do_login(api_client, request, user)
+    login(api_client, staff_user)
 
     rating = baker.make(
-        "video_requests.Rating", author=user, rating=randint(1, 5), video=video
+        "video_requests.Rating", author=staff_user, rating=randint(1, 5), video=video
     )
 
     if method == "POST":
@@ -551,7 +549,7 @@ def test_create_update_rating_invalid_rating(
 
     response = get_response(api_client, method, url, data)
 
-    assert response.status_code == expected
+    assert response.status_code == HTTP_400_BAD_REQUEST
 
     if response.status_code == HTTP_400_BAD_REQUEST:
         if rating_value < 1:

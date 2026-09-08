@@ -18,7 +18,7 @@ from rest_framework.status import (
 
 from common.models import User
 from tests.api.asserts import assert_exact_fields
-from tests.api.helpers import do_login, get_response
+from tests.api.helpers import do_login, get_response, login
 from tests.api.matrix import admin_only, staff_only
 from video_requests.models import Comment, Video
 
@@ -138,127 +138,164 @@ def test_list_requests(api_client, expected, pagination, request, user):
             assert_list_response_keys(video_request)
 
 
-@staff_only({"PATCH": HTTP_200_OK, "POST": HTTP_201_CREATED, "PUT": HTTP_200_OK})
-@pytest.mark.parametrize(
-    "scenario",
-    [
-        "no-requester",
-        "requester-with-data-existing-user",
-        "requester-with-data-new-user",
-        "requester-with-id",
-        "with-comment",
-        "with-deadline",
-        "with-responsible",
-    ],
-)
-@pytest.mark.parametrize("method", ["PATCH", "POST", "PUT"])
-def test_create_update_request(
-    api_client, expected, method, request, request_create_data, scenario, user
-):
-    test_user = baker.make(User, is_staff=True, _fill_optional=["email"])
+ALL_METHODS = pytest.mark.parametrize("method", ["PATCH", "POST", "PUT"])
 
-    user = do_login(api_client, request, user)
 
-    data = deepcopy(request_create_data)
+@pytest.fixture
+def target_url():
+    """A create or an update URL, whichever the method under test needs."""
 
-    scenario_data = {
-        "no-requester": {},
-        "requester-with-data-existing-user": {
-            "requester_email": test_user.email,
-            "requester_first_name": "Test",
-            "requester_last_name": "User",
-            "requester_mobile": "+36509999999",
-        },
-        "requester-with-data-new-user": {
-            "requester_email": "test@example.com",
-            "requester_first_name": "Test",
-            "requester_last_name": "User",
-            "requester_mobile": "+36509999999",
-        },
-        "requester-with-id": {"requester": test_user.id},
-        "with-comment": {
-            "comment": "Vestibulum dictum nunc lacus, sit amet euismod enim tincidunt a."
-            "Proin dignissim tristique turpis vel interdum.",
-        },
-        "with-deadline": {
-            "deadline": (data["end_datetime"] + timedelta(weeks=1)).date()
-        },
-        "with-responsible": {"responsible": test_user.id},
-    }
-
-    if not scenario == "with-comment" or method == "POST":
-        data |= scenario_data[scenario]
-
-    if method == "POST":
-        url = reverse("api:v1:admin:requests:request-list")
-    else:
+    def _target_url(method):
+        if method == "POST":
+            return reverse("api:v1:admin:requests:request-list")
         video_request = baker.make("video_requests.Request")
-        url = reverse(
+        return reverse(
             "api:v1:admin:requests:request-detail", kwargs={"pk": video_request.id}
         )
 
-    response = get_response(api_client, method, url, data)
+    return _target_url
+
+
+@pytest.fixture
+def other_staff_member():
+    """Somebody to be named as requester or responsible."""
+    return baker.make(User, is_staff=True, _fill_optional=["email"])
+
+
+@pytest.fixture
+def write_request(api_client, request_create_data, target_url):
+    """Send a create or update, and hand back the response."""
+
+    def _write_request(method, **extra):
+        return get_response(
+            api_client, method, target_url(method), request_create_data | extra
+        )
+
+    return _write_request
+
+
+@staff_only({"PATCH": HTTP_200_OK, "POST": HTTP_201_CREATED, "PUT": HTTP_200_OK})
+@ALL_METHODS
+def test_create_update_request(
+    api_client, expected, method, request, user, write_request
+):
+    user = do_login(api_client, request, user)
+
+    response = write_request(method)
 
     assert response.status_code == expected[method]
 
     if is_success(response.status_code):
         assert_retrieve_response_keys(response.data)
-
+        assert response.data["comment_count"] == 0
         if method == "POST":
+            # Whoever sent it is on the hook for it, and is the requester by
+            # default.
             assert response.data["requested_by"]["id"] == user.id
-
-        if scenario == "requester-with-data-existing-user":
-            assert User.objects.filter(email__iexact=data["requester_email"]).exists()
-            assert response.data["requester"]["id"] == test_user.id
-            assert (
-                response.data["additional_data"]["requester"]["first_name"]
-                == data["requester_first_name"]
-            )
-            assert (
-                response.data["additional_data"]["requester"]["last_name"]
-                == data["requester_last_name"]
-            )
-            assert (
-                response.data["additional_data"]["requester"]["phone_number"]
-                == data["requester_mobile"]
-            )
-
-        elif scenario == "requester-with-data-new-user":
-            assert User.objects.filter(email__iexact=data["requester_email"]).exists()
-
-            new_user = User.objects.get(email=data["requester_email"])
-            assert new_user.first_name == data["requester_first_name"]
-            assert new_user.last_name == data["requester_last_name"]
-            assert new_user.phone_number == data["requester_mobile"]
-            assert response.data["requester"]["id"] == new_user.id
-
-        elif scenario == "requester-with-id":
-            assert response.data["requester"]["id"] == test_user.id
-
-        elif scenario == "with-responsible":
-            assert response.data["responsible"]["id"] == test_user.id
-
-        elif method == "POST":
             assert response.data["requester"]["id"] == user.id
 
-        if scenario == "with-comment" and method == "POST":
-            assert response.data["comment_count"] == 1
-            assert Comment.objects.filter(request=response.data["id"]).exists()
 
-            comment = Comment.objects.get(request=response.data["id"])
-            assert comment.author == user
-            assert comment.text == data["comment"]
+class TestNamingSomebodyElseAsRequester:
+    """The dashboard files requests on behalf of the people who asked for them."""
 
-        else:
-            assert response.data["comment_count"] == 0
+    @pytest.fixture(autouse=True)
+    def as_staff(self, api_client, staff_user):
+        login(api_client, staff_user)
 
-        if scenario == "with-deadline":
-            assert response.data["deadline"] == str(data["deadline"])
+    @ALL_METHODS
+    def test_an_account_we_know_is_matched_on_its_email(
+        self, method, other_staff_member, write_request
+    ):
+        response = write_request(
+            method,
+            requester_email=other_staff_member.email,
+            requester_first_name="Test",
+            requester_last_name="User",
+            requester_mobile="+36509999999",
+        )
 
-        else:
-            assert response.data["deadline"] == str(
-                (data["end_datetime"] + timedelta(weeks=3)).date()
-            )
+        assert is_success(response.status_code), response.data
+        assert response.data["requester"]["id"] == other_staff_member.id
+        # What they told us is kept alongside, without touching their profile.
+        assert response.data["additional_data"]["requester"] == {
+            "first_name": "Test",
+            "last_name": "User",
+            "phone_number": "+36509999999",
+        }
+
+    @ALL_METHODS
+    def test_an_address_we_do_not_know_gets_an_account(self, method, write_request):
+        response = write_request(
+            method,
+            requester_email="test@example.com",
+            requester_first_name="Test",
+            requester_last_name="User",
+            requester_mobile="+36509999999",
+        )
+
+        assert is_success(response.status_code), response.data
+        new_user = User.objects.get(email="test@example.com")
+        assert new_user.first_name == "Test"
+        assert new_user.last_name == "User"
+        assert new_user.phone_number == "+36509999999"
+        assert response.data["requester"]["id"] == new_user.id
+
+    @ALL_METHODS
+    def test_an_account_can_be_named_by_id_instead(
+        self, method, other_staff_member, write_request
+    ):
+        response = write_request(method, requester=other_staff_member.id)
+
+        assert is_success(response.status_code), response.data
+        assert response.data["requester"]["id"] == other_staff_member.id
+
+
+class TestTheRestOfTheForm:
+    @pytest.fixture(autouse=True)
+    def as_staff(self, api_client, staff_user):
+        login(api_client, staff_user)
+
+    @ALL_METHODS
+    def test_a_responsible_can_be_assigned(
+        self, method, other_staff_member, write_request
+    ):
+        response = write_request(method, responsible=other_staff_member.id)
+
+        assert is_success(response.status_code), response.data
+        assert response.data["responsible"]["id"] == other_staff_member.id
+
+    @ALL_METHODS
+    def test_a_given_deadline_is_kept_instead_of_computed(
+        self, method, request_create_data, write_request
+    ):
+        chosen = (request_create_data["end_datetime"] + timedelta(weeks=1)).date()
+
+        response = write_request(method, deadline=chosen)
+
+        assert is_success(response.status_code), response.data
+        assert response.data["deadline"] == str(chosen)
+
+    @ALL_METHODS
+    def test_no_deadline_means_three_weeks_after_the_event(
+        self, method, request_create_data, write_request
+    ):
+        response = write_request(method)
+
+        assert is_success(response.status_code), response.data
+        assert response.data["deadline"] == str(
+            (request_create_data["end_datetime"] + timedelta(weeks=3)).date()
+        )
+
+    def test_a_comment_can_be_filed_with_a_new_request(self, staff_user, write_request):
+        # Only on create: the update serializers have no comment field.
+        response = write_request("POST", comment="Lorem ipsum dolor sit amet.")
+
+        assert is_success(response.status_code), response.data
+        assert response.data["comment_count"] == 1
+
+        comment = Comment.objects.get(request=response.data["id"])
+        assert comment.author == staff_user
+        assert comment.text == "Lorem ipsum dolor sit amet."
 
 
 @staff_only(HTTP_400_BAD_REQUEST)

@@ -15,7 +15,7 @@ from social_django.models import UserSocialAuth
 
 from common.models import User
 from tests.api.asserts import assert_exact_fields
-from tests.api.helpers import do_login, get_response
+from tests.api.helpers import do_login, get_response, login
 from tests.api.matrix import any_user, staff_only
 
 pytestmark = pytest.mark.django_db
@@ -62,45 +62,43 @@ def user_data():
 
 
 @any_user(HTTP_200_OK)
-@pytest.mark.parametrize("has_groups", [True, False])
-@pytest.mark.parametrize("has_social_accounts", [True, False])
-def test_retrieve_me(
-    api_client, expected, has_groups, has_social_accounts, request, user
-):
-    user = do_login(api_client, request, user)
+def test_retrieve_me(api_client, expected, request, user):
+    do_login(api_client, request, user)
 
-    if has_groups:
-        groups = baker.make(Group, _quantity=5)
-        for group in groups:
-            user.groups.add(group)
-
-    if has_social_accounts:
-        social_accounts = baker.make(
-            UserSocialAuth, user=user, _fill_optional=True, _quantity=2
-        )
-
-    url = reverse("api:v1:me:me-detail")
-    response = api_client.get(url)
+    response = api_client.get(reverse("api:v1:me:me-detail"))
 
     assert response.status_code == expected
 
     if is_success(response.status_code):
         assert_response_keys(response.data)
 
-        if has_groups:
-            for group in groups:
-                assert group.name in response.data["groups"]
 
-        if has_social_accounts:
-            for social_account in social_accounts:
-                assert any(
-                    response_social_account["provider"] == social_account.provider
-                    for response_social_account in response.data["social_accounts"]
-                )
-                assert any(
-                    response_social_account["uid"] == social_account.uid
-                    for response_social_account in response.data["social_accounts"]
-                )
+def test_retrieve_me_lists_every_group(api_client, basic_user):
+    groups = baker.make(Group, _quantity=5)
+    for group in groups:
+        basic_user.groups.add(group)
+    login(api_client, basic_user)
+
+    response = api_client.get(reverse("api:v1:me:me-detail"))
+
+    assert is_success(response.status_code)
+    assert sorted(response.data["groups"]) == sorted(group.name for group in groups)
+
+
+def test_retrieve_me_lists_every_connected_account(api_client, basic_user):
+    social_accounts = baker.make(
+        UserSocialAuth, user=basic_user, _fill_optional=True, _quantity=2
+    )
+    login(api_client, basic_user)
+
+    response = api_client.get(reverse("api:v1:me:me-detail"))
+
+    assert is_success(response.status_code)
+    assert_response_keys(response.data)
+    assert {
+        (account["provider"], account["uid"])
+        for account in response.data["social_accounts"]
+    } == {(account.provider, account.uid) for account in social_accounts}
 
 
 @any_user(HTTP_200_OK)
@@ -126,18 +124,18 @@ def test_update_me(api_client, expected, method, request, user, user_data):
         )
 
 
-@any_user(HTTP_400_BAD_REQUEST)
+# Who may reach this endpoint at all is settled by test_update_me above.
 @pytest.mark.parametrize("data", ["email", "first_name", "last_name"])
 @pytest.mark.parametrize("value", ["", None])
 @pytest.mark.parametrize("method", ["PATCH", "PUT"])
-def test_update_me_validation(api_client, data, expected, method, request, user, value):
-    do_login(api_client, request, user)
+def test_update_me_validation(api_client, basic_user, data, method, value):
+    login(api_client, basic_user)
 
     url = reverse("api:v1:me:me-detail")
 
     response = get_response(api_client, method, url, {data: value})
 
-    assert response.status_code == expected
+    assert response.status_code == HTTP_400_BAD_REQUEST
     if response.status_code == HTTP_400_BAD_REQUEST:
         if value is None:
             assert response.data[data][0] == ErrorDetail(
@@ -230,22 +228,29 @@ def test_update_me_avatar(api_client, method, user, request):
 
 
 @staff_only(HTTP_200_OK)
+def test_me_worked_on_permissions(api_client, expected, request, user):
+    do_login(api_client, request, user)
+
+    response = api_client.get(reverse("api:v1:me:me-worked-on"))
+
+    assert response.status_code == expected
+
+
 @pytest.mark.parametrize("was_crew_member", [True, False])
 @pytest.mark.parametrize("was_editor", [True, False])
 @pytest.mark.parametrize("was_responsible", [True, False])
 def test_me_worked_on(
     api_client,
-    expected,
-    request,
+    staff_user,
     time_machine,
-    user,
     was_crew_member,
     was_editor,
     was_responsible,
 ):
     time_machine.move_to(datetime(1998, 9, 13))
 
-    user = do_login(api_client, request, user)
+    user = staff_user
+    login(api_client, user)
 
     start_datetime = make_aware(
         datetime.combine(date.fromisoformat("1998-09-13"), datetime.min.time())
@@ -347,22 +352,14 @@ def test_me_worked_on(
 
     response = api_client.get(url)
 
-    assert response.status_code == expected
-
-    if is_success(response.status_code):
-        assert len(response.data) == len(should_find)
-        for video_request in response.data:
-            assert_exact_fields(
-                video_request,
-                [
-                    "id",
-                    "position",
-                    "start_datetime",
-                    "title",
-                ],
-            )
-            assert any(
-                expected_find["id"] == video_request["id"]
-                and expected_find["position"] == video_request["position"]
-                for expected_find in should_find
-            )
+    assert is_success(response.status_code)
+    assert len(response.data) == len(should_find)
+    for video_request in response.data:
+        assert_exact_fields(
+            video_request, ["id", "position", "start_datetime", "title"]
+        )
+        assert any(
+            expected_find["id"] == video_request["id"]
+            and expected_find["position"] == video_request["position"]
+            for expected_find in should_find
+        )

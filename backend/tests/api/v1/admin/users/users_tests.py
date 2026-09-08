@@ -116,65 +116,78 @@ def test_list_users(api_client, expected, pagination, request, user):
             assert_list_response_keys(user)
 
 
+def retrieve_user(api_client, target):
+    return api_client.get(
+        reverse("api:v1:admin:users:user-detail", kwargs={"pk": target.id})
+    )
+
+
 @staff_only(HTTP_200_OK)
-@pytest.mark.parametrize("banned", [True, False])
-@pytest.mark.parametrize("has_groups", [True, False])
-@pytest.mark.parametrize("has_social_accounts", [True, False])
-def test_retrieve_user(
-    api_client, banned, expected, has_groups, has_social_accounts, request, user
-):
+def test_retrieve_user(api_client, expected, request, user):
     do_login(api_client, request, user)
 
-    user = baker.make(User, _fill_optional=True)
-
-    if banned:
-        ban = baker.make("common.Ban", receiver=user, _fill_optional=True)
-
-    if has_groups:
-        groups = baker.make(Group, _quantity=5)
-        for group in groups:
-            user.groups.add(group)
-
-    if has_social_accounts:
-        social_accounts = baker.make(
-            UserSocialAuth, user=user, _fill_optional=True, _quantity=2
-        )
-
-    url = reverse("api:v1:admin:users:user-detail", kwargs={"pk": user.id})
-    response = api_client.get(url)
+    response = retrieve_user(api_client, baker.make(User, _fill_optional=True))
 
     assert response.status_code == expected
 
     if is_success(response.status_code):
         assert_retrieve_response_keys(response.data)
 
-        if banned:
-            ban.refresh_from_db()
-            assert response.data["ban"]["created"] == localtime(ban.created).isoformat()
-            assert (
-                response.data["ban"]["creator"]["avatar_url"] == ban.creator.avatar_url
-            )
-            assert (
-                response.data["ban"]["creator"]["full_name"]
-                == ban.creator.get_full_name_eastern_order()
-            )
-            assert response.data["ban"]["creator"]["id"] == ban.creator.id
-            assert response.data["ban"]["reason"] == ban.reason
 
-        if has_groups:
-            for group in groups:
-                assert group.name in response.data["groups"]
+class TestRetrieveUserDetails:
+    """Everything hanging off a user that the dashboard shows on their page."""
 
-        if has_social_accounts:
-            for social_account in social_accounts:
-                assert any(
-                    response_social_account["provider"] == social_account.provider
-                    for response_social_account in response.data["social_accounts"]
-                )
-                assert any(
-                    response_social_account["uid"] == social_account.uid
-                    for response_social_account in response.data["social_accounts"]
-                )
+    @pytest.fixture(autouse=True)
+    def as_staff(self, api_client, staff_user):
+        login(api_client, staff_user)
+
+    @pytest.fixture
+    def target(self):
+        return baker.make(User, _fill_optional=True)
+
+    def test_a_ban_is_reported_with_who_issued_it(self, api_client, target):
+        ban = baker.make("common.Ban", receiver=target, _fill_optional=True)
+
+        response = retrieve_user(api_client, target)
+
+        assert is_success(response.status_code)
+        ban.refresh_from_db()
+        assert response.data["ban"]["created"] == localtime(ban.created).isoformat()
+        assert response.data["ban"]["reason"] == ban.reason
+        assert response.data["ban"]["creator"] == {
+            "avatar_url": ban.creator.avatar_url,
+            "full_name": ban.creator.get_full_name_eastern_order(),
+            "id": ban.creator.id,
+        }
+
+    def test_a_user_who_is_not_banned_has_no_ban(self, api_client, target):
+        response = retrieve_user(api_client, target)
+
+        assert is_success(response.status_code)
+        assert response.data["ban"] is None
+
+    def test_every_group_is_listed(self, api_client, target):
+        groups = baker.make(Group, _quantity=5)
+        for group in groups:
+            target.groups.add(group)
+
+        response = retrieve_user(api_client, target)
+
+        assert is_success(response.status_code)
+        assert sorted(response.data["groups"]) == sorted(group.name for group in groups)
+
+    def test_every_connected_account_is_listed(self, api_client, target):
+        social_accounts = baker.make(
+            UserSocialAuth, user=target, _fill_optional=True, _quantity=2
+        )
+
+        response = retrieve_user(api_client, target)
+
+        assert is_success(response.status_code)
+        assert {
+            (account["provider"], account["uid"])
+            for account in response.data["social_accounts"]
+        } == {(account.provider, account.uid) for account in social_accounts}
 
 
 @staff_only(HTTP_200_OK)
@@ -238,20 +251,19 @@ def test_retrieve_update_user_error(
     assert response.status_code == expected
 
 
-@staff_only(HTTP_400_BAD_REQUEST)
+# Who may update a user is settled by test_update_own_user and
+# test_update_other_user above.
 @pytest.mark.parametrize("data", ["email", "first_name", "last_name"])
 @pytest.mark.parametrize("value", ["", None])
 @pytest.mark.parametrize("method", ["PATCH", "PUT"])
-def test_update_user_validation(
-    api_client, data, expected, method, request, user, value
-):
-    user = do_login(api_client, request, user)
+def test_update_user_validation(api_client, data, method, staff_user, value):
+    login(api_client, staff_user)
 
-    url = reverse("api:v1:admin:users:user-detail", kwargs={"pk": user.id})
+    url = reverse("api:v1:admin:users:user-detail", kwargs={"pk": staff_user.id})
 
     response = get_response(api_client, method, url, {data: value})
 
-    assert response.status_code == expected
+    assert response.status_code == HTTP_400_BAD_REQUEST
     if response.status_code == HTTP_400_BAD_REQUEST:
         if value is None:
             assert response.data[data][0] == ErrorDetail(
@@ -444,22 +456,31 @@ def test_destroy_user_ban_error(api_client, expected, request, user):
 
 
 @staff_only(HTTP_200_OK)
+def test_user_worked_on_permissions(api_client, expected, request, user):
+    do_login(api_client, request, user)
+    target = baker.make(User, is_staff=True)
+
+    response = api_client.get(
+        reverse("api:v1:admin:users:user-worked-on", kwargs={"pk": target.id})
+    )
+
+    assert response.status_code == expected
+
+
 @pytest.mark.parametrize("was_crew_member", [True, False])
 @pytest.mark.parametrize("was_editor", [True, False])
 @pytest.mark.parametrize("was_responsible", [True, False])
 def test_user_worked_on(
     api_client,
-    expected,
-    request,
+    staff_user,
     time_machine,
-    user,
     was_crew_member,
     was_editor,
     was_responsible,
 ):
     time_machine.move_to(datetime(2023, 9, 13))
 
-    do_login(api_client, request, user)
+    login(api_client, staff_user)
 
     user = baker.make(User, _fill_optional=True)
 
@@ -563,22 +584,14 @@ def test_user_worked_on(
 
     response = api_client.get(url)
 
-    assert response.status_code == expected
-
-    if is_success(response.status_code):
-        assert len(response.data) == len(should_find)
-        for video_request in response.data:
-            assert_exact_fields(
-                video_request,
-                [
-                    "id",
-                    "position",
-                    "start_datetime",
-                    "title",
-                ],
-            )
-            assert any(
-                expected_find["id"] == video_request["id"]
-                and expected_find["position"] == video_request["position"]
-                for expected_find in should_find
-            )
+    assert is_success(response.status_code)
+    assert len(response.data) == len(should_find)
+    for video_request in response.data:
+        assert_exact_fields(
+            video_request, ["id", "position", "start_datetime", "title"]
+        )
+        assert any(
+            expected_find["id"] == video_request["id"]
+            and expected_find["position"] == video_request["position"]
+            for expected_find in should_find
+        )
