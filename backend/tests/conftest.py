@@ -6,9 +6,11 @@ the missing ids behind every 404 — stay in tests/api/conftest.py.
 """
 
 import pytest
+import responses
 from rest_framework.test import APIClient
 
 from tests.factories import make_user
+from tests.helpers.oauth2 import MockedProvider, reset_social_core_caches
 
 
 @pytest.fixture
@@ -61,3 +63,23 @@ def production_manager():
 @pytest.fixture
 def pr_responsible():
     return make_user(is_staff=True, groups=("PR felelős",))
+
+
+@pytest.fixture
+def mock_provider():
+    """Factory: stand an identity provider's OAuth2 endpoints up on ``responses``.
+
+    Requesting it intercepts outbound HTTP for the whole test, so another fixture
+    can register providers too. social_core keeps its test models in module level
+    caches, so those are emptied on both sides.
+    """
+    reset_social_core_caches()
+
+    def _mock_provider(provider):
+        mocked = MockedProvider(provider)
+        mocked.mock_endpoints()
+        return mocked
+
+    with responses.mock:
+        yield _mock_provider
+    reset_social_core_caches()

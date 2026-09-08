@@ -1,12 +1,14 @@
-from time import sleep
+"""Refreshing and blacklisting the JWT pair an OAuth2 login hands out."""
+
+from datetime import timedelta
 
 import pytest
 from django.conf import settings
-from django.contrib.auth.models import Group
+from django.utils.timezone import localtime
 from rest_framework.exceptions import ErrorDetail
 from rest_framework.reverse import reverse
 from rest_framework.status import HTTP_200_OK, HTTP_401_UNAUTHORIZED
-from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
+from rest_framework_simplejwt.tokens import RefreshToken
 
 from common.models import User
 from tests.api.helpers import login
@@ -14,59 +16,11 @@ from tests.api.helpers import login
 pytestmark = pytest.mark.django_db
 
 
-@pytest.mark.skip(reason="This needs to be moved to OAuth2 tests")
-def test_login_inactive_user(api_client, basic_user):
-    basic_user.is_active = False
-    basic_user.save()
+def test_token_refresh(api_client, basic_user, time_machine):
+    # Anchored so the clock can be moved past the access token's lifetime later
+    # instead of the test sitting through it.
+    time_machine.move_to(localtime())
 
-    url = reverse("api:v1:login:obtain_jwt_pair")
-    response = api_client.post(
-        url,
-        {"username": basic_user.username, "password": "password"},
-        format="json",
-    )
-
-    assert response.status_code == HTTP_401_UNAUTHORIZED
-    assert response.data["detail"] == ErrorDetail(
-        string="No active account found with the given credentials",
-        code="no_active_account",
-    )
-
-
-@pytest.mark.skip(reason="This needs to be moved to OAuth2 tests")
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", "admin"),
-        ("staff_user", "staff"),
-        ("basic_user", "user"),
-    ],
-)
-def test_custom_jwt_claims(api_client, expected, user, request):
-    user = request.getfixturevalue(user)
-    groups = ["Group1", "Group2", "Group3", "Group4", "Group5"]
-    for group in groups:
-        grp = Group.objects.get_or_create(name=group)[0]
-        user.groups.add(grp)
-
-    url = reverse("api:v1:login:obtain_jwt_pair")
-    response = api_client.post(
-        url,
-        {"username": user.username, "password": "password"},
-        format="json",
-    )
-
-    assert response.status_code == HTTP_200_OK
-
-    token = AccessToken(response.data["access"])
-    assert token.payload["avatar"] == user.avatar_url
-    for group in groups:
-        assert group in token.payload["groups"]
-    assert token.payload["name"] == user.get_full_name_eastern_order()
-    assert token.payload["role"] == expected
-
-
-def test_token_refresh(api_client, basic_user):
     refresh_url = reverse("api:v1:login:refresh_jwt_token")
     user_profile_url = reverse("api:v1:me:me-detail")
 
@@ -82,8 +36,10 @@ def test_token_refresh(api_client, basic_user):
     response = api_client.get(user_profile_url)
     assert response.status_code == HTTP_200_OK
 
-    # Wait for the token to expire
-    sleep(settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"].total_seconds() + 1)
+    # Let the access token expire, without spending its lifetime doing it.
+    time_machine.shift(
+        settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"] + timedelta(seconds=1)
+    )
 
     # The user should not be able to get the request because of the expired token
     response = api_client.get(user_profile_url)
