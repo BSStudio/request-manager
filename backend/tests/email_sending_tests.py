@@ -16,8 +16,8 @@ from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import AccessToken
 
 from common.models import User, get_system_user
+from tests.factories import make_user
 from tests.helpers.test_utils import conditional_override_settings
-from tests.helpers.users_test_utils import create_user
 from tests.helpers.video_requests_test_utils import (
     create_crew,
     create_request,
@@ -50,15 +50,15 @@ class EmailSendingTestCase(APITestCase):
 
     def setUp(self):
         # Create normal user
-        self.normal_user = create_user()
+        self.normal_user = make_user()
 
         # Create staff user
-        self.staff_user = create_user(is_staff=True)
+        self.staff_user = make_user(is_staff=True)
 
         # Create special users
-        self.editor_in_chief = create_user(is_staff=True, groups=["Főszerkesztő"])
-        self.production_manager = create_user(is_staff=True, groups=["Gyártásvezető"])
-        self.pr_responsible = create_user(is_staff=True, groups=["PR felelős"])
+        self.editor_in_chief = make_user(is_staff=True, groups=["Főszerkesztő"])
+        self.production_manager = make_user(is_staff=True, groups=["Gyártásvezető"])
+        self.pr_responsible = make_user(is_staff=True, groups=["PR felelős"])
 
     def test_new_request_confirmation_email_sent_to_logged_in_user(self):
         # Create a Request with logged in user
@@ -413,9 +413,9 @@ class EmailSendingTestCase(APITestCase):
 
     def test_new_comment_email_sent_to_user_and_crew_admin_endpoint_non_internal(self):
         # Setup data - Create a Request, add Crew members and Responsible
-        crew_member1 = create_user(is_staff=True)
-        crew_member2 = create_user(is_staff=True)
-        responsible = create_user(is_staff=True)
+        crew_member1 = make_user(is_staff=True)
+        crew_member2 = make_user(is_staff=True)
+        responsible = make_user(is_staff=True)
         request = create_request(100, self.normal_user, responsible=responsible)
         create_crew(200, request, crew_member1, "Cameraman")
         create_crew(201, request, crew_member2, "Reporter")
@@ -458,9 +458,9 @@ class EmailSendingTestCase(APITestCase):
 
     def test_new_comment_email_sent_to_crew_admin_endpoint_internal(self):
         # Setup data - Create a Request, add Crew members and Responsible
-        crew_member1 = create_user(is_staff=True)
-        crew_member2 = create_user(is_staff=True)
-        responsible = create_user(is_staff=True)
+        crew_member1 = make_user(is_staff=True)
+        crew_member2 = make_user(is_staff=True)
+        responsible = make_user(is_staff=True)
         request = create_request(100, self.normal_user, responsible=responsible)
         create_crew(200, request, crew_member1, "Cameraman")
         create_crew(201, request, crew_member2, "Reporter")
@@ -492,7 +492,7 @@ class EmailSendingTestCase(APITestCase):
 
     def test_new_comment_email_not_sent_to_banned_user_admin_endpoint(self):
         # Setup data - Create a Request, add Crew members and Responsible
-        banned_user = create_user(banned=True)
+        banned_user = make_user(banned=True)
         request = create_request(100, banned_user)
 
         # New comment data
@@ -515,9 +515,9 @@ class EmailSendingTestCase(APITestCase):
 
     def test_new_comment_email_sent_to_crew_default_endpoint(self):
         # Setup data - Create a Request, add Crew members and Responsible
-        crew_member1 = create_user(is_staff=True)
-        crew_member2 = create_user(is_staff=True)
-        responsible = create_user(is_staff=True)
+        crew_member1 = make_user(is_staff=True)
+        crew_member2 = make_user(is_staff=True)
+        responsible = make_user(is_staff=True)
         request = create_request(100, self.normal_user, responsible=responsible)
         create_crew(200, request, crew_member1, "Cameraman")
         create_crew(201, request, crew_member2, "Reporter")
@@ -551,9 +551,9 @@ class EmailSendingTestCase(APITestCase):
 
     def test_request_modified_email_sent_when_send_notification_checked(self):
         # Setup data - Create a Request, add Crew members and Responsible
-        crew_member1 = create_user(is_staff=True)
-        crew_member2 = create_user(is_staff=True)
-        responsible = create_user(is_staff=True)
+        crew_member1 = make_user(is_staff=True)
+        crew_member2 = make_user(is_staff=True)
+        responsible = make_user(is_staff=True)
         request = create_request(100, self.normal_user, responsible=responsible)
         create_crew(200, request, crew_member1, "Cameraman")
         create_crew(201, request, crew_member2, "Reporter")
@@ -968,7 +968,7 @@ class EmailSendingTestCase(APITestCase):
         self, mock_email_responsible_overdue_request
     ):
         # Setup test objects
-        new_staff_member = create_user(is_staff=True)
+        new_staff_member = make_user(is_staff=True)
         overdue1 = create_request(
             100,
             self.normal_user,

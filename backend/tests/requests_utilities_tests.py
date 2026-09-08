@@ -11,7 +11,7 @@ from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import AccessToken
 from rest_framework_simplejwt.utils import make_utc
 
-from tests.helpers.users_test_utils import create_user
+from tests.factories import make_user
 from tests.helpers.video_requests_test_utils import create_request, create_video
 from video_requests.models import Request, Video
 
@@ -35,7 +35,7 @@ class RequestsUtilitiesTestCase(APITestCase):
 
     def setUp(self):
         self.url = reverse("api:v1:admin:requests:request-list")
-        self.user = create_user(is_admin=True)
+        self.user = make_user(is_admin=True)
         self.authorize_user(self.user)
 
     def test_request_and_video_status_changes(self):
@@ -273,7 +273,7 @@ class RequestsUtilitiesTestCase(APITestCase):
         return self.client.patch(f"{self.url}/{request_id}", self._patch_data)
 
     def test_check_and_remove_unauthorized_additional_data_for_request_from_staff(self):
-        staff_member = create_user(is_staff=True)
+        staff_member = make_user(is_staff=True)
         self.authorize_user(staff_member)
 
         # Create Request
@@ -351,7 +351,7 @@ class RequestsUtilitiesTestCase(APITestCase):
         )
 
         # Create a new admin user
-        new_admin = create_user(is_admin=True)
+        new_admin = make_user(is_admin=True)
         new_admin.first_name = "NewAdmin"
         new_admin.save()
         self.authorize_user(new_admin)
@@ -448,7 +448,7 @@ class RequestsUtilitiesTestCase(APITestCase):
         )
 
         # Create a new admin user
-        new_admin = create_user(is_admin=True)
+        new_admin = make_user(is_admin=True)
         new_admin.first_name = "NewAdmin"
         new_admin.save()
         self.authorize_user(new_admin)
@@ -569,8 +569,8 @@ class RequestsUtilitiesTestCase(APITestCase):
     def test_publishing_email_sent_to_user_in_video_additional_data_should_not_be_overwritten(
         self,
     ):
-        request = create_request(100, create_user(), Request.Statuses.UPLOADED)
-        staff = create_user(is_staff=True)
+        request = create_request(100, make_user(), Request.Statuses.UPLOADED)
+        staff = make_user(is_staff=True)
 
         # Add a video with some data
         video_data = {

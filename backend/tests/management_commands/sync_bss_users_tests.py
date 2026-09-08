@@ -5,7 +5,7 @@ import responses
 from django.core.management import call_command
 
 from common.models import User
-from tests.helpers.users_test_utils import create_user
+from tests.factories import make_user
 
 SYNC_URL = "https://login.bsstudio.hu/api/v3/core/users/?is_active=true&page_size=1000&path=users&type=internal"
 
@@ -66,7 +66,7 @@ def test_sync_reports_users_with_missing_attributes_and_continues(caplog):
 @pytest.mark.django_db
 @responses.activate
 def test_sync_does_not_demote_a_user_with_missing_attributes():
-    user = create_user(username="no_mobile", is_staff=True)
+    user = make_user(username="no_mobile", is_staff=True)
     mock_directory(directory_user("no_mobile", dict(COMPLETE_ATTRIBUTES, mobile="")))
 
     call_command("sync_bss_users")
@@ -78,8 +78,8 @@ def test_sync_does_not_demote_a_user_with_missing_attributes():
 @pytest.mark.django_db
 @responses.activate
 def test_sync_reports_conflicts_without_a_fabricated_traceback(caplog):
-    create_user(username="taken_username")
-    email_owner = create_user(username="email_owner")
+    make_user(username="taken_username")
+    email_owner = make_user(username="email_owner")
     email_owner.email = "conflicting@example.com"
     email_owner.save()
 

@@ -19,7 +19,7 @@ from common.social_core.pipeline import (
     disconnect_all_other_profiles_and_change_username_on_first_bss_login,
     set_groups_and_permissions_for_staff,
 )
-from tests.helpers.users_test_utils import create_user
+from tests.factories import make_user
 
 
 class FakeStrategy:
@@ -51,7 +51,7 @@ def test_associate_by_email_skips_without_an_address():
 
 @pytest.mark.django_db
 def test_associate_by_email_skips_when_already_authenticated():
-    user = create_user()
+    user = make_user()
     assert (
         associate_by_email(
             FakeBackend("google-oauth2"), {"email": user.email}, user=user
@@ -62,14 +62,14 @@ def test_associate_by_email_skips_when_already_authenticated():
 
 @pytest.mark.django_db
 def test_check_if_user_is_banned_rejects_banned_users():
-    user = create_user(banned=True)
+    user = make_user(banned=True)
     with pytest.raises(AuthenticationFailed):
         check_if_user_is_banned(FakeBackend("bss-login"), user=user)
 
 
 @pytest.mark.django_db
 def test_only_one_association_per_provider_is_allowed():
-    user = create_user()
+    user = make_user()
     UserSocialAuth.objects.create(user=user, provider="google-oauth2", uid="uid-1")
 
     with pytest.raises(ValidationError):
@@ -80,7 +80,7 @@ def test_only_one_association_per_provider_is_allowed():
 
 @pytest.mark.django_db
 def test_staff_must_associate_their_social_profile_first():
-    user = create_user(is_staff=True)
+    user = make_user(is_staff=True)
 
     with pytest.raises(AuthenticationFailed):
         check_if_admin_or_staff_user_already_associated(
@@ -90,7 +90,7 @@ def test_staff_must_associate_their_social_profile_first():
 
 @pytest.mark.django_db
 def test_first_bss_login_drops_other_profiles_and_syncs_the_username():
-    user = create_user()
+    user = make_user()
     UserSocialAuth.objects.create(user=user, provider="google-oauth2", uid="uid-2")
 
     disconnect_all_other_profiles_and_change_username_on_first_bss_login(
@@ -107,7 +107,7 @@ def test_first_bss_login_drops_other_profiles_and_syncs_the_username():
 
 @pytest.mark.django_db
 def test_add_phone_number_keeps_an_existing_number():
-    user = create_user()
+    user = make_user()
 
     add_phone_number_to_profile(
         FakeBackend("google-oauth2"), {"mobile": "+36701111111"}, {}, user
@@ -119,7 +119,7 @@ def test_add_phone_number_keeps_an_existing_number():
 
 @pytest.mark.django_db
 def test_set_groups_and_permissions_skips_the_update_when_groups_match():
-    user = create_user(groups=["Gyártásvezető"])
+    user = make_user(groups=["Gyártásvezető"])
 
     with patch.object(type(user.groups), "set") as set_groups:
         set_groups_and_permissions_for_staff(
@@ -135,7 +135,7 @@ def test_set_groups_and_permissions_skips_the_update_when_groups_match():
 
 @pytest.mark.django_db
 def test_set_groups_and_permissions_replaces_the_groups_when_they_differ():
-    user = create_user(groups=["Gyártásvezető"])
+    user = make_user(groups=["Gyártásvezető"])
     assert user.group_names == frozenset({"Gyártásvezető"})
 
     set_groups_and_permissions_for_staff(
@@ -152,7 +152,7 @@ def test_set_groups_and_permissions_replaces_the_groups_when_they_differ():
 
 @pytest.mark.django_db
 def test_last_login_method_cannot_be_disconnected():
-    user = create_user()
+    user = make_user()
     UserSocialAuth.objects.create(user=user, provider="google-oauth2", uid="uid-3")
 
     with pytest.raises(NotAllowedToDisconnect):
@@ -163,7 +163,7 @@ def test_last_login_method_cannot_be_disconnected():
 
 @pytest.mark.django_db
 def test_a_login_method_can_be_disconnected_when_another_one_remains():
-    user = create_user()
+    user = make_user()
     UserSocialAuth.objects.create(user=user, provider="google-oauth2", uid="uid-4")
     UserSocialAuth.objects.create(user=user, provider="microsoft-graph", uid="uid-5")
 
@@ -174,7 +174,7 @@ def test_a_login_method_can_be_disconnected_when_another_one_remains():
 
 @pytest.mark.django_db
 def test_delete_avatar_removes_only_the_disconnected_provider():
-    user = create_user()
+    user = make_user()
 
     delete_avatar(anonymous_strategy(), user, "microsoft-graph", DjangoStorage.user)
 
@@ -185,7 +185,7 @@ def test_delete_avatar_removes_only_the_disconnected_provider():
 
 @pytest.mark.django_db
 def test_delete_avatar_is_a_no_op_without_an_image_for_the_provider():
-    user = create_user()
+    user = make_user()
     user.avatar = {"provider": "gravatar", "gravatar": "https://example.com/a.png"}
     user.save()
 
@@ -200,7 +200,7 @@ def test_delete_avatar_is_a_no_op_without_an_image_for_the_provider():
 
 @pytest.mark.django_db
 def test_delete_avatar_hands_the_provider_slot_to_a_remaining_image():
-    user = create_user()
+    user = make_user()
     user.avatar = {
         "provider": "microsoft-graph",
         "microsoft-graph": "https://example.com/a.png",
@@ -219,7 +219,7 @@ def test_delete_avatar_hands_the_provider_slot_to_a_remaining_image():
 
 @pytest.mark.django_db
 def test_delete_avatar_clears_the_avatar_when_the_last_image_goes():
-    user = create_user()
+    user = make_user()
     user.avatar = {
         "provider": "microsoft-graph",
         "microsoft-graph": "https://example.com/a.png",
@@ -234,7 +234,7 @@ def test_delete_avatar_clears_the_avatar_when_the_last_image_goes():
 
 @pytest.mark.django_db
 def test_delete_avatar_falls_back_to_another_provider_without_a_gravatar():
-    user = create_user()
+    user = make_user()
     user.avatar = {
         "provider": "microsoft-graph",
         "microsoft-graph": "https://example.com/a.png",
