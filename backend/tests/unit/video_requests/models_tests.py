@@ -121,6 +121,26 @@ class TestRequestValidation:
         )
 
 
+class TestVideoAiredDates:
+    def test_they_are_sorted_newest_first_on_save(self, video):
+        video.additional_data["aired"] = [
+            "2020-01-12",
+            "2019-11-25",
+            "2020-10-25",
+            "2018-05-19",
+            "2020-07-14",
+        ]
+        video.save()
+
+        assert video.additional_data["aired"] == [
+            "2020-10-25",
+            "2020-07-14",
+            "2020-01-12",
+            "2019-11-25",
+            "2018-05-19",
+        ]
+
+
 class TestVideoValidation:
     def test_a_freshly_built_video_is_valid(self, video):
         video.refresh_from_db()
