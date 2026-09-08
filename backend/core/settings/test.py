@@ -37,8 +37,9 @@ SOCIAL_AUTH_MICROSOFT_GRAPH_SECRET = "FYT8Q~pV~qBOa0jEr9N8yf0qOa7yPnZa1xf1daNF" 
 
 # Model Bakery
 # https://model-bakery.readthedocs.io/en/latest/how_bakery_behaves.html
+BAKER_CUSTOM_CLASS = "tests.factories.ProjectBaker"
 BAKER_CUSTOM_FIELDS_GEN = {
-    "phonenumber_field.modelfields.PhoneNumberField": "tests.helpers.baker_generators.gen_phone_number",
+    "phonenumber_field.modelfields.PhoneNumberField": "tests.factories.gen_phone_number",
 }
 
 # Use faster password hashing algorithm

@@ -10,28 +10,28 @@ from rest_framework.reverse import reverse
 from rest_framework.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
-    HTTP_401_UNAUTHORIZED,
-    HTTP_403_FORBIDDEN,
     HTTP_404_NOT_FOUND,
     is_success,
 )
 
 from common.models import User
-from tests.api.helpers import assert_fields_exist, do_login, login
+from tests.api.asserts import assert_exact_fields
+from tests.api.helpers import do_login, login
+from tests.api.matrix import service_account_only
 from video_requests.models import Comment, Request
 
 pytestmark = pytest.mark.django_db
 
 
 def assert_comment_response_keys(comment):
-    assert_fields_exist(comment, ["author", "created", "id", "text"])
+    assert_exact_fields(comment, ["author", "created", "id", "text"])
 
     author = comment.get("author")
-    assert_fields_exist(author, ["avatar_url", "full_name", "id"])
+    assert_exact_fields(author, ["avatar_url", "full_name", "id"])
 
 
 def assert_request_response_keys(video_request):
-    assert_fields_exist(
+    assert_exact_fields(
         video_request,
         [
             "created",
@@ -60,13 +60,13 @@ def assert_request_response_keys(video_request):
 
 
 def assert_user_details(user):
-    assert_fields_exist(
+    assert_exact_fields(
         user, ["avatar_url", "email", "full_name", "id", "is_staff", "phone_number"]
     )
 
 
 def assert_requested_by_details(user):
-    assert_fields_exist(user, ["avatar_url", "full_name", "id"])
+    assert_exact_fields(user, ["avatar_url", "full_name", "id"])
 
 
 @pytest.fixture
@@ -96,16 +96,7 @@ def comment_data():
     return {"text": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."}
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_403_FORBIDDEN),
-        ("staff_user", HTTP_403_FORBIDDEN),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_201_CREATED),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@service_account_only(HTTP_201_CREATED)
 @pytest.mark.parametrize("new_user", [True, False])
 @pytest.mark.parametrize("with_comment", [True, False])
 def test_create_request(
@@ -169,16 +160,7 @@ def test_create_request(
             assert comment.author == requester
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_403_FORBIDDEN),
-        ("staff_user", HTTP_403_FORBIDDEN),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_200_OK),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@service_account_only(HTTP_200_OK)
 def test_retrieve_request(
     api_client,
     expected,
@@ -201,16 +183,7 @@ def test_retrieve_request(
         assert_request_response_keys(response.data)
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_403_FORBIDDEN),
-        ("staff_user", HTTP_403_FORBIDDEN),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_404_NOT_FOUND),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@service_account_only(HTTP_404_NOT_FOUND)
 def test_retrieve_request_errors(
     api_client,
     expected,
@@ -248,16 +221,7 @@ def test_retrieve_request_errors(
     assert response.status_code == expected
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_403_FORBIDDEN),
-        ("staff_user", HTTP_403_FORBIDDEN),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_201_CREATED),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@service_account_only(HTTP_201_CREATED)
 def test_create_comment(
     api_client,
     comment_data,
@@ -283,16 +247,7 @@ def test_create_comment(
         assert response.data["author"]["id"] == user.id
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_403_FORBIDDEN),
-        ("staff_user", HTTP_403_FORBIDDEN),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_404_NOT_FOUND),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@service_account_only(HTTP_404_NOT_FOUND)
 def test_create_comment_errors(
     api_client,
     comment_data,

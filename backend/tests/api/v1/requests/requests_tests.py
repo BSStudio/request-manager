@@ -11,21 +11,21 @@ from rest_framework.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
     HTTP_400_BAD_REQUEST,
-    HTTP_401_UNAUTHORIZED,
-    HTTP_403_FORBIDDEN,
     HTTP_404_NOT_FOUND,
     is_success,
 )
 
 from common.models import User, get_anonymous_user
-from tests.api.helpers import assert_fields_exist, do_login, login
+from tests.api.asserts import assert_exact_fields
+from tests.api.helpers import do_login, login
+from tests.api.matrix import any_user
 from video_requests.models import Comment, Request
 
 pytestmark = pytest.mark.django_db
 
 
 def assert_list_response_keys(video_request):
-    assert_fields_exist(
+    assert_exact_fields(
         video_request,
         [
             "created",
@@ -38,7 +38,7 @@ def assert_list_response_keys(video_request):
 
 
 def assert_retrieve_response_keys(video_request):
-    assert_fields_exist(
+    assert_exact_fields(
         video_request,
         [
             "created",
@@ -67,13 +67,13 @@ def assert_retrieve_response_keys(video_request):
 
 
 def assert_user_details(user):
-    assert_fields_exist(
+    assert_exact_fields(
         user, ["avatar_url", "email", "full_name", "id", "is_staff", "phone_number"]
     )
 
 
 def assert_requested_by_details(user):
-    assert_fields_exist(user, ["avatar_url", "full_name", "id"])
+    assert_exact_fields(user, ["avatar_url", "full_name", "id"])
 
 
 @pytest.fixture
@@ -97,16 +97,7 @@ def requester_data():
     }
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_200_OK),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@any_user(HTTP_200_OK)
 @pytest.mark.parametrize("pagination", [True, False])
 def test_list_requests(api_client, expected, pagination, request, user):
     user = do_login(api_client, request, user)
@@ -121,10 +112,10 @@ def test_list_requests(api_client, expected, pagination, request, user):
 
     if is_success(response.status_code):
         if pagination:
-            assert_fields_exist(
+            assert_exact_fields(
                 response.data, ["count", "links", "results", "total_pages"]
             )
-            assert_fields_exist(response.data["links"], ["next", "previous"])
+            assert_exact_fields(response.data["links"], ["next", "previous"])
 
             assert response.data["count"] == len(video_requests)
 
@@ -350,16 +341,7 @@ def test_create_request_user_info_validation(api_client, request_create_data):
             )
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_200_OK),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@any_user(HTTP_200_OK)
 def test_retrieve_request(api_client, expected, request, user):
     user = do_login(api_client, request, user)
 
@@ -377,16 +359,7 @@ def test_retrieve_request(api_client, expected, request, user):
         assert_retrieve_response_keys(response.data)
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_404_NOT_FOUND),
-        ("staff_user", HTTP_404_NOT_FOUND),
-        ("basic_user", HTTP_404_NOT_FOUND),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@any_user(HTTP_404_NOT_FOUND)
 def test_retrieve_request_error(
     api_client, expected, not_existing_request_id, request, user
 ):

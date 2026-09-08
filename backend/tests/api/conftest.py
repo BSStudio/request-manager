@@ -1,126 +1,60 @@
-from random import randint
-
 import pytest
-from django.contrib.auth.models import Group
+from django.db.models import Max
 from rest_framework.test import APIClient
 
 from common.models import User
-from video_requests.models import Comment, Request, Todo, Video
+from tests.factories import make_user
+from video_requests.models import Comment, CrewMember, Rating, Request, Todo, Video
 
 
 @pytest.fixture
 def api_client():
-    client = APIClient()
-    return client
+    return APIClient()
 
 
 @pytest.fixture
-def admin_user(settings):
-    user = User.objects.create_user(
-        email="admin@example.com",
-        first_name="Admin",
-        is_staff=True,
-        last_name="Test",
-        password="password",
-        username="admin",
-    )
-
-    group = Group.objects.get_or_create(name=settings.ADMIN_GROUP)[0]
-    user.groups.add(group)
-
-    user.phone_number = "+36509999999"
-    user.save()
-
-    return user
+def admin_user():
+    return make_user(username="admin", first_name="Admin", is_admin=True)
 
 
 @pytest.fixture
 def staff_user():
-    user = User.objects.create_user(
-        email="staff@example.com",
-        first_name="Staff",
-        is_staff=True,
-        last_name="Test",
-        password="password",
-        username="staff",
-    )
-
-    user.phone_number = "+36509999999"
-    user.save()
-    return user
+    return make_user(username="staff", first_name="Staff", is_staff=True)
 
 
 @pytest.fixture
 def basic_user():
-    user = User.objects.create_user(
-        email="basic@example.com",
-        first_name="Basic",
-        is_staff=False,
-        last_name="Test",
-        password="password",
-        username="basic",
-    )
-
-    user.phone_number = "+36509999999"
-    user.save()
-    return user
+    return make_user(username="basic", first_name="Basic")
 
 
 @pytest.fixture
-def service_account(settings):
-    user = User.objects.create_user(
-        email="service-account@example.com",
-        first_name="Service",
-        is_staff=False,
-        last_name="Account",
-        password="password",
+def service_account():
+    return make_user(
         username="service-account",
+        first_name="Service",
+        last_name="Account",
+        is_service_account=True,
     )
 
-    grp = Group.objects.get_or_create(name=settings.SERVICE_ACCOUNTS_GROUP)[0]
-    user.groups.add(grp)
 
-    user.phone_number = "+36509999999"
-    user.save()
+def _missing_id_fixture(model):
+    """A primary key no row of ``model`` holds, for the 404 half of an endpoint.
 
-    return user
+    Every detail endpoint needs one, and taking it from the highest key in the
+    table keeps it deterministic instead of a random draw that has to be retried.
+    """
 
+    @pytest.fixture
+    def missing_id():
+        return (model.objects.aggregate(highest=Max("pk"))["highest"] or 0) + 1000
 
-@pytest.fixture
-def not_existing_comment_id():
-    while True:
-        non_existing_id = randint(1000, 100000)
-        if not Comment.objects.filter(pk=non_existing_id).exists():
-            return non_existing_id
+    return missing_id
 
 
-@pytest.fixture
-def not_existing_todo_id():
-    while True:
-        non_existing_id = randint(1000, 100000)
-        if not Todo.objects.filter(pk=non_existing_id).exists():
-            return non_existing_id
-
-
-@pytest.fixture
-def not_existing_request_id():
-    while True:
-        non_existing_id = randint(1000, 100000)
-        if not Request.objects.filter(pk=non_existing_id).exists():
-            return non_existing_id
-
-
-@pytest.fixture
-def not_existing_user_id():
-    while True:
-        non_existing_id = randint(1000, 100000)
-        if not User.objects.filter(pk=non_existing_id).exists():
-            return non_existing_id
-
-
-@pytest.fixture
-def not_existing_video_id():
-    while True:
-        non_existing_id = randint(1000, 100000)
-        if not Video.objects.filter(pk=non_existing_id).exists():
-            return non_existing_id
+not_existing_comment_id = _missing_id_fixture(Comment)
+not_existing_crew_member_id = _missing_id_fixture(CrewMember)
+not_existing_rating_id = _missing_id_fixture(Rating)
+not_existing_request_id = _missing_id_fixture(Request)
+not_existing_todo_id = _missing_id_fixture(Todo)
+not_existing_user_id = _missing_id_fixture(User)
+not_existing_video_id = _missing_id_fixture(Video)

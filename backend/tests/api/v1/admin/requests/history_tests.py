@@ -6,19 +6,19 @@ from model_bakery import baker
 from rest_framework.reverse import reverse
 from rest_framework.status import (
     HTTP_200_OK,
-    HTTP_401_UNAUTHORIZED,
-    HTTP_403_FORBIDDEN,
     is_success,
 )
 
 from common.models import User
-from tests.api.helpers import assert_fields_exist, do_login
+from tests.api.asserts import assert_exact_fields
+from tests.api.helpers import do_login
+from tests.api.matrix import staff_only
 
 pytestmark = pytest.mark.django_db
 
 
 def assert_response(history, fields_changed, new_values, old_values, user):
-    assert_fields_exist(history, ["changes", "date", "user"])
+    assert_exact_fields(history, ["changes", "date", "user"])
 
     assert len(history["changes"]) == len(fields_changed)
     assert all(
@@ -28,7 +28,7 @@ def assert_response(history, fields_changed, new_values, old_values, user):
     assert all(change["field"] in fields_changed for change in history["changes"])
 
     for change in history["changes"]:
-        assert_fields_exist(change, ["field", "new", "old"])
+        assert_exact_fields(change, ["field", "new", "old"])
 
         field = change["field"]
         if field.endswith("datetime"):
@@ -49,23 +49,14 @@ def assert_response(history, fields_changed, new_values, old_values, user):
         assert change["old"] == old_value
 
     if history["user"]:
-        assert_fields_exist(history["user"], ["avatar_url", "full_name", "id"])
+        assert_exact_fields(history["user"], ["avatar_url", "full_name", "id"])
 
         assert history["user"]["avatar_url"] == user.avatar_url
         assert history["user"]["full_name"] == user.get_full_name_eastern_order()
         assert history["user"]["id"] == user.id
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_200_OK)
 def test_list_comment_history(api_client, expected, request, user):
     video_request = baker.make("video_requests.Request")
     user = do_login(api_client, request, user)
@@ -120,16 +111,7 @@ def test_list_comment_history(api_client, expected, request, user):
         )
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_200_OK)
 def test_list_rating_history(api_client, expected, request, user):
     video_request = baker.make("video_requests.Request")
     video = baker.make("video_requests.Video", request=video_request)
@@ -183,16 +165,7 @@ def test_list_rating_history(api_client, expected, request, user):
         )
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_200_OK)
 def test_list_request_history(api_client, expected, request, user):
     video_request = baker.make("video_requests.Request")
     test_user = baker.make(User, is_staff=True, _fill_optional=["email"])
@@ -288,16 +261,7 @@ def test_list_request_history(api_client, expected, request, user):
         )
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_200_OK)
 def test_list_video_history(api_client, expected, request, user):
     video_request = baker.make("video_requests.Request")
     video = baker.make("video_requests.Video", request=video_request)

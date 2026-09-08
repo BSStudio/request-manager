@@ -5,23 +5,23 @@ from rest_framework.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
     HTTP_204_NO_CONTENT,
-    HTTP_401_UNAUTHORIZED,
-    HTTP_403_FORBIDDEN,
     HTTP_404_NOT_FOUND,
     is_success,
 )
 
-from tests.api.helpers import assert_fields_exist, do_login, get_response
+from tests.api.asserts import assert_exact_fields
+from tests.api.helpers import do_login, get_response
+from tests.api.matrix import admin_only, staff_only
 
 pytestmark = pytest.mark.django_db
 
 
 def assert_response_keys(comment):
-    assert_fields_exist(comment, ["author", "created", "id", "internal", "text"])
+    assert_exact_fields(comment, ["author", "created", "id", "internal", "text"])
 
     author = comment.get("author")
     assert author is not None
-    assert_fields_exist(author, ["avatar_url", "full_name", "id"])
+    assert_exact_fields(author, ["avatar_url", "full_name", "id"])
 
 
 @pytest.fixture
@@ -35,16 +35,7 @@ def comment_data():
     }
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_200_OK)
 def test_list_comments(api_client, expected, request, user):
     video_request = baker.make("video_requests.Request")
     comments = baker.make("video_requests.Comment", request=video_request, _quantity=5)
@@ -65,16 +56,7 @@ def test_list_comments(api_client, expected, request, user):
             assert_response_keys(comment)
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_201_CREATED),
-        ("staff_user", HTTP_201_CREATED),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_201_CREATED)
 def test_create_comment(api_client, comment_data, expected, request, user):
     video_request = baker.make("video_requests.Request")
 
@@ -103,16 +85,7 @@ def test_create_comment(api_client, comment_data, expected, request, user):
         assert len(response.data) == 1
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_404_NOT_FOUND),
-        ("staff_user", HTTP_404_NOT_FOUND),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_404_NOT_FOUND)
 @pytest.mark.parametrize("method", ["GET", "POST"])
 def test_list_create_comments_error(
     api_client, comment_data, expected, method, not_existing_request_id, request, user
@@ -132,16 +105,7 @@ def test_list_create_comments_error(
     assert response.status_code == expected
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_200_OK)
 def test_retrieve_comment(api_client, expected, request, user):
     video_request = baker.make("video_requests.Request")
     comments = baker.make("video_requests.Comment", request=video_request, _quantity=5)
@@ -160,16 +124,7 @@ def test_retrieve_comment(api_client, expected, request, user):
         assert_response_keys(response.data)
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_200_OK)
 @pytest.mark.parametrize("method", ["PATCH", "PUT"])
 def test_update_own_comment(api_client, comment_data, expected, method, request, user):
     video_request = baker.make("video_requests.Request")
@@ -198,16 +153,7 @@ def test_update_own_comment(api_client, comment_data, expected, method, request,
         assert response.data["author"]["id"] == user.id
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_403_FORBIDDEN),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@admin_only(HTTP_200_OK)
 @pytest.mark.parametrize("method", ["PATCH", "PUT"])
 def test_update_others_comment(
     api_client, comment_data, expected, method, request, user
@@ -238,16 +184,7 @@ def test_update_others_comment(
         assert response.data["author"]["id"] != user.id
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_204_NO_CONTENT),
-        ("staff_user", HTTP_204_NO_CONTENT),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_204_NO_CONTENT)
 def test_destroy_own_comment(api_client, expected, request, user):
     video_request = baker.make("video_requests.Request")
 
@@ -264,16 +201,7 @@ def test_destroy_own_comment(api_client, expected, request, user):
     assert response.status_code == expected
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_204_NO_CONTENT),
-        ("staff_user", HTTP_403_FORBIDDEN),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@admin_only(HTTP_204_NO_CONTENT)
 def test_destroy_others_comment(api_client, expected, request, user):
     video_request = baker.make("video_requests.Request")
     comment = baker.make("video_requests.Comment", request=video_request)
@@ -291,16 +219,7 @@ def test_destroy_others_comment(api_client, expected, request, user):
     assert response.status_code == expected
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_404_NOT_FOUND),
-        ("staff_user", HTTP_404_NOT_FOUND),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_404_NOT_FOUND)
 @pytest.mark.parametrize("method", ["GET", "DELETE", "PATCH", "PUT"])
 def test_retrieve_update_destroy_comment_error(
     api_client,

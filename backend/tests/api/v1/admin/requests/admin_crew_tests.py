@@ -8,24 +8,24 @@ from rest_framework.status import (
     HTTP_201_CREATED,
     HTTP_204_NO_CONTENT,
     HTTP_400_BAD_REQUEST,
-    HTTP_401_UNAUTHORIZED,
-    HTTP_403_FORBIDDEN,
     HTTP_404_NOT_FOUND,
     is_success,
 )
 
-from tests.api.helpers import assert_fields_exist, do_login, get_response
+from tests.api.asserts import assert_exact_fields
+from tests.api.helpers import do_login, get_response
+from tests.api.matrix import staff_only
 from video_requests.models import CrewMember
 
 pytestmark = pytest.mark.django_db
 
 
 def assert_response_keys(crew):
-    assert_fields_exist(crew, ["id", "member", "position"])
+    assert_exact_fields(crew, ["id", "member", "position"])
 
     member = crew.get("member")
     assert member is not None
-    assert_fields_exist(member, ["avatar_url", "full_name", "id"])
+    assert_exact_fields(member, ["avatar_url", "full_name", "id"])
 
 
 @pytest.fixture
@@ -33,16 +33,7 @@ def crew_member_data(staff_user):
     return {"member": staff_user.id, "position": "Tester"}
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_200_OK)
 def test_list_crew(api_client, expected, request, user):
     video_request = baker.make("video_requests.Request")
     crew = baker.make("video_requests.CrewMember", request=video_request, _quantity=5)
@@ -63,16 +54,7 @@ def test_list_crew(api_client, expected, request, user):
             assert_response_keys(crew_member)
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_201_CREATED),
-        ("staff_user", HTTP_201_CREATED),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_201_CREATED)
 def test_create_crew_member(
     api_client, crew_member_data, expected, request, staff_user, user
 ):
@@ -104,16 +86,7 @@ def test_create_crew_member(
         assert len(response.data) == 1
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_404_NOT_FOUND),
-        ("staff_user", HTTP_404_NOT_FOUND),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_404_NOT_FOUND)
 @pytest.mark.parametrize("method", ["GET", "POST"])
 def test_list_create_crew_error(
     api_client,
@@ -139,16 +112,7 @@ def test_list_create_crew_error(
     assert response.status_code == expected
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", {"DELETE": HTTP_204_NO_CONTENT, "GET": HTTP_200_OK}),
-        ("staff_user", {"DELETE": HTTP_204_NO_CONTENT, "GET": HTTP_200_OK}),
-        ("basic_user", {"DELETE": HTTP_403_FORBIDDEN, "GET": HTTP_403_FORBIDDEN}),
-        ("service_account", {"DELETE": HTTP_403_FORBIDDEN, "GET": HTTP_403_FORBIDDEN}),
-        (None, {"DELETE": HTTP_401_UNAUTHORIZED, "GET": HTTP_401_UNAUTHORIZED}),
-    ],
-)
+@staff_only({"DELETE": HTTP_204_NO_CONTENT, "GET": HTTP_200_OK})
 @pytest.mark.parametrize("method", ["DELETE", "GET"])
 def test_retrieve_destroy_crew_member(api_client, expected, method, request, user):
     video_request = baker.make("video_requests.Request")
@@ -168,16 +132,7 @@ def test_retrieve_destroy_crew_member(api_client, expected, method, request, use
         assert_response_keys(response.data)
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_200_OK)
 @pytest.mark.parametrize("method", ["PATCH", "PUT"])
 def test_update_crew_member(
     api_client, crew_member_data, expected, method, request, staff_user, user
@@ -206,16 +161,7 @@ def test_update_crew_member(
         assert response.data["position"] == crew_member_data["position"]
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_404_NOT_FOUND),
-        ("staff_user", HTTP_404_NOT_FOUND),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_404_NOT_FOUND)
 @pytest.mark.parametrize("method", ["GET", "DELETE", "PATCH", "PUT"])
 def test_retrieve_update_destroy_crew_member_error(
     api_client,
@@ -271,16 +217,7 @@ def test_retrieve_update_destroy_crew_member_error(
     assert response.status_code == expected
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_400_BAD_REQUEST),
-        ("staff_user", HTTP_400_BAD_REQUEST),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_400_BAD_REQUEST)
 @pytest.mark.parametrize("method", ["PATCH", "POST", "PUT"])
 def test_create_update_crew_member_invalid_member(
     api_client,

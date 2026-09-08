@@ -9,20 +9,20 @@ from rest_framework.reverse import reverse
 from rest_framework.status import (
     HTTP_200_OK,
     HTTP_400_BAD_REQUEST,
-    HTTP_401_UNAUTHORIZED,
-    HTTP_403_FORBIDDEN,
     is_success,
 )
 from social_django.models import UserSocialAuth
 
 from common.models import User
-from tests.api.helpers import assert_fields_exist, do_login, get_response
+from tests.api.asserts import assert_exact_fields
+from tests.api.helpers import do_login, get_response
+from tests.api.matrix import any_user, staff_only
 
 pytestmark = pytest.mark.django_db
 
 
 def assert_response_keys(user):
-    assert_fields_exist(
+    assert_exact_fields(
         user,
         [
             "email",
@@ -37,7 +37,7 @@ def assert_response_keys(user):
         ],
     )
 
-    assert_fields_exist(
+    assert_exact_fields(
         user["profile"],
         [
             "avatar",
@@ -48,7 +48,7 @@ def assert_response_keys(user):
 
     if user["social_accounts"]:
         for social_account in user["social_accounts"]:
-            assert_fields_exist(social_account, ["provider", "uid"])
+            assert_exact_fields(social_account, ["provider", "uid"])
 
 
 @pytest.fixture
@@ -61,16 +61,7 @@ def user_data():
     }
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_200_OK),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@any_user(HTTP_200_OK)
 @pytest.mark.parametrize("has_groups", [True, False])
 @pytest.mark.parametrize("has_social_accounts", [True, False])
 def test_retrieve_me(
@@ -112,16 +103,7 @@ def test_retrieve_me(
                 )
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_200_OK),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@any_user(HTTP_200_OK)
 @pytest.mark.parametrize("method", ["PATCH", "PUT"])
 def test_update_me(api_client, expected, method, request, user, user_data):
     do_login(api_client, request, user)
@@ -144,16 +126,7 @@ def test_update_me(api_client, expected, method, request, user, user_data):
         )
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_400_BAD_REQUEST),
-        ("staff_user", HTTP_400_BAD_REQUEST),
-        ("basic_user", HTTP_400_BAD_REQUEST),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@any_user(HTTP_400_BAD_REQUEST)
 @pytest.mark.parametrize("data", ["email", "first_name", "last_name"])
 @pytest.mark.parametrize("value", ["", None])
 @pytest.mark.parametrize("method", ["PATCH", "PUT"])
@@ -256,16 +229,7 @@ def test_update_me_avatar(api_client, method, user, request):
     )
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_200_OK)
 @pytest.mark.parametrize("was_crew_member", [True, False])
 @pytest.mark.parametrize("was_editor", [True, False])
 @pytest.mark.parametrize("was_responsible", [True, False])
@@ -388,7 +352,7 @@ def test_me_worked_on(
     if is_success(response.status_code):
         assert len(response.data) == len(should_find)
         for video_request in response.data:
-            assert_fields_exist(
+            assert_exact_fields(
                 video_request,
                 [
                     "id",

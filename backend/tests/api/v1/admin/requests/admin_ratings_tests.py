@@ -9,24 +9,24 @@ from rest_framework.status import (
     HTTP_201_CREATED,
     HTTP_204_NO_CONTENT,
     HTTP_400_BAD_REQUEST,
-    HTTP_401_UNAUTHORIZED,
-    HTTP_403_FORBIDDEN,
     HTTP_404_NOT_FOUND,
     is_success,
 )
 
-from tests.api.helpers import assert_fields_exist, do_login, get_response
+from tests.api.asserts import assert_exact_fields
+from tests.api.helpers import do_login, get_response
+from tests.api.matrix import admin_only, staff_only
 from video_requests.models import Rating, Video
 
 pytestmark = pytest.mark.django_db
 
 
 def assert_response_keys(rating):
-    assert_fields_exist(rating, ["author", "created", "id", "rating", "review"])
+    assert_exact_fields(rating, ["author", "created", "id", "rating", "review"])
 
     author = rating.get("author")
     assert author is not None
-    assert_fields_exist(author, ["avatar_url", "full_name", "id"])
+    assert_exact_fields(author, ["avatar_url", "full_name", "id"])
 
 
 @pytest.fixture
@@ -41,16 +41,7 @@ def rating_data():
     }
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_200_OK)
 def test_list_ratings(api_client, expected, request, user):
     video_request = baker.make("video_requests.Request")
     video = baker.make(
@@ -76,16 +67,7 @@ def test_list_ratings(api_client, expected, request, user):
             assert_response_keys(rating)
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_201_CREATED),
-        ("staff_user", HTTP_201_CREATED),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_201_CREATED)
 def test_create_rating(api_client, expected, rating_data, request, user):
     video_request = baker.make("video_requests.Request")
     video = baker.make(
@@ -117,16 +99,7 @@ def test_create_rating(api_client, expected, rating_data, request, user):
         assert len(response.data) == 1
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_404_NOT_FOUND),
-        ("staff_user", HTTP_404_NOT_FOUND),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_404_NOT_FOUND)
 @pytest.mark.parametrize("method", ["GET", "POST"])
 def test_list_create_ratings_error(
     api_client,
@@ -174,16 +147,7 @@ def test_list_create_ratings_error(
     assert response.status_code == expected
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_400_BAD_REQUEST),
-        ("staff_user", HTTP_400_BAD_REQUEST),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_400_BAD_REQUEST)
 def test_create_rating_error_video_not_edited(
     api_client, expected, rating_data, request, user
 ):
@@ -208,16 +172,7 @@ def test_create_rating_error_video_not_edited(
         )
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_400_BAD_REQUEST),
-        ("staff_user", HTTP_400_BAD_REQUEST),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_400_BAD_REQUEST)
 def test_create_rating_error_one_rating_per_video(
     api_client, expected, rating_data, request, user
 ):
@@ -244,16 +199,7 @@ def test_create_rating_error_one_rating_per_video(
         )
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_200_OK)
 def test_retrieve_rating(api_client, expected, request, user):
     video_request = baker.make("video_requests.Request")
     video = baker.make(
@@ -281,16 +227,7 @@ def test_retrieve_rating(api_client, expected, request, user):
         assert_response_keys(response.data)
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_200_OK)
 def test_retrieve_own_rating(api_client, expected, request, user):
     user = do_login(api_client, request, user)
 
@@ -318,16 +255,7 @@ def test_retrieve_own_rating(api_client, expected, request, user):
         assert response.data["author"]["id"] == user.id
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_200_OK)
 @pytest.mark.parametrize("method", ["PATCH", "PUT"])
 def test_update_own_rating(api_client, expected, method, rating_data, request, user):
     video_request = baker.make("video_requests.Request")
@@ -362,16 +290,7 @@ def test_update_own_rating(api_client, expected, method, rating_data, request, u
         assert response.data["author"]["id"] == user.id
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_403_FORBIDDEN),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@admin_only(HTTP_200_OK)
 @pytest.mark.parametrize("method", ["PATCH", "PUT"])
 def test_update_others_rating(api_client, expected, method, rating_data, request, user):
     video_request = baker.make("video_requests.Request")
@@ -404,16 +323,7 @@ def test_update_others_rating(api_client, expected, method, rating_data, request
         assert response.data["author"]["id"] != user.id
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_204_NO_CONTENT),
-        ("staff_user", HTTP_204_NO_CONTENT),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_204_NO_CONTENT)
 def test_destroy_own_rating(api_client, expected, request, user):
     video_request = baker.make("video_requests.Request")
     video = baker.make(
@@ -435,16 +345,7 @@ def test_destroy_own_rating(api_client, expected, request, user):
     assert response.status_code == expected
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_204_NO_CONTENT),
-        ("staff_user", HTTP_403_FORBIDDEN),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@admin_only(HTTP_204_NO_CONTENT)
 def test_destroy_others_rating(api_client, expected, request, user):
     video_request = baker.make("video_requests.Request")
     video = baker.make(
@@ -465,16 +366,7 @@ def test_destroy_others_rating(api_client, expected, request, user):
     assert response.status_code == expected
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_404_NOT_FOUND),
-        ("staff_user", HTTP_404_NOT_FOUND),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_404_NOT_FOUND)
 @pytest.mark.parametrize("method", ["GET", "DELETE", "PATCH", "PUT"])
 def test_retrieve_update_destroy_rating_error(
     api_client,
@@ -595,16 +487,7 @@ def test_retrieve_update_destroy_rating_error(
     assert response.status_code == expected
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_404_NOT_FOUND),
-        ("staff_user", HTTP_404_NOT_FOUND),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_404_NOT_FOUND)
 def test_retrieve_own_rating_error(api_client, expected, request, user):
     # Create a rating but not by our own user
     video_request = baker.make("video_requests.Request")
@@ -627,16 +510,7 @@ def test_retrieve_own_rating_error(api_client, expected, request, user):
         assert_response_keys(response.data)
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_400_BAD_REQUEST),
-        ("staff_user", HTTP_400_BAD_REQUEST),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_400_BAD_REQUEST)
 @pytest.mark.parametrize("method", ["PATCH", "POST", "PUT"])
 @pytest.mark.parametrize("rating_value", [-10, 10])
 def test_create_update_rating_invalid_rating(

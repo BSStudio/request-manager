@@ -11,21 +11,21 @@ from rest_framework.status import (
     HTTP_201_CREATED,
     HTTP_204_NO_CONTENT,
     HTTP_400_BAD_REQUEST,
-    HTTP_401_UNAUTHORIZED,
-    HTTP_403_FORBIDDEN,
     HTTP_404_NOT_FOUND,
     is_success,
 )
 from social_django.models import UserSocialAuth
 
 from common.models import User
-from tests.api.helpers import assert_fields_exist, do_login, get_response, login
+from tests.api.asserts import assert_exact_fields
+from tests.api.helpers import do_login, get_response, login
+from tests.api.matrix import admin_only, staff_only
 
 pytestmark = pytest.mark.django_db
 
 
 def assert_list_response_keys(user):
-    assert_fields_exist(
+    assert_exact_fields(
         user,
         [
             "avatar_url",
@@ -39,7 +39,7 @@ def assert_list_response_keys(user):
 
 
 def assert_retrieve_response_keys(user):
-    assert_fields_exist(
+    assert_exact_fields(
         user,
         [
             "ban",
@@ -55,7 +55,7 @@ def assert_retrieve_response_keys(user):
         ],
     )
 
-    assert_fields_exist(
+    assert_exact_fields(
         user["profile"],
         [
             "avatar",
@@ -65,7 +65,7 @@ def assert_retrieve_response_keys(user):
     )
 
     if user["ban"]:
-        assert_fields_exist(
+        assert_exact_fields(
             user["ban"],
             [
                 "created",
@@ -76,7 +76,7 @@ def assert_retrieve_response_keys(user):
 
     if user["social_accounts"]:
         for social_account in user["social_accounts"]:
-            assert_fields_exist(social_account, ["provider", "uid"])
+            assert_exact_fields(social_account, ["provider", "uid"])
 
 
 @pytest.fixture
@@ -89,16 +89,7 @@ def user_data():
     }
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_200_OK)
 @pytest.mark.parametrize("pagination", [True, False])
 def test_list_users(api_client, expected, pagination, request, user):
     do_login(api_client, request, user)
@@ -112,10 +103,10 @@ def test_list_users(api_client, expected, pagination, request, user):
 
     if is_success(response.status_code):
         if pagination:
-            assert_fields_exist(
+            assert_exact_fields(
                 response.data, ["count", "links", "results", "total_pages"]
             )
-            assert_fields_exist(response.data["links"], ["next", "previous"])
+            assert_exact_fields(response.data["links"], ["next", "previous"])
 
             assert response.data["count"] == len(users) + 1
 
@@ -125,16 +116,7 @@ def test_list_users(api_client, expected, pagination, request, user):
             assert_list_response_keys(user)
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_200_OK)
 @pytest.mark.parametrize("banned", [True, False])
 @pytest.mark.parametrize("has_groups", [True, False])
 @pytest.mark.parametrize("has_social_accounts", [True, False])
@@ -195,16 +177,7 @@ def test_retrieve_user(
                 )
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_200_OK)
 @pytest.mark.parametrize("method", ["PATCH", "PUT"])
 def test_update_own_user(api_client, expected, method, request, user, user_data):
     user = do_login(api_client, request, user)
@@ -227,16 +200,7 @@ def test_update_own_user(api_client, expected, method, request, user, user_data)
         )
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_403_FORBIDDEN),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@admin_only(HTTP_200_OK)
 @pytest.mark.parametrize("method", ["PATCH", "PUT"])
 def test_update_other_user(api_client, expected, method, request, user, user_data):
     do_login(api_client, request, user)
@@ -261,16 +225,7 @@ def test_update_other_user(api_client, expected, method, request, user, user_dat
         )
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_404_NOT_FOUND),
-        ("staff_user", HTTP_404_NOT_FOUND),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_404_NOT_FOUND)
 @pytest.mark.parametrize("method", ["GET", "PATCH", "PUT"])
 def test_retrieve_update_user_error(
     api_client, expected, method, not_existing_user_id, request, user, user_data
@@ -283,16 +238,7 @@ def test_retrieve_update_user_error(
     assert response.status_code == expected
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_400_BAD_REQUEST),
-        ("staff_user", HTTP_400_BAD_REQUEST),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_400_BAD_REQUEST)
 @pytest.mark.parametrize("data", ["email", "first_name", "last_name"])
 @pytest.mark.parametrize("value", ["", None])
 @pytest.mark.parametrize("method", ["PATCH", "PUT"])
@@ -392,16 +338,7 @@ def test_update_user_avatar(admin_user, api_client, method):
     )
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_201_CREATED),
-        ("staff_user", HTTP_403_FORBIDDEN),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@admin_only(HTTP_201_CREATED)
 @pytest.mark.parametrize("data", [{"reason": "Lorem Ipsum"}, None])
 def test_create_user_ban(api_client, data, expected, request, user):
     own_user = do_login(api_client, request, user)
@@ -415,7 +352,7 @@ def test_create_user_ban(api_client, data, expected, request, user):
     assert response.status_code == expected
 
     if is_success(response.status_code):
-        assert_fields_exist(
+        assert_exact_fields(
             response.data,
             [
                 "created",
@@ -423,7 +360,7 @@ def test_create_user_ban(api_client, data, expected, request, user):
                 "reason",
             ],
         )
-        assert_fields_exist(
+        assert_exact_fields(
             response.data["creator"],
             [
                 "avatar_url",
@@ -442,16 +379,7 @@ def test_create_user_ban(api_client, data, expected, request, user):
         assert response.data["creator"]["id"] == own_user.id
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_400_BAD_REQUEST),
-        ("staff_user", HTTP_403_FORBIDDEN),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@admin_only(HTTP_400_BAD_REQUEST)
 def test_create_user_ban_validation(api_client, expected, request, user):
     user = do_login(api_client, request, user)
 
@@ -467,16 +395,7 @@ def test_create_user_ban_validation(api_client, expected, request, user):
         )
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_400_BAD_REQUEST),
-        ("staff_user", HTTP_403_FORBIDDEN),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@admin_only(HTTP_400_BAD_REQUEST)
 def test_create_user_ban_error(api_client, expected, request, user):
     do_login(api_client, request, user)
 
@@ -496,16 +415,7 @@ def test_create_user_ban_error(api_client, expected, request, user):
         )
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_204_NO_CONTENT),
-        ("staff_user", HTTP_403_FORBIDDEN),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@admin_only(HTTP_204_NO_CONTENT)
 def test_destroy_user_ban(api_client, expected, request, user):
     own_user = do_login(api_client, request, user)
 
@@ -520,16 +430,7 @@ def test_destroy_user_ban(api_client, expected, request, user):
     assert response.status_code == expected
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_404_NOT_FOUND),
-        ("staff_user", HTTP_403_FORBIDDEN),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@admin_only(HTTP_404_NOT_FOUND)
 def test_destroy_user_ban_error(api_client, expected, request, user):
     do_login(api_client, request, user)
 
@@ -542,16 +443,7 @@ def test_destroy_user_ban_error(api_client, expected, request, user):
     assert response.status_code == expected
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_200_OK)
 @pytest.mark.parametrize("was_crew_member", [True, False])
 @pytest.mark.parametrize("was_editor", [True, False])
 @pytest.mark.parametrize("was_responsible", [True, False])
@@ -676,7 +568,7 @@ def test_user_worked_on(
     if is_success(response.status_code):
         assert len(response.data) == len(should_find)
         for video_request in response.data:
-            assert_fields_exist(
+            assert_exact_fields(
                 video_request,
                 [
                     "id",

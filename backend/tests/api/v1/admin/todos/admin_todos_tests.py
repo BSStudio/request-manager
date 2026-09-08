@@ -14,14 +14,16 @@ from rest_framework.status import (
 )
 
 from common.models import User
-from tests.api.helpers import assert_fields_exist, do_login, get_response
+from tests.api.asserts import assert_exact_fields
+from tests.api.helpers import do_login, get_response
+from tests.api.matrix import staff_only
 from video_requests.models import Todo
 
 pytestmark = pytest.mark.django_db
 
 
 def assert_response_keys(todo):
-    assert_fields_exist(
+    assert_exact_fields(
         todo,
         [
             "assignees",
@@ -35,15 +37,15 @@ def assert_response_keys(todo):
         ],
     )
 
-    assert_fields_exist(todo.get("creator"), ["avatar_url", "full_name", "id"])
-    assert_fields_exist(todo.get("request"), ["id", "title"])
+    assert_exact_fields(todo.get("creator"), ["avatar_url", "full_name", "id"])
+    assert_exact_fields(todo.get("request"), ["id", "title"])
 
     for assignee in todo.get("assignees"):
-        assert_fields_exist(assignee, ["avatar_url", "full_name", "id"])
+        assert_exact_fields(assignee, ["avatar_url", "full_name", "id"])
 
     video = todo.get("video")
     if video:
-        assert_fields_exist(video, ["id", "title"])
+        assert_exact_fields(video, ["id", "title"])
 
 
 @pytest.fixture
@@ -51,16 +53,7 @@ def todo_data():
     return {"description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit."}
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_200_OK)
 def test_list_todos_on_request(api_client, expected, request, user):
     video_request = baker.make("video_requests.Request")
     todos = baker.make("video_requests.Todo", request=video_request, _quantity=5)
@@ -81,16 +74,7 @@ def test_list_todos_on_request(api_client, expected, request, user):
             assert_response_keys(todo)
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_200_OK)
 def test_list_todos_on_video(api_client, expected, request, user):
     video_request = baker.make("video_requests.Request")
     video = baker.make("video_requests.Video", request=video_request)
@@ -124,16 +108,7 @@ def test_list_todos_on_video(api_client, expected, request, user):
             assert_response_keys(todo)
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_201_CREATED),
-        ("staff_user", HTTP_201_CREATED),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_201_CREATED)
 def test_create_todo_on_request_and_video(
     api_client, expected, request, todo_data, user
 ):
@@ -184,16 +159,7 @@ def test_create_todo_on_request_and_video(
             assert len(response.data) == number_of_todos_on_request + 1
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_201_CREATED),
-        ("staff_user", HTTP_201_CREATED),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_201_CREATED)
 def test_create_todo_all_fields_on_request_and_video(
     api_client, expected, request, todo_data, user
 ):
@@ -261,16 +227,7 @@ def test_create_todo_all_fields_on_request_and_video(
             assert len(response.data) == number_of_todos_on_request + 1
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_404_NOT_FOUND),
-        ("staff_user", HTTP_404_NOT_FOUND),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_404_NOT_FOUND)
 @pytest.mark.parametrize("method", ["GET", "POST"])
 def test_list_create_todos_error_on_request(
     api_client,
@@ -296,16 +253,7 @@ def test_list_create_todos_error_on_request(
     assert response.status_code == expected
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_404_NOT_FOUND),
-        ("staff_user", HTTP_404_NOT_FOUND),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_404_NOT_FOUND)
 @pytest.mark.parametrize("method", ["GET", "POST"])
 def test_list_create_todos_error_on_video(
     api_client,
@@ -354,16 +302,7 @@ def test_list_create_todos_error_on_video(
     assert response.status_code == expected
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_400_BAD_REQUEST),
-        ("staff_user", HTTP_400_BAD_REQUEST),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_400_BAD_REQUEST)
 def test_create_todos_validation_on_request_and_video(
     api_client, expected, request, user
 ):
@@ -421,16 +360,7 @@ def test_create_todos_validation_on_request_and_video(
 """
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_200_OK)
 @pytest.mark.parametrize("pagination", [True, False])
 def test_list_all_todos(api_client, expected, pagination, request, user):
     video_requests = baker.make("video_requests.Request", _quantity=5)
@@ -463,10 +393,10 @@ def test_list_all_todos(api_client, expected, pagination, request, user):
 
     if is_success(response.status_code):
         if pagination:
-            assert_fields_exist(
+            assert_exact_fields(
                 response.data, ["count", "links", "results", "total_pages"]
             )
-            assert_fields_exist(response.data["links"], ["next", "previous"])
+            assert_exact_fields(response.data["links"], ["next", "previous"])
 
             assert response.data["count"] == len(todos)
 
@@ -551,16 +481,7 @@ def test_retrieve_update_destroy_todo(
             assert response.data["description"] == todo_data["description"]
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_204_NO_CONTENT),
-        ("staff_user", HTTP_204_NO_CONTENT),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_204_NO_CONTENT)
 def test_destroy_todo_created_by_user(api_client, expected, request, user):
     user = do_login(api_client, request, user)
 
@@ -576,16 +497,7 @@ def test_destroy_todo_created_by_user(api_client, expected, request, user):
     assert response.status_code == expected
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_200_OK)
 @pytest.mark.parametrize("method", ["PATCH", "PUT"])
 def test_update_todo_all_fields(api_client, expected, method, request, todo_data, user):
     video_request = baker.make("video_requests.Request")
@@ -623,16 +535,7 @@ def test_update_todo_all_fields(api_client, expected, method, request, todo_data
         assert response.data["status"] == Todo.Statuses.CLOSED
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_404_NOT_FOUND),
-        ("staff_user", HTTP_404_NOT_FOUND),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_404_NOT_FOUND)
 @pytest.mark.parametrize("method", ["DELETE", "GET", "PATCH", "PUT"])
 def test_retrieve_update_destroy_todo_error(
     api_client, expected, method, not_existing_todo_id, request, todo_data, user
@@ -648,16 +551,7 @@ def test_retrieve_update_destroy_todo_error(
     assert response.status_code == expected
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_400_BAD_REQUEST),
-        ("staff_user", HTTP_400_BAD_REQUEST),
-        ("basic_user", HTTP_403_FORBIDDEN),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@staff_only(HTTP_400_BAD_REQUEST)
 @pytest.mark.parametrize("method", ["PATCH", "PUT"])
 def test_update_todo_validation(api_client, expected, method, request, user):
     video_request = baker.make("video_requests.Request")
