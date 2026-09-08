@@ -1,9 +1,9 @@
 from celery import shared_task
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.core.mail import EmailMultiAlternatives
 from django.template.loader import render_to_string
 
+from common.models import User
 from common.utilities import get_editor_in_chief, get_production_manager
 from video_requests.models import Comment, Request, Todo, Video
 

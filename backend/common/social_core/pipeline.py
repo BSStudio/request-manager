@@ -41,7 +41,7 @@ def associate_by_email(backend, details, user=None, *args, **kwargs):
 
 
 def check_if_user_is_banned(backend, user=None, *args, **kwargs):
-    if bool(user and hasattr(user, "ban")):
+    if user and user.is_banned:
         raise AuthenticationFailed(detail="Your account is suspended.")
 
 
@@ -133,7 +133,7 @@ def disconnect_all_other_profiles_and_change_username_on_first_bss_login(
 
 
 def add_phone_number_to_profile(backend, details, response, user, *args, **kwargs):
-    if user.userprofile.phone_number:
+    if user.phone_number:
         return
 
     phone_number = None
@@ -173,14 +173,14 @@ def add_phone_number_to_profile(backend, details, response, user, *args, **kwarg
                 phone_number = f"+{resp.json()['value'][0]['number']}"
 
     # Set phone number
-    if not user.userprofile.phone_number and phone_number:
-        user.userprofile.phone_number = phone_number
+    if not user.phone_number and phone_number:
+        user.phone_number = phone_number
         user.save()
 
 
 def get_avatar(backend, response, user, *args, **kwargs):
     if backend.name == "google-oauth2" and response.get("picture"):
-        user.userprofile.avatar["google-oauth2"] = response["picture"][:-6]
+        user.avatar["google-oauth2"] = response["picture"][:-6]
 
     elif backend.name == "microsoft-graph":
         resp = requests.get(
@@ -192,7 +192,7 @@ def get_avatar(backend, response, user, *args, **kwargs):
             timeout=5,
         )
         if resp.status_code == 200:
-            user.userprofile.avatar["microsoft-graph"] = (
+            user.avatar["microsoft-graph"] = (
                 f"data:image/jpg;base64,{b64encode(resp.content).decode('utf-8')}"
             )
 
@@ -202,18 +202,18 @@ def get_avatar(backend, response, user, *args, **kwargs):
     try:
         resp = requests.get(url, timeout=5)
         resp.raise_for_status()
-        user.userprofile.avatar["gravatar"] = url
-        if not user.userprofile.avatar.get("provider", None):
-            user.userprofile.avatar["provider"] = "gravatar"
+        user.avatar["gravatar"] = url
+        if not user.avatar.get("provider", None):
+            user.avatar["provider"] = "gravatar"
     except requests.exceptions.HTTPError:
         logger.debug("Gravatar not found for %s", user.email)
 
     if (
-        not user.userprofile.avatar.get("provider", None)
+        not user.avatar.get("provider", None)
         and backend.name in ["google-oauth2", "microsoft-graph"]
-        and user.userprofile.avatar.get(backend.name)
+        and user.avatar.get(backend.name)
     ):
-        user.userprofile.avatar["provider"] = backend.name
+        user.avatar["provider"] = backend.name
 
     user.save()
 
@@ -264,5 +264,18 @@ def allowed_to_disconnect(
 def delete_avatar(
     strategy, user, name, user_storage, association_id=None, *args, **kwargs
 ):
-    if user.userprofile.avatar.pop(name, None):
-        user.save()
+    if name not in user.avatar:
+        return
+
+    del user.avatar[name]
+
+    if user.avatar.get("provider") == name:
+        remaining = sorted(key for key in user.avatar if key != "provider")
+        if "gravatar" in remaining:
+            user.avatar["provider"] = "gravatar"
+        elif remaining:
+            user.avatar["provider"] = remaining[0]
+        else:
+            user.avatar = {}
+
+    user.save()

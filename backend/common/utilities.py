@@ -1,48 +1,12 @@
 from celery import shared_task
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.db import models
 from google.oauth2.service_account import Credentials
 from googleapiclient.discovery import build
 from googleapiclient.discovery_cache.base import Cache
 
+from common.models import User
 from video_requests.models import Request
-
-
-##############################
-#          Common            #
-##############################
-@property
-def role(self) -> str:
-    if self.is_admin:
-        return "admin"
-    elif self.is_staff:
-        return "staff"
-    else:
-        return "user"
-
-
-def get_full_name_eastern_order(self) -> str:
-    full_name = f"{self.last_name} {self.first_name}"
-    return full_name.strip()
-
-
-@property
-def is_admin(self) -> bool:
-    return self.is_staff and (
-        self.groups.filter(name=settings.ADMIN_GROUP).exists() or self.is_superuser
-    )
-
-
-@property
-def is_service_account(self) -> bool:
-    return self.groups.filter(name=settings.SERVICE_ACCOUNTS_GROUP).exists()
-
-
-User.add_to_class("role", role)
-User.add_to_class("get_full_name_eastern_order", get_full_name_eastern_order)
-User.add_to_class("is_admin", is_admin)
-User.add_to_class("is_service_account", is_service_account)
 
 
 ##############################

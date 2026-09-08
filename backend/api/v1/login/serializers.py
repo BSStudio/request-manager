@@ -33,7 +33,7 @@ class TokenObtainPairOAuth2Serializer(SimpleJWTTokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
         token = super().get_token(user)
-        token["avatar"] = user.userprofile.avatar_url
+        token["avatar"] = user.avatar_url
         token["groups"] = list(user.groups.values_list("name", flat=True))
         token["name"] = user.get_full_name_eastern_order()
         token["role"] = user.role

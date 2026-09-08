@@ -91,9 +91,7 @@ def test_create_crew_member(
     if is_success(response.status_code):
         assert_response_keys(response.data)
 
-        assert (
-            response.data["member"]["avatar_url"] == staff_user.userprofile.avatar_url
-        )
+        assert response.data["member"]["avatar_url"] == staff_user.avatar_url
         assert (
             response.data["member"]["full_name"]
             == staff_user.get_full_name_eastern_order()

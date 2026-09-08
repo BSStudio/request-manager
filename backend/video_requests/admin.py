@@ -1,5 +1,8 @@
+from functools import cache
+
 from django.contrib import admin
 from django.contrib.admin import ModelAdmin
+from django.contrib.auth import get_user_model
 from django.db.models import Avg, Count
 from django.urls import reverse
 from django.utils.html import format_html, format_html_join
@@ -7,6 +10,17 @@ from django.utils.safestring import mark_safe
 from simple_history.admin import SimpleHistoryAdmin
 
 from video_requests.models import Comment, CrewMember, Rating, Request, Todo, Video
+
+
+@cache
+def user_change_url_name():
+    # Built from the model so that swapping AUTH_USER_MODEL cannot break the link.
+    options = get_user_model()._meta
+    return f"admin:{options.app_label}_{options.model_name}_change"
+
+
+def user_change_url(user_id):
+    return reverse(user_change_url_name(), args=(user_id,))
 
 
 @admin.register(Request)
@@ -33,7 +47,7 @@ class RequestHistoryAdmin(SimpleHistoryAdmin):
 
     @admin.display(description="Requester")
     def requester_link(self, obj):
-        url = reverse("admin:auth_user_change", args=(obj.requester.id,))
+        url = user_change_url(obj.requester.id)
         return format_html('<a href="{}">{}</a>', url, obj.requester.get_full_name())
 
     def save_model(self, request, obj, form, change):
@@ -54,7 +68,7 @@ class CrewMemberHistoryAdmin(SimpleHistoryAdmin):
 
     @admin.display(description="Crew Member")
     def member_link(self, obj):
-        url = reverse("admin:auth_user_change", args=(obj.member.id,))
+        url = user_change_url(obj.member.id)
         return format_html('<a href="{}">{}</a>', url, obj.member.get_full_name())
 
 
@@ -92,7 +106,7 @@ class CommentHistoryAdmin(SimpleHistoryAdmin):
 
     @admin.display(description="Author")
     def author_link(self, obj):
-        url = reverse("admin:auth_user_change", args=(obj.author.id,))
+        url = user_change_url(obj.author.id)
         return format_html('<a href="{}">{}</a>', url, obj.author.get_full_name())
 
 
@@ -118,7 +132,7 @@ class RatingHistoryAdmin(SimpleHistoryAdmin):
 
     @admin.display(description="Author")
     def author_link(self, obj):
-        url = reverse("admin:auth_user_change", args=(obj.author.id,))
+        url = user_change_url(obj.author.id)
         return format_html('<a href="{}">{}</a>', url, obj.author.get_full_name())
 
 
@@ -153,7 +167,7 @@ class TodoAdmin(ModelAdmin):
             '<a href="{}">{}</a>',
             (
                 (
-                    reverse("admin:auth_user_change", args=(assignee.id,)),
+                    user_change_url(assignee.id),
                     assignee.get_full_name_eastern_order(),
                 )
                 for assignee in obj.assignees.all()

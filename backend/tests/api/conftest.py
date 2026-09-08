@@ -1,9 +1,10 @@
 from random import randint
 
 import pytest
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
 from rest_framework.test import APIClient
 
+from common.models import User
 from video_requests.models import Comment, Request, Todo, Video
 
 
@@ -27,10 +28,8 @@ def admin_user(settings):
     group = Group.objects.get_or_create(name=settings.ADMIN_GROUP)[0]
     user.groups.add(group)
 
+    user.phone_number = "+36509999999"
     user.save()
-
-    user.userprofile.phone_number = "+36509999999"
-    user.userprofile.save()
 
     return user
 
@@ -46,8 +45,8 @@ def staff_user():
         username="staff",
     )
 
-    user.userprofile.phone_number = "+36509999999"
-    user.userprofile.save()
+    user.phone_number = "+36509999999"
+    user.save()
     return user
 
 
@@ -62,8 +61,8 @@ def basic_user():
         username="basic",
     )
 
-    user.userprofile.phone_number = "+36509999999"
-    user.userprofile.save()
+    user.phone_number = "+36509999999"
+    user.save()
     return user
 
 
@@ -80,10 +79,9 @@ def service_account(settings):
 
     grp = Group.objects.get_or_create(name=settings.SERVICE_ACCOUNTS_GROUP)[0]
     user.groups.add(grp)
-    user.save()
 
-    user.userprofile.phone_number = "+36509999999"
-    user.userprofile.save()
+    user.phone_number = "+36509999999"
+    user.save()
 
     return user
 

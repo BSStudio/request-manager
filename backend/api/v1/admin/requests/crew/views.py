@@ -38,7 +38,7 @@ class CrewMemberAdminViewSet(ModelViewSet):
     def get_queryset(self):
         if getattr(self, "swagger_fake_view", False):
             return CrewMember.objects.none()
-        return CrewMember.objects.select_related("member__userprofile").filter(
+        return CrewMember.objects.select_related("member").filter(
             request=get_object_or_404(Request, pk=self.kwargs["request_pk"])
         )
 

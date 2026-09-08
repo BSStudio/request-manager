@@ -55,7 +55,7 @@ class VideoAdminViewSet(ModelViewSet):
         if getattr(self, "swagger_fake_view", False):
             return Video.objects.none()
         return (
-            Video.objects.select_related("editor__userprofile")
+            Video.objects.select_related("editor")
             .prefetch_related(
                 Prefetch(
                     "ratings",

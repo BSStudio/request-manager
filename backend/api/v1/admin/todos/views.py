@@ -1,5 +1,3 @@
-from django.contrib.auth.models import User
-from django.db.models import Prefetch
 from django_filters.rest_framework import DjangoFilterBackend
 from drf_spectacular.utils import extend_schema
 from rest_framework.filters import OrderingFilter
@@ -36,15 +34,10 @@ class TodoAdminViewSet(RetrieveUpdateDestroyAPIView, ListModelMixin, GenericView
     ]
     pagination_class = ExtendedPagination
     queryset = (
-        Todo.objects.select_related("creator__userprofile")
+        Todo.objects.select_related("creator")
         .select_related("request")
         .select_related("video")
-        .prefetch_related(
-            Prefetch(
-                "assignees",
-                queryset=User.objects.select_related("userprofile"),
-            ),
-        )
+        .prefetch_related("assignees")
         .all()
     )
 
@@ -118,30 +111,20 @@ class TodoAdminRequestVideoViewSet(ListCreateAPIView, GenericViewSet):
             return Todo.objects.none()
         if self.kwargs.get("video_pk"):
             return (
-                Todo.objects.select_related("creator__userprofile")
+                Todo.objects.select_related("creator")
                 .select_related("request")
                 .select_related("video")
-                .prefetch_related(
-                    Prefetch(
-                        "assignees",
-                        queryset=User.objects.select_related("userprofile"),
-                    )
-                )
+                .prefetch_related("assignees")
                 .filter(
                     request=get_object_or_404(Request, pk=self.kwargs["request_pk"]),
                     video=get_object_or_404(Video, pk=self.kwargs["video_pk"]),
                 )
             )
         return (
-            Todo.objects.select_related("creator__userprofile")
+            Todo.objects.select_related("creator")
             .select_related("request")
             .select_related("video")
-            .prefetch_related(
-                Prefetch(
-                    "assignees",
-                    queryset=User.objects.select_related("userprofile"),
-                )
-            )
+            .prefetch_related("assignees")
             .filter(
                 request=get_object_or_404(Request, pk=self.kwargs["request_pk"]),
             )

@@ -3,11 +3,11 @@ from urllib.parse import urlparse
 
 import requests
 from django.conf import settings
-from django.contrib.auth.models import User
+from django.contrib.auth.hashers import make_password
 from django.core.management.base import BaseCommand
 from django.db.models import Q
 
-from common.models import UserProfile
+from common.models import User
 from common.social_core.backends import BSSLoginOAuth2
 from common.social_core.pipeline import set_groups_and_permissions_for_staff
 
@@ -44,55 +44,68 @@ class Command(BaseCommand):
             if User.objects.filter(
                 username=result["username"], is_staff=False
             ).exists():
-                logger.exception(
+                logger.error(
                     "User with username %s already exists as non-staff.",
                     result["username"],
+                    stack_info=True,
                 )
                 continue
 
             # In really rare cases e-mail address might exist for a different user
             # We want manual interaction and validation here, so we raise exception and continue
             if (
-                User.objects.filter(email=result["email"])
+                User.objects.filter(email__iexact=result["email"])
                 .exclude(username=result["username"])
                 .exists()
             ):
-                logger.exception(
+                logger.error(
                     "E-mail address %s is already assigned to a different user (sync user: %s).",
                     result["email"],
                     result["username"],
+                    stack_info=True,
                 )
                 continue
 
+            # These columns are NOT NULL, so the entry cannot be written.
+            # Report it and let it be fixed in the directory.
+            missing_attributes = [
+                attribute
+                for attribute in ("first_name", "last_name", "mobile")
+                if not result["attributes"].get(attribute)
+            ]
+            if missing_attributes:
+                logger.error(
+                    "User %s is missing attributes in the directory: %s.",
+                    result["username"],
+                    ", ".join(missing_attributes),
+                    stack_info=True,
+                )
+                # Counted as found so that a directory problem cannot demote
+                # somebody who really is staff.
+                users_found.append(result["username"])
+                continue
+
             user, created = User.objects.get_or_create(
-                username=result["username"], defaults={"is_staff": True}
+                username=result["username"],
+                defaults={"is_staff": True, "password": make_password(None)},
             )
 
             user.first_name = result["attributes"].get("first_name")
             user.last_name = result["attributes"].get("last_name")
             user.email = result["email"]
-            user.save()
-
-            try:
-                profile = user.userprofile  # Check if profile really exist
-            except UserProfile.DoesNotExist:
-                profile = UserProfile.objects.create(
-                    user=user
-                )  # Create profile if it does not exist
-
-            profile.phone_number = result["attributes"].get("mobile")
+            user.phone_number = result["attributes"].get("mobile")
 
             avatar_url_hostname = urlparse(result.get("avatar", "")).hostname
             if avatar_url_hostname and (
                 avatar_url_hostname == "gravatar.com"
                 or avatar_url_hostname.endswith(".gravatar.com")
             ):
-                profile.avatar["gravatar"] = result["avatar"]
+                user.avatar["gravatar"] = result["avatar"]
 
-                if not profile.avatar.get("provider", None):
-                    profile.avatar["provider"] = "gravatar"
+                if not user.avatar.get("provider", None):
+                    user.avatar["provider"] = "gravatar"
 
-            profile.save()
+            user.save()
 
             # Use the social-auth pipeline function to set the groups, but we need some transformation
             groups = [group["name"] for group in result["groups_obj"]]

@@ -1,7 +1,6 @@
 from datetime import datetime, timedelta
 
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
@@ -67,17 +66,19 @@ class Request(models.Model):
         choices=Statuses, default=Statuses.REQUESTED, db_index=True
     )
     responsible = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         related_name="responsible_requests",
         on_delete=models.SET(get_sentinel_user),
         blank=True,
         null=True,
     )
     requester = models.ForeignKey(
-        User, related_name="requested_requests", on_delete=models.SET(get_sentinel_user)
+        settings.AUTH_USER_MODEL,
+        related_name="requested_requests",
+        on_delete=models.SET(get_sentinel_user),
     )
     requested_by = models.ForeignKey(
-        User,
+        settings.AUTH_USER_MODEL,
         related_name="submitted_requests",
         on_delete=models.SET(get_sentinel_user),
     )
@@ -121,7 +122,7 @@ class Request(models.Model):
 
 
 class CrewMember(models.Model):
-    member = models.ForeignKey(User, on_delete=models.CASCADE)
+    member = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     request = models.ForeignKey(Request, on_delete=models.CASCADE, related_name="crew")
     position = models.CharField(max_length=20)
 
@@ -143,7 +144,10 @@ class Video(models.Model):
         Request, on_delete=models.CASCADE, related_name="videos"
     )
     editor = models.ForeignKey(
-        User, on_delete=models.SET(get_sentinel_user), blank=True, null=True
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET(get_sentinel_user),
+        blank=True,
+        null=True,
     )
     status = models.PositiveSmallIntegerField(
         choices=Statuses, default=Statuses.PENDING, db_index=True

@@ -1,7 +1,6 @@
 from datetime import date, timedelta
 
 from decouple import strtobool
-from django.contrib.auth.models import User
 from django.db.models import Value
 from django.db.models.functions import Concat
 from django.utils.timezone import localdate
@@ -25,7 +24,7 @@ from api.v1.admin.users.serializers import (
     UserAdminRetrieveUpdateSerializer,
     UserAdminWorkedOnSerializer,
 )
-from common.models import Ban as BanModel
+from common.models import Ban, User
 from common.rest_framework.pagination import ExtendedPagination
 from common.rest_framework.permissions import (
     IsAdminUser,
@@ -49,15 +48,13 @@ class UserAdminViewSet(
         "email",
         "full_name",
         "is_staff",
-        "userprofile__phone_number",
+        "phone_number",
     ]
     pagination_class = ExtendedPagination
     queryset = (
-        User.objects.select_related("userprofile")
-        .prefetch_related("groups")
+        User.objects.prefetch_related("groups")
         .annotate(full_name=Concat("last_name", Value(" "), "first_name"))
         .all()
-        .cache()
     )
     search_fields = ["first_name", "last_name"]
 
@@ -87,7 +84,7 @@ class UserAdminViewSet(
     @extend_schema()
     @ban.mapping.delete
     def delete_ban(self, request, pk=None):
-        instance = get_object_or_404(BanModel, receiver__pk=pk)
+        instance = get_object_or_404(Ban, receiver__pk=pk)
         instance.delete()
         return Response(status=HTTP_204_NO_CONTENT)
 

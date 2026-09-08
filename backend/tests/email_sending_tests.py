@@ -5,7 +5,6 @@ from unittest.mock import patch
 import time_machine
 from decouple import config
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.core import mail
 from django.core.management import call_command
 from django.test import override_settings
@@ -16,7 +15,7 @@ from rest_framework.reverse import reverse
 from rest_framework.test import APITestCase
 from rest_framework_simplejwt.tokens import AccessToken
 
-from common.models import get_system_user
+from common.models import User, get_system_user
 from tests.helpers.test_utils import conditional_override_settings
 from tests.helpers.users_test_utils import create_user
 from tests.helpers.video_requests_test_utils import (
@@ -452,6 +451,10 @@ class EmailSendingTestCase(APITestCase):
         self.assertEqual(
             mail.outbox[1].subject, f"{request.title} | Hozzászólás érkezett"
         )
+        # Both templates show the commenter's avatar
+        avatar_url = self.staff_user.avatar_url
+        self.assertIn(avatar_url, mail.outbox[0].alternatives[0].content)
+        self.assertIn(avatar_url, mail.outbox[1].alternatives[0].content)
 
     def test_new_comment_email_sent_to_crew_admin_endpoint_internal(self):
         # Setup data - Create a Request, add Crew members and Responsible

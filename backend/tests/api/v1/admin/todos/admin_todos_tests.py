@@ -1,5 +1,4 @@
 import pytest
-from django.contrib.auth.models import User
 from model_bakery import baker
 from rest_framework.exceptions import ErrorDetail
 from rest_framework.reverse import reverse
@@ -14,6 +13,7 @@ from rest_framework.status import (
     is_success,
 )
 
+from common.models import User
 from tests.api.helpers import assert_fields_exist, do_login, get_response
 from video_requests.models import Todo
 
@@ -163,7 +163,7 @@ def test_create_todo_on_request_and_video(
         if is_success(response.status_code):
             assert_response_keys(response.data)
 
-            assert response.data["creator"]["avatar_url"] == user.userprofile.avatar_url
+            assert response.data["creator"]["avatar_url"] == user.avatar_url
             assert (
                 response.data["creator"]["full_name"]
                 == user.get_full_name_eastern_order()
@@ -231,7 +231,7 @@ def test_create_todo_all_fields_on_request_and_video(
         if is_success(response.status_code):
             assert_response_keys(response.data)
 
-            assert response.data["creator"]["avatar_url"] == user.userprofile.avatar_url
+            assert response.data["creator"]["avatar_url"] == user.avatar_url
             assert (
                 response.data["creator"]["full_name"]
                 == user.get_full_name_eastern_order()
@@ -241,9 +241,7 @@ def test_create_todo_all_fields_on_request_and_video(
             assert response.data["description"] == todo_data["description"]
 
             for assignee in response.data["assignees"]:
-                assert assignee["avatar_url"] in [
-                    user.userprofile.avatar_url for user in users
-                ]
+                assert assignee["avatar_url"] in [user.avatar_url for user in users]
                 assert assignee["full_name"] in [
                     user.get_full_name_eastern_order() for user in users
                 ]
@@ -616,9 +614,7 @@ def test_update_todo_all_fields(api_client, expected, method, request, todo_data
         assert response.data["description"] == todo_data["description"]
 
         for assignee in response.data["assignees"]:
-            assert assignee["avatar_url"] in [
-                user.userprofile.avatar_url for user in users
-            ]
+            assert assignee["avatar_url"] in [user.avatar_url for user in users]
             assert assignee["full_name"] in [
                 user.get_full_name_eastern_order() for user in users
             ]

@@ -2,12 +2,13 @@ from time import sleep
 
 import pytest
 from django.conf import settings
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
 from rest_framework.exceptions import ErrorDetail
 from rest_framework.reverse import reverse
 from rest_framework.status import HTTP_200_OK, HTTP_401_UNAUTHORIZED
 from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
+from common.models import User
 from tests.api.helpers import login
 
 pytestmark = pytest.mark.django_db
@@ -58,7 +59,7 @@ def test_custom_jwt_claims(api_client, expected, user, request):
     assert response.status_code == HTTP_200_OK
 
     token = AccessToken(response.data["access"])
-    assert token.payload["avatar"] == user.userprofile.avatar_url
+    assert token.payload["avatar"] == user.avatar_url
     for group in groups:
         assert group in token.payload["groups"]
     assert token.payload["name"] == user.get_full_name_eastern_order()

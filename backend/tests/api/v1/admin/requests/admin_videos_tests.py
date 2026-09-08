@@ -1,7 +1,6 @@
 from random import randint
 
 import pytest
-from django.contrib.auth.models import User
 from model_bakery import baker
 from rest_framework.reverse import reverse
 from rest_framework.status import (
@@ -15,6 +14,7 @@ from rest_framework.status import (
     is_success,
 )
 
+from common.models import User
 from tests.api.helpers import assert_fields_exist, do_login, get_response
 from video_requests.models import Video
 
@@ -386,7 +386,7 @@ def test_create_update_video_editor(
     if is_success(response.status_code):
         assert_retrieve_response_keys(response.data)
 
-        assert response.data["editor"]["avatar_url"] == test_user.userprofile.avatar_url
+        assert response.data["editor"]["avatar_url"] == test_user.avatar_url
         assert (
             response.data["editor"]["full_name"]
             == test_user.get_full_name_eastern_order()

@@ -18,7 +18,7 @@ class CommentViewSet(ModelViewSet):
     def get_queryset(self):
         if getattr(self, "swagger_fake_view", False):
             return Comment.objects.none()
-        return Comment.objects.select_related("author__userprofile").filter(
+        return Comment.objects.select_related("author").filter(
             internal=False,
             request=get_object_or_404(
                 Request, pk=self.kwargs["request_pk"], requester=self.request.user

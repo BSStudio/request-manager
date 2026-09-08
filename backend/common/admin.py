@@ -1,59 +1,84 @@
 import logging
 
-from django.contrib import admin
-from django.contrib.admin import ModelAdmin
-from django.contrib.auth import get_user_model
-from django.contrib.auth.admin import UserAdmin
+from django.contrib import admin, messages
+from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
+from django.core.exceptions import ValidationError
 from django.db import IntegrityError
-from django.urls import reverse
-from django.utils.html import format_html
+from django.utils.translation import gettext_lazy as _
+from django.utils.translation import ngettext
 
-from common.models import Ban, UserProfile
+from common.models import Ban, User
 
 logger = logging.getLogger(__name__)
 
-USER_MODEL = get_user_model()
 
-
-@admin.register(UserProfile)
-class UserProfileAdmin(ModelAdmin):
-    list_display = ["user", "phone_number", "avatar_url", "user_link"]
-    search_fields = ["user__username"]
-
-    @admin.display(description="Link to User")
-    def user_link(self, obj):
-        url = reverse("admin:auth_user_change", args=(obj.user.id,))
-        return format_html('<a href="{}">{}</a>', url, obj.user.get_full_name())
-
-
-class ExtendedUserAdmin(UserAdmin):
+@admin.register(User)
+class UserAdmin(BaseUserAdmin):
     actions = [
         "ban_selected_users",
     ]
+    fieldsets = BaseUserAdmin.fieldsets + (
+        (_("Profile"), {"fields": ("phone_number", "avatar")}),
+    )
     list_display = (
         "username",
         "email",
         "first_name",
         "last_name",
+        "phone_number",
         "is_staff",
         "is_admin",
         "is_superuser",
     )
 
+    def get_queryset(self, request):
+        # is_admin in list_display reads group_names on every staff row.
+        return super().get_queryset(request).prefetch_related("groups")
+
+    @admin.display(boolean=True, description=_("Is admin"))
+    def is_admin(self, obj):
+        return obj.is_admin
+
+    @admin.action(description=_("Ban selected users"))
     def ban_selected_users(self, request, queryset):
+        banned = 0
+        skipped = []
         for user in queryset:
             try:
                 Ban.objects.create(receiver=user, creator=request.user)
-            except IntegrityError:
-                logger.warning("User %s is already banned, skipping.", user.username)
+            except (ValidationError, IntegrityError) as error:
+                logger.warning("Skipping ban for %s: %s", user.username, error)
+                skipped.append(user.username)
                 continue
-        self.message_user(request, "Successfully banned selected users.")
+            banned += 1
+
+        if skipped:
+            self.message_user(
+                request,
+                ngettext(
+                    "Banned %(count)d user, skipped %(skipped)d: %(usernames)s.",
+                    "Banned %(count)d users, skipped %(skipped)d: %(usernames)s.",
+                    banned,
+                )
+                % {
+                    "count": banned,
+                    "skipped": len(skipped),
+                    "usernames": ", ".join(skipped),
+                },
+                messages.WARNING,
+            )
+        else:
+            self.message_user(
+                request,
+                ngettext(
+                    "Successfully banned %(count)d user.",
+                    "Successfully banned %(count)d users.",
+                    banned,
+                )
+                % {"count": banned},
+            )
 
 
 @admin.register(Ban)
 class BanAdmin(admin.ModelAdmin):
     list_display = ("receiver", "created", "reason", "creator")
-
-
-admin.site.unregister(USER_MODEL)
-admin.site.register(USER_MODEL, ExtendedUserAdmin)

@@ -25,12 +25,6 @@ class CommonTestCase(TestCase):
     def setUp(self):
         self.user = create_user()
 
-    def test_userprofile_to_str(self):
-        self.assertEqual(
-            str(self.user.userprofile),
-            f"{self.user.get_full_name()}'s ({self.user.username}) profile",
-        )
-
     def test_sentinel_user_on_user_delete(self):
         user = create_user()
         request = create_request(100, user, responsible=user)
@@ -97,43 +91,43 @@ class CommonTestCase(TestCase):
             self.assertIn("Storage(alias='default')", out.getvalue())
             self.assertRegex(out.getvalue(), r"Redis\(host='[^']+', port=6379\)")
 
-    def test_user_profile_avatar_json_validation(self):
+    def test_user_avatar_json_validation(self):
         self.user.refresh_from_db()
         self.user.full_clean()
 
         with self.assertRaises(ValidationError) as context:
-            self.user.userprofile.avatar = {"randomKey": "randomValue"}
-            self.user.userprofile.full_clean()
+            self.user.avatar = {"randomKey": "randomValue"}
+            self.user.full_clean()
         self.assertIn(
             "'provider' is a required property",
             context.exception.messages[0],
         )
 
         with self.assertRaises(ValidationError) as context:
-            self.user.userprofile.avatar = {"provider": "randomValue"}
-            self.user.userprofile.full_clean()
+            self.user.avatar = {"provider": "randomValue"}
+            self.user.full_clean()
         self.assertIn(
             "'randomValue' is not one of ['google-oauth2', 'gravatar', 'microsoft-graph']",
             context.exception.messages[0],
         )
 
         with self.assertRaises(ValidationError) as context:
-            self.user.userprofile.avatar = {
+            self.user.avatar = {
                 "provider": "microsoft-graph",
                 "randomKey": "randomValue",
             }
-            self.user.userprofile.full_clean()
+            self.user.full_clean()
         self.assertIn(
             "Additional properties are not allowed ('randomKey' was unexpected)",
             context.exception.messages[0],
         )
 
         with self.assertRaises(ValidationError) as context:
-            self.user.userprofile.avatar = {
+            self.user.avatar = {
                 "provider": "microsoft-graph",
                 "microsoft-graph": "randomValue",
             }
-            self.user.userprofile.full_clean()
+            self.user.full_clean()
         self.assertIn(
             "'randomValue' is not a 'uri'",
             context.exception.messages[0],

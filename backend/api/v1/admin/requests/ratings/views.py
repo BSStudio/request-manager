@@ -37,7 +37,7 @@ class RatingAdminViewSet(ModelViewSet):
     def get_queryset(self):
         if getattr(self, "swagger_fake_view", False):
             return Rating.objects.none()
-        return Rating.objects.select_related("author__userprofile").filter(
+        return Rating.objects.select_related("author").filter(
             video=get_object_or_404(Video, pk=self.kwargs["video_pk"]),
             video__request=get_object_or_404(Request, pk=self.kwargs["request_pk"]),
         )

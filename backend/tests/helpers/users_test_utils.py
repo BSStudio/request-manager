@@ -1,9 +1,9 @@
 import uuid
 
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
 from django.utils.timezone import localtime
 
-from common.models import Ban, get_system_user
+from common.models import Ban, User, get_system_user
 
 PASSWORD = "ae9U$89z#zyA!YoPE$6m"
 
@@ -49,13 +49,13 @@ def create_user(
     if is_admin:
         groups.append("Administrators")
 
-    # Set user's profile
-    user.userprofile.avatar = {
+    # Set user's avatar and phone number
+    user.avatar = {
         "provider": "gravatar",
         "microsoft-graph": "https://via.placeholder.com/150",
         "gravatar": "https://via.placeholder.com/200",
     }
-    user.userprofile.phone_number = "+36701234567"
+    user.phone_number = "+36701234567"
 
     # Get or create groups and add user to them
     for group in groups:

@@ -1,18 +1,9 @@
-from django.contrib.auth.models import User
-from django.db.models.signals import post_delete, post_save
+from django.db.models.signals import m2m_changed, post_delete, post_save
 from django.dispatch import receiver
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from common.models import Ban, UserProfile
-
-
-@receiver(post_save, sender=User)
-def create_or_save_user_profile(sender, instance, created, **kwargs):
-    if created:
-        UserProfile.objects.create(user=instance)
-    elif hasattr(instance, "userprofile"):
-        instance.userprofile.save()
+from common.models import Ban, User
 
 
 @receiver(post_save, sender=Ban)
@@ -34,3 +25,11 @@ def post_save_ban(sender, instance, **kwargs):
 def post_delete_ban(sender, instance, **kwargs):
     instance.receiver.is_active = True
     instance.receiver.save()
+
+
+@receiver(m2m_changed, sender=User.groups.through)
+def invalidate_group_names(sender, instance, action, reverse, **kwargs):
+    # group_names is cached on the instance the change was made through, so the
+    # reverse side (group.user_set) cannot be reached from here.
+    if not reverse and action in ("post_add", "post_remove", "post_clear"):
+        instance.invalidate_group_names()

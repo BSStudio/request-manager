@@ -1,7 +1,8 @@
-from django.contrib.auth.models import User
 from model_bakery import baker
 from rest_framework.authtoken.models import Token
 from rest_framework_simplejwt.tokens import AccessToken
+
+from common.models import User
 
 
 def assert_fields_exist(response, expected_fields):

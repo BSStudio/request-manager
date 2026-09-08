@@ -1,7 +1,6 @@
 from urllib.parse import urljoin, urlparse
 
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.utils.encoding import iri_to_uri
@@ -25,6 +24,7 @@ from social_core.exceptions import AuthException
 from api.v1.admin.users.serializers import UserAdminWorkedOnSerializer
 from api.v1.admin.users.views import UserAdminViewSet
 from api.v1.me.serializers import OAuth2ConnectSerializer, UserSerializer
+from common.models import User
 from common.rest_framework.permissions import IsAuthenticated, IsStaffUser
 from common.social_core.helpers import decorate_request, handle_exception
 

@@ -335,12 +335,12 @@ class MicrosoftOAuth2Test(OAuth2Test):
     @responses.activate
     def test_login_without_avatar_does_not_set_provider(self):
         # No Microsoft photo and no Gravatar must leave the provider unset, so
-        # UserProfile.full_clean() does not later reject the dangling provider.
+        # User.full_clean() does not later reject the dangling provider.
         responses.replace(responses.GET, self.avatar_image_url, status=404)
 
         self.do_rest_login("microsoft-graph")
 
         UserModel = get_user_model()
         user = UserModel.objects.get(email__iexact="foobar@foobar.com")
-        self.assertIsNone(user.userprofile.avatar.get("provider"))
-        self.assertIsNone(user.userprofile.avatar_url)
+        self.assertIsNone(user.avatar.get("provider"))
+        self.assertIsNone(user.avatar_url)

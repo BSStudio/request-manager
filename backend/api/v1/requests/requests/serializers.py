@@ -69,7 +69,7 @@ class RequestCreateSerializer(ModelSerializer):
             )
         user = self.context["request"].user
         if not user.is_anonymous and not all(
-            [user.email, user.first_name, user.last_name, user.userprofile.phone_number]
+            [user.email, user.first_name, user.last_name, user.phone_number]
         ):
             raise ValidationError(
                 {

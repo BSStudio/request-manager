@@ -1,7 +1,7 @@
 from datetime import date, datetime, timedelta
 
 import pytest
-from django.contrib.auth.models import Group, User
+from django.contrib.auth.models import Group
 from django.utils.timezone import make_aware
 from model_bakery import baker
 from rest_framework.exceptions import ErrorDetail
@@ -15,6 +15,7 @@ from rest_framework.status import (
 )
 from social_django.models import UserSocialAuth
 
+from common.models import User
 from tests.api.helpers import assert_fields_exist, do_login, get_response
 
 pytestmark = pytest.mark.django_db
@@ -211,8 +212,8 @@ def test_update_me_avatar(api_client, method, user, request):
         "microsoft-graph": "https://example.com/picture1.png",
     }
 
-    user.userprofile.avatar = avatar_data
-    user.userprofile.save()
+    user.avatar = avatar_data
+    user.save()
 
     url = reverse("api:v1:me:me-detail")
 

@@ -1,7 +1,6 @@
 from datetime import timedelta, timezone
 
 import pytest
-from django.contrib.auth.models import User
 from django.utils.timezone import localtime
 from model_bakery import baker
 from rest_framework.reverse import reverse
@@ -12,6 +11,7 @@ from rest_framework.status import (
     is_success,
 )
 
+from common.models import User
 from tests.api.helpers import assert_fields_exist, do_login
 
 pytestmark = pytest.mark.django_db
@@ -51,7 +51,7 @@ def assert_response(history, fields_changed, new_values, old_values, user):
     if history["user"]:
         assert_fields_exist(history["user"], ["avatar_url", "full_name", "id"])
 
-        assert history["user"]["avatar_url"] == user.userprofile.avatar_url
+        assert history["user"]["avatar_url"] == user.avatar_url
         assert history["user"]["full_name"] == user.get_full_name_eastern_order()
         assert history["user"]["id"] == user.id
 

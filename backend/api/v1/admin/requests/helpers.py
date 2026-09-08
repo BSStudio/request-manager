@@ -1,8 +1,7 @@
 from collections.abc import Mapping
 
-from django.contrib.auth.models import User
-
 from api.v1.requests.utilities import create_user
+from common.models import User
 from video_requests.models import Request, Video
 
 

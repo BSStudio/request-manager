@@ -1,29 +1,101 @@
+from unittest.mock import patch
+
 import pytest
-from django.contrib.auth.models import User
+from django.contrib.auth.models import Group
 from django.core.exceptions import ValidationError
 from model_bakery import baker
 
+from common.models import Ban, User
+from tests.helpers.users_test_utils import create_user
+
 
 @pytest.mark.django_db
-class TestUserProfileClean:
+class TestUserClean:
     def test_avatar_must_be_dict(self):
-        profile = baker.make(User).userprofile
-        profile.avatar = "not a dict"
+        user = baker.make(User)
+        user.avatar = "not a dict"
         with pytest.raises(ValidationError, match="Avatar must be an object"):
-            profile.clean()
+            user.clean()
 
     def test_avatar_invalid_provider_reference(self):
-        profile = baker.make(User).userprofile
-        profile.avatar = {"provider": "google-oauth2"}
+        user = baker.make(User)
+        user.avatar = {"provider": "google-oauth2"}
         with pytest.raises(
             ValidationError, match="Avatar does not exist for this provider"
         ):
-            profile.clean()
+            user.clean()
 
     def test_avatar_valid_provider_reference(self):
-        profile = baker.make(User).userprofile
-        profile.avatar = {
+        user = baker.make(User)
+        user.avatar = {
             "provider": "gravatar",
             "gravatar": "https://example.com/avatar.png",
         }
-        profile.clean()  # Should not raise
+        user.clean()  # Should not raise
+
+
+@pytest.mark.django_db
+class TestUserSave:
+    def test_duplicate_email_raises_a_validation_error(self):
+        User.objects.create_user(username="first", email="Duplicate@example.com")
+
+        with pytest.raises(ValidationError, match=r"E-mail address already in use\."):
+            User.objects.create_user(username="second", email="duplicate@example.com")
+
+    def test_blank_emails_are_allowed_for_several_users(self):
+        User.objects.create_user(username="first", email="")
+        User.objects.create_user(username="second", email="")  # Should not raise
+
+    def test_a_save_that_leaves_the_email_alone_skips_the_constraint_query(
+        self, django_assert_num_queries
+    ):
+        user = User.objects.create_user(username="first", email="first@example.com")
+
+        # Only the write. update_last_login saves this way on every single
+        # login, and the e-mail constraint has nothing to check there.
+        with django_assert_num_queries(1):
+            user.save(update_fields=["last_login"])
+
+    def test_a_duplicate_email_is_still_rejected_when_only_the_email_is_saved(self):
+        User.objects.create_user(username="first", email="Duplicate@example.com")
+        second = User.objects.create_user(username="second")
+
+        second.email = "duplicate@example.com"
+        with pytest.raises(ValidationError, match=r"E-mail address already in use\."):
+            second.save(update_fields=["email"])
+
+
+@pytest.mark.django_db
+class TestUserGroupNames:
+    def test_group_names_follows_every_group_change(self):
+        user = baker.make(User)
+        group = Group.objects.create(name="Testers")
+        other_group = Group.objects.create(name="Reviewers")
+        assert user.group_names == frozenset()
+
+        user.groups.add(group)
+        assert user.group_names == frozenset({"Testers"})
+
+        user.groups.set([other_group])
+        assert user.group_names == frozenset({"Reviewers"})
+
+        user.groups.clear()
+        assert user.group_names == frozenset()
+
+
+@pytest.mark.django_db
+class TestBanSave:
+    def test_a_ban_is_rolled_back_when_deactivating_the_receiver_fails(self):
+        creator = create_user(username="banning_admin", is_admin=True)
+        receiver = create_user(username="to_ban", groups=["Gyártásvezető"])
+
+        # post_save runs after the insert, so everything it touches has to go
+        # with the ban when it blows up.
+        with patch.object(User, "save", side_effect=ValidationError("Nope.")):
+            with pytest.raises(ValidationError):
+                Ban.objects.create(receiver=receiver, creator=creator)
+
+        assert not Ban.objects.filter(receiver=receiver).exists()
+        receiver.refresh_from_db()
+        assert receiver.is_active
+        assert set(receiver.groups.values_list("name", flat=True)) == {"Gyártásvezető"}

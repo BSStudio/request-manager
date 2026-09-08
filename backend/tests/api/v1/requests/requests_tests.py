@@ -3,7 +3,6 @@ from itertools import combinations
 from uuid import uuid4
 
 import pytest
-from django.contrib.auth.models import User
 from django.utils.timezone import localtime, make_aware
 from model_bakery import baker
 from rest_framework.exceptions import ErrorDetail
@@ -18,7 +17,7 @@ from rest_framework.status import (
     is_success,
 )
 
-from common.models import get_anonymous_user
+from common.models import User, get_anonymous_user
 from tests.api.helpers import assert_fields_exist, do_login, login
 from video_requests.models import Comment, Request
 
@@ -317,7 +316,7 @@ def test_create_request_user_info_validation(api_client, request_create_data):
     ]
 
     for r in range(1, len(user_data) + 1):
-        for selected in list(combinations(user_data, r)):
+        for index, selected in enumerate(combinations(user_data, r)):
             data = {}
             for item in selected:
                 data |= item
@@ -325,8 +324,12 @@ def test_create_request_user_info_validation(api_client, request_create_data):
             if r == len(user_data):
                 data = {}  # All data should work change it to none instead
 
+            # Users are unique on their e-mail address, so every iteration that
+            # sets one needs its own.
+            email = f"test_{r}_{index}@example.com" if data.get("email") else ""
+
             user = User.objects.create_user(
-                email=data.get("email", ""),
+                email=email,
                 first_name=data.get("first_name", ""),
                 is_staff=False,
                 last_name=data.get("last_name", ""),
@@ -334,8 +337,8 @@ def test_create_request_user_info_validation(api_client, request_create_data):
                 username=uuid4(),
             )
 
-            user.userprofile.phone_number = data.get("phone_number", "")
-            user.userprofile.save()
+            user.phone_number = data.get("phone_number", "")
+            user.save()
 
             login(api_client, user)
             response = api_client.post(url, request_create_data)

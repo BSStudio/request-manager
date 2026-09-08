@@ -1,12 +1,12 @@
 from datetime import date, datetime, timedelta
 
 import pytest
-from django.contrib.auth.models import User
 from django.utils.timezone import make_aware
 from model_bakery import baker
 from rest_framework.reverse import reverse
 from rest_framework.status import is_success
 
+from common.models import User
 from tests.api.helpers import login
 from video_requests.models import Request, Video
 

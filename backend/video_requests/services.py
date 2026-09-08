@@ -1,5 +1,4 @@
-from django.contrib.auth.models import User
-
+from common.models import User
 from video_requests.models import Comment, Request
 
 

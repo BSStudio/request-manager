@@ -1,4 +1,4 @@
-from django.contrib.auth.models import User
+from common.models import User
 
 
 def create_user(validated_data: dict) -> tuple[User, dict | None]:
@@ -23,7 +23,6 @@ def create_user(validated_data: dict) -> tuple[User, dict | None]:
         }
         return User.objects.get(email__iexact=user.email), additional_data
     else:
-        user.save()
-        user.userprofile.phone_number = phone_number
+        user.phone_number = phone_number
         user.save()
         return user, None
