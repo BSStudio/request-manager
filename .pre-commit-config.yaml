@@ -121,7 +121,7 @@ repos:
           - eslint-plugin-react@7.37.5
           - eslint@10.10.0
           - globals@17.12.0
-          - prettier@3.9.6
+          - prettier@3.9.7
           - typescript-eslint@8.70.0
       - id: eslint
         name: 'Lint TypeScript code (Admin dashboard)'
