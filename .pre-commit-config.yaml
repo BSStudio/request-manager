@@ -28,7 +28,7 @@ repos:
         additional_dependencies:
           - pyyaml==6.0.1
   - repo: https://github.com/python-poetry/poetry
-    rev: 2.4.1
+    rev: 2.5.1
     hooks:
       - id: poetry-check
         name: 'Check Poetry config and verify that lockfile is consistent with pyproject.toml'
@@ -82,7 +82,7 @@ repos:
         name: 'Check Python security issues'
         args: [-c, ./backend/pyproject.toml]
   - repo: https://github.com/rbubley/mirrors-prettier
-    rev: v3.9.6
+    rev: v3.9.8
     hooks:
       - id: prettier
         name: 'Format JavaScript and TypeScript code'
@@ -91,7 +91,7 @@ repos:
           - python
         args: [--config, ./frontend/.prettierrc]
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v10.10.0
+    rev: v10.11.0
     hooks:
       - id: eslint
         name: 'Lint JavaScript code (Frontend)'
