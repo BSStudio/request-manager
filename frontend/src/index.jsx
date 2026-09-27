@@ -34,6 +34,19 @@ if (import.meta.env.PROD) {
       }
       return event;
     },
+    dataCollection: {
+      cookies: false,
+      databaseQueryData: false,
+      genAI: { inputs: false, outputs: false },
+      graphQL: { document: false, variables: false },
+      httpBodies: [],
+      httpHeaders: {
+        request: { deny: ['forwarded', '-ip', 'remote-', 'via', '-user'] },
+        response: { deny: ['forwarded', '-ip', 'remote-', 'via', '-user'] },
+      },
+      urlQueryParams: { deny: ['forwarded', '-ip', 'remote-', 'via', '-user'] },
+      userInfo: false,
+    },
     dsn: import.meta.env.VITE_SENTRY_URL,
     integrations: [
       reactRouterBrowserTracingIntegration({
