@@ -1,7 +1,5 @@
-"""Root conftest: options that apply to the whole suite.
-
-Fixtures live under tests/; only ``pytest_addoption`` has to be here, because
-pytest reads it from the rootdir conftest before collection starts.
+"""Only ``pytest_addoption`` lives here: pytest reads it from the rootdir conftest
+alone. Fixtures live under tests/.
 """
 
 import pytest
@@ -24,11 +22,7 @@ def pytest_addoption(parser):
 
 @pytest.fixture(autouse=True)
 def save_emails(request):
-    """Swap the mail backend for tests marked ``emails``, when asked to.
-
-    Requests the ``settings`` fixture only when it is actually needed, so the
-    tests that render no e-mail pay nothing for this.
-    """
+    """With ``--save-emails``, also write tests marked ``emails`` to disk."""
     if not request.node.get_closest_marker("emails"):
         return
     if not request.config.getoption("--save-emails"):

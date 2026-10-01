@@ -1,9 +1,7 @@
 """``update_request_status`` rule by rule.
 
-The request status is derived, never set directly: every field in
-``additional_data`` and every video moves it. Driving the function itself means a
-failure names the rule that broke instead of an endpoint that returned the wrong
-number.
+The status is derived, never set directly: ``additional_data`` and the request's
+videos move it.
 """
 
 from datetime import timedelta

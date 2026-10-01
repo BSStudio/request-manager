@@ -1,6 +1,5 @@
 import pytest
 
-#: The largest value a Postgres ``integer`` column holds.
 MISSING_PK = 2**31 - 1
 
 
@@ -8,9 +7,8 @@ MISSING_PK = 2**31 - 1
 def missing_id():
     """A primary key no row holds, for the 404 half of a detail endpoint.
 
-    A constant rather than ``Max(pk) + n``: Postgres sequences are not rolled back
-    with a test's transaction, so a key derived from the rows present can be handed
-    to a row the test creates afterwards.
+    Not ``Max(pk) + n``: Postgres sequences survive a test's rollback, so such a key
+    can be handed to a row the test creates afterwards.
     """
     return MISSING_PK
 

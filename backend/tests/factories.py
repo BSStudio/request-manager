@@ -1,14 +1,11 @@
 """Object factories for the test suite.
 
-model_bakery fills unspecified fields at random, which the models do not always
-tolerate: ``Request.save()`` full-cleans itself and ``Request.clean()`` rejects an
-``end_datetime`` that falls before ``start_datetime``, so half of the random pairs
-would raise. ``ProjectBaker`` supplies those defaults for every ``baker.make`` and
-``baker.prepare`` call, and is wired in through the ``BAKER_CUSTOM_CLASS`` setting
-so call sites keep using plain ``baker``.
+``Request.clean()`` rejects an ``end_datetime`` before ``start_datetime``, which
+model_bakery's random dates hit half the time. ``ProjectBaker``, wired in through
+``BAKER_CUSTOM_CLASS``, fills in valid dates, so call sites use plain ``baker``.
 
-Users go through :func:`make_user` instead: the roles the API distinguishes are
-group memberships and flags, not field values, and every test needs the same five.
+Users go through :func:`make_user`: the roles the API distinguishes are groups
+and flags, not field values.
 """
 
 from datetime import timedelta

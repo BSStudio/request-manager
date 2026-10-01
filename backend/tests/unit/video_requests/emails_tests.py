@@ -1,12 +1,8 @@
-"""The e-mail builders in video_requests/emails.py: subject and recipients.
+"""Subject and recipients of each builder in video_requests/emails.py.
 
-Each builder is called directly, so these say nothing about *when* a message goes
-out — that is tests/workflows/notifications_tests.py and the cron commands in
-tests/management_commands/scheduled_emails_tests.py. What they pin down is who a
-message is addressed to, and who must never be on it: staff-only fields such as
-the responsible person, the crew and the assignees drop anyone who is not staff.
-
-Marked ``emails`` so the CI job that harvests rendered .eml files can select them.
+When a message is sent is tested in tests/workflows/notifications_tests.py and
+tests/management_commands/scheduled_emails_tests.py. Staff-only recipients (the
+responsible, the crew, the assignees) drop anyone who is not staff.
 """
 
 import pytest

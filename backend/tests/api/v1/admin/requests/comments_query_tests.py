@@ -1,5 +1,3 @@
-"""Ordering the comments on one request."""
-
 from datetime import datetime
 
 import pytest

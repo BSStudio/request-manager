@@ -1,5 +1,3 @@
-"""Ordering the crew of one request."""
-
 import pytest
 from model_bakery import baker
 from rest_framework.reverse import reverse

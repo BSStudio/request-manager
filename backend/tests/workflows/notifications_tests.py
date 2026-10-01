@@ -1,11 +1,7 @@
-"""Who gets an e-mail when somebody uses the API.
+"""Which API action sends which notification, and to whom it must not go.
 
-The templates and recipient lists are the e-mail builders' own business, and are
-covered in tests/unit/video_requests/emails_tests.py. What these tests are about
-is the trigger: which action sends which notification, and to whom it must *not*
-go — a banned requester, a non-staff assignee, the commenter themselves.
-
-Marked ``emails`` so the CI job that harvests rendered .eml files can select them.
+Templates and recipient lists are tested on the builders themselves, in
+tests/unit/video_requests/emails_tests.py.
 """
 
 from datetime import timedelta
@@ -45,7 +41,6 @@ def request_data():
 
 
 class TestNewRequestConfirmation:
-    """Somebody asked us to film something; we confirm we got it."""
 
     def test_a_requester_who_is_logged_in_is_confirmed(
         self, api_client, basic_user, editor_in_chief, request_data

@@ -1,8 +1,4 @@
-"""The four identity providers the site accepts, as mocked OAuth2 endpoints.
-
-Shared by tests/api/v1/login/ and by tests/api/v1/me/social_accounts_tests.py,
-which connects and disconnects the same providers on an existing account.
-"""
+"""The four identity providers the site accepts, as mocked OAuth2 endpoints."""
 
 from base64 import b64encode
 

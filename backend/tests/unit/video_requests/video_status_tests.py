@@ -1,8 +1,7 @@
 """``update_video_status`` rule by rule.
 
-Reaching PUBLISHED has side effects — a social-media todo and an e-mail to the
-requester — so the transition is worth driving directly rather than inferring it
-from what landed in ``mail.outbox`` at the end of an API call.
+Reaching PUBLISHED has side effects: a social media to-do and an e-mail to the
+requester.
 """
 
 from datetime import timedelta

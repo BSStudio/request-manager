@@ -1,8 +1,7 @@
 """Mirroring accepted requests into the studio's Google Calendar.
 
-Three Celery tasks, all of which no-op without a service account key file — which
-is how the test and development environments run, and why none of this was
-reachable from the API tests.
+All three tasks no-op without a service account key file, as in tests and
+development, so the API tests never reach them.
 """
 
 from datetime import timedelta

@@ -1,7 +1,4 @@
-"""``recalculate_deadline``: moving an event moves an untouched deadline with it.
-
-A pure function over the incoming payload, so these need no database at all.
-"""
+"""``recalculate_deadline``: moving an event moves an untouched deadline with it."""
 
 from datetime import timedelta
 

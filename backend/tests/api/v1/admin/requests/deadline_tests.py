@@ -1,8 +1,7 @@
-"""The deadline an admin never has to type in.
+"""The automatic deadline, through the admin serializer.
 
-``recalculate_deadline`` decides this and is unit tested in
-tests/unit/video_requests/deadline_tests.py; what these check is that the
-serializer runs it against the stored request and reports the result.
+``recalculate_deadline`` itself is unit tested in
+tests/unit/video_requests/deadline_tests.py.
 """
 
 from datetime import timedelta

@@ -1,5 +1,3 @@
-"""Ordering the ratings of one video."""
-
 from datetime import datetime
 
 import pytest

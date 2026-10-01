@@ -1,9 +1,7 @@
-"""The ``additional_data`` handling behind the admin request and video endpoints.
+"""The ``additional_data`` guards in ``api/v1/admin/requests/helpers.py``.
 
-``additional_data`` is a free-form JSON column that both the derived statuses and
-the e-mail flow read, so what the API is allowed to write into it is guarded by
-``api/v1/admin/requests/helpers.py``. Those guards are plain dict functions;
-proving them here is what lets the endpoint tests stay about status codes.
+The derived statuses and the e-mail flow both read this free-form JSON column, so
+the API restricts what may be written into it.
 """
 
 import pytest

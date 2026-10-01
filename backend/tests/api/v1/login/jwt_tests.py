@@ -17,8 +17,7 @@ pytestmark = pytest.mark.django_db
 
 
 def test_token_refresh(api_client, basic_user, time_machine):
-    # Anchored so the clock can be moved past the access token's lifetime later
-    # instead of the test sitting through it.
+    # Pinned so the clock can be shifted past the token's lifetime below.
     time_machine.move_to(localtime())
 
     refresh_url = reverse("api:v1:login:refresh_jwt_token")
@@ -36,7 +35,7 @@ def test_token_refresh(api_client, basic_user, time_machine):
     response = api_client.get(user_profile_url)
     assert response.status_code == HTTP_200_OK
 
-    # Let the access token expire, without spending its lifetime doing it.
+    # Let the access token expire.
     time_machine.shift(
         settings.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"] + timedelta(seconds=1)
     )

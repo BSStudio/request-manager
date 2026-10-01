@@ -9,8 +9,8 @@ from rest_framework.status import HTTP_200_OK
 
 pytestmark = pytest.mark.django_db
 
-#: Every backing service the deployment expects to be reported on. The endpoint
-#: and the management command are two faces of the same check, so they share it.
+#: Every backing service a health report must list; the endpoint and the
+#: management command run the same check.
 EXPECTED_CHECKS = [
     "Cache(alias='default')",
     "Database(alias='default')",

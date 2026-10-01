@@ -1,5 +1,3 @@
-"""Filtering, ordering and searching the cross-request video list."""
-
 from datetime import date, datetime, timedelta
 
 import pytest

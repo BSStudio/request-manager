@@ -1,5 +1,3 @@
-"""The two container probes. /livez must answer without touching anything."""
-
 import pytest
 from django.urls import reverse
 from rest_framework.status import HTTP_200_OK

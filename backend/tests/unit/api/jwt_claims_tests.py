@@ -1,7 +1,7 @@
 """The extra claims the access token carries.
 
 The frontend reads these instead of calling /me on every page load, so the shape
-is a contract. ``get_token`` is a classmethod over a user, which is all it needs.
+is a contract.
 """
 
 import pytest

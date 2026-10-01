@@ -19,7 +19,6 @@ def video(video_request):
 
 
 class TestStringRepresentations:
-    """Every one of these shows up in the admin and in e-mail subjects."""
 
     def test_request(self, video_request):
         assert (

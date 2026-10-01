@@ -1,9 +1,4 @@
-"""Response-shape assertions shared by the API tests.
-
-The serializers reuse a handful of shapes across every endpoint — a short user
-reference, a full user, the pagination envelope — so the field lists live here
-once. A serializer growing a field then fails in one place instead of twelve.
-"""
+"""Response shapes the serializers reuse across endpoints."""
 
 #: How a user appears when they are somebody else's author/editor/member/creator.
 USER_REFERENCE_FIELDS = ["avatar_url", "full_name", "id"]
@@ -44,11 +39,7 @@ def assert_pagination_envelope(response, expected_count):
 
 
 def list_rows(response, pagination, expected_count):
-    """Return the rows of a list response, checking the envelope around them.
-
-    The list endpoints all take a ``pagination`` query parameter, so every one of
-    their tests has to unwrap the same two shapes before it can look at a row.
-    """
+    """Return the rows of a list response, checking the pagination envelope."""
     if pagination:
         assert_pagination_envelope(response, expected_count)
 

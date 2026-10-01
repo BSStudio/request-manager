@@ -143,7 +143,6 @@ ALL_METHODS = pytest.mark.parametrize("method", ["PATCH", "POST", "PUT"])
 
 @pytest.fixture
 def target_url():
-    """A create or an update URL, whichever the method under test needs."""
 
     def _target_url(method):
         if method == "POST":
@@ -164,7 +163,6 @@ def other_staff_member():
 
 @pytest.fixture
 def write_request(api_client, request_create_data, target_url):
-    """Send a create or update, and hand back the response."""
 
     def _write_request(method, **extra):
         return get_response(
@@ -189,8 +187,6 @@ def test_create_update_request(
         assert_retrieve_response_keys(response.data)
         assert response.data["comment_count"] == 0
         if method == "POST":
-            # Whoever sent it is on the hook for it, and is the requester by
-            # default.
             assert response.data["requested_by"]["id"] == user.id
             assert response.data["requester"]["id"] == user.id
 

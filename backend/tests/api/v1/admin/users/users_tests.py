@@ -135,7 +135,6 @@ def test_retrieve_user(api_client, expected, request, user):
 
 
 class TestRetrieveUserDetails:
-    """Everything hanging off a user that the dashboard shows on their page."""
 
     @pytest.fixture(autouse=True)
     def as_staff(self, api_client, staff_user):

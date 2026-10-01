@@ -1,8 +1,6 @@
 """Connecting and disconnecting the login methods on an existing account.
 
-Everyone signs in through an identity provider, so these two endpoints are how a
-person gains a second way in — and how they lose one. The pipeline steps that
-decide whether a disconnect is allowed are unit tested in
+The pipeline steps deciding whether a disconnect is allowed are unit tested in
 tests/unit/common/social_core/pipeline_tests.py.
 """
 

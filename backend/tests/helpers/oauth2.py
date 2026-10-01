@@ -1,11 +1,4 @@
-"""Mocked OAuth2 identity providers, shared by the login and connect flows.
-
-An OAuth2 round trip needs three endpoints answering — the provider's authorize
-redirect, its token endpoint and its userinfo endpoint — plus whatever extras a
-given provider reads (a phone number, a profile photo). :class:`Provider`
-describes one of them; :func:`mock_provider` stands it up with ``responses`` and
-resets the module-level caches social_core keeps between tests.
-"""
+"""Mocked OAuth2 identity providers for the login and connect tests."""
 
 import random
 import re
@@ -126,7 +119,6 @@ class MockedProvider:
 
     @staticmethod
     def code():
-        """A throwaway authorization code, as the provider would hand back."""
         return "".join(
             random.choice(ascii_letters + digits) for _ in range(15)
         )  # nosec

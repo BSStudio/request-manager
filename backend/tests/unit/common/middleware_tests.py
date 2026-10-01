@@ -3,8 +3,6 @@ from django.test import RequestFactory
 
 from common.middleware import RequestLoggingMiddleware
 
-# No django_db marker: resolving the client IP never touches the database.
-
 
 def resolve(remote_addr, forwarded=None):
     request = RequestFactory().get("/")

@@ -1,5 +1,3 @@
-"""Client helpers for the API tests: how a caller authenticates and sends."""
-
 from model_bakery import baker
 from rest_framework.authtoken.models import Token
 from rest_framework_simplejwt.tokens import AccessToken

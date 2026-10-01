@@ -1,10 +1,8 @@
 """The four cron commands that mail the studio.
 
-Celery Beat runs these in production. Each has two things worth checking: which
-rows it picks, and that it says so on stdout rather than mailing an empty digest.
-The mail builders are wrapped rather than replaced, so the templates render too.
-
-Marked ``emails`` so the CI job that harvests rendered .eml files can select them.
+Each is checked for which rows it picks, and for reporting an empty run on stdout
+instead of mailing it. The builders are wrapped, not replaced, so the templates
+still render.
 """
 
 from datetime import timedelta
@@ -166,7 +164,6 @@ class TestWeeklyTasks:
 
 
 class TestDailyReminders:
-    """Everyone shooting today gets a reminder; requests without a crew do not."""
 
     @pytest.fixture(autouse=True)
     def today(self, time_machine):
@@ -272,7 +269,6 @@ class TestUnfinishedRequests:
 
 
 class TestOverdueRequests:
-    """Each late request is chased with its own responsible person."""
 
     @pytest.fixture(autouse=True)
     def today(self, time_machine):

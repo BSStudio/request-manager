@@ -1,8 +1,7 @@
 """What the admin endpoints accept into ``additional_data``.
 
-The guards themselves are unit tested in tests/unit/api/additional_data_tests.py.
-What is left here is the wiring: that the endpoint applies them, merges the result
-into what was already stored, and reports the status the new data implies.
+The guards are unit tested in tests/unit/api/additional_data_tests.py; these check
+that the endpoint applies them and merges the result into what was stored.
 """
 
 from datetime import timedelta

@@ -1,5 +1,3 @@
-"""Ordering and searching a requester's own request list."""
-
 from datetime import date, datetime, timedelta
 
 import pytest

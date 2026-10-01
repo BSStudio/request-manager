@@ -1,9 +1,8 @@
-"""The whole journey of a request, from felkérés to lezárva, over the real API.
+"""A request from felkérés to lezárva, over the real API.
 
-The individual transition rules are proven one by one in
-tests/unit/video_requests/. This is the one place that walks them end to end, so
-what it protects is the wiring — the serializers, the status recalculation the
-save hooks trigger, and the fact that a video's progress reaches its request.
+The transition rules are unit tested in tests/unit/video_requests/; this walks
+them end to end to check the wiring: serializers, the status recalculation in the
+save hooks, and a video's progress reaching its request.
 """
 
 from datetime import datetime, timedelta
@@ -60,7 +59,6 @@ def video_url(request_id, video_id=None):
 
 
 def patch(client, url, data, expected_status=None):
-    """PATCH, assert the HTTP code and optionally the resulting status field."""
     response = client.patch(url, data)
     assert response.status_code == HTTP_200_OK, response.data
     if expected_status is not None:

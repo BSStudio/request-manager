@@ -1,14 +1,9 @@
-"""Permission matrices for the API tests.
+"""Caller -> expected status tables for the API tests.
 
-Every endpoint answers the same five callers, so the table mapping caller to
-expected status code is the most repeated shape in these tests. Named once here,
-it becomes a single decorator at the call site::
+Each is applied as one decorator per test::
 
     @staff_only(HTTP_200_OK)
     def test_list_comments(api_client, expected, request, user): ...
-
-The generated parametrize ids stay ``<caller fixture>-<expected>``, exactly what a
-hand-written table produces, so test ids do not move.
 """
 
 import pytest
@@ -47,7 +42,6 @@ def _broadcast(outcome, methods):
 
 
 def admin_only(allowed, *, denied=FORBIDDEN, anonymous=UNAUTHORIZED):
-    """Only an administrator gets through."""
     return permissions(
         admin=allowed,
         staff=denied,
@@ -80,7 +74,6 @@ def any_user(allowed, *, denied=FORBIDDEN, anonymous=UNAUTHORIZED):
 
 
 def service_account_only(allowed, *, denied=FORBIDDEN, anonymous=UNAUTHORIZED):
-    """Only a service account gets through."""
     return permissions(
         admin=denied,
         staff=denied,

@@ -1,8 +1,6 @@
-"""Logging in through each identity provider we accept.
+"""Logging in through each identity provider, over social_core's real pipeline.
 
-The provider endpoints are mocked in tests/helpers/oauth2_providers.py; the flow
-underneath is social_core's real one, pipeline included, so what these prove is
-that a code from the provider comes back as a usable JWT pair.
+The provider endpoints are mocked in tests/helpers/oauth2_providers.py.
 """
 
 import pytest

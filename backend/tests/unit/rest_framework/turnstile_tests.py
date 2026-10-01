@@ -1,8 +1,6 @@
-"""``TurnstileField``: the captcha in front of every anonymous endpoint.
+"""``TurnstileField`` against a mocked Cloudflare.
 
 The rest of the suite runs it in testing mode, where it answers from a setting.
-These are the only tests that exercise the real Cloudflare round trip, so they
-are also the only ones that see what happens when Cloudflare is unreachable.
 """
 
 import logging
@@ -17,8 +15,6 @@ from common.rest_framework.turnstile import TurnstileField
 
 SITEVERIFY_URL = "https://challenges.cloudflare.com/turnstile/v0/siteverify"
 INVALID = "Error verifying captcha, please try again."
-
-# No django_db marker: a field validating a token never touches the database.
 
 
 @pytest.fixture

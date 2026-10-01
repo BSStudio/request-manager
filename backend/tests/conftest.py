@@ -1,9 +1,4 @@
-"""Fixtures every suite that talks to the API needs.
-
-The five callers live here rather than under tests/api/ because tests/workflows/
-drives the same endpoints. Fixtures that only make sense for a single endpoint —
-the missing ids behind every 404 — stay in tests/api/conftest.py.
-"""
+"""Fixtures shared by tests/api/ and tests/workflows/."""
 
 import pytest
 import responses
@@ -51,7 +46,7 @@ def requester():
 
 @pytest.fixture
 def editor_in_chief():
-    """Copied in on everything the crew is told; the group name is load-bearing."""
+    """Copied in on crew e-mails; looked up by this exact group name."""
     return make_user(is_staff=True, groups=("Főszerkesztő",))
 
 
@@ -67,11 +62,10 @@ def pr_responsible():
 
 @pytest.fixture
 def mock_provider():
-    """Factory: stand an identity provider's OAuth2 endpoints up on ``responses``.
+    """Factory: mock an identity provider's OAuth2 endpoints on ``responses``.
 
-    Requesting it intercepts outbound HTTP for the whole test, so another fixture
-    can register providers too. social_core keeps its test models in module level
-    caches, so those are emptied on both sides.
+    ``responses`` stays active for the whole test, so other fixtures can register
+    providers too. social_core's module-level caches are cleared on both sides.
     """
     reset_social_core_caches()
 

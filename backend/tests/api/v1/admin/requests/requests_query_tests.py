@@ -1,5 +1,3 @@
-"""Filtering, ordering and searching the admin request list."""
-
 from datetime import date, datetime, timedelta
 
 import pytest
