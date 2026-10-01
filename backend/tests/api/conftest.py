@@ -1,28 +1,24 @@
 import pytest
-from django.db.models import Max
 
-from common.models import User
-from video_requests.models import Comment, CrewMember, Rating, Request, Todo, Video
+#: The largest value a Postgres ``integer`` column holds.
+MISSING_PK = 2**31 - 1
 
 
-def _missing_id_fixture(model):
-    """A primary key no row of ``model`` holds, for the 404 half of an endpoint.
+@pytest.fixture
+def missing_id():
+    """A primary key no row holds, for the 404 half of a detail endpoint.
 
-    Every detail endpoint needs one, and taking it from the highest key in the
-    table keeps it deterministic instead of a random draw that has to be retried.
+    A constant rather than ``Max(pk) + n``: Postgres sequences are not rolled back
+    with a test's transaction, so a key derived from the rows present can be handed
+    to a row the test creates afterwards.
     """
-
-    @pytest.fixture
-    def missing_id():
-        return (model.objects.aggregate(highest=Max("pk"))["highest"] or 0) + 1000
-
-    return missing_id
+    return MISSING_PK
 
 
-not_existing_comment_id = _missing_id_fixture(Comment)
-not_existing_crew_member_id = _missing_id_fixture(CrewMember)
-not_existing_rating_id = _missing_id_fixture(Rating)
-not_existing_request_id = _missing_id_fixture(Request)
-not_existing_todo_id = _missing_id_fixture(Todo)
-not_existing_user_id = _missing_id_fixture(User)
-not_existing_video_id = _missing_id_fixture(Video)
+not_existing_comment_id = missing_id
+not_existing_crew_member_id = missing_id
+not_existing_rating_id = missing_id
+not_existing_request_id = missing_id
+not_existing_todo_id = missing_id
+not_existing_user_id = missing_id
+not_existing_video_id = missing_id
