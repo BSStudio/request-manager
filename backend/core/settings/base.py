@@ -22,8 +22,7 @@ from redis.asyncio import Redis as RedisClient
 
 # Build paths inside the project like this: BACKEND_DIR / "subdir"
 BACKEND_DIR = Path(__file__).resolve().parent.parent.parent
-FRONTEND_DIR = (BACKEND_DIR / ".." / "frontend").resolve()
-FRONTEND_ADMIN_DIR = (BACKEND_DIR / ".." / "frontend-admin").resolve()
+FRONTEND_DIR = (BACKEND_DIR / ".." / "frontend-admin").resolve()
 
 # URL of the site such as: https://website.example.com
 BASE_URL_DOMAIN = config("BASE_URL_DOMAIN", default="localhost:8000")
@@ -98,7 +97,6 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [
             FRONTEND_DIR / "build",
-            FRONTEND_ADMIN_DIR / "build",
             BACKEND_DIR / "templates",
         ],
         "APP_DIRS": True,
@@ -297,7 +295,6 @@ USE_TZ = True
 
 STATICFILES_DIRS = [
     FRONTEND_DIR / "build" / "static",
-    FRONTEND_ADMIN_DIR / "build" / "static",
     BACKEND_DIR / "templates" / "static",
 ]
 STATIC_ROOT = BACKEND_DIR / "staticfiles"

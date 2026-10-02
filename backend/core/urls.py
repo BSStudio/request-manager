@@ -29,9 +29,6 @@ urlpatterns = [
         name="readyz",
     ),
     path("api/", include(("api.urls", "api"), namespace="api")),
-    re_path(
-        r"admin", TemplateView.as_view(template_name="admin.html")
-    ),  # React frontend
     re_path(r"", TemplateView.as_view(template_name="index.html")),  # React frontend
 ]
 

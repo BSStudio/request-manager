@@ -20,6 +20,7 @@ ARG BSS_CLIENT_ID
 ARG GOOGLE_CLIENT_ID
 ARG MICROSOFT_CLIENT_ID
 ARG SENTRY_URL
+ARG SENTRY_URL_ADMIN
 ARG TURNSTILE_SITE_KEY
 
 # Environment vars
@@ -29,42 +30,8 @@ ENV VITE_BSS_CLIENT_ID=$BSS_CLIENT_ID
 ENV VITE_GOOGLE_CLIENT_ID=$GOOGLE_CLIENT_ID
 ENV VITE_MICROSOFT_CLIENT_ID=$MICROSOFT_CLIENT_ID
 ENV VITE_SENTRY_URL=$SENTRY_URL
+ENV VITE_SENTRY_URL_ADMIN=$SENTRY_URL_ADMIN
 ENV VITE_TURNSTILE_SITE_KEY=$TURNSTILE_SITE_KEY
-
-# Set work directory
-WORKDIR /app/frontend
-
-# Copy manifest, pnpm lockfile and workspace config to Docker environment
-COPY ./frontend/package.json ./frontend/pnpm-lock.yaml ./frontend/pnpm-workspace.yaml /app/frontend/
-
-# Enable pnpm via Corepack and install all required node packages
-RUN corepack enable
-RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
-
-# Copy everything over to Docker environment
-COPY ./frontend /app/frontend
-
-# Build the frontend
-RUN pnpm run build
-
-##################################################
-
-# Stage 2 - Build Admin dashboard
-
-# Pull base image
-FROM node:24-alpine AS frontend-admin-build
-
-# pnpm store location (shared with the BuildKit cache mount below)
-ENV PNPM_HOME="/pnpm"
-ENV PATH="$PNPM_HOME:$PATH"
-
-# Build args
-ARG API_URL
-ARG SENTRY_URL_ADMIN
-
-# Environment vars
-ENV VITE_API_URL=$API_URL
-ENV VITE_SENTRY_URL=$SENTRY_URL_ADMIN
 
 # Set work directory
 WORKDIR /app/frontend-admin
@@ -84,7 +51,7 @@ RUN pnpm run build
 
 ##################################################
 
-# Stage 3 - Backend base
+# Stage 2 - Backend base
 
 # Pull base image
 FROM python:3.14-alpine AS backend-base
@@ -109,7 +76,7 @@ ENV PATH="$POETRY_HOME/bin:$VIRTUAL_ENV/bin:$PATH"
 
 ##################################################
 
-# Stage 4 - Backend builder
+# Stage 3 - Backend builder
 
 # Use backend-base image as base
 FROM backend-base AS backend-builder
@@ -136,7 +103,7 @@ RUN --mount=type=cache,target=/root/.cache \
 
 ##################################################
 
-# Stage 5 - The Production Environment
+# Stage 4 - The Production Environment
 
 # Use backend-base image as base
 FROM backend-base AS request-manager-production
@@ -155,12 +122,11 @@ RUN apk update && apk add --no-cache libpq
 COPY ./backend /app/backend
 
 # Copy built frontend assets
-RUN mkdir -p /app/frontend/build
-COPY --from=frontend-build /app/frontend/build /app/frontend/build-temp
-COPY --from=frontend-admin-build /app/frontend-admin/build /app/frontend-admin/build
+RUN mkdir -p /app/frontend-admin/build
+COPY --from=frontend-build /app/frontend-admin/build /app/frontend-admin/build-temp
 
 # Have to move all static files other than index.html to root/ for whitenoise middleware
-WORKDIR /app/frontend
+WORKDIR /app/frontend-admin
 RUN mkdir build/root && mv build-temp/index.html build/index.html && mv build-temp/static build/static && mv build-temp/* build/root && rm -r build-temp
 
 # Change the owner of all files to the app user
