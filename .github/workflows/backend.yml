@@ -96,8 +96,7 @@ jobs:
         if: ${{ github.event.inputs.generate-emails == 'true' }}
         env:
           BASE_URL_DOMAIN: felkeres.bsstudio.hu
-          EMAIL_FILE: True
-        run: poetry run python manage.py test tests.email_sending_tests
+        run: poetry run pytest -m emails --save-emails --no-cov
       - name: Archive sent e-mails
         if: ${{ github.event.inputs.generate-emails == 'true' }}
         uses: actions/upload-artifact@v7.0.1

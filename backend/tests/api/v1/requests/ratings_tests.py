@@ -7,20 +7,20 @@ from rest_framework.status import (
     HTTP_201_CREATED,
     HTTP_204_NO_CONTENT,
     HTTP_400_BAD_REQUEST,
-    HTTP_401_UNAUTHORIZED,
-    HTTP_403_FORBIDDEN,
     HTTP_404_NOT_FOUND,
     is_success,
 )
 
-from tests.api.helpers import assert_fields_exist, do_login, get_response
+from tests.api.asserts import assert_exact_fields
+from tests.api.helpers import do_login, get_response
+from tests.api.matrix import any_user
 from video_requests.models import Rating, Video
 
 pytestmark = pytest.mark.django_db
 
 
 def assert_response_keys(rating):
-    assert_fields_exist(rating, ["created", "rating", "review"])
+    assert_exact_fields(rating, ["created", "rating", "review"])
 
 
 @pytest.fixture
@@ -35,16 +35,7 @@ def rating_data():
     }
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_201_CREATED),
-        ("staff_user", HTTP_201_CREATED),
-        ("basic_user", HTTP_201_CREATED),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@any_user(HTTP_201_CREATED)
 def test_create_rating(api_client, expected, rating_data, request, user):
     user = do_login(api_client, request, user)
 
@@ -71,16 +62,7 @@ def test_create_rating(api_client, expected, rating_data, request, user):
         assert rating.review == rating_data["review"]
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_400_BAD_REQUEST),
-        ("staff_user", HTTP_400_BAD_REQUEST),
-        ("basic_user", HTTP_400_BAD_REQUEST),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@any_user(HTTP_400_BAD_REQUEST)
 def test_create_rating_validation(api_client, expected, rating_data, request, user):
     user = do_login(api_client, request, user)
 
@@ -123,55 +105,13 @@ def test_create_rating_validation(api_client, expected, rating_data, request, us
         )
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        (
-            "admin_user",
-            {
-                "DELETE": HTTP_204_NO_CONTENT,
-                "GET": HTTP_200_OK,
-                "PATCH": HTTP_200_OK,
-                "PUT": HTTP_200_OK,
-            },
-        ),
-        (
-            "staff_user",
-            {
-                "DELETE": HTTP_204_NO_CONTENT,
-                "GET": HTTP_200_OK,
-                "PATCH": HTTP_200_OK,
-                "PUT": HTTP_200_OK,
-            },
-        ),
-        (
-            "basic_user",
-            {
-                "DELETE": HTTP_204_NO_CONTENT,
-                "GET": HTTP_200_OK,
-                "PATCH": HTTP_200_OK,
-                "PUT": HTTP_200_OK,
-            },
-        ),
-        (
-            "service_account",
-            {
-                "DELETE": HTTP_403_FORBIDDEN,
-                "GET": HTTP_403_FORBIDDEN,
-                "PATCH": HTTP_403_FORBIDDEN,
-                "PUT": HTTP_403_FORBIDDEN,
-            },
-        ),
-        (
-            None,
-            {
-                "DELETE": HTTP_401_UNAUTHORIZED,
-                "GET": HTTP_401_UNAUTHORIZED,
-                "PATCH": HTTP_401_UNAUTHORIZED,
-                "PUT": HTTP_401_UNAUTHORIZED,
-            },
-        ),
-    ],
+@any_user(
+    {
+        "DELETE": HTTP_204_NO_CONTENT,
+        "GET": HTTP_200_OK,
+        "PATCH": HTTP_200_OK,
+        "PUT": HTTP_200_OK,
+    }
 )
 @pytest.mark.parametrize("method", ["DELETE", "GET", "PATCH", "PUT"])
 def test_retrieve_update_destroy_rating(
@@ -201,16 +141,7 @@ def test_retrieve_update_destroy_rating(
             assert response.data["review"] == rating_data["review"]
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_404_NOT_FOUND),
-        ("staff_user", HTTP_404_NOT_FOUND),
-        ("basic_user", HTTP_404_NOT_FOUND),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@any_user(HTTP_404_NOT_FOUND)
 @pytest.mark.parametrize("method", ["DELETE", "GET", "PATCH", "POST", "PUT"])
 def test_create_retrieve_update_destroy_rating_errors(
     api_client,

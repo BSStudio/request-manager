@@ -6,36 +6,27 @@ from model_bakery import baker
 from rest_framework.reverse import reverse
 from rest_framework.status import (
     HTTP_200_OK,
-    HTTP_401_UNAUTHORIZED,
-    HTTP_403_FORBIDDEN,
     HTTP_404_NOT_FOUND,
     is_success,
 )
 
-from tests.api.helpers import assert_fields_exist, do_login
+from tests.api.asserts import assert_exact_fields
+from tests.api.helpers import do_login
+from tests.api.matrix import any_user
 from video_requests.models import Video
 
 pytestmark = pytest.mark.django_db
 
 
 def assert_response_keys(video):
-    assert_fields_exist(video, ["id", "rating", "status", "title", "video_url"])
+    assert_exact_fields(video, ["id", "rating", "status", "title", "video_url"])
 
     rating = video["rating"]
     if rating:
-        assert_fields_exist(rating, ["created", "rating", "review"])
+        assert_exact_fields(rating, ["created", "rating", "review"])
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_200_OK),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@any_user(HTTP_200_OK)
 def test_list_videos_own_request(api_client, expected, request, user):
     user = do_login(api_client, request, user)
 
@@ -56,16 +47,7 @@ def test_list_videos_own_request(api_client, expected, request, user):
             assert_response_keys(video)
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_404_NOT_FOUND),
-        ("staff_user", HTTP_404_NOT_FOUND),
-        ("basic_user", HTTP_404_NOT_FOUND),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@any_user(HTTP_404_NOT_FOUND)
 def test_list_videos_errors(
     api_client, expected, not_existing_request_id, request, user
 ):
@@ -91,16 +73,7 @@ def test_list_videos_errors(
     assert response.status_code == expected
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_200_OK),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@any_user(HTTP_200_OK)
 def test_retrieve_video(api_client, expected, request, user):
     user = do_login(api_client, request, user)
 
@@ -119,16 +92,7 @@ def test_retrieve_video(api_client, expected, request, user):
         assert_response_keys(response.data)
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_404_NOT_FOUND),
-        ("staff_user", HTTP_404_NOT_FOUND),
-        ("basic_user", HTTP_404_NOT_FOUND),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@any_user(HTTP_404_NOT_FOUND)
 def test_retrieve_video_errors(
     api_client, expected, not_existing_request_id, not_existing_video_id, request, user
 ):

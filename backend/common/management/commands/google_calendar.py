@@ -2,6 +2,7 @@ from datetime import timedelta
 
 from django.conf import settings
 from django.core.management import BaseCommand
+from django.utils import timezone
 
 from common.models import get_sentinel_user
 from common.utilities import (
@@ -10,7 +11,7 @@ from common.utilities import (
     remove_calendar_event,
     update_calendar_event,
 )
-from tests.helpers.video_requests_test_utils import create_request
+from video_requests.models import Request
 
 
 class Command(BaseCommand):
@@ -94,7 +95,16 @@ class Command(BaseCommand):
             )
 
         elif test:
-            request = create_request(999999, get_sentinel_user())
+            start = timezone.now()
+            request = Request.objects.create(
+                title="Google Calendar API test",
+                start_datetime=start,
+                end_datetime=start + timedelta(hours=2),
+                place="Test place",
+                type="Test type",
+                requester=get_sentinel_user(),
+                requested_by=get_sentinel_user(),
+            )
             try:
                 # Which credential file are we using
                 self.stdout.write("----------- Key file path -----------")

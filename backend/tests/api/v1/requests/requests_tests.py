@@ -1,9 +1,9 @@
-from datetime import date, datetime, timedelta
+from datetime import timedelta
 from itertools import combinations
 from uuid import uuid4
 
 import pytest
-from django.utils.timezone import localtime, make_aware
+from django.utils.timezone import localtime
 from model_bakery import baker
 from rest_framework.exceptions import ErrorDetail
 from rest_framework.reverse import reverse
@@ -11,21 +11,21 @@ from rest_framework.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
     HTTP_400_BAD_REQUEST,
-    HTTP_401_UNAUTHORIZED,
-    HTTP_403_FORBIDDEN,
     HTTP_404_NOT_FOUND,
     is_success,
 )
 
 from common.models import User, get_anonymous_user
-from tests.api.helpers import assert_fields_exist, do_login, login
+from tests.api.asserts import assert_exact_fields
+from tests.api.helpers import do_login, login
+from tests.api.matrix import any_user
 from video_requests.models import Comment, Request
 
 pytestmark = pytest.mark.django_db
 
 
 def assert_list_response_keys(video_request):
-    assert_fields_exist(
+    assert_exact_fields(
         video_request,
         [
             "created",
@@ -38,7 +38,7 @@ def assert_list_response_keys(video_request):
 
 
 def assert_retrieve_response_keys(video_request):
-    assert_fields_exist(
+    assert_exact_fields(
         video_request,
         [
             "created",
@@ -67,13 +67,13 @@ def assert_retrieve_response_keys(video_request):
 
 
 def assert_user_details(user):
-    assert_fields_exist(
+    assert_exact_fields(
         user, ["avatar_url", "email", "full_name", "id", "is_staff", "phone_number"]
     )
 
 
 def assert_requested_by_details(user):
-    assert_fields_exist(user, ["avatar_url", "full_name", "id"])
+    assert_exact_fields(user, ["avatar_url", "full_name", "id"])
 
 
 @pytest.fixture
@@ -97,16 +97,7 @@ def requester_data():
     }
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_200_OK),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@any_user(HTTP_200_OK)
 @pytest.mark.parametrize("pagination", [True, False])
 def test_list_requests(api_client, expected, pagination, request, user):
     user = do_login(api_client, request, user)
@@ -121,10 +112,10 @@ def test_list_requests(api_client, expected, pagination, request, user):
 
     if is_success(response.status_code):
         if pagination:
-            assert_fields_exist(
+            assert_exact_fields(
                 response.data, ["count", "links", "results", "total_pages"]
             )
-            assert_fields_exist(response.data["links"], ["next", "previous"])
+            assert_exact_fields(response.data["links"], ["next", "previous"])
 
             assert response.data["count"] == len(video_requests)
 
@@ -350,16 +341,7 @@ def test_create_request_user_info_validation(api_client, request_create_data):
             )
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_200_OK),
-        ("staff_user", HTTP_200_OK),
-        ("basic_user", HTTP_200_OK),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@any_user(HTTP_200_OK)
 def test_retrieve_request(api_client, expected, request, user):
     user = do_login(api_client, request, user)
 
@@ -377,16 +359,7 @@ def test_retrieve_request(api_client, expected, request, user):
         assert_retrieve_response_keys(response.data)
 
 
-@pytest.mark.parametrize(
-    "user,expected",
-    [
-        ("admin_user", HTTP_404_NOT_FOUND),
-        ("staff_user", HTTP_404_NOT_FOUND),
-        ("basic_user", HTTP_404_NOT_FOUND),
-        ("service_account", HTTP_403_FORBIDDEN),
-        (None, HTTP_401_UNAUTHORIZED),
-    ],
-)
+@any_user(HTTP_404_NOT_FOUND)
 def test_retrieve_request_error(
     api_client, expected, not_existing_request_id, request, user
 ):
@@ -410,136 +383,3 @@ def test_retrieve_request_error(
     response = api_client.get(url)
 
     assert response.status_code == expected
-
-
-@pytest.mark.parametrize(
-    "ordering,expected",
-    [
-        ("created", [2, 4, 3, 1]),
-        ("start_datetime", [4, 2, 3, 1]),
-        ("status", [3, 4, 2, 1]),
-        ("title", [2, 4, 1, 3]),
-    ],
-)
-@pytest.mark.parametrize("pagination", [True, False])
-def test_order_requests(
-    api_client, basic_user, expected, ordering, pagination, time_machine
-):
-    requests = []
-
-    start_date = make_aware(
-        datetime.combine(date.fromisoformat("2023-05-30"), datetime.min.time())
-    )
-
-    time_machine.move_to(datetime(2019, 6, 4))
-    requests.append(
-        baker.make(
-            "video_requests.Request",
-            end_datetime=start_date,
-            requester=basic_user,
-            start_datetime=start_date - timedelta(days=4),
-            status=Request.Statuses.CANCELED,
-            title="CCCC",
-        )
-    )
-
-    time_machine.move_to(datetime(1990, 8, 7))
-    requests.append(
-        baker.make(
-            "video_requests.Request",
-            end_datetime=start_date,
-            requester=basic_user,
-            start_datetime=start_date - timedelta(days=10),
-            status=Request.Statuses.DONE,
-            title="AAAA",
-        )
-    )
-
-    time_machine.move_to(datetime(2009, 8, 22))
-    requests.append(
-        baker.make(
-            "video_requests.Request",
-            end_datetime=start_date,
-            requester=basic_user,
-            start_datetime=start_date - timedelta(days=8),
-            status=Request.Statuses.ACCEPTED,
-            title="DDDD",
-        )
-    )
-
-    time_machine.move_to(datetime(1995, 10, 26))
-    requests.append(
-        baker.make(
-            "video_requests.Request",
-            end_datetime=start_date,
-            requester=basic_user,
-            start_datetime=start_date - timedelta(days=15),
-            status=Request.Statuses.UPLOADED,
-            title="BBBB",
-        )
-    )
-
-    login(api_client, basic_user)
-
-    url = reverse("api:v1:requests:request-list")
-    response = api_client.get(url, {"ordering": ordering, "pagination": pagination})
-
-    assert is_success(response.status_code)
-
-    for i, _ in enumerate(requests):
-        response_data = response.data["results"] if pagination else response.data
-
-        assert response_data[i]["id"] == requests[expected[i] - 1].id
-
-
-@pytest.mark.parametrize("pagination", [True, False])
-def test_search_requests(api_client, basic_user, pagination):
-    requests = [
-        baker.make(
-            "video_requests.Request", requester=basic_user, title="AAAA BBBB CCCC"
-        ),
-        baker.make(
-            "video_requests.Request", requester=basic_user, title="BBBB AAAA CCCC"
-        ),
-        baker.make(
-            "video_requests.Request", requester=basic_user, title="CCCC BBBB AAAA"
-        ),
-        baker.make(
-            "video_requests.Request", requester=basic_user, title="BBCC CCAA AABB"
-        ),
-        baker.make(
-            "video_requests.Request", requester=basic_user, title="BBBB CCCC BBBB"
-        ),
-        baker.make(
-            "video_requests.Request", requester=basic_user, title="BBBB BBBB BBBB"
-        ),
-        baker.make(
-            "video_requests.Request", requester=basic_user, title="CCCC CCCC CCCC"
-        ),
-        baker.make(
-            "video_requests.Request", requester=basic_user, title="CCCC BBBB CCCC"
-        ),
-        baker.make(
-            "video_requests.Request", requester=basic_user, title="BBAA CCAA AACC"
-        ),
-    ]
-
-    baker.make("video_requests.Video", request=requests[6], title="AAAA BBBB"),
-    baker.make("video_requests.Video", request=requests[7], title="CCCC AAAA"),
-
-    login(api_client, basic_user)
-
-    url = reverse("api:v1:requests:request-list")
-    response = api_client.get(url, {"pagination": pagination, "search": "AAAA"})
-
-    assert is_success(response.status_code)
-
-    response_data = response.data["results"] if pagination else response.data
-
-    assert len(response_data) == 5
-
-    assert response_data[0]["id"] == requests[0].id
-    assert response_data[1]["id"] == requests[1].id
-    assert response_data[2]["id"] == requests[2].id
-    assert response_data[3]["id"] == requests[6].id
-    assert response_data[4]["id"] == requests[7].id

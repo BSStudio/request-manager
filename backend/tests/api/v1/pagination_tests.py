@@ -5,14 +5,15 @@ from model_bakery import baker
 from rest_framework.reverse import reverse
 from rest_framework.status import is_success
 
-from tests.api.helpers import assert_fields_exist, login
+from tests.api.asserts import assert_exact_fields
+from tests.api.helpers import login
 
 pytestmark = pytest.mark.django_db
 
 
 def assert_pagination_fields(expected, response, video_requests_len):
-    assert_fields_exist(response.data, ["count", "links", "results", "total_pages"])
-    assert_fields_exist(response.data["links"], ["next", "previous"])
+    assert_exact_fields(response.data, ["count", "links", "results", "total_pages"])
+    assert_exact_fields(response.data["links"], ["next", "previous"])
 
     assert response.data["count"] == video_requests_len
     assert len(response.data["results"]) == expected[0]
