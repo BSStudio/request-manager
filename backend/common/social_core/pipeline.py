@@ -184,7 +184,7 @@ def get_avatar(backend, response, user, *args, **kwargs):
 
     elif backend.name == "microsoft-graph":
         resp = requests.get(
-            "https://graph.microsoft.com/v1.0/me/photos/504x504/$value",
+            "https://graph.microsoft.com/v1.0/me/photos/240x240/$value",
             headers={
                 "Authorization": f"Bearer {response['access_token']}",
                 "Content-Type": "image/jpg",
