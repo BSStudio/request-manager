@@ -1943,23 +1943,15 @@ paths:
           application/json:
             schema:
               $ref: '#/components/schemas/TokenObtainPairOAuth2Request'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/TokenObtainPairOAuth2Request'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/TokenObtainPairOAuth2Request'
         required: true
       security:
-        - jwtAuth: []
-        - cookieAuth: []
-        - tokenAuth: []
+        - {}
       responses:
         '200':
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TokenObtainResponse'
+                $ref: '#/components/schemas/LoginResponse'
           description: ''
   /api/v1/logout:
     post:
@@ -1978,7 +1970,6 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/TokenBlacklistRequest'
-        required: true
       security:
         - jwtAuth: []
         - cookieAuth: []
@@ -2923,6 +2914,41 @@ components:
         - field
         - new
         - old
+    LoginResponse:
+      type: object
+      properties:
+        avatar_url:
+          type: string
+          readOnly: true
+          nullable: true
+        groups:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        role:
+          type: string
+          readOnly: true
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+          readOnly: true
+      required:
+        - access
+        - avatar_url
+        - groups
+        - id
+        - name
+        - refresh
+        - role
     OAuth2ConnectRequest:
       type: object
       properties:
@@ -3858,8 +3884,6 @@ components:
           type: string
           writeOnly: true
           minLength: 1
-      required:
-        - refresh
     TokenObtainPairOAuth2Request:
       type: object
       properties:
@@ -3872,18 +3896,6 @@ components:
       required:
         - code
         - provider
-    TokenObtainResponse:
-      type: object
-      properties:
-        access:
-          type: string
-          readOnly: true
-        refresh:
-          type: string
-          readOnly: true
-      required:
-        - access
-        - refresh
     TokenRefresh:
       type: object
       properties:

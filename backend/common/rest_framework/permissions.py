@@ -8,15 +8,6 @@ def is_admin(user):
     return bool(not user.is_anonymous and user.is_admin)
 
 
-class IsNotAuthenticated(BasePermission):
-    """
-    Allows access only to unauthenticated (anonymous) users.
-    """
-
-    def has_permission(self, request, view):
-        return not request.user.is_authenticated
-
-
 class IsAuthenticated(BasePermission):
     """
     Allows access only to authenticated users except service accounts.

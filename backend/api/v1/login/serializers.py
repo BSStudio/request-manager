@@ -5,8 +5,9 @@ from django.http import HttpResponse
 from django.utils.encoding import iri_to_uri
 from django.utils.translation import gettext_lazy as _
 from rest_framework.exceptions import NotAuthenticated, ValidationError
-from rest_framework.fields import CharField
-from rest_framework.serializers import Serializer
+from rest_framework.fields import CharField, SerializerMethodField
+from rest_framework.relations import SlugRelatedField
+from rest_framework.serializers import ModelSerializer
 from rest_framework_simplejwt.serializers import (
     TokenBlacklistSerializer as SimpleJWTTokenBlacklistSerializer,
 )
@@ -16,11 +17,16 @@ from rest_framework_simplejwt.serializers import (
 from rest_framework_simplejwt.serializers import TokenObtainSerializer
 from social_core.exceptions import AuthException
 
+from common.models import User
 from common.social_core.helpers import decorate_request
 
 
 class TokenBlacklistSerializer(SimpleJWTTokenBlacklistSerializer):
+    refresh = CharField(required=False, write_only=True)
+
     def validate(self, attrs):
+        if "refresh" not in attrs:
+            return {}
         refresh = self.token_class(attrs["refresh"])
         if refresh.payload["user_id"] == str(self.context["request"].user.id):
             refresh.blacklist()
@@ -79,9 +85,33 @@ class TokenObtainPairOAuth2Serializer(SimpleJWTTokenObtainPairSerializer):
 
         refresh = self.get_token(user)
 
-        return {"refresh": str(refresh), "access": str(refresh.access_token)}
+        return {
+            "user": user,
+            "refresh": str(refresh),
+            "access": str(refresh.access_token),
+        }
 
 
-class TokenObtainResponseSerializer(Serializer):
-    access = CharField(read_only=True)
-    refresh = CharField(read_only=True)
+class SessionUserSerializer(ModelSerializer):
+    avatar_url = CharField(allow_null=True, read_only=True)
+    groups = SlugRelatedField(many=True, read_only=True, slug_field="name")
+    name = CharField(source="get_full_name_eastern_order", read_only=True)
+    role = CharField(read_only=True)
+
+    class Meta:
+        model = User
+        fields = ("avatar_url", "groups", "id", "name", "role")
+
+
+class LoginResponseSerializer(SessionUserSerializer):
+    access = SerializerMethodField()
+    refresh = SerializerMethodField()
+
+    class Meta(SessionUserSerializer.Meta):
+        fields = (*SessionUserSerializer.Meta.fields, "access", "refresh")
+
+    def get_access(self, obj) -> str:
+        return self.context["access"]
+
+    def get_refresh(self, obj) -> str:
+        return self.context["refresh"]
