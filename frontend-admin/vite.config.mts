@@ -1,5 +1,7 @@
 import path from 'path';
 
+import tailwindcss from '@tailwindcss/vite';
+import basicSsl from '@vitejs/plugin-basic-ssl';
 import react from '@vitejs/plugin-react';
 import { defineConfig } from 'vite';
 import tsconfigPaths from 'vite-tsconfig-paths';
@@ -9,21 +11,15 @@ export default defineConfig({
   build: {
     assetsDir: 'static/frontend-admin',
     outDir: 'build',
-    rollupOptions: {
-      input: {
-        app: './admin.html',
-      },
-    },
     // sourcemap: true, // When you want to use source-map-explorer
   },
-  plugins: [react(), tsconfigPaths()],
+  plugins: [basicSsl(), react(), tailwindcss(), tsconfigPaths()],
   resolve: {
     alias: {
       '~primereact': path.resolve(__dirname, 'node_modules/primereact'),
     },
   },
   server: {
-    open: '/admin',
-    port: 5174,
+    port: 5173,
   },
 });

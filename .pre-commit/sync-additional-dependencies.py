@@ -7,6 +7,7 @@ from yaml.nodes import ScalarNode
 
 DEPENDENCIES_TO_IGNORE = [
     "@openapitools/openapi-generator-cli",
+    "@tailwindcss/vite",
     "@tanstack/react-query-devtools",
     "@types/node",
     "@types/react",
@@ -18,6 +19,7 @@ DEPENDENCIES_TO_IGNORE = [
     "cssnano",
     "source-map-explorer",
     "postcss",
+    "tailwindcss",
     "vite",
     "vite-plugin-pwa",
     "vite-tsconfig-paths",

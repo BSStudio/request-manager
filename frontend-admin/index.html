@@ -1,1 +1,42 @@
-admin.html
+<!doctype html>
+<html lang="hu">
+  <head>
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <link rel="icon" href="/favicon.ico" sizes="48x48" />
+    <meta name="theme-color" content="#070d18" />
+    <meta
+      name="description"
+      content="A Budavári Schönherz Stúdió forgatási és élő közvetítési felkéréseit kezelő rendszere."
+    />
+    <title>Felkéréskezelő | Budavári Schönherz Stúdió</title>
+    <style>
+      html.dark {
+        background: #090f17;
+        color-scheme: dark;
+      }
+    </style>
+    <script>
+      // Set the theme before the first paint so the page does not flash.
+      try {
+        var savedDarkMode = localStorage.getItem('dark-mode');
+        if (
+          savedDarkMode === null
+            ? matchMedia('(prefers-color-scheme: dark)').matches
+            : savedDarkMode === 'true'
+        ) {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    </script>
+  </head>
+  <body>
+    <!-- prettier-ignore-->
+    <noscript>Az oldal megtekintéséhez kérlek engedélyezd a böngészőben a JavaScript használatát!</noscript>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

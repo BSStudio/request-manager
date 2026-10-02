@@ -1,3 +1,18 @@
+const sessionKeys = [
+  'access_token',
+  'avatar',
+  'groups',
+  'name',
+  'refresh_exp',
+  'refresh_token',
+  'role',
+  'user_id',
+];
+
+export function clearSession() {
+  sessionKeys.forEach((key) => localStorage.removeItem(key));
+}
+
 export function getAccessToken() {
   return localStorage.getItem('access_token') || '';
 }
@@ -36,6 +51,10 @@ export function getUserId() {
 
 export function isAdmin() {
   return getRole() === 'admin';
+}
+
+export function isPrivileged() {
+  return ['admin', 'staff'].includes(getRole());
 }
 
 export function isRefreshTokenExpired() {

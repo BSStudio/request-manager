@@ -102,19 +102,6 @@ by Renovate:
 - Node.js — `frontend/.nvmrc` and `frontend-admin/.nvmrc`
 - Python — `backend/.python-version`
 
-### Windows: enable symbolic links
-
-`frontend-admin/index.html` is a symlink. To check it out correctly on Windows,
-enable Developer Mode (Settings → For developers → Developer Mode) and turn on
-symlink support in Git:
-
-```bash
-git config --get core.symlinks
-git config --replace-all core.symlinks true
-```
-
-Then re-checkout the file: `git checkout -- frontend-admin/index.html`.
-
 ## License
 
 Distributed under the GNU General Public License v3.0. See [`LICENSE`](LICENSE).
