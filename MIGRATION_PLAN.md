@@ -1296,22 +1296,63 @@ Worth revisiting once Phase 1 lands and the login paths are simpler.
 
 ### Phase 1: Backend auth (JWT → sessions)
 
-- [ ] Add session/cache settings
-- [ ] Update `DEFAULT_AUTHENTICATION_CLASSES`
-- [ ] Create new login/logout views
-- [ ] Rewrite login serializers
+Split in two so the backend can ship before the frontends change. Phase 2 is
+replaced by a frontend refactor that merges `frontend` into `frontend-admin`, so
+rewriting both apps' auth now would be wasted work.
+
+#### Step 1 — sessions alongside JWT (`session-auth` branch)
+
+- [x] Add session/cache settings. Sessions live in the Redis cache; the default
+      cache moved from per-process LocMem to Redis, so DRF throttles and
+      `health_check.Cache` now use Redis too (throttles are shared across workers)
+- [x] Update `DEFAULT_AUTHENTICATION_CLASSES` — JWT → Session → Token. JWT stays
+      first so bearer requests from the current frontends skip the session CSRF check
+- [x] CSRF: chose standard DRF CSRF (1.2), not the exempt class. Frontends must send
+      `X-CSRFToken` from the `csrftoken` cookie; `login()` rotates it and sets the cookie
+- [x] Login also calls `django.contrib.auth.login()`. Response is
+      `SessionUserSerializer` fields (`avatar_url`, `groups`, `id`, `name`, `role`)
+      plus `access`/`refresh` (`LoginResponseSerializer`)
+- [x] Login has `authentication_classes = []` and `AllowAny` instead of
+      `IsNotAuthenticated` (removed): a leftover session would otherwise block
+      re-login. `JSONParser` only, against login CSRF
+- [x] Logout also ends the session; `refresh` is optional
+- [x] Fix Microsoft avatar — 240x240 instead of 504x504 (not 96x96: the profile
+      page shows it at 160px). Stored avatars shrink on the next Microsoft login
+- [x] Session tests in `tests/api/v1/login/session_tests.py`
+- [ ] frontend-admin's generated API client not regenerated (`TokenObtainResponse`
+      → `LoginResponse`); do it in the frontend refactor
+
+#### Step 2 — remove JWT (after the frontend refactor uses sessions)
+
+- [ ] Drop `access`/`refresh` from the login response (`LoginResponseSerializer` →
+      `SessionUserSerializer`), drop `get_token()` JWT claims
+- [ ] Logout: drop the blacklist serializer, return 204
 - [ ] Update login URLs (remove refresh)
-- [ ] Simplify ban signal. Note: the signal clearing `is_staff`, `is_superuser` and
-      the group membership is deliberate, not a bug — `set_groups_and_permissions_for_staff`
-      restores all three from BSS on the next `bss-login`, so an unbanned staff member
-      only has to log in again. Keep that behaviour when simplifying
-- [ ] Fix Microsoft avatar (smaller size, no base64 in JWT)
-- [ ] Remove `SIMPLE_JWT` config
+- [ ] Simplify ban signal (remove the blacklist loop). Note: the signal clearing
+      `is_staff`, `is_superuser` and the group membership is deliberate, not a bug —
+      `set_groups_and_permissions_for_staff` restores all three from BSS on the next
+      `bss-login`, so an unbanned staff member only has to log in again. Keep that
+      behaviour when simplifying. Sessions of banned users already fail: DRF's
+      `SessionAuthentication` rejects inactive users
+- [ ] Remove `InvalidToken`/`TokenError` handling from `common/social_core/helpers.py`
+      and `api/v1/login/views.py`
+- [ ] Remove `flushexpiredtokens` from `core/tasks.py` (`scheduled_cleaning`)
+- [ ] Remove `SIMPLE_JWT` config (`base.py`, `debug.py`, `test.py`)
+- [ ] Remove JWTAuthentication from `DEFAULT_AUTHENTICATION_CLASSES`
 - [ ] Remove `token_blacklist` from `INSTALLED_APPS`
 - [ ] Drop token_blacklist DB tables via migration
 - [ ] Remove `djangorestframework-simplejwt` dependency
+- [ ] Tests: `tests/api/helpers.py` `login()` → `client.force_login()`; delete
+      `jwt_tests.py`, rewrite `logout_tests.py`, `oauth2_tests.py` token assertions,
+      `tests/workflows/request_lifecycle_tests.py`
+- [ ] Regenerate `schema.yaml`
 
 ### Phase 2: Frontend auth
+
+Superseded by the frontend refactor (merge `frontend` into `frontend-admin`). Keep
+these as requirements for it. Also: dev runs Vite on `https://localhost:5173/5174`
+against `http://localhost:8000` — cross-site, so `Lax` cookies won't be sent. Add a
+Vite dev proxy for `/api` instead of `VITE_API_URL`.
 
 - [ ] Update axios — `withCredentials: true`, remove `Authorization` header
 - [ ] Add CSRF token handling (or use exempt auth class)
@@ -1332,4 +1373,5 @@ Worth revisiting once Phase 1 lands and the login paths are simpler.
 ### Final
 
 - [ ] Tests: Update all auth-related tests
-- [ ] Deploy Phase 1 + Phase 2 atomically
+- [ ] Deploy Phase 1 step 2 with or after the frontend refactor (step 1 deploys
+      on its own)
