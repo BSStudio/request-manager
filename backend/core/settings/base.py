@@ -149,6 +149,31 @@ CACHEOPS = {
     "*.*": {"timeout": 60 * 60},
 }
 
+# Cache
+# https://docs.djangoproject.com/en/6.0/topics/cache/
+
+CACHES = {
+    "default": {
+        "BACKEND": "django.core.cache.backends.redis.RedisCache",
+        "LOCATION": CACHEOPS_REDIS,
+    },
+}
+
+# Sessions
+# https://docs.djangoproject.com/en/6.0/topics/http/sessions/
+
+SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+SESSION_COOKIE_AGE = 60 * 60 * 6
+SESSION_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_SECURE = True
+SESSION_SAVE_EVERY_REQUEST = True
+
+# CSRF
+# https://docs.djangoproject.com/en/6.0/ref/csrf/
+
+CSRF_COOKIE_SAMESITE = "Lax"
+CSRF_COOKIE_SECURE = True
+
 # Celery
 # https://docs.celeryproject.org/en/stable/userguide/configuration.html
 
@@ -227,7 +252,9 @@ SERVICE_ACCOUNTS_GROUP = config("SERVICE_ACCOUNTS_GROUP", default="Service Accou
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
+        # Before Session: the current frontends send no CSRF token.
         "rest_framework_simplejwt.authentication.JWTAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
         "rest_framework.authentication.TokenAuthentication",
     ],
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],

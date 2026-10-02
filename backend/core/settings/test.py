@@ -68,6 +68,8 @@ REST_FRAMEWORK.update(
 
 # Disable caching
 CACHEOPS_ENABLED = False
+CACHES = {"default": {"BACKEND": "django.core.cache.backends.locmem.LocMemCache"}}
+SESSION_ENGINE = "django.contrib.sessions.backends.db"
 
 # Save celery result to database when running in eager mode
 CELERY_TASK_STORE_EAGER_RESULT = True

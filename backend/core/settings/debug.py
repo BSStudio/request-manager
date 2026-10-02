@@ -19,6 +19,8 @@ CORS_ALLOW_ALL_ORIGINS = True
 
 # Local environment is not HTTPS
 SOCIAL_AUTH_REDIRECT_IS_HTTPS = False
+SESSION_COOKIE_SECURE = False
+CSRF_COOKIE_SECURE = False
 
 # Run Celery tasks synchronously in eager mode
 # CELERY_TASK_ALWAYS_EAGER = True
