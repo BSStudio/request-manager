@@ -94,7 +94,7 @@ GOOGLE = Provider(
     },
 )
 
-MICROSOFT_AVATAR_URL = "https://graph.microsoft.com/v1.0/me/photos/504x504/$value"
+MICROSOFT_AVATAR_URL = "https://graph.microsoft.com/v1.0/me/photos/240x240/$value"
 
 MICROSOFT = Provider(
     name="microsoft-graph",
