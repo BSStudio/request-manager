@@ -1,20 +1,18 @@
-const sessionKeys = [
-  'access_token',
-  'avatar',
-  'groups',
-  'name',
-  'refresh_exp',
-  'refresh_token',
-  'role',
-  'user_id',
-];
+import type { LoginResponse } from 'api/models';
+
+// The session cookie decides who is logged in, these keys only cache who it is.
+export type SessionData = Pick<
+  LoginResponse,
+  'avatar_url' | 'groups' | 'id' | 'name' | 'role'
+>;
+
+export const SESSION_CHANGE_EVENT = 'session-change';
+
+const sessionKeys = ['avatar', 'groups', 'name', 'role', 'user_id'];
 
 export function clearSession() {
   sessionKeys.forEach((key) => localStorage.removeItem(key));
-}
-
-export function getAccessToken() {
-  return localStorage.getItem('access_token') || '';
+  window.dispatchEvent(new Event(SESSION_CHANGE_EVENT));
 }
 
 export function getAvatar() {
@@ -33,20 +31,16 @@ export function getName() {
   return localStorage.getItem('name') || '';
 }
 
-export function getRefreshToken() {
-  return localStorage.getItem('refresh_token') || '';
-}
-
-export function getRefreshTokenExpirationTime() {
-  return localStorage.getItem('refresh_exp');
-}
-
 export function getRole() {
   return localStorage.getItem('role') || '';
 }
 
 export function getUserId() {
   return Number(localStorage.getItem('user_id'));
+}
+
+export function hasSession() {
+  return localStorage.getItem('user_id') !== null;
 }
 
 export function isAdmin() {
@@ -57,15 +51,6 @@ export function isPrivileged() {
   return ['admin', 'staff'].includes(getRole());
 }
 
-export function isRefreshTokenExpired() {
-  const expirationTime = Number(getRefreshTokenExpirationTime());
-  return isNaN(expirationTime) || expirationTime < Date.now() / 1000;
-}
-
-export function setAccessToken(accessToken: string) {
-  localStorage.setItem('access_token', accessToken);
-}
-
 export function setDarkMode(darkMode: boolean) {
   localStorage.setItem('dark-mode', JSON.stringify(darkMode));
 }
@@ -74,10 +59,21 @@ export function setRedirectedFrom(redirectedFrom: string) {
   localStorage.setItem('redirectedFrom', redirectedFrom);
 }
 
-export function setRefreshToken(refreshToken: string) {
-  localStorage.setItem('refresh_token', refreshToken);
-}
-
-export function setRefreshTokenExpirationTime(refreshTokenExpTime?: number) {
-  return localStorage.setItem('refresh_exp', String(refreshTokenExpTime));
+export function setSession({
+  avatar_url,
+  groups,
+  id,
+  name,
+  role,
+}: SessionData) {
+  if (avatar_url) {
+    localStorage.setItem('avatar', avatar_url);
+  } else {
+    localStorage.removeItem('avatar');
+  }
+  localStorage.setItem('groups', JSON.stringify(groups));
+  localStorage.setItem('name', name);
+  localStorage.setItem('role', role);
+  localStorage.setItem('user_id', String(id));
+  window.dispatchEvent(new Event(SESSION_CHANGE_EVENT));
 }

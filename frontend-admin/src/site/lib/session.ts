@@ -1,15 +1,17 @@
 import { useSyncExternalStore } from 'react';
 
-import { logoutApi } from 'api/http';
+import { isAxiosError } from 'axios';
+
+import { logoutApi, meApi } from 'api/http';
 import {
   clearSession,
-  getAccessToken,
   getAvatar,
   getName,
-  getRefreshToken,
   getUserId,
+  hasSession,
   isPrivileged,
-  isRefreshTokenExpired,
+  SESSION_CHANGE_EVENT,
+  setSession,
 } from 'helpers/LocalStorageHelper';
 
 export type SessionUser = {
@@ -20,7 +22,7 @@ export type SessionUser = {
 };
 
 function readUser(): SessionUser | null {
-  if (!getAccessToken() || isRefreshTokenExpired()) return null;
+  if (!hasSession()) return null;
   return {
     avatar: getAvatar(),
     id: getUserId(),
@@ -32,13 +34,14 @@ function readUser(): SessionUser | null {
 let user = readUser();
 const listeners = new Set<() => void>();
 
-export function notifySessionChange() {
+function update() {
   user = readUser();
   listeners.forEach((listener) => listener());
 }
 
+window.addEventListener(SESSION_CHANGE_EVENT, update);
 // Logging in or out in another tab.
-window.addEventListener('storage', notifySessionChange);
+window.addEventListener('storage', update);
 
 function subscribe(listener: () => void) {
   listeners.add(listener);
@@ -49,12 +52,29 @@ export function useSessionUser() {
   return useSyncExternalStore(subscribe, () => user);
 }
 
+// The cached user outlives the session when it expires on the server.
+export async function revalidateSession() {
+  if (!hasSession()) return;
+  try {
+    const { data } = await meApi.meRetrieve();
+    setSession({
+      avatar_url: data.profile.avatar_url,
+      groups: data.groups,
+      id: data.id,
+      name: `${data.last_name ?? ''} ${data.first_name ?? ''}`.trim(),
+      role: data.role,
+    });
+  } catch (error) {
+    // The API client already clears the session on 401.
+    if (isAxiosError(error) && error.response?.status === 403) clearSession();
+  }
+}
+
 export async function signOut() {
   try {
-    await logoutApi.logoutCreate({ refresh: getRefreshToken() });
+    await logoutApi.logoutCreate({});
   } finally {
     clearSession();
-    notifySessionChange();
   }
 }
 

@@ -77,6 +77,8 @@ export const MiscApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
+      // authentication cookieAuth required
+
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,

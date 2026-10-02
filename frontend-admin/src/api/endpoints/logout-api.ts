@@ -49,20 +49,14 @@ export const LogoutApiAxiosParamCreator = function (
   return {
     /**
      * Takes a token and blacklists it.
-     * @param {TokenBlacklistRequest} tokenBlacklistRequest
+     * @param {TokenBlacklistRequest} [tokenBlacklistRequest]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     logoutCreate: async (
-      tokenBlacklistRequest: TokenBlacklistRequest,
+      tokenBlacklistRequest?: TokenBlacklistRequest,
       options: AxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'tokenBlacklistRequest' is not null or undefined
-      assertParamExists(
-        'logoutCreate',
-        'tokenBlacklistRequest',
-        tokenBlacklistRequest,
-      );
       const localVarPath = `/api/v1/logout`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -78,6 +72,8 @@ export const LogoutApiAxiosParamCreator = function (
       };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
+
+      // authentication cookieAuth required
 
       // authentication tokenAuth required
       await setApiKeyToObject(
@@ -123,12 +119,12 @@ export const LogoutApiFp = function (configuration?: Configuration) {
   return {
     /**
      * Takes a token and blacklists it.
-     * @param {TokenBlacklistRequest} tokenBlacklistRequest
+     * @param {TokenBlacklistRequest} [tokenBlacklistRequest]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async logoutCreate(
-      tokenBlacklistRequest: TokenBlacklistRequest,
+      tokenBlacklistRequest?: TokenBlacklistRequest,
       options?: AxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
@@ -160,12 +156,12 @@ export const LogoutApiFactory = function (
   return {
     /**
      * Takes a token and blacklists it.
-     * @param {TokenBlacklistRequest} tokenBlacklistRequest
+     * @param {TokenBlacklistRequest} [tokenBlacklistRequest]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     logoutCreate(
-      tokenBlacklistRequest: TokenBlacklistRequest,
+      tokenBlacklistRequest?: TokenBlacklistRequest,
       options?: any,
     ): AxiosPromise<void> {
       return localVarFp
@@ -184,13 +180,13 @@ export const LogoutApiFactory = function (
 export class LogoutApi extends BaseAPI {
   /**
    * Takes a token and blacklists it.
-   * @param {TokenBlacklistRequest} tokenBlacklistRequest
+   * @param {TokenBlacklistRequest} [tokenBlacklistRequest]
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof LogoutApi
    */
   public logoutCreate(
-    tokenBlacklistRequest: TokenBlacklistRequest,
+    tokenBlacklistRequest?: TokenBlacklistRequest,
     options?: AxiosRequestConfig,
   ) {
     return LogoutApiFp(this.configuration)

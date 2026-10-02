@@ -25,11 +25,11 @@ The project is a monorepo made up of two deployable applications backed by Postg
 
 [`frontend`](frontend), the previous public site, is no longer built or deployed and will be removed.
 
-The frontend is a static build served by the backend in production (through WhiteNoise). Authentication is handled via OAuth2 (AuthSCH, BSS Login, Google, Microsoft) with JWT tokens.
+The frontend is a static build served by the backend in production (through WhiteNoise). Authentication is handled via OAuth2 (AuthSCH, BSS Login, Google, Microsoft) with a session cookie.
 
 ```mermaid
 flowchart TD
-    frontend["frontend-admin<br/>(public site + admin)"] -->|REST · JWT| backend
+    frontend["frontend-admin<br/>(public site + admin)"] -->|REST · session| backend
     backend["backend<br/>(Django + Celery)"] --> postgres[("PostgreSQL")]
     backend --> redis[("Redis")]
 ```
