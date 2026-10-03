@@ -2,7 +2,7 @@ import { useSyncExternalStore } from 'react';
 
 import { isAxiosError } from 'axios';
 
-import { loginApi, logoutApi, meApi } from 'api/http';
+import { loginApi, logoutApi } from 'api/http';
 import {
   clearSession,
   getAvatar,
@@ -14,6 +14,7 @@ import {
   setSession,
 } from 'helpers/LocalStorageHelper';
 import type { OAuthProvider } from 'site/lib/oauth';
+import { meQuery, queryClient } from 'site/lib/queries';
 
 export type SessionUser = {
   avatar?: string;
@@ -57,7 +58,7 @@ export function useSessionUser() {
 export async function revalidateSession() {
   if (!hasSession()) return;
   try {
-    const { data } = await meApi.meRetrieve();
+    const data = await queryClient.query(meQuery());
     setSession({
       avatar_url: data.profile.avatar_url,
       groups: data.groups,
@@ -74,6 +75,7 @@ export async function revalidateSession() {
 export async function signIn(provider: OAuthProvider, code: string) {
   const { data } = await loginApi.loginSocialCreate({ code, provider });
   setSession(data);
+  queryClient.removeQueries({ queryKey: meQuery().queryKey });
   return data;
 }
 
@@ -82,6 +84,7 @@ export async function signOut() {
     await logoutApi.logoutCreate({});
   } finally {
     clearSession();
+    queryClient.clear();
   }
 }
 

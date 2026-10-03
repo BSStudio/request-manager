@@ -1,46 +1,16 @@
-import {
-  MegaphoneIcon,
-  MicIcon,
-  MusicIcon,
-  PresentationIcon,
-  RadioIcon,
-} from 'lucide-react';
-
 import SectionHeading from 'site/components/home/SectionHeading';
+import { requestTypes } from 'site/lib/requestTypes';
 
-const services = [
-  {
-    description:
-      'Rövid, zenés összefoglaló, ami visszaadja az esemény hangulatát.',
-    icon: MusicIcon,
-    title: 'Zenés hangulatvideó',
-  },
-  {
-    description:
-      'Hangulatvideó, amelyben a résztvevők és a szervezők is megszólalnak.',
-    icon: MicIcon,
-    title: 'Hangulatvideó riportokkal',
-  },
-  {
-    description:
-      'Kedvcsináló videó egy közelgő esemény vagy egy kör népszerűsítésére.',
-    icon: MegaphoneIcon,
-    title: 'Promóciós videó',
-  },
-  {
-    description:
-      'Rögzítjük az előadásokat vagy a teljes rendezvényt, hogy később is vissza lehessen nézni.',
-    icon: PresentationIcon,
-    title: 'Előadás, rendezvény rögzítése',
-  },
-];
+const [live, ...videos] = requestTypes;
 
 function LiveCard() {
+  const Icon = live.icon;
+
   return (
     <article className="relative isolate overflow-hidden rounded-3xl bg-ink p-8 text-white ring-1 ring-white/10 ring-inset sm:col-span-2 sm:p-10">
       <div className="absolute inset-0 -z-10 bg-[radial-gradient(circle_at_85%_20%,color-mix(in_oklab,var(--primary)_55%,transparent),transparent_55%)]" />
       <div className="absolute inset-0 -z-10 bg-[repeating-linear-gradient(to_bottom,transparent_0_3px,rgb(255_255_255/0.035)_3px_4px)]" />
-      <RadioIcon
+      <Icon
         aria-hidden
         className="absolute -right-6 -bottom-8 -z-10 size-56 text-white/[0.06]"
         strokeWidth={1.25}
@@ -49,10 +19,9 @@ function LiveCard() {
         <span className="size-2 rounded-full bg-tally shadow-[0_0_10px_2px] shadow-tally/60 motion-safe:animate-pulse" />
         Élő
       </span>
-      <h3 className="mt-6 text-3xl font-bold sm:text-4xl">Élő közvetítés</h3>
+      <h3 className="mt-6 text-3xl font-bold sm:text-4xl">{live.title}</h3>
       <p className="mt-3 max-w-md text-lg leading-relaxed text-white/70">
-        Élőben közvetítjük az eseményt, így az is láthatja, aki nem tud ott
-        lenni.
+        {live.description}
       </p>
     </article>
   );
@@ -68,7 +37,7 @@ export default function ServicesSection() {
         </SectionHeading>
         <div className="mt-14 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           <LiveCard />
-          {services.map(({ description, icon: Icon, title }) => (
+          {videos.map(({ description, icon: Icon, title }) => (
             <article
               className="group rounded-3xl border bg-card p-7 transition duration-300 hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-lg hover:shadow-primary/5"
               key={title}

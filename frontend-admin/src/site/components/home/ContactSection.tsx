@@ -1,4 +1,4 @@
-import { useRef, useState } from 'react';
+import { useRef } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { TurnstileInstance } from '@marsidev/react-turnstile';
@@ -9,7 +9,7 @@ import { z } from 'zod';
 
 import { miscApi } from 'api/http';
 import SectionHeading from 'site/components/home/SectionHeading';
-import Turnstile from 'site/components/Turnstile';
+import Turnstile, { CAPTCHA_FAILED } from 'site/components/Turnstile';
 import { Button } from 'site/components/ui/button';
 import {
   Field,
@@ -34,7 +34,6 @@ const contactSchema = z.object({
 type ContactValues = z.infer<typeof contactSchema>;
 
 function ContactForm() {
-  const [captcha, setCaptcha] = useState<string | null>(null);
   const turnstile = useRef<TurnstileInstance>(null);
   const {
     formState: { errors, isSubmitting },
@@ -47,7 +46,15 @@ function ContactForm() {
   });
 
   const onSubmit = async (values: ContactValues) => {
-    if (!captcha) return;
+    const captcha = await turnstile.current
+      ?.getResponsePromise()
+      .catch(() => null);
+    if (!captcha) {
+      toast.error('Nem sikerült elküldeni az üzenetet.', {
+        description: CAPTCHA_FAILED,
+      });
+      return;
+    }
     try {
       await miscApi.miscContactCreate({ ...values, captcha });
       toast.success('Köszönjük, megkaptuk az üzeneted!');
@@ -60,7 +67,6 @@ function ContactForm() {
       });
     } finally {
       // A token is only valid for one request.
-      setCaptcha(null);
       turnstile.current?.reset();
     }
   };
@@ -108,10 +114,10 @@ function ContactForm() {
           />
           <FieldError errors={[errors.message]} />
         </Field>
-        <Turnstile onTokenChange={setCaptcha} ref={turnstile} />
+        <Turnstile ref={turnstile} />
         <Button
           className="w-full sm:w-auto sm:self-start"
-          disabled={!captcha || isSubmitting}
+          disabled={isSubmitting}
           size="lg"
           type="submit"
         >

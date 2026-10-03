@@ -34,6 +34,11 @@ const router = sentryCreateBrowserRouter(
           path="login"
         />
         <Route
+          handle={overlayHeader}
+          lazy={() => import('site/pages/NewRequestPage')}
+          path="new-request"
+        />
+        <Route
           lazy={() => import('site/pages/OAuthRedirectPage')}
           path="redirect"
         />
