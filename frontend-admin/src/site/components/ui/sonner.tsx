@@ -7,14 +7,10 @@ import {
 } from 'lucide-react';
 import { Toaster as Sonner, type ToasterProps } from 'sonner';
 
-import { useDarkMode } from 'site/hooks/useDarkMode';
-
 const Toaster = ({ ...props }: ToasterProps) => {
-  const [darkMode] = useDarkMode();
-
   return (
     <Sonner
-      theme={darkMode ? 'dark' : 'light'}
+      theme="dark"
       className="toaster group"
       icons={{
         success: <CircleCheckIcon className="size-4" />,

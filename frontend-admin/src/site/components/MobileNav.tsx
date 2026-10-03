@@ -8,9 +8,7 @@ import {
   LogOutIcon,
   type LucideIcon,
   MenuIcon,
-  MoonIcon,
   SendIcon,
-  SunIcon,
   UserRoundIcon,
   WrenchIcon,
 } from 'lucide-react';
@@ -28,7 +26,6 @@ import {
   SheetTrigger,
 } from 'site/components/ui/sheet';
 import UserAvatar from 'site/components/UserAvatar';
-import { useDarkMode } from 'site/hooks/useDarkMode';
 import { useSignOut } from 'site/hooks/useSignOut';
 import { homeSections } from 'site/lib/homeSections';
 import type { SessionUser } from 'site/lib/session';
@@ -38,11 +35,6 @@ type NavItem = { icon: LucideIcon; label: string; to: string };
 const linkClassName =
   'flex h-12 items-center gap-3 rounded-lg px-3 font-medium transition-colors hover:bg-muted [&_svg]:size-5 [&_svg]:text-muted-foreground';
 
-const themes = [
-  { dark: false, icon: SunIcon, label: 'Világos' },
-  { dark: true, icon: MoonIcon, label: 'Sötét' },
-];
-
 type MobileNavProps = {
   className?: string;
   user: SessionUser | null;
@@ -50,7 +42,6 @@ type MobileNavProps = {
 
 export default function MobileNav({ className, user }: MobileNavProps) {
   const [open, setOpen] = useState(false);
-  const [darkMode, setDarkMode] = useDarkMode();
   const handleSignOut = useSignOut();
   const { pathname } = useLocation();
 
@@ -134,28 +125,6 @@ export default function MobileNav({ className, user }: MobileNavProps) {
           ))}
         </nav>
         <div className="mt-auto space-y-4 border-t p-5">
-          <div
-            aria-label="Megjelenés"
-            className="grid grid-cols-2 rounded-full bg-muted p-1"
-            role="group"
-          >
-            {themes.map(({ dark, icon: Icon, label }) => (
-              <button
-                aria-pressed={darkMode === dark}
-                className={cn(
-                  'flex items-center justify-center gap-1.5 rounded-full py-2 text-sm text-muted-foreground transition-colors',
-                  darkMode === dark &&
-                    'bg-background text-foreground shadow-sm',
-                )}
-                key={label}
-                onClick={() => setDarkMode(dark)}
-                type="button"
-              >
-                <Icon className="size-4" />
-                {label}
-              </button>
-            ))}
-          </div>
           {user && (
             <Button
               className="w-full"

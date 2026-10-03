@@ -6,7 +6,6 @@ import { RouterProvider } from 'react-router/dom';
 
 import { initSentry } from 'helpers/initSentry';
 import { Toaster } from 'site/components/ui/sonner';
-import { TooltipProvider } from 'site/components/ui/tooltip';
 import { queryClient } from 'site/lib/queries';
 import { revalidateSession } from 'site/lib/session';
 import router from 'site/router';
@@ -23,10 +22,8 @@ const root = createRoot(document.getElementById('root') as HTMLElement);
 root.render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <RouterProvider router={router} />
-        <Toaster position="bottom-center" />
-      </TooltipProvider>
+      <RouterProvider router={router} />
+      <Toaster position="bottom-center" />
     </QueryClientProvider>
   </StrictMode>,
 );

@@ -4,7 +4,6 @@ import { Link, useLocation } from 'react-router';
 
 import BssLogo from 'site/components/BssLogo';
 import MobileNav from 'site/components/MobileNav';
-import ThemeToggle from 'site/components/ThemeToggle';
 import { Button } from 'site/components/ui/button';
 import UserMenu from 'site/components/UserMenu';
 import { useScrolled } from 'site/hooks/useScrolled';
@@ -60,7 +59,6 @@ export default function SiteHeader({ overlay }: { overlay: boolean }) {
           ))}
         </nav>
         <div className="ml-auto hidden items-center gap-1 md:flex">
-          <ThemeToggle className={onDark} />
           {user && <UserMenu className={onDark} user={user} />}
           {!user && location.pathname !== '/login' && (
             <Button asChild className={onDark} variant="ghost">

@@ -6,20 +6,12 @@ import {
 } from '@marsidev/react-turnstile';
 import { cn } from 'cn';
 
-import { useDarkMode } from 'site/hooks/useDarkMode';
-
 export const CAPTCHA_FAILED =
   'Nem sikerült a biztonsági ellenőrzés. Frissítsd az oldalt, és próbáld újra!';
 
-type TurnstileProps = {
-  ref?: Ref<TurnstileInstance>;
-};
-
-type ChallengeProps = TurnstileProps & {
-  theme: 'dark' | 'light';
-};
-
-function Challenge({ ref, theme }: ChallengeProps) {
+// Most visitors pass unnoticed, the widget only shows up when Cloudflare wants
+// a click. Read the token with getResponsePromise(), it waits for the check.
+export default function Turnstile({ ref }: { ref?: Ref<TurnstileInstance> }) {
   const [status, setStatus] = useState<'error' | 'hidden' | 'interactive'>(
     'hidden',
   );
@@ -50,20 +42,14 @@ function Challenge({ ref, theme }: ChallengeProps) {
           setStatus((current) => (current === 'error' ? 'hidden' : current))
         }
         onUnsupported={() => setStatus('error')}
-        options={{ appearance: 'interaction-only', language: 'hu', theme }}
+        options={{
+          appearance: 'interaction-only',
+          language: 'hu',
+          theme: 'dark',
+        }}
         ref={ref}
         siteKey={import.meta.env.VITE_TURNSTILE_SITE_KEY}
       />
     </div>
   );
-}
-
-// Most visitors pass unnoticed, the widget only shows up when Cloudflare wants
-// a click. Read the token with getResponsePromise(), it waits for the check.
-export default function Turnstile({ ref }: TurnstileProps) {
-  const [darkMode] = useDarkMode();
-  const theme = darkMode ? 'dark' : 'light';
-
-  // The widget only reads its theme when it is created.
-  return <Challenge key={theme} ref={ref} theme={theme} />;
 }
