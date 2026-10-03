@@ -14,7 +14,7 @@ import {
   UserRoundIcon,
   WrenchIcon,
 } from 'lucide-react';
-import { NavLink } from 'react-router';
+import { NavLink, useLocation } from 'react-router';
 
 import BssLogo from 'site/components/BssLogo';
 import SocialLinks from 'site/components/SocialLinks';
@@ -51,6 +51,7 @@ export default function MobileNav({ className, user }: MobileNavProps) {
   const [open, setOpen] = useState(false);
   const [darkMode, setDarkMode] = useDarkMode();
   const handleSignOut = useSignOut();
+  const { pathname } = useLocation();
 
   const items: NavItem[] = [
     { icon: HouseIcon, label: 'Kezdőlap', to: '/' },
@@ -101,6 +102,7 @@ export default function MobileNav({ className, user }: MobileNavProps) {
               end
               key={to}
               onClick={() => setOpen(false)}
+              state={{ from: pathname }}
               to={to}
             >
               <Icon />

@@ -51,6 +51,12 @@ export function isPrivileged() {
   return ['admin', 'staff'].includes(getRole());
 }
 
+export function popRedirectedFrom() {
+  const redirectedFrom = localStorage.getItem('redirectedFrom');
+  localStorage.removeItem('redirectedFrom');
+  return redirectedFrom;
+}
+
 export function setDarkMode(darkMode: boolean) {
   localStorage.setItem('dark-mode', JSON.stringify(darkMode));
 }

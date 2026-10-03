@@ -2,7 +2,7 @@ import { useSyncExternalStore } from 'react';
 
 import { isAxiosError } from 'axios';
 
-import { logoutApi, meApi } from 'api/http';
+import { loginApi, logoutApi, meApi } from 'api/http';
 import {
   clearSession,
   getAvatar,
@@ -13,6 +13,7 @@ import {
   SESSION_CHANGE_EVENT,
   setSession,
 } from 'helpers/LocalStorageHelper';
+import type { OAuthProvider } from 'site/lib/oauth';
 
 export type SessionUser = {
   avatar?: string;
@@ -68,6 +69,12 @@ export async function revalidateSession() {
     // The API client already clears the session on 401.
     if (isAxiosError(error) && error.response?.status === 403) clearSession();
   }
+}
+
+export async function signIn(provider: OAuthProvider, code: string) {
+  const { data } = await loginApi.loginSocialCreate({ code, provider });
+  setSession(data);
+  return data;
 }
 
 export async function signOut() {

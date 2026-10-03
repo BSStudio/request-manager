@@ -120,6 +120,7 @@
 
 @theme {
   --animate-ken-burns: ken-burns 30s ease-out both;
+  --animate-shooting-star: shooting-star 20s linear infinite;
   --animate-static: static 0.5s steps(5) infinite;
 
   @keyframes ken-burns {
@@ -128,6 +129,23 @@
     }
     to {
       transform: scale(1);
+    }
+  }
+  @keyframes shooting-star {
+    0% {
+      opacity: 0;
+      transform: rotate(-35deg) translateX(0);
+    }
+    1% {
+      opacity: 1;
+    }
+    5% {
+      opacity: 0;
+      transform: rotate(-35deg) translateX(-36rem);
+    }
+    100% {
+      opacity: 0;
+      transform: rotate(-35deg) translateX(-36rem);
     }
   }
   @keyframes static {

@@ -28,6 +28,15 @@ const router = sentryCreateBrowserRouter(
           index
           lazy={() => import('site/pages/HomePage')}
         />
+        <Route
+          handle={overlayHeader}
+          lazy={() => import('site/pages/LoginPage')}
+          path="login"
+        />
+        <Route
+          lazy={() => import('site/pages/OAuthRedirectPage')}
+          path="redirect"
+        />
         <Route element={<NotFoundPage />} handle={overlayHeader} path="*" />
       </Route>
     </Route>,

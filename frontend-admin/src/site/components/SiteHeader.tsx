@@ -44,11 +44,10 @@ export default function SiteHeader({ overlay }: { overlay: boolean }) {
         </Link>
         <div className="ml-auto hidden items-center gap-1 md:flex">
           <ThemeToggle className={onDark} />
-          {user ? (
-            <UserMenu className={onDark} user={user} />
-          ) : (
+          {user && <UserMenu className={onDark} user={user} />}
+          {!user && location.pathname !== '/login' && (
             <Button asChild className={onDark} variant="ghost">
-              <Link state={{ from: location }} to="/login">
+              <Link state={{ from: location.pathname }} to="/login">
                 Bejelentkezés
               </Link>
             </Button>
