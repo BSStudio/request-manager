@@ -14,7 +14,7 @@ import {
   UserRoundIcon,
   WrenchIcon,
 } from 'lucide-react';
-import { NavLink, useLocation } from 'react-router';
+import { Link, NavLink, useLocation } from 'react-router';
 
 import BssLogo from 'site/components/BssLogo';
 import SocialLinks from 'site/components/SocialLinks';
@@ -30,6 +30,7 @@ import {
 import UserAvatar from 'site/components/UserAvatar';
 import { useDarkMode } from 'site/hooks/useDarkMode';
 import { useSignOut } from 'site/hooks/useSignOut';
+import { homeSections } from 'site/lib/homeSections';
 import type { SessionUser } from 'site/lib/session';
 
 type NavItem = { icon: LucideIcon; label: string; to: string };
@@ -76,7 +77,7 @@ export default function MobileNav({ className, user }: MobileNavProps) {
           <MenuIcon className="size-6" />
         </Button>
       </SheetTrigger>
-      <SheetContent className="w-[85%] gap-0" side="right">
+      <SheetContent className="w-[85%] gap-0 overflow-y-auto" side="right">
         <SheetHeader className="border-b px-5 py-4">
           <SheetTitle className="flex items-center gap-3">
             <BssLogo className="h-6 w-auto" />
@@ -115,6 +116,22 @@ export default function MobileNav({ className, user }: MobileNavProps) {
               Admin felület
             </a>
           )}
+        </nav>
+        <nav
+          aria-label="Az oldal részei"
+          className="mx-3 flex flex-col gap-1 border-t pt-3"
+        >
+          {homeSections.map(({ icon: Icon, label, to }) => (
+            <Link
+              className={linkClassName}
+              key={to}
+              onClick={() => setOpen(false)}
+              to={to}
+            >
+              <Icon />
+              {label}
+            </Link>
+          ))}
         </nav>
         <div className="mt-auto space-y-4 border-t p-5">
           <div

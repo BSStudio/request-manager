@@ -1,5 +1,10 @@
 import { cn } from 'cn';
-import { ArrowRightIcon, ClockIcon, PlayIcon } from 'lucide-react';
+import {
+  ArrowRightIcon,
+  ChevronDownIcon,
+  ClockIcon,
+  PlayIcon,
+} from 'lucide-react';
 import { Link } from 'react-router';
 
 import studioImage from 'site/assets/studio.webp';
@@ -42,6 +47,13 @@ export default function HeroSection() {
       <div className="absolute inset-0 -z-20 bg-[linear-gradient(to_top,var(--ink)_6%,transparent_55%),linear-gradient(to_right,color-mix(in_oklab,var(--ink)_80%,transparent)_10%,transparent_80%)]" />
       <div className="absolute inset-0 -z-10 bg-grain opacity-[0.08] mix-blend-overlay" />
       <Viewfinder />
+      <Link
+        aria-label="Tovább a szolgáltatásokhoz"
+        className="absolute bottom-8 left-1/2 z-10 grid size-11 -translate-x-1/2 place-items-center rounded-full text-white/60 transition-colors hover:text-white sm:bottom-10"
+        to="#szolgaltatasok"
+      >
+        <ChevronDownIcon className="size-6 motion-safe:animate-bounce" />
+      </Link>
       <div className="mx-auto flex w-full max-w-6xl flex-1 flex-col justify-center px-6 pt-36 pb-24 sm:px-12 sm:pt-40">
         <p className="flex animate-in items-center gap-3 font-mono text-xs tracking-[0.2em] text-white/70 uppercase duration-700 fade-in">
           <span className="h-px w-8 bg-white/40" />

@@ -8,6 +8,7 @@ import ThemeToggle from 'site/components/ThemeToggle';
 import { Button } from 'site/components/ui/button';
 import UserMenu from 'site/components/UserMenu';
 import { useScrolled } from 'site/hooks/useScrolled';
+import { homeSections } from 'site/lib/homeSections';
 import { useSessionUser } from 'site/lib/session';
 
 // Over a dark hero the header is see-through until the page is scrolled. The
@@ -42,6 +43,22 @@ export default function SiteHeader({ overlay }: { overlay: boolean }) {
             Felkéréskezelő
           </span>
         </Link>
+        <nav
+          aria-label="Az oldal részei"
+          className="ml-6 hidden gap-0.5 lg:flex"
+        >
+          {homeSections.map(({ label, to }) => (
+            <Button
+              asChild
+              className={onDark}
+              key={to}
+              size="sm"
+              variant="ghost"
+            >
+              <Link to={to}>{label}</Link>
+            </Button>
+          ))}
+        </nav>
         <div className="ml-auto hidden items-center gap-1 md:flex">
           <ThemeToggle className={onDark} />
           {user && <UserMenu className={onDark} user={user} />}
