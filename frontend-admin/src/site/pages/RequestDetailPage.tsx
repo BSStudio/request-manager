@@ -14,6 +14,7 @@ import { Link, useParams } from 'react-router';
 
 import PageHero from 'site/components/PageHero';
 import DetailCard from 'site/components/request-detail/DetailCard';
+import MessageThread from 'site/components/request-detail/MessageThread';
 import PersonContact from 'site/components/request-detail/PersonContact';
 import RequestProgress from 'site/components/request-detail/RequestProgress';
 import VideoList from 'site/components/request-detail/VideoList';
@@ -129,6 +130,7 @@ function RequestDetail({ id }: { id: number }) {
                 <RequestProgress status={data.status} />
               </DetailCard>
               <VideoList requestId={data.id} status={data.status} />
+              <MessageThread requestId={data.id} />
             </div>
             <aside className="space-y-6 lg:sticky lg:top-24">
               {data.responsible && (

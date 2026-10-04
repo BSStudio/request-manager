@@ -1,4 +1,4 @@
-import { format, isSameDay } from 'date-fns';
+import { format, isSameDay, isThisYear, isToday, isYesterday } from 'date-fns';
 import { hu } from 'date-fns/locale';
 
 export function formatDay(date: Date) {
@@ -7,6 +7,14 @@ export function formatDay(date: Date) {
 
 export function formatTime(date: Date) {
   return format(date, 'HH:mm');
+}
+
+export function formatMessageTime(date: Date) {
+  if (isToday(date)) return `ma ${formatTime(date)}`;
+  if (isYesterday(date)) return `tegnap ${formatTime(date)}`;
+  return format(date, isThisYear(date) ? 'MMM d. HH:mm' : 'yyyy. MMM d.', {
+    locale: hu,
+  });
 }
 
 export function formatRange(start: Date, end: Date) {

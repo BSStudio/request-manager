@@ -42,6 +42,12 @@ export const requestQuery = (id: number) =>
     retry: (failureCount, error) => !isNotFound(error) && failureCount < 1,
   });
 
+export const requestCommentsQuery = (id: number) =>
+  queryOptions({
+    queryFn: async () => (await requestsApi.requestsCommentsList(id)).data,
+    queryKey: ['requests', id, 'comments'],
+  });
+
 export const requestVideosQuery = (id: number) =>
   queryOptions({
     queryFn: async () => (await requestsApi.requestsVideosList(id)).data,
