@@ -1,7 +1,5 @@
 import type { ReactNode } from 'react';
 
-import { format, isSameDay } from 'date-fns';
-import { hu } from 'date-fns/locale';
 import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { PencilIcon } from 'lucide-react';
 import { useFormContext } from 'react-hook-form';
@@ -13,17 +11,9 @@ import {
   toDateTime,
 } from 'site/components/request-form/schema';
 import { Button } from 'site/components/ui/button';
+import { formatRange } from 'site/lib/dates';
 
 export type Requester = { email: string; name: string; phone: string };
-
-function formatRange(start: Date, end: Date) {
-  const day = (date: Date) =>
-    format(date, 'yyyy. MMMM d., EEEE', { locale: hu });
-  const time = (date: Date) => format(date, 'HH:mm');
-  return isSameDay(start, end)
-    ? `${day(start)}, ${time(start)}–${time(end)}`
-    : `${day(start)} ${time(start)} – ${day(end)} ${time(end)}`;
-}
 
 function SummaryCard({
   action,

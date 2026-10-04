@@ -5,6 +5,7 @@ import {
   Route,
 } from 'react-router';
 
+import RequireLogin from 'site/components/RequireLogin';
 import Layout, { type SiteRouteHandle } from 'site/Layout';
 import ErrorPage from 'site/pages/ErrorPage';
 import NotFoundPage from 'site/pages/NotFoundPage';
@@ -42,6 +43,18 @@ const router = sentryCreateBrowserRouter(
           lazy={() => import('site/pages/OAuthRedirectPage')}
           path="redirect"
         />
+        <Route element={<RequireLogin />}>
+          <Route
+            handle={overlayHeader}
+            lazy={() => import('site/pages/MyRequestsPage')}
+            path="my-requests"
+          />
+          <Route
+            handle={overlayHeader}
+            lazy={() => import('site/pages/RequestDetailPage')}
+            path="my-requests/:id"
+          />
+        </Route>
         <Route element={<NotFoundPage />} handle={overlayHeader} path="*" />
       </Route>
     </Route>,

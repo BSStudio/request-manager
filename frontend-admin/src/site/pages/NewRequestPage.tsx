@@ -24,6 +24,7 @@ import { toast } from 'sonner';
 import type { ZodType } from 'zod';
 
 import { requestsApi } from 'api/http';
+import PageHero from 'site/components/PageHero';
 import EventStep from 'site/components/request-form/EventStep';
 import NotesStep from 'site/components/request-form/NotesStep';
 import PersonalStep from 'site/components/request-form/PersonalStep';
@@ -280,23 +281,12 @@ function NewRequestPage() {
 
   return (
     <>
-      <section className="relative isolate overflow-hidden bg-ink pt-32 pb-28 text-white sm:pt-36">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_top_right,color-mix(in_oklab,var(--primary)_45%,transparent),transparent_60%)]" />
-        <div className="absolute inset-0 -z-10 bg-grain opacity-[0.07] mix-blend-overlay" />
-        <div className="mx-auto max-w-6xl px-4 sm:px-6">
-          <p className="flex items-center gap-3 font-mono text-xs tracking-[0.2em] text-white/70 uppercase">
-            <span className="h-px w-8 bg-white/40" />
-            Új felkérés
-          </p>
-          <h1 className="mt-5 text-4xl font-bold sm:text-5xl">
-            Mesélj az eseményedről!
-          </h1>
-          <p className="mt-4 max-w-xl text-lg text-white/70">
-            Néhány perc az egész. Minél több részletet adsz meg, annál
-            könnyebben tudunk tervezni.
-          </p>
-        </div>
-      </section>
+      <PageHero kicker="Új felkérés" title="Mesélj az eseményedről!">
+        <p className="mt-4 max-w-xl text-lg text-white/70">
+          Néhány pillanat az egész. Minél több részletet adsz meg, annál
+          könnyebben tudunk tervezni.
+        </p>
+      </PageHero>
       <div className="relative z-10 mx-auto -mt-16 grid w-full max-w-6xl items-start gap-8 px-4 pb-24 sm:px-6 lg:grid-cols-[17rem_1fr] lg:gap-12">
         <aside className="sticky top-24 hidden lg:block">
           <div className="rounded-3xl border bg-card p-6 shadow-sm">

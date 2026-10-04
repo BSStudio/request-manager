@@ -17,6 +17,10 @@ export function getApiErrorMessage(error: unknown) {
   return firstMessage(error.response.data);
 }
 
+export function isNotFound(error: unknown) {
+  return isAxiosError(error) && error.response?.status === 404;
+}
+
 export function isRateLimited(error: unknown) {
   return isAxiosError(error) && error.response?.status === 429;
 }
