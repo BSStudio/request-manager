@@ -365,7 +365,7 @@ class TestNewComment:
         to_requester, to_crew = mail.outbox
         assert requester.email in to_requester.to
         assert django_settings.DEFAULT_REPLY_EMAIL in to_requester.reply_to
-        assert to_requester.subject == f"{crewed_request.title} | Hozzászólás érkezett"
+        assert to_requester.subject == f"{crewed_request.title} | Új üzenet a BSS-től"
 
         for email in self.crew_emails(crewed_request):
             assert email in to_crew.to

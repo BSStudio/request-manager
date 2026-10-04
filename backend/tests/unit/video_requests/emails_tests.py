@@ -96,7 +96,7 @@ class TestToTheRequester:
         email_user_new_comment(comment.id)
 
         message = only_message()
-        assert message.subject == "Test Request | Hozzászólás érkezett"
+        assert message.subject == "Test Request | Új üzenet a BSS-től"
         assert message.to == [requester.email]
         assert message.reply_to == [django_settings.DEFAULT_REPLY_EMAIL]
 
@@ -112,12 +112,33 @@ class TestToTheCrew:
         email_crew_new_comment(comment.id)
 
         message = only_message()
-        assert message.subject == "Test Request | Hozzászólás érkezett"
+        assert message.subject == "Test Request | Új üzenet a felkérőnek"
         assert set(message.to) == staff_emails(crew)
         assert set(message.cc) == {
             editor_in_chief.email,
             video_request.responsible.email,
         }
+
+    def test_new_comment_from_the_requester(self, crew, requester, video_request):
+        comment = baker.make(
+            "video_requests.Comment", request=video_request, author=requester
+        )
+
+        email_crew_new_comment(comment.id)
+
+        assert only_message().subject == "Test Request | Új üzenet a felkérőtől"
+
+    def test_new_internal_comment(self, crew, staff_user, video_request):
+        comment = baker.make(
+            "video_requests.Comment",
+            request=video_request,
+            author=staff_user,
+            internal=True,
+        )
+
+        email_crew_new_comment(comment.id)
+
+        assert only_message().subject == "Test Request | Új belső megjegyzés"
 
     def test_request_modified(self, crew, editor_in_chief, video_request):
         email_crew_request_modified(

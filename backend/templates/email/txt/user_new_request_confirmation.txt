@@ -11,7 +11,7 @@ Videó típusa: {{ request.type }}
 
 További részleteket bejelentkezés után itt találsz: {{ request.url }}
 {% if not is_registered %}
-Amennyiben a felkéréshez megadott e-mail címedet használó AuthSCH, Google vagy Microsoft fiókkal belépsz az oldalra folyamatosan követheted a felkérésed állapotát és lehetőséged van hozzászólást írni, valamint az elkészült anyagot értékelheted is.
+Amennyiben a felkéréshez megadott e-mail címedet használó AuthSCH, Google vagy Microsoft fiókkal belépsz az oldalra folyamatosan követheted a felkérésed állapotát és üzenetet írhatsz nekünk, valamint az elkészült anyagot értékelheted is.
 {% endif %}
 
 Hamarosan keresni fogunk, hogy el tudjuk-e vállalni az esemény rögzítését.
