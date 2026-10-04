@@ -31,6 +31,9 @@ const videoStatuses: Record<number, StatusInfo> = {
   6: { label: 'Közzétéve', tone: 'done' },
 };
 
+// The API rejects ratings for videos below this status.
+export const VIDEO_PUBLISHED = 5;
+
 const unknownStatus: StatusInfo = { label: 'Ismeretlen', tone: 'inactive' };
 
 export function getRequestStatus(status: number) {
