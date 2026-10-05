@@ -54,6 +54,11 @@ const router = sentryCreateBrowserRouter(
             lazy={() => import('site/pages/RequestDetailPage')}
             path="my-requests/:id"
           />
+          <Route
+            handle={overlayHeader}
+            lazy={() => import('site/pages/ProfilePage')}
+            path="profile"
+          />
         </Route>
         <Route element={<NotFoundPage />} handle={overlayHeader} path="*" />
       </Route>

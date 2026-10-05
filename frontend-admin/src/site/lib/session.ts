@@ -3,6 +3,7 @@ import { useSyncExternalStore } from 'react';
 import { isAxiosError } from 'axios';
 
 import { loginApi, logoutApi } from 'api/http';
+import type { User } from 'api/models';
 import {
   clearSession,
   getAvatar,
@@ -54,18 +55,22 @@ export function useSessionUser() {
   return useSyncExternalStore(subscribe, () => user);
 }
 
+export function cacheUser(data: User) {
+  queryClient.setQueryData(meQuery().queryKey, data);
+  setSession({
+    avatar_url: data.profile.avatar_url,
+    groups: data.groups,
+    id: data.id,
+    name: `${data.last_name ?? ''} ${data.first_name ?? ''}`.trim(),
+    role: data.role,
+  });
+}
+
 // The cached user outlives the session when it expires on the server.
 export async function revalidateSession() {
   if (!hasSession()) return;
   try {
-    const data = await queryClient.query(meQuery());
-    setSession({
-      avatar_url: data.profile.avatar_url,
-      groups: data.groups,
-      id: data.id,
-      name: `${data.last_name ?? ''} ${data.first_name ?? ''}`.trim(),
-      role: data.role,
-    });
+    cacheUser(await queryClient.query(meQuery()));
   } catch (error) {
     // The API client already clears the session on 401.
     if (isAxiosError(error) && error.response?.status === 403) clearSession();

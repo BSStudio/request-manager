@@ -5,7 +5,7 @@ import { Loader2Icon, MessagesSquareIcon, SendIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
 import { requestsApi } from 'api/http';
-import DetailCard from 'site/components/request-detail/DetailCard';
+import DetailCard from 'site/components/DetailCard';
 import Message from 'site/components/request-detail/Message';
 import { Button } from 'site/components/ui/button';
 import { Skeleton } from 'site/components/ui/skeleton';

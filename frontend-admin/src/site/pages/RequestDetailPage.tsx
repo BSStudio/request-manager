@@ -12,8 +12,8 @@ import {
 } from 'lucide-react';
 import { Link, useParams } from 'react-router';
 
+import DetailCard from 'site/components/DetailCard';
 import PageHero from 'site/components/PageHero';
-import DetailCard from 'site/components/request-detail/DetailCard';
 import MessageThread from 'site/components/request-detail/MessageThread';
 import PersonContact from 'site/components/request-detail/PersonContact';
 import RequestProgress from 'site/components/request-detail/RequestProgress';

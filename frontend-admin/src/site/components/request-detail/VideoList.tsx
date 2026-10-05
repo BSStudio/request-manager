@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { cn } from 'cn';
 import { ArrowUpRightIcon, FilmIcon, PlayIcon } from 'lucide-react';
 
-import DetailCard from 'site/components/request-detail/DetailCard';
+import DetailCard from 'site/components/DetailCard';
 import VideoRating from 'site/components/request-detail/VideoRating';
 import StatusBadge from 'site/components/StatusBadge';
 import { Button } from 'site/components/ui/button';
