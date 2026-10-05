@@ -40,8 +40,18 @@ const router = sentryCreateBrowserRouter(
           path="new-request"
         />
         <Route
+          handle={overlayHeader}
+          lazy={() => import('site/pages/PrivacyPolicyPage')}
+          path="privacy"
+        />
+        <Route
           lazy={() => import('site/pages/OAuthRedirectPage')}
           path="redirect"
+        />
+        <Route
+          handle={overlayHeader}
+          lazy={() => import('site/pages/TermsOfServicePage')}
+          path="terms"
         />
         <Route element={<RequireLogin />}>
           <Route
