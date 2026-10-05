@@ -34,14 +34,14 @@ function ProfilePage() {
         kicker="Profilom"
         media={
           user ? (
-            <Avatar className="size-24 ring-4 ring-white/10 sm:size-32">
+            <Avatar className="size-20 shrink-0 ring-4 ring-white/10 sm:size-32">
               <AvatarImage alt="" src={user.profile.avatar_url || undefined} />
-              <AvatarFallback className="bg-primary text-3xl font-semibold text-primary-foreground sm:text-4xl">
+              <AvatarFallback className="bg-primary text-2xl font-semibold text-primary-foreground sm:text-4xl">
                 {getInitials(name || user.username)}
               </AvatarFallback>
             </Avatar>
           ) : (
-            <span className="size-24 shrink-0 animate-pulse rounded-full bg-white/10 sm:size-32" />
+            <span className="size-20 shrink-0 animate-pulse rounded-full bg-white/10 sm:size-32" />
           )
         }
         title={
