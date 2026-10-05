@@ -311,6 +311,7 @@ STORAGES = {
 # Whitenoise
 # http://whitenoise.evans.io/en/stable/django.html
 
+WHITENOISE_MIMETYPES = {".webmanifest": "application/manifest+json"}
 WHITENOISE_ROOT = FRONTEND_DIR / "build" / "root"
 
 # Logging

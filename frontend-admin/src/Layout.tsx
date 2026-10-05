@@ -3,6 +3,7 @@ import React from 'react';
 import { ScrollTop } from 'primereact/scrolltop';
 import { Outlet, ScrollRestoration, useNavigation } from 'react-router';
 
+import AppStatus from 'components/AppStatus';
 import Header from 'components/Header/Header';
 import LoadingPage from 'pages/LoadingPage';
 import { AuthenticationProvider } from 'providers/AuthenticationProvider';
@@ -23,6 +24,7 @@ const Layout = ({ children }: LayoutProps) => {
         ) : (
           (children ?? <Outlet />)
         )}
+        <AppStatus />
         <ScrollTop threshold={200} />
         <ScrollRestoration />
       </div>

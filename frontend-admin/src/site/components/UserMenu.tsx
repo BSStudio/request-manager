@@ -1,6 +1,7 @@
 import { cn } from 'cn';
 import {
   ChevronDownIcon,
+  DownloadIcon,
   ListChecksIcon,
   LogOutIcon,
   UserRoundIcon,
@@ -8,6 +9,7 @@ import {
 } from 'lucide-react';
 import { Link } from 'react-router';
 
+import { promptInstall, useCanInstall } from 'helpers/pwa';
 import { Button } from 'site/components/ui/button';
 import {
   DropdownMenu,
@@ -28,6 +30,7 @@ type UserMenuProps = {
 
 export default function UserMenu({ className, user }: UserMenuProps) {
   const handleSignOut = useSignOut();
+  const canInstall = useCanInstall();
 
   return (
     <DropdownMenu>
@@ -65,6 +68,12 @@ export default function UserMenu({ className, user }: UserMenuProps) {
               <WrenchIcon />
               Admin felület
             </a>
+          </DropdownMenuItem>
+        )}
+        {canInstall && (
+          <DropdownMenuItem onSelect={() => void promptInstall()}>
+            <DownloadIcon />
+            Alkalmazás telepítése
           </DropdownMenuItem>
         )}
         <DropdownMenuSeparator />

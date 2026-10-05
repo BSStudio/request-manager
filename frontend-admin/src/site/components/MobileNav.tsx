@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 import { cn } from 'cn';
 import {
+  DownloadIcon,
   HouseIcon,
   ListChecksIcon,
   LogInIcon,
@@ -14,6 +15,7 @@ import {
 } from 'lucide-react';
 import { Link, NavLink, useLocation } from 'react-router';
 
+import { promptInstall, useCanInstall } from 'helpers/pwa';
 import BssLogo from 'site/components/BssLogo';
 import SocialLinks from 'site/components/SocialLinks';
 import { Button } from 'site/components/ui/button';
@@ -43,6 +45,7 @@ type MobileNavProps = {
 export default function MobileNav({ className, user }: MobileNavProps) {
   const [open, setOpen] = useState(false);
   const handleSignOut = useSignOut();
+  const canInstall = useCanInstall();
   const { pathname } = useLocation();
 
   const items: NavItem[] = [
@@ -106,6 +109,19 @@ export default function MobileNav({ className, user }: MobileNavProps) {
               <WrenchIcon />
               Admin felület
             </a>
+          )}
+          {canInstall && (
+            <button
+              className={linkClassName}
+              onClick={() => {
+                setOpen(false);
+                void promptInstall();
+              }}
+              type="button"
+            >
+              <DownloadIcon />
+              Alkalmazás telepítése
+            </button>
           )}
         </nav>
         <nav

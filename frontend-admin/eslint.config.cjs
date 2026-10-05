@@ -21,7 +21,14 @@ module.exports = tseslint.config(
   pluginReact.configs.flat['jsx-runtime'],
   pluginReactHooks.configs.flat.recommended,
   tseslint.configs.strict, // TODO: Use strict-type-checked
-  { ignores: ['**/eslint.config.cjs', '**/postcss.config.cjs'] },
+  {
+    ignores: [
+      '**/eslint.config.cjs',
+      '**/postcss.config.cjs',
+      // Served as is to unregister the worker of the very first frontend.
+      '**/public/service-worker.js',
+    ],
+  },
   {
     files: ['**/*.{js,mjs,cjs,ts,jsx,tsx}'],
     languageOptions: {
@@ -44,6 +51,8 @@ module.exports = tseslint.config(
         { allowInterfaces: 'with-single-extends' },
       ],
       '@typescript-eslint/no-floating-promises': 'error',
+      // Modules that plugins add at build time, e.g. virtual:pwa-register.
+      'import-x/no-unresolved': ['error', { ignore: ['^virtual:'] }],
       'import-x/order': [
         'error',
         {
@@ -78,6 +87,7 @@ module.exports = tseslint.config(
         },
         typescript: {
           alwaysTryTypes: true,
+          noWarnOnMultipleProjects: true,
           project: [
             path.resolve(currentDir, 'tsconfig.json'),
             path.resolve(currentDir, 'tsconfig.node.json'),

@@ -1,6 +1,7 @@
 import { cn } from 'cn';
 import { Outlet, ScrollRestoration, useMatches } from 'react-router';
 
+import AppStatus from 'site/components/AppStatus';
 import SiteFooter from 'site/components/SiteFooter';
 import SiteHeader from 'site/components/SiteHeader';
 
@@ -27,6 +28,7 @@ export default function Layout() {
         <Outlet />
       </main>
       <SiteFooter />
+      <AppStatus />
       <ScrollRestoration />
     </div>
   );

@@ -1,5 +1,6 @@
 import { logoutApi } from 'api/http';
 import { clearSession } from 'helpers/LocalStorageHelper';
+import { promptInstall, useCanInstall } from 'helpers/pwa';
 import { useTheme } from 'hooks/useTheme';
 
 import AvatarButton from './Button/AvatarButton';
@@ -11,6 +12,7 @@ import SandwichMenu from './SandwichMenu';
 
 const Menubar = () => {
   const [darkMode, setDarkMode] = useTheme();
+  const canInstall = useCanInstall();
 
   const signOut = async () => {
     await logoutApi.logoutCreate({}).finally(() => {
@@ -49,6 +51,13 @@ const Menubar = () => {
               setDarkMode(!darkMode);
             }}
           />
+          {canInstall && (
+            <IconButton
+              icon="pi-download"
+              label="Alkalmazás telepítése"
+              onClick={() => void promptInstall()}
+            />
+          )}
           <IconButton
             icon="pi-sign-out"
             label="Kijelentkezés"
