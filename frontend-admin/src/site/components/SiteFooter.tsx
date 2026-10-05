@@ -1,4 +1,4 @@
-import { ArrowUpRightIcon } from 'lucide-react';
+import { ArrowUpRightIcon, MailIcon } from 'lucide-react';
 import { Link } from 'react-router';
 
 import BssLogo from 'site/components/BssLogo';
@@ -69,6 +69,13 @@ export default function SiteFooter() {
               A Budavári Schönherz Stúdió forgatási és élő közvetítési
               felkéréseit kezelő rendszere.
             </p>
+            <a
+              className="mt-4 inline-flex items-center gap-2 text-sm text-white/75 transition-colors hover:text-white"
+              href="mailto:info@bsstudio.hu"
+            >
+              <MailIcon className="size-4" />
+              info@bsstudio.hu
+            </a>
           </div>
           <FooterColumn
             links={[
@@ -86,18 +93,18 @@ export default function SiteFooter() {
             links={[
               {
                 external: true,
-                label: 'bsstudio.hu',
-                to: 'https://bsstudio.hu',
-              },
-              {
-                external: true,
-                label: 'Korábbi videóink',
+                label: 'Videóink',
                 to: 'https://bsstudio.hu/video/latest',
               },
               {
                 external: true,
-                label: 'info@bsstudio.hu',
-                to: 'mailto:info@bsstudio.hu',
+                label: 'Tagjaink',
+                to: 'https://bsstudio.hu/tagok',
+              },
+              {
+                external: true,
+                label: 'Tanfolyamaink',
+                to: 'https://tanfolyam.bsstudio.hu',
               },
             ]}
             title="Stúdió"
