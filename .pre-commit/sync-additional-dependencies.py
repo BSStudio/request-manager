@@ -22,7 +22,6 @@ DEPENDENCIES_TO_IGNORE = [
     "tailwindcss",
     "vite",
     "vite-plugin-pwa",
-    "vite-tsconfig-paths",
     "workbox-window",
 ]
 REPOS_TO_CHECK = ["eslint"]

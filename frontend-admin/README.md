@@ -1,6 +1,6 @@
 # Frontend — Admin Dashboard
 
-Admin dashboard for staff to manage video requests, crew, comments and ratings, and the public site that replaces [`frontend`](../frontend).
+Admin dashboard for staff to manage video requests, crew, comments and ratings, and the public site where users submit and follow their requests.
 
 `index.html` serves both apps and [`src/main.tsx`](src/main.tsx) loads one of them based on the path:
 
