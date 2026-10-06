@@ -89,9 +89,7 @@ The runtime versions themselves live in [`.python-version`](.python-version)
 
 ## OpenAPI schema
 
-The REST API is documented with an OpenAPI schema (`backend/schema.yaml`), which
-is also the source for the admin dashboard's generated API client. Regenerate it
-after changing serializers, views or endpoints:
+The REST API is documented with an OpenAPI schema (`backend/schema.yaml`), which is also the source for the frontend's generated API client. Regenerate it after changing serializers, views or endpoints:
 
 ```bash
 poetry run python manage.py spectacular \
