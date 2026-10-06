@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import type { TurnstileInstance } from '@marsidev/react-turnstile';
@@ -35,6 +35,7 @@ type ContactValues = z.infer<typeof contactSchema>;
 
 function ContactForm() {
   const turnstile = useRef<TurnstileInstance>(null);
+  const [started, setStarted] = useState(false);
   const {
     formState: { errors, isSubmitting },
     handleSubmit,
@@ -75,6 +76,7 @@ function ContactForm() {
     <form
       className="rounded-3xl border bg-card p-6 shadow-sm sm:p-8"
       noValidate
+      onFocus={() => setStarted(true)}
       onSubmit={(event) => void handleSubmit(onSubmit)(event)}
     >
       <FieldGroup>
@@ -114,7 +116,7 @@ function ContactForm() {
           />
           <FieldError errors={[errors.message]} />
         </Field>
-        <Turnstile ref={turnstile} />
+        {started && <Turnstile ref={turnstile} />}
         <Button
           className="w-full sm:w-auto sm:self-start"
           disabled={isSubmitting}
