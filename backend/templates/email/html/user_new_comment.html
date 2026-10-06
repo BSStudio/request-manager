@@ -2,8 +2,8 @@
 {% load i18n %}
 {% load static %}
 {% load extra_tags %}
-{% block title %}Felkérésedhez új hozzászólás érkezett{% endblock %}
-{% block preheader %}Kedves {{ comment.request.requester.first_name }}! Forgatási felkérésedhez új hozzászólás érkezett.{% endblock %}
+{% block title %}Új üzeneted érkezett{% endblock %}
+{% block preheader %}Kedves {{ comment.request.requester.first_name }}! Üzenetet küldtünk a forgatási felkérésedhez.{% endblock %}
 {% block hero %}Kedves {{ comment.request.requester.first_name }}!{% endblock %}
 {% block content %}
     <!-- start copy block -->
@@ -35,7 +35,7 @@
                     >
                         <p style="margin: 0">
                             <strong>{{ comment.request.title }}</strong> forgatási felkérésedhez
-                            új hozzászólás érkezett:
+                            üzenetet küldtünk:
                         </p>
                     </td>
                 </tr>

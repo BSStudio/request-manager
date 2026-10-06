@@ -1,6 +1,6 @@
 {% load i18n %}Kedves {{ comment.request.requester.first_name }}!
 
-{{ comment.request.title }} forgatási felkérésedhez új hozzászólás érkezett:
+{{ comment.request.title }} forgatási felkérésedhez üzenetet küldtünk:
 {% language 'hu' %}{{ comment.created|date:"DATETIME_FORMAT" }}{% endlanguage %}
 {{ commenter_name }}:
 {{ comment.text }}

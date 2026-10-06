@@ -97,6 +97,8 @@ export const ExternalApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
+      // authentication cookieAuth required
+
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -161,6 +163,8 @@ export const ExternalApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
+      // authentication cookieAuth required
+
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -223,6 +227,8 @@ export const ExternalApiAxiosParamCreator = function (
       };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
+
+      // authentication cookieAuth required
 
       // authentication tokenAuth required
       await setApiKeyToObject(

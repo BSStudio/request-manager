@@ -6,5 +6,5 @@
     "moduleResolution": "Bundler",
     "skipLibCheck": true
   },
-  "include": ["vite.config.mts"]
+  "include": ["pwa-assets.config.ts", "vite.config.mts"]
 }

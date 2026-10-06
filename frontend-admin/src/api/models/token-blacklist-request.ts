@@ -23,5 +23,5 @@ export interface TokenBlacklistRequest {
    * @type {string}
    * @memberof TokenBlacklistRequest
    */
-  refresh: string;
+  refresh?: string;
 }

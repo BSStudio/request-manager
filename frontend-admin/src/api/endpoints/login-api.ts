@@ -38,9 +38,9 @@ import {
   RequiredError,
 } from '../base';
 // @ts-ignore
-import { TokenObtainPairOAuth2Request } from '../models';
+import { LoginResponse } from '../models';
 // @ts-ignore
-import { TokenObtainResponse } from '../models';
+import { TokenObtainPairOAuth2Request } from '../models';
 // @ts-ignore
 import { TokenRefresh } from '../models';
 // @ts-ignore
@@ -138,17 +138,6 @@ export const LoginApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication tokenAuth required
-      await setApiKeyToObject(
-        localVarHeaderParameter,
-        'Authorization',
-        configuration,
-      );
-
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
-
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -214,10 +203,7 @@ export const LoginApiFp = function (configuration?: Configuration) {
       tokenObtainPairOAuth2Request: TokenObtainPairOAuth2Request,
       options?: AxiosRequestConfig,
     ): Promise<
-      (
-        axios?: AxiosInstance,
-        basePath?: string,
-      ) => AxiosPromise<TokenObtainResponse>
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<LoginResponse>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.loginSocialCreate(
@@ -268,7 +254,7 @@ export const LoginApiFactory = function (
     loginSocialCreate(
       tokenObtainPairOAuth2Request: TokenObtainPairOAuth2Request,
       options?: any,
-    ): AxiosPromise<TokenObtainResponse> {
+    ): AxiosPromise<LoginResponse> {
       return localVarFp
         .loginSocialCreate(tokenObtainPairOAuth2Request, options)
         .then((request) => request(axios, basePath));

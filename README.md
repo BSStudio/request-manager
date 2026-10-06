@@ -16,23 +16,20 @@ requests of [Budavári Schönherz Stúdió](https://bsstudio.hu).
 
 ## Overview
 
-The project is a monorepo made up of three deployable applications backed by
-PostgreSQL and Redis:
+The project is a monorepo made up of two deployable applications backed by PostgreSQL and Redis:
 
-| Component                          | Stack                                             | Description                                              |
-| ---------------------------------- | ------------------------------------------------- | -------------------------------------------------------- |
-| [`backend`](backend)               | Django, Django REST Framework, Celery, PostgreSQL | REST API, business logic, admin panel and async workers. |
-| [`frontend`](frontend)             | React, Material UI, Vite                          | Public site where users submit and follow up requests.   |
-| [`frontend-admin`](frontend-admin) | React, PrimeReact, TanStack Query, TypeScript     | Admin dashboard for staff to manage requests.            |
+| Component                          | Stack                                                                  | Description                                                                               |
+| ---------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| [`backend`](backend)               | Django, Django REST Framework, Celery, PostgreSQL                      | REST API, business logic, admin panel and async workers.                                  |
+| [`frontend-admin`](frontend-admin) | React, TypeScript, Tailwind CSS, shadcn/ui, PrimeReact, TanStack Query | Public site where users submit and follow up requests, and the admin dashboard for staff. |
 
-Both frontends are static builds served by the backend in production (through
-WhiteNoise). Authentication is handled via OAuth2 (AuthSCH, BSS Login, Google,
-Microsoft) with JWT tokens.
+[`frontend`](frontend), the previous public site, is no longer built or deployed and will be removed.
+
+The frontend is a static build served by the backend in production (through WhiteNoise). Authentication is handled via OAuth2 (AuthSCH, BSS Login, Google, Microsoft) with a session cookie.
 
 ```mermaid
 flowchart TD
-    frontend["frontend"] -->|REST · JWT| backend
-    admin["frontend-admin"] -->|REST · JWT| backend
+    frontend["frontend-admin<br/>(public site + admin)"] -->|REST · session| backend
     backend["backend<br/>(Django + Celery)"] --> postgres[("PostgreSQL")]
     backend --> redis[("Redis")]
 ```
@@ -42,8 +39,8 @@ flowchart TD
 ```
 .
 ├── backend/         Django REST API, Celery workers, admin panel
-├── frontend/        Public React app (Vite)
-├── frontend-admin/  Admin dashboard React app (Vite, TypeScript)
+├── frontend/        Previous public site, no longer used
+├── frontend-admin/  Public site and admin dashboard (Vite, TypeScript)
 ├── .devcontainer/   VS Code dev container (Python + Node + Poetry)
 ├── docker-compose.dev.yaml   PostgreSQL + Redis for local development
 └── docker-compose.yaml       Full production-like stack
@@ -76,8 +73,7 @@ docker compose -f docker-compose.dev.yaml up -d   # PostgreSQL + Redis
 ```
 
 - [Backend setup](backend/README.md)
-- [Frontend setup](frontend/README.md)
-- [Admin dashboard setup](frontend-admin/README.md)
+- [Frontend setup](frontend-admin/README.md)
 
 **Prerequisites for manual setup:** Python + [Poetry](https://python-poetry.org/)
 and Node.js — the exact versions are pinned in `backend/.python-version` and the
@@ -101,19 +97,6 @@ by Renovate:
 
 - Node.js — `frontend/.nvmrc` and `frontend-admin/.nvmrc`
 - Python — `backend/.python-version`
-
-### Windows: enable symbolic links
-
-`frontend-admin/index.html` is a symlink. To check it out correctly on Windows,
-enable Developer Mode (Settings → For developers → Developer Mode) and turn on
-symlink support in Git:
-
-```bash
-git config --get core.symlinks
-git config --replace-all core.symlinks true
-```
-
-Then re-checkout the file: `git checkout -- frontend-admin/index.html`.
 
 ## License
 

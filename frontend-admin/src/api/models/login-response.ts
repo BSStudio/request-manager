@@ -15,19 +15,49 @@
 /**
  *
  * @export
- * @interface TokenObtainResponse
+ * @interface LoginResponse
  */
-export interface TokenObtainResponse {
+export interface LoginResponse {
   /**
    *
    * @type {string}
-   * @memberof TokenObtainResponse
+   * @memberof LoginResponse
+   */
+  avatar_url: string | null;
+  /**
+   *
+   * @type {Array<string>}
+   * @memberof LoginResponse
+   */
+  groups: Array<string>;
+  /**
+   *
+   * @type {number}
+   * @memberof LoginResponse
+   */
+  id: number;
+  /**
+   *
+   * @type {string}
+   * @memberof LoginResponse
+   */
+  name: string;
+  /**
+   *
+   * @type {string}
+   * @memberof LoginResponse
+   */
+  role: string;
+  /**
+   *
+   * @type {string}
+   * @memberof LoginResponse
    */
   access: string;
   /**
    *
    * @type {string}
-   * @memberof TokenObtainResponse
+   * @memberof LoginResponse
    */
   refresh: string;
 }

@@ -108,6 +108,8 @@ export const RequestsApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
+      // authentication cookieAuth required
+
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -174,6 +176,8 @@ export const RequestsApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
+      // authentication cookieAuth required
+
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -231,6 +235,8 @@ export const RequestsApiAxiosParamCreator = function (
       };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
+
+      // authentication cookieAuth required
 
       // authentication tokenAuth required
       await setApiKeyToObject(
@@ -301,6 +307,8 @@ export const RequestsApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
+      // authentication cookieAuth required
+
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -366,6 +374,8 @@ export const RequestsApiAxiosParamCreator = function (
       };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
+
+      // authentication cookieAuth required
 
       // authentication tokenAuth required
       await setApiKeyToObject(
@@ -434,6 +444,8 @@ export const RequestsApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
+      // authentication cookieAuth required
+
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -491,6 +503,8 @@ export const RequestsApiAxiosParamCreator = function (
       };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
+
+      // authentication cookieAuth required
 
       // authentication tokenAuth required
       await setApiKeyToObject(
@@ -557,6 +571,8 @@ export const RequestsApiAxiosParamCreator = function (
       };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
+
+      // authentication cookieAuth required
 
       // authentication tokenAuth required
       await setApiKeyToObject(
@@ -634,6 +650,8 @@ export const RequestsApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
+      // authentication cookieAuth required
+
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -691,6 +709,8 @@ export const RequestsApiAxiosParamCreator = function (
       };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
+
+      // authentication cookieAuth required
 
       // authentication tokenAuth required
       await setApiKeyToObject(
@@ -764,6 +784,8 @@ export const RequestsApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
+      // authentication cookieAuth required
+
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -830,6 +852,8 @@ export const RequestsApiAxiosParamCreator = function (
       };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
+
+      // authentication cookieAuth required
 
       // authentication tokenAuth required
       await setApiKeyToObject(
@@ -901,6 +925,8 @@ export const RequestsApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
+      // authentication cookieAuth required
+
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -967,6 +993,8 @@ export const RequestsApiAxiosParamCreator = function (
       };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
+
+      // authentication cookieAuth required
 
       // authentication tokenAuth required
       await setApiKeyToObject(
@@ -1036,6 +1064,8 @@ export const RequestsApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
+      // authentication cookieAuth required
+
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -1101,6 +1131,8 @@ export const RequestsApiAxiosParamCreator = function (
       };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
+
+      // authentication cookieAuth required
 
       // authentication tokenAuth required
       await setApiKeyToObject(

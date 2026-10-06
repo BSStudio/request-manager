@@ -1,0 +1,226 @@
+@import 'tailwindcss' source(none);
+@import 'tw-animate-css';
+@import '@fontsource-variable/bricolage-grotesque';
+@import '@fontsource-variable/geist';
+@import '@fontsource-variable/geist-mono';
+
+/* The admin sources use PrimeFlex class names that Tailwind would pick up. */
+@source './';
+@source '../../index.html';
+
+@custom-variant dark (&:is(.dark *));
+
+/* Copied from shadcn/tailwind.css, which ships inside the shadcn CLI package. */
+@custom-variant data-open {
+  &:where([data-state='open']),
+  &:where([data-open]:not([data-open='false'])) {
+    @slot;
+  }
+}
+@custom-variant data-closed {
+  &:where([data-state='closed']),
+  &:where([data-closed]:not([data-closed='false'])) {
+    @slot;
+  }
+}
+@custom-variant data-checked {
+  &:where([data-state='checked']),
+  &:where([data-checked]:not([data-checked='false'])) {
+    @slot;
+  }
+}
+@custom-variant data-unchecked {
+  &:where([data-state='unchecked']),
+  &:where([data-unchecked]:not([data-unchecked='false'])) {
+    @slot;
+  }
+}
+@custom-variant data-selected {
+  &:where([data-selected='true']) {
+    @slot;
+  }
+}
+@custom-variant data-disabled {
+  &:where([data-disabled='true']),
+  &:where([data-disabled]:not([data-disabled='false'])) {
+    @slot;
+  }
+}
+@custom-variant data-active {
+  &:where([data-state='active']),
+  &:where([data-active]:not([data-active='false'])) {
+    @slot;
+  }
+}
+@custom-variant data-horizontal {
+  &:where([data-orientation='horizontal']) {
+    @slot;
+  }
+}
+@custom-variant data-vertical {
+  &:where([data-orientation='vertical']) {
+    @slot;
+  }
+}
+
+@theme inline {
+  --font-sans: 'Geist Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-heading: 'Bricolage Grotesque Variable', var(--font-sans);
+  --font-mono: 'Geist Mono Variable', ui-monospace, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-tally: var(--tally);
+  --color-ink: var(--ink);
+  --color-ink-foreground: var(--ink-foreground);
+
+  --radius-sm: calc(var(--radius) * 0.6);
+  --radius-md: calc(var(--radius) * 0.8);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) * 1.4);
+  --radius-2xl: calc(var(--radius) * 1.8);
+  --radius-3xl: calc(var(--radius) * 2.2);
+  --radius-4xl: calc(var(--radius) * 2.6);
+
+  @keyframes accordion-down {
+    from {
+      height: 0;
+    }
+    to {
+      height: var(--radix-accordion-content-height, auto);
+    }
+  }
+  @keyframes accordion-up {
+    from {
+      height: var(--radix-accordion-content-height, auto);
+    }
+    to {
+      height: 0;
+    }
+  }
+}
+
+@theme {
+  --animate-ken-burns: ken-burns 30s ease-out both;
+  --animate-shooting-star: shooting-star 20s linear infinite;
+  --animate-static: static 0.5s steps(5) infinite;
+
+  @keyframes ken-burns {
+    from {
+      transform: scale(1.12);
+    }
+    to {
+      transform: scale(1);
+    }
+  }
+  @keyframes shooting-star {
+    0% {
+      opacity: 0;
+      transform: rotate(-35deg) translateX(0);
+    }
+    1% {
+      opacity: 1;
+    }
+    5% {
+      opacity: 0;
+      transform: rotate(-35deg) translateX(-36rem);
+    }
+    100% {
+      opacity: 0;
+      transform: rotate(-35deg) translateX(-36rem);
+    }
+  }
+  @keyframes static {
+    0% {
+      background-position: 0 0;
+    }
+    20% {
+      background-position: -45px 20px;
+    }
+    40% {
+      background-position: 30px -55px;
+    }
+    60% {
+      background-position: -60px -15px;
+    }
+    80% {
+      background-position: 15px 50px;
+    }
+  }
+}
+
+@utility bg-grain {
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* The site is always dark. index.html still puts the dark class on <html>,
+   the shadcn components style themselves with dark: variants. */
+:root {
+  color-scheme: dark;
+  --radius: 0.75rem;
+
+  --background: oklch(0.165 0.02 258);
+  --foreground: oklch(0.96 0.006 250);
+  --card: oklch(0.2 0.022 258);
+  --card-foreground: oklch(0.96 0.006 250);
+  --popover: oklch(0.21 0.022 258);
+  --popover-foreground: oklch(0.96 0.006 250);
+  /* BSS blue (#005baa), lightened to stay readable on the dark background */
+  --primary: oklch(0.72 0.14 250);
+  --primary-foreground: oklch(0.17 0.03 258);
+  --secondary: oklch(0.26 0.025 258);
+  --secondary-foreground: oklch(0.96 0.006 250);
+  --muted: oklch(0.24 0.02 258);
+  --muted-foreground: oklch(0.7 0.02 255);
+  --accent: oklch(0.27 0.03 258);
+  --accent-foreground: oklch(0.96 0.006 250);
+  --destructive: oklch(0.704 0.191 22.216);
+  --border: oklch(1 0 0 / 9%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.62 0.14 252);
+  --success: oklch(0.72 0.15 155);
+  --warning: oklch(0.8 0.14 75);
+  /* Recording light */
+  --tally: oklch(0.63 0.22 28);
+  /* Studio dark used by the hero, login and footer */
+  --ink: oklch(0.16 0.025 258);
+  --ink-foreground: oklch(0.97 0.005 250);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    @apply font-sans antialiased;
+  }
+  html[data-smooth-scroll] {
+    @apply motion-safe:scroll-smooth;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+  h1,
+  h2,
+  h3 {
+    @apply font-heading tracking-tight text-balance;
+  }
+}

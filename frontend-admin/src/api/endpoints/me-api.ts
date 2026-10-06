@@ -79,6 +79,8 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
+      // authentication cookieAuth required
+
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -134,6 +136,8 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
       };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
+
+      // authentication cookieAuth required
 
       // authentication tokenAuth required
       await setApiKeyToObject(
@@ -199,6 +203,8 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
+      // authentication cookieAuth required
+
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -262,6 +268,8 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
+      // authentication cookieAuth required
+
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -314,6 +322,8 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
       };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
+
+      // authentication cookieAuth required
 
       // authentication tokenAuth required
       await setApiKeyToObject(
@@ -376,6 +386,8 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
       };
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
+
+      // authentication cookieAuth required
 
       // authentication tokenAuth required
       await setApiKeyToObject(

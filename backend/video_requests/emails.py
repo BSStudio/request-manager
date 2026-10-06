@@ -79,7 +79,7 @@ def email_user_new_comment(comment_id):
     msg_plain = render_to_string("email/txt/user_new_comment.txt", context)
     msg_html = render_to_string("email/html/user_new_comment.html", context)
 
-    subject = f"{comment.request.title} | Hozzászólás érkezett"
+    subject = f"{comment.request.title} | Új üzenet a BSS-től"
 
     msg = EmailMultiAlternatives(
         subject=subject,
@@ -146,7 +146,12 @@ def email_crew_new_comment(comment_id):
     msg_plain = render_to_string("email/txt/crew_new_comment.txt", context)
     msg_html = render_to_string("email/html/crew_new_comment.html", context)
 
-    subject = f"{comment.request.title} | Hozzászólás érkezett"
+    if comment.internal:
+        subject = f"{comment.request.title} | Új belső megjegyzés"
+    elif comment.author_id == comment.request.requester_id:
+        subject = f"{comment.request.title} | Új üzenet a felkérőtől"
+    else:
+        subject = f"{comment.request.title} | Új üzenet a felkérőnek"
     editor_in_chief_email_address = [user.email for user in get_editor_in_chief()]
     responsible_email_address = (
         [comment.request.responsible.email]

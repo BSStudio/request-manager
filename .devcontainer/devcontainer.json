@@ -13,11 +13,10 @@
     },
     "ghcr.io/devcontainers-extra/features/poetry:2": {}
   },
-  "forwardPorts": [8000, 5173, 5174],
+  "forwardPorts": [8000, 5173],
   "portsAttributes": {
     "8000": { "label": "backend (Django)" },
-    "5173": { "label": "frontend (Vite)" },
-    "5174": { "label": "frontend-admin (Vite)" }
+    "5173": { "label": "frontend-admin (Vite)" }
   },
   "postCreateCommand": "bash .devcontainer/post-create.sh",
   "customizations": {

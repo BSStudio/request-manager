@@ -1,8 +1,9 @@
 import React from 'react';
 
+import { isAdminPath } from 'helpers/isAdminPath';
 import {
-  getAccessToken,
-  isRefreshTokenExpired,
+  hasSession,
+  isPrivileged,
   setRedirectedFrom,
 } from 'helpers/LocalStorageHelper';
 
@@ -13,13 +14,14 @@ type AuthenticationProviderProps = {
 export const AuthenticationProvider = ({
   children,
 }: AuthenticationProviderProps) => {
-  if (
-    (!getAccessToken() || isRefreshTokenExpired()) &&
-    window.location.pathname.startsWith('/admin')
-  ) {
-    localStorage.clear();
+  if (!hasSession() && isAdminPath(window.location.pathname)) {
     setRedirectedFrom(window.location.pathname);
     window.location.replace('/login');
+    return;
+  }
+
+  if (!isPrivileged() && isAdminPath(window.location.pathname)) {
+    window.location.replace('/');
     return;
   }
 

@@ -22,6 +22,10 @@ SOCIAL_AUTH_REDIRECT_IS_HTTPS = False
 SESSION_COOKIE_SECURE = False
 CSRF_COOKIE_SECURE = False
 
+# Except through the frontend dev server, which proxies the API and sets this
+# header, so CSRF and OAuth redirect URIs see its https://localhost:5173 origin.
+SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+
 # Run Celery tasks synchronously in eager mode
 # CELERY_TASK_ALWAYS_EAGER = True
 
