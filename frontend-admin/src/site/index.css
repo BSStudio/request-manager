@@ -210,7 +210,10 @@
     @apply border-border outline-ring/50;
   }
   html {
-    @apply scroll-smooth font-sans antialiased;
+    @apply font-sans antialiased;
+  }
+  html[data-smooth-scroll] {
+    @apply motion-safe:scroll-smooth;
   }
   body {
     @apply bg-background text-foreground;

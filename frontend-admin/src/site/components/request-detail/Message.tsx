@@ -177,7 +177,7 @@ function OwnMessage({ message, requestId }: OwnMessageProps) {
           <DropdownMenuTrigger asChild>
             <Button
               aria-label="Műveletek"
-              className="-my-1 text-muted-foreground"
+              className="relative -my-1 text-muted-foreground pointer-coarse:after:absolute pointer-coarse:after:-inset-2.5"
               size="icon-xs"
               variant="ghost"
             >
