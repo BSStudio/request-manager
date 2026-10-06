@@ -38,13 +38,9 @@ import {
   RequiredError,
 } from '../base';
 // @ts-ignore
-import { LoginResponse } from '../models';
+import { SessionUser } from '../models';
 // @ts-ignore
 import { TokenObtainPairOAuth2Request } from '../models';
-// @ts-ignore
-import { TokenRefresh } from '../models';
-// @ts-ignore
-import { TokenRefreshRequest } from '../models';
 /**
  * LoginApi - axios parameter creator
  * @export
@@ -53,59 +49,6 @@ export const LoginApiAxiosParamCreator = function (
   configuration?: Configuration,
 ) {
   return {
-    /**
-     * Takes a refresh type JSON web token and returns an access type JSON web token if the refresh token is valid.
-     * @param {TokenRefreshRequest} tokenRefreshRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    loginRefreshCreate: async (
-      tokenRefreshRequest: TokenRefreshRequest,
-      options: AxiosRequestConfig = {},
-    ): Promise<RequestArgs> => {
-      // verify required parameter 'tokenRefreshRequest' is not null or undefined
-      assertParamExists(
-        'loginRefreshCreate',
-        'tokenRefreshRequest',
-        tokenRefreshRequest,
-      );
-      const localVarPath = `/api/v1/login/refresh`;
-      // use dummy base URL string because the URL constructor only accepts absolute URLs.
-      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
-      let baseOptions;
-      if (configuration) {
-        baseOptions = configuration.baseOptions;
-      }
-
-      const localVarRequestOptions = {
-        method: 'POST',
-        ...baseOptions,
-        ...options,
-      };
-      const localVarHeaderParameter = {} as any;
-      const localVarQueryParameter = {} as any;
-
-      localVarHeaderParameter['Content-Type'] = 'application/json';
-
-      setSearchParams(localVarUrlObj, localVarQueryParameter);
-      let headersFromBaseOptions =
-        baseOptions && baseOptions.headers ? baseOptions.headers : {};
-      localVarRequestOptions.headers = {
-        ...localVarHeaderParameter,
-        ...headersFromBaseOptions,
-        ...options.headers,
-      };
-      localVarRequestOptions.data = serializeDataIfNeeded(
-        tokenRefreshRequest,
-        localVarRequestOptions,
-        configuration,
-      );
-
-      return {
-        url: toPathString(localVarUrlObj),
-        options: localVarRequestOptions,
-      };
-    },
     /**
      *
      * @param {TokenObtainPairOAuth2Request} tokenObtainPairOAuth2Request
@@ -170,30 +113,6 @@ export const LoginApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = LoginApiAxiosParamCreator(configuration);
   return {
     /**
-     * Takes a refresh type JSON web token and returns an access type JSON web token if the refresh token is valid.
-     * @param {TokenRefreshRequest} tokenRefreshRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    async loginRefreshCreate(
-      tokenRefreshRequest: TokenRefreshRequest,
-      options?: AxiosRequestConfig,
-    ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<TokenRefresh>
-    > {
-      const localVarAxiosArgs =
-        await localVarAxiosParamCreator.loginRefreshCreate(
-          tokenRefreshRequest,
-          options,
-        );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
-    },
-    /**
      *
      * @param {TokenObtainPairOAuth2Request} tokenObtainPairOAuth2Request
      * @param {*} [options] Override http request option.
@@ -203,7 +122,7 @@ export const LoginApiFp = function (configuration?: Configuration) {
       tokenObtainPairOAuth2Request: TokenObtainPairOAuth2Request,
       options?: AxiosRequestConfig,
     ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<LoginResponse>
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SessionUser>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.loginSocialCreate(
@@ -232,20 +151,6 @@ export const LoginApiFactory = function (
   const localVarFp = LoginApiFp(configuration);
   return {
     /**
-     * Takes a refresh type JSON web token and returns an access type JSON web token if the refresh token is valid.
-     * @param {TokenRefreshRequest} tokenRefreshRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    loginRefreshCreate(
-      tokenRefreshRequest: TokenRefreshRequest,
-      options?: any,
-    ): AxiosPromise<TokenRefresh> {
-      return localVarFp
-        .loginRefreshCreate(tokenRefreshRequest, options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
      *
      * @param {TokenObtainPairOAuth2Request} tokenObtainPairOAuth2Request
      * @param {*} [options] Override http request option.
@@ -254,7 +159,7 @@ export const LoginApiFactory = function (
     loginSocialCreate(
       tokenObtainPairOAuth2Request: TokenObtainPairOAuth2Request,
       options?: any,
-    ): AxiosPromise<LoginResponse> {
+    ): AxiosPromise<SessionUser> {
       return localVarFp
         .loginSocialCreate(tokenObtainPairOAuth2Request, options)
         .then((request) => request(axios, basePath));
@@ -269,22 +174,6 @@ export const LoginApiFactory = function (
  * @extends {BaseAPI}
  */
 export class LoginApi extends BaseAPI {
-  /**
-   * Takes a refresh type JSON web token and returns an access type JSON web token if the refresh token is valid.
-   * @param {TokenRefreshRequest} tokenRefreshRequest
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof LoginApi
-   */
-  public loginRefreshCreate(
-    tokenRefreshRequest: TokenRefreshRequest,
-    options?: AxiosRequestConfig,
-  ) {
-    return LoginApiFp(this.configuration)
-      .loginRefreshCreate(tokenRefreshRequest, options)
-      .then((request) => request(this.axios, this.basePath));
-  }
-
   /**
    *
    * @param {TokenObtainPairOAuth2Request} tokenObtainPairOAuth2Request

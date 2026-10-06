@@ -1,13 +1,8 @@
-import type { LoginResponse } from 'api/models';
-
-// The session cookie decides who is logged in, these keys only cache who it is.
-export type SessionData = Pick<
-  LoginResponse,
-  'avatar_url' | 'groups' | 'id' | 'name' | 'role'
->;
+import type { SessionUser } from 'api/models';
 
 export const SESSION_CHANGE_EVENT = 'session-change';
 
+// The session cookie decides who is logged in, these keys only cache who it is.
 const sessionKeys = ['avatar', 'groups', 'name', 'role', 'user_id'];
 
 export function clearSession() {
@@ -71,7 +66,7 @@ export function setSession({
   id,
   name,
   role,
-}: SessionData) {
+}: SessionUser) {
   if (avatar_url) {
     localStorage.setItem('avatar', avatar_url);
   } else {

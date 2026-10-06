@@ -1906,33 +1906,6 @@ paths:
               schema:
                 $ref: '#/components/schemas/CommentCreateUpdate'
           description: ''
-  /api/v1/login/refresh:
-    post:
-      operationId: login_refresh_create
-      description: |-
-        Takes a refresh type JSON web token and returns an access type JSON web
-        token if the refresh token is valid.
-      tags:
-        - login
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TokenRefreshRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/TokenRefreshRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/TokenRefreshRequest'
-        required: true
-      responses:
-        '200':
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/TokenRefresh'
-          description: ''
   /api/v1/login/social:
     post:
       operationId: login_social_create
@@ -1951,31 +1924,19 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LoginResponse'
+                $ref: '#/components/schemas/SessionUser'
           description: ''
   /api/v1/logout:
     post:
       operationId: logout_create
-      description: Takes a token and blacklists it.
       tags:
         - logout
-      requestBody:
-        content:
-          application/json:
-            schema:
-              $ref: '#/components/schemas/TokenBlacklistRequest'
-          application/x-www-form-urlencoded:
-            schema:
-              $ref: '#/components/schemas/TokenBlacklistRequest'
-          multipart/form-data:
-            schema:
-              $ref: '#/components/schemas/TokenBlacklistRequest'
       security:
         - jwtAuth: []
         - cookieAuth: []
         - tokenAuth: []
       responses:
-        '200':
+        '204':
           description: No response body
   /api/v1/me:
     get:
@@ -2914,41 +2875,6 @@ components:
         - field
         - new
         - old
-    LoginResponse:
-      type: object
-      properties:
-        avatar_url:
-          type: string
-          readOnly: true
-          nullable: true
-        groups:
-          type: array
-          items:
-            type: string
-          readOnly: true
-        id:
-          type: integer
-          readOnly: true
-        name:
-          type: string
-          readOnly: true
-        role:
-          type: string
-          readOnly: true
-        access:
-          type: string
-          readOnly: true
-        refresh:
-          type: string
-          readOnly: true
-      required:
-        - access
-        - avatar_url
-        - groups
-        - id
-        - name
-        - refresh
-        - role
     OAuth2ConnectRequest:
       type: object
       properties:
@@ -3796,6 +3722,33 @@ components:
         - status
         - title
         - type
+    SessionUser:
+      type: object
+      properties:
+        avatar_url:
+          type: string
+          readOnly: true
+          nullable: true
+        groups:
+          type: array
+          items:
+            type: string
+          readOnly: true
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        role:
+          type: string
+          readOnly: true
+      required:
+        - avatar_url
+        - groups
+        - id
+        - name
+        - role
     StatusEnum:
       enum:
         - 1
@@ -3877,13 +3830,6 @@ components:
       required:
         - id
         - title
-    TokenBlacklistRequest:
-      type: object
-      properties:
-        refresh:
-          type: string
-          writeOnly: true
-          minLength: 1
     TokenObtainPairOAuth2Request:
       type: object
       properties:
@@ -3896,25 +3842,6 @@ components:
       required:
         - code
         - provider
-    TokenRefresh:
-      type: object
-      properties:
-        access:
-          type: string
-          readOnly: true
-        refresh:
-          type: string
-      required:
-        - access
-        - refresh
-    TokenRefreshRequest:
-      type: object
-      properties:
-        refresh:
-          type: string
-          minLength: 1
-      required:
-        - refresh
     User:
       type: object
       properties:

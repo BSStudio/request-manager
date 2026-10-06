@@ -2,6 +2,7 @@ import pytest
 from rest_framework.reverse import reverse
 from rest_framework.status import (
     HTTP_200_OK,
+    HTTP_204_NO_CONTENT,
     HTTP_401_UNAUTHORIZED,
     HTTP_403_FORBIDDEN,
     HTTP_415_UNSUPPORTED_MEDIA_TYPE,
@@ -81,15 +82,6 @@ def test_session_requests_need_a_csrf_token(csrf_client, mock_provider):
     assert response.status_code == HTTP_200_OK
 
 
-def test_bearer_requests_skip_the_csrf_check(csrf_client, mock_provider):
-    access = log_in(csrf_client, mock_provider).data["access"]
-    csrf_client.credentials(HTTP_AUTHORIZATION=f"Bearer {access}")
-
-    response = csrf_client.patch(ME_URL, {"first_name": "Changed"})
-
-    assert response.status_code == HTTP_200_OK
-
-
 def test_logout_ends_the_session(csrf_client, mock_provider):
     log_in(csrf_client, mock_provider)
 
@@ -98,7 +90,7 @@ def test_logout_ends_the_session(csrf_client, mock_provider):
         HTTP_X_CSRFTOKEN=csrf_client.cookies["csrftoken"].value,
     )
 
-    assert response.status_code == HTTP_200_OK
+    assert response.status_code == HTTP_204_NO_CONTENT
     assert csrf_client.get(ME_URL).status_code == HTTP_401_UNAUTHORIZED
 
 

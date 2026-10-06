@@ -110,7 +110,7 @@ export async function signIn(provider: string, code: string) {
 
 export async function signOut() {
   try {
-    await logoutApi.logoutCreate({});
+    await logoutApi.logoutCreate();
   } catch (error) {
     // Only a 401 means the server has no session left to end.
     if (!isAxiosError(error) || error.response?.status !== 401) throw error;
