@@ -7,6 +7,8 @@ import {
   useRouteError,
 } from 'react-router';
 
+import { useReportRouteError } from 'hooks/useReportRouteError';
+
 const errorTranslation = {
   401: {
     message:
@@ -24,6 +26,8 @@ const ErrorPage = () => {
   const { state } = useLocation();
   const error = useRouteError();
   const navigate = useNavigate();
+
+  useReportRouteError(error);
 
   let message = '';
   let statusCode = 'HIBA';

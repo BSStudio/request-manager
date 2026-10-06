@@ -20,9 +20,7 @@ import 'primeflex/primeflex.css';
 
 import 'admin/index.css';
 
-if (import.meta.env.PROD) {
-  initSentry(import.meta.env.VITE_SENTRY_URL_ADMIN);
-}
+initSentry('admin');
 
 addLocale('hu', locales['hu']);
 

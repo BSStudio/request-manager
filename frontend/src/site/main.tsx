@@ -12,9 +12,7 @@ import router from 'site/router';
 
 import 'site/index.css';
 
-if (import.meta.env.PROD) {
-  initSentry(import.meta.env.VITE_SENTRY_URL);
-}
+initSentry('site');
 
 void revalidateSession();
 

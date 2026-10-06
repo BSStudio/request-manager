@@ -18,7 +18,8 @@ const privateHeaders = {
   deny: ['forwarded', '-ip', 'remote-', 'via', '-user'],
 };
 
-export function initSentry(dsn: string | undefined) {
+export function initSentry(app: 'admin' | 'site') {
+  if (!import.meta.env.PROD) return;
   init({
     beforeSend(event) {
       if (event.exception) {
@@ -44,7 +45,8 @@ export function initSentry(dsn: string | undefined) {
       urlQueryParams: privateHeaders,
       userInfo: false,
     },
-    dsn,
+    dsn: import.meta.env.VITE_SENTRY_URL,
+    initialScope: { tags: { app } },
     integrations: [
       reactRouterBrowserTracingIntegration({
         createRoutesFromChildren,

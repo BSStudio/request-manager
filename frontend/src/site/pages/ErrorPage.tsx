@@ -1,9 +1,7 @@
-import { useEffect } from 'react';
-
-import { captureException } from '@sentry/react';
 import { HouseIcon, RotateCwIcon } from 'lucide-react';
 import { isRouteErrorResponse, Link, useRouteError } from 'react-router';
 
+import { useReportRouteError } from 'hooks/useReportRouteError';
 import NoSignal from 'site/components/NoSignal';
 import { Button } from 'site/components/ui/button';
 import { usePageTitle } from 'site/hooks/usePageTitle';
@@ -13,11 +11,7 @@ export default function ErrorPage() {
   const error = useRouteError();
   const notFound = isRouteErrorResponse(error) && error.status === 404;
 
-  useEffect(() => {
-    // The router catches render errors, so Sentry would not see them.
-    if (!notFound) captureException(error);
-  }, [error, notFound]);
-
+  useReportRouteError(error);
   usePageTitle('Hiba történt');
 
   if (notFound) return <NotFoundPage />;
