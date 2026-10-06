@@ -96,7 +96,7 @@ after changing serializers, views or endpoints:
 ```bash
 poetry run python manage.py spectacular \
   --file schema.yaml --validate --fail-on-warn \
-  --settings core.settings.production
+  --settings core.settings.ci
 ```
 
 CI fails if the committed schema differs from the generated one.
