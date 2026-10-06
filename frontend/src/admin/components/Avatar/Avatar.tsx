@@ -20,6 +20,7 @@ const Avatar = forwardRef<React.Ref<HTMLDivElement>, AvatarProps>(
         icon="pi pi-user"
         label={name ? getInitials(name) : undefined}
         shape="circle"
+        {...(name ? { imageAlt: name } : {})}
         {...props}
         {...ref}
         className={classNames(stylesModule.avatarIcon, className)}

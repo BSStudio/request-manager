@@ -32,7 +32,8 @@ export function isRateLimited(error: unknown) {
 }
 
 // Shows the messages of a 400 under the form fields they belong to, nested
-// serializers included. Returns false for any other error.
+// serializers included. Returns false when no message belongs to a field, so
+// the caller can show it otherwise.
 export function setFieldErrors<T extends FieldValues>(
   error: unknown,
   setError: UseFormSetError<T>,
@@ -53,6 +54,12 @@ export function setFieldErrors<T extends FieldValues>(
       }
     });
   };
-  setErrors(data, '');
+  const fieldErrors = Object.fromEntries(
+    Object.entries(data).filter(
+      ([field]) => !['detail', 'non_field_errors'].includes(field),
+    ),
+  );
+  if (!Object.keys(fieldErrors).length) return false;
+  setErrors(fieldErrors, '');
   return true;
 }
