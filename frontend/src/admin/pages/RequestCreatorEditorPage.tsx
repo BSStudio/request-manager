@@ -32,8 +32,10 @@ import { queryKeys } from 'admin/api/queryKeys';
 import AutoCompleteStaff from 'admin/components/AutoCompleteStaff/AutoCompleteStaff';
 import FormField from 'admin/components/FormField/FormField';
 import LastUpdatedAt from 'admin/components/LastUpdatedAt/LastUpdatedAt';
+import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import useMobile from 'admin/hooks/useMobile';
+import type { LoadErrorState } from 'admin/pages/ErrorPage';
 import { useToast } from 'admin/providers/ToastProvider';
 import { queryClient } from 'admin/router';
 import { isNotFound, setFieldErrors } from 'api/errors';
@@ -292,9 +294,9 @@ const RequestCreatorEditorPage = () => {
     if (isAxiosError(error)) {
       void navigate('/error', {
         state: {
-          statusCode: error.response?.status,
-          statusText: error.response?.statusText,
-        },
+          message: getErrorMessage(error),
+          status: error.response?.status,
+        } satisfies LoadErrorState,
       });
     } else {
       showErrorToast(error);
