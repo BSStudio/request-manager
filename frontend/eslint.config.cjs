@@ -77,8 +77,7 @@ module.exports = tseslint.config(
       'sort-keys': ['error', 'asc', { caseSensitive: true, natural: true }],
     },
     settings: {
-      'import-x/internal-regex':
-        '^(api|assets|components|helpers|hooks|pages|providers|site|themes|types|router|localConstants|Layout)(/|$)',
+      'import-x/internal-regex': '^(admin|api|helpers|hooks|site)(/|$)',
       'import-x/resolver': {
         node: {
           extensions: ['.ts', '.tsx', '.js', '.jsx', '.mjs', '.json'],

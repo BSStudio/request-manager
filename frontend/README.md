@@ -4,10 +4,10 @@ The public site where users submit and follow their requests, and the admin dash
 
 `index.html` serves both apps and [`src/main.tsx`](src/main.tsx) loads one of them based on the path:
 
-| Path       | Source      | UI                                 |
-| ---------- | ----------- | ---------------------------------- |
-| `/admin/*` | `src/`      | PrimeReact, PrimeFlex              |
-| Other      | `src/site/` | Tailwind CSS, shadcn/ui (Radix UI) |
+| Path       | Source       | UI                                 |
+| ---------- | ------------ | ---------------------------------- |
+| `/admin/*` | `src/admin/` | PrimeReact, PrimeFlex              |
+| Other      | `src/site/`  | Tailwind CSS, shadcn/ui (Radix UI) |
 
 They share the API client and helpers but never run on the same page, because PrimeFlex and Tailwind CSS use the same class names. Links between the two have to reload the page (a plain `<a href>`, not a router `Link`).
 
