@@ -89,13 +89,13 @@ repos:
         exclude: (^backend/templates/)|((poetry\.lock|package(-lock)?\.json|pnpm-lock\.yaml)$)
         exclude_types:
           - python
-        args: [--config, ./frontend-admin/.prettierrc]
+        args: [--config, ./frontend/.prettierrc]
   - repo: https://github.com/pre-commit/mirrors-eslint
     rev: v10.11.0
     hooks:
       - id: eslint
-        name: 'Lint TypeScript code (Admin dashboard)'
-        files: ^frontend-admin/
+        name: 'Lint TypeScript code'
+        files: ^frontend/
         types:
           - text
         types_or:
@@ -105,7 +105,7 @@ repos:
           - tsx
         args: [
             --config,
-            ./frontend-admin/eslint.config.cjs,
+            ./frontend/eslint.config.cjs,
             --rule,
             'import-x/no-unresolved:
             off',

@@ -35,10 +35,10 @@ backend/staticfiles
 backend/schema.yaml
 
 # React
-frontend*/.eslintcache
-frontend*/.pnp
-frontend*/.pnp.js
-frontend*/build
-frontend*/coverage
-frontend*/node_modules
-frontend*/*.log*
+frontend/.eslintcache
+frontend/.pnp
+frontend/.pnp.js
+frontend/build
+frontend/coverage
+frontend/node_modules
+frontend/*.log*

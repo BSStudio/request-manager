@@ -16,7 +16,7 @@
   "forwardPorts": [8000, 5173],
   "portsAttributes": {
     "8000": { "label": "backend (Django)" },
-    "5173": { "label": "frontend-admin (Vite)" }
+    "5173": { "label": "frontend (Vite)" }
   },
   "postCreateCommand": "bash .devcontainer/post-create.sh",
   "customizations": {

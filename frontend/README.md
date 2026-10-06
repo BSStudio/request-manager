@@ -1,6 +1,6 @@
-# Frontend — Admin Dashboard
+# Frontend
 
-Admin dashboard for staff to manage video requests, crew, comments and ratings, and the public site where users submit and follow their requests.
+The public site where users submit and follow their requests, and the admin dashboard where staff manage video requests, crew, comments and ratings.
 
 `index.html` serves both apps and [`src/main.tsx`](src/main.tsx) loads one of them based on the path:
 
@@ -18,7 +18,7 @@ They share the API client and helpers but never run on the same page, because Pr
 Requires Node.js (version pinned in [`.nvmrc`](.nvmrc); run `nvm use` to switch), pnpm (run `corepack enable` to activate the version pinned in `package.json`) and a running [backend](../backend/README.md).
 
 ```bash
-cd frontend-admin
+cd frontend
 pnpm install
 cp .env.sample .env     # then edit it (see below)
 pnpm start
@@ -28,7 +28,7 @@ The dev server runs at <https://localhost:5173> and the admin dashboard at <http
 
 ### Environment
 
-Configuration is read from `frontend-admin/.env`. Start from [`.env.sample`](.env.sample). Variables prefixed with `VITE_` are built into the app, the rest only configure the dev server.
+Configuration is read from `frontend/.env`. Start from [`.env.sample`](.env.sample). Variables prefixed with `VITE_` are built into the app, the rest only configure the dev server.
 
 The app calls the API on its own origin, because the login is a session cookie. In production Django serves both, in development the dev server proxies `/api` to `BACKEND_URL` (default `http://localhost:8000`).
 

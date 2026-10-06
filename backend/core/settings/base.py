@@ -22,7 +22,7 @@ from redis.asyncio import Redis as RedisClient
 
 # Build paths inside the project like this: BACKEND_DIR / "subdir"
 BACKEND_DIR = Path(__file__).resolve().parent.parent.parent
-FRONTEND_DIR = (BACKEND_DIR / ".." / "frontend-admin").resolve()
+FRONTEND_DIR = (BACKEND_DIR / ".." / "frontend").resolve()
 
 # URL of the site such as: https://website.example.com
 BASE_URL_DOMAIN = config("BASE_URL_DOMAIN", default="localhost:8000")

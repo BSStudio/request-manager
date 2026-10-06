@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
 
   return {
     build: {
-      assetsDir: 'static/frontend-admin',
+      assetsDir: 'static/frontend',
       outDir: 'build',
       // sourcemap: true, // When you want to use source-map-explorer
     },

@@ -1,5 +1,5 @@
 {
-  "name": "frontend-admin",
+  "name": "frontend",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -40,7 +40,7 @@
     "start:network": "vite dev --host",
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
-    "analyze": "source-map-explorer 'build/static/frontend-admin/*.js' --no-border-checks",
+    "analyze": "source-map-explorer 'build/static/frontend/*.js' --no-border-checks",
     "format": "prettier --write src/**/*.{js,jsx,ts,tsx,json,css}",
     "lint": "eslint src/",
     "lint:fix": "eslint --fix src/",
