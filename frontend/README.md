@@ -28,7 +28,7 @@ The dev server runs at <https://localhost:5173> and the admin dashboard at <http
 
 ### Environment
 
-Configuration is read from `frontend/.env`. Start from [`.env.sample`](.env.sample). Variables prefixed with `VITE_` are built into the app, the rest only configure the dev server.
+Configuration is read from `frontend/.env`. Start from [`.env.sample`](.env.sample). Variables prefixed with `VITE_` are built into the app, the rest only configure the dev server. Production builds, the Docker image included, take the `VITE_` values from the committed [`.env.production`](.env.production); for a local production build with other values, override them in `.env.production.local`.
 
 The app calls the API on its own origin, because the login is a session cookie. In production Django serves both, in development the dev server proxies `/api` to `BACKEND_URL` (default `http://localhost:8000`).
 
