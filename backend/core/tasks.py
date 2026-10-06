@@ -49,7 +49,6 @@ def scheduled_send_overdue_requests_email():
 @shared_task
 def scheduled_cleaning():
     with StringIO() as out:
-        call_command("flushexpiredtokens", stdout=out)
         call_command(
             "clean_duplicate_history", "--minutes", "1500", auto=True, stdout=out
         )

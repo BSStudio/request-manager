@@ -1,6 +1,5 @@
 import logging
 
-from rest_framework_simplejwt.exceptions import InvalidToken, TokenError
 from social_core.exceptions import AuthException, SocialAuthBaseException
 from social_core.utils import get_strategy
 from social_django.utils import STORAGE, psa
@@ -19,8 +18,6 @@ def decorate_request(request, backend):
 
 def handle_exception(e):
     message = None
-    if isinstance(e, TokenError):
-        raise InvalidToken(e.args[0])
     if not isinstance(e, AuthException):
         log_exception(e)
     if hasattr(e, "response"):

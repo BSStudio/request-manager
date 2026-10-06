@@ -7,7 +7,7 @@ from sentry_sdk.integrations.redis import RedisIntegration
 from core.settings._auth_social import *
 
 # Require an explicit secret key; base.py's random fallback differs per process
-# and breaks sessions/CSRF/JWT across replicas and restarts.
+# and breaks sessions and CSRF across replicas and restarts.
 SECRET_KEY = config("APP_SECRET_KEY")
 
 # E-mail settings

@@ -3,7 +3,7 @@
 Django REST API, business logic, Django admin panel and Celery workers for the
 Request Manager.
 
-**Stack:** Python · Django · Django REST Framework · SimpleJWT ·
+**Stack:** Python · Django · Django REST Framework ·
 Celery (Redis) · PostgreSQL · drf-spectacular · social-auth · Sentry
 
 ## Setup

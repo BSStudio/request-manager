@@ -151,8 +151,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -160,9 +158,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -219,8 +215,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -228,9 +222,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -285,8 +277,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -294,9 +284,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -346,8 +334,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -355,9 +341,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       if (ordering !== undefined) {
         localVarQueryParameter['ordering'] = ordering;
@@ -417,8 +401,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -426,9 +408,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -489,8 +469,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -498,9 +476,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -558,8 +534,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -567,9 +541,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -624,8 +596,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -633,9 +603,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -697,8 +665,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -706,9 +672,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -765,8 +729,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -774,9 +736,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -825,8 +785,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -834,9 +792,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       if (ordering !== undefined) {
         localVarQueryParameter['ordering'] = ordering;
@@ -896,8 +852,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -905,9 +859,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -964,8 +916,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -973,9 +923,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -1033,8 +981,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -1042,9 +988,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -1098,8 +1042,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -1107,9 +1049,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -1156,8 +1096,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -1165,9 +1103,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -1227,8 +1163,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -1236,9 +1170,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       if (deadlineAfter !== undefined) {
         localVarQueryParameter['deadline_after'] =
@@ -1339,8 +1271,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -1348,9 +1278,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -1404,8 +1332,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -1413,9 +1339,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -1470,8 +1394,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -1479,9 +1401,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -1537,8 +1457,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -1546,9 +1464,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       if (ordering !== undefined) {
         localVarQueryParameter['ordering'] = ordering;
@@ -1607,8 +1523,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -1616,9 +1530,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -1680,8 +1592,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -1689,9 +1599,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -1748,8 +1656,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -1757,9 +1663,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -1814,8 +1718,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -1823,9 +1725,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -1874,8 +1774,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -1883,9 +1781,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       if (ordering !== undefined) {
         localVarQueryParameter['ordering'] = ordering;
@@ -1945,8 +1841,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -1954,9 +1848,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -2026,8 +1918,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -2035,9 +1925,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -2108,8 +1996,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -2117,9 +2003,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -2183,8 +2067,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -2192,9 +2074,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -2251,8 +2131,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -2260,9 +2138,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       if (ordering !== undefined) {
         localVarQueryParameter['ordering'] = ordering;
@@ -2325,8 +2201,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -2334,9 +2208,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -2402,8 +2274,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -2411,9 +2281,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -2484,8 +2352,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -2493,9 +2359,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -2563,8 +2427,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -2572,9 +2434,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -2631,8 +2491,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -2640,9 +2498,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -2705,8 +2561,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -2714,9 +2568,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -2776,8 +2628,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -2785,9 +2635,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       if (ordering !== undefined) {
         localVarQueryParameter['ordering'] = ordering;
@@ -2849,8 +2697,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -2858,9 +2704,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -2914,8 +2758,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -2923,9 +2765,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -2977,8 +2817,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -2986,9 +2824,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       if (assignees) {
         localVarQueryParameter['assignees'] = assignees;
@@ -3061,8 +2897,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -3070,9 +2904,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -3126,8 +2958,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -3135,9 +2965,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -3192,8 +3020,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -3201,9 +3027,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -3259,8 +3083,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -3268,9 +3090,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -3324,8 +3144,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -3333,9 +3151,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -3389,8 +3205,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -3398,9 +3212,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       if (isAdmin !== undefined) {
         localVarQueryParameter['is_admin'] = isAdmin;
@@ -3477,8 +3289,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -3486,9 +3296,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -3542,8 +3350,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -3551,9 +3357,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -3608,8 +3412,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -3617,9 +3419,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -3679,8 +3479,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -3688,9 +3486,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       if (isResponsible !== undefined) {
         localVarQueryParameter['is_responsible'] = isResponsible;
@@ -3770,8 +3566,6 @@ export const AdminApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -3779,9 +3573,7 @@ export const AdminApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       if (lastAired !== undefined) {
         localVarQueryParameter['last_aired'] =

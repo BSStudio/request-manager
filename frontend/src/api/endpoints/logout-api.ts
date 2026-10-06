@@ -69,8 +69,6 @@ export const LogoutApiAxiosParamCreator = function (
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -78,9 +76,7 @@ export const LogoutApiAxiosParamCreator = function (
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =

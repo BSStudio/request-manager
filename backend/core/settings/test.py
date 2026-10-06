@@ -1,5 +1,3 @@
-from datetime import timedelta
-
 from core.settings._auth_social import *
 
 # Use localhost as default instead of docker container hostnames
@@ -51,9 +49,6 @@ WHITENOISE_ROOT = None
 
 # Override admin group to use the default value for tests
 ADMIN_GROUP = "Administrators"
-
-# Use short lifetime on access tokens
-SIMPLE_JWT.update({"ACCESS_TOKEN_LIFETIME": timedelta(seconds=10)})
 
 # Increase the throttling rates
 REST_FRAMEWORK.update(

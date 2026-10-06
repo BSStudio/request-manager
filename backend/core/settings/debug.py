@@ -1,5 +1,3 @@
-from datetime import timedelta
-
 from core.settings._auth_social import *
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -41,14 +39,6 @@ if EMAIL_BACKEND_TYPE.casefold() == "console":
 elif EMAIL_BACKEND_TYPE.casefold() == "file":
     EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
     EMAIL_FILE_PATH = "logs/emails"
-
-# Extend JWT access token lifetime
-SIMPLE_JWT.update(
-    {
-        "ACCESS_TOKEN_LIFETIME": timedelta(days=5),
-        "REFRESH_TOKEN_LIFETIME": timedelta(days=10),
-    }
-)
 
 # Show debug output on the console
 LOGGING["handlers"]["console"]["level"] = "DEBUG"

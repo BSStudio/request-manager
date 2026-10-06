@@ -96,9 +96,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -123,9 +122,8 @@ paths:
               $ref: '#/components/schemas/RequestAdminCreateRequest'
         required: true
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '201':
           content:
@@ -146,9 +144,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -180,9 +177,8 @@ paths:
               $ref: '#/components/schemas/RequestAdminUpdateRequest'
         required: true
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -213,9 +209,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedRequestAdminUpdateRequest'
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -235,9 +230,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -254,9 +248,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -284,9 +277,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -319,9 +311,8 @@ paths:
               $ref: '#/components/schemas/CommentAdminCreateUpdateRequest'
         required: true
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '201':
           content:
@@ -347,9 +338,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -386,9 +376,8 @@ paths:
               $ref: '#/components/schemas/CommentAdminCreateUpdateRequest'
         required: true
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -424,9 +413,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedCommentAdminCreateUpdateRequest'
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -451,9 +439,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -475,9 +462,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -505,9 +491,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -540,9 +525,8 @@ paths:
               $ref: '#/components/schemas/CrewMemberAdminCreateUpdateRequest'
         required: true
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '201':
           content:
@@ -568,9 +552,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -607,9 +590,8 @@ paths:
               $ref: '#/components/schemas/CrewMemberAdminCreateUpdateRequest'
         required: true
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -645,9 +627,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedCrewMemberAdminCreateUpdateRequest'
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -672,9 +653,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -696,9 +676,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -731,9 +710,8 @@ paths:
               $ref: '#/components/schemas/TodoAdminCreateUpdateRequest'
         required: true
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '201':
           content:
@@ -759,9 +737,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -794,9 +771,8 @@ paths:
               $ref: '#/components/schemas/VideoAdminCreateUpdateRequest'
         required: true
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '201':
           content:
@@ -822,9 +798,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -861,9 +836,8 @@ paths:
               $ref: '#/components/schemas/VideoAdminCreateUpdateRequest'
         required: true
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -899,9 +873,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedVideoAdminCreateUpdateRequest'
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -926,9 +899,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -950,9 +922,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -985,9 +956,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -1025,9 +995,8 @@ paths:
               $ref: '#/components/schemas/RatingAdminCreateUpdateRequest'
         required: true
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '201':
           content:
@@ -1058,9 +1027,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -1102,9 +1070,8 @@ paths:
               $ref: '#/components/schemas/RatingAdminCreateUpdateRequest'
         required: true
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -1145,9 +1112,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedRatingAdminCreateUpdateRequest'
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -1177,9 +1143,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -1206,9 +1171,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -1235,9 +1199,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -1268,9 +1231,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -1308,9 +1270,8 @@ paths:
               $ref: '#/components/schemas/TodoAdminCreateUpdateRequest'
         required: true
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '201':
           content:
@@ -1373,9 +1334,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -1396,9 +1356,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -1430,9 +1389,8 @@ paths:
               $ref: '#/components/schemas/TodoAdminCreateUpdateRequest'
         required: true
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -1463,9 +1421,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedTodoAdminCreateUpdateRequest'
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -1485,9 +1442,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -1536,9 +1492,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -1559,9 +1514,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -1593,9 +1547,8 @@ paths:
               $ref: '#/components/schemas/UserAdminRetrieveUpdateRequest'
         required: true
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -1626,9 +1579,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedUserAdminRetrieveUpdateRequest'
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -1660,9 +1612,8 @@ paths:
             schema:
               $ref: '#/components/schemas/BanUserRequest'
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -1682,9 +1633,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -1718,9 +1668,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -1812,9 +1761,8 @@ paths:
       tags:
         - admin
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -1840,9 +1788,8 @@ paths:
               $ref: '#/components/schemas/RequestExternalSchEventsCreateRequest'
         required: true
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '201':
           content:
@@ -1862,9 +1809,8 @@ paths:
       tags:
         - external
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -1896,9 +1842,8 @@ paths:
               $ref: '#/components/schemas/CommentCreateUpdateRequest'
         required: true
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '201':
           content:
@@ -1932,9 +1877,8 @@ paths:
       tags:
         - logout
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -1944,9 +1888,8 @@ paths:
       tags:
         - me
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -1971,9 +1914,8 @@ paths:
               $ref: '#/components/schemas/UserRequest'
         required: true
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -1997,9 +1939,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedUserRequest'
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -2031,9 +1972,8 @@ paths:
               $ref: '#/components/schemas/OAuth2ConnectRequest'
         required: true
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '201':
           description: No response body
@@ -2048,9 +1988,8 @@ paths:
       tags:
         - me
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -2078,9 +2017,8 @@ paths:
       tags:
         - me
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -2108,9 +2046,8 @@ paths:
               $ref: '#/components/schemas/ContactRequest'
         required: true
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
         - {}
       responses:
         '201':
@@ -2156,9 +2093,8 @@ paths:
       tags:
         - requests
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -2182,9 +2118,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PolymorphicProxyRequest'
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
         - {}
       responses:
         '201':
@@ -2206,9 +2141,8 @@ paths:
       tags:
         - requests
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -2234,9 +2168,8 @@ paths:
       tags:
         - requests
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -2269,9 +2202,8 @@ paths:
               $ref: '#/components/schemas/CommentCreateUpdateRequest'
         required: true
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '201':
           content:
@@ -2297,9 +2229,8 @@ paths:
       tags:
         - requests
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -2336,9 +2267,8 @@ paths:
               $ref: '#/components/schemas/CommentCreateUpdateRequest'
         required: true
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -2374,9 +2304,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedCommentCreateUpdateRequest'
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -2401,9 +2330,8 @@ paths:
       tags:
         - requests
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -2425,9 +2353,8 @@ paths:
       tags:
         - requests
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -2455,9 +2382,8 @@ paths:
       tags:
         - requests
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -2482,9 +2408,8 @@ paths:
       tags:
         - requests
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -2520,9 +2445,8 @@ paths:
               $ref: '#/components/schemas/RatingCreateUpdateRequest'
         required: true
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '201':
           content:
@@ -2558,9 +2482,8 @@ paths:
               $ref: '#/components/schemas/RatingCreateUpdateRequest'
         required: true
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -2595,9 +2518,8 @@ paths:
             schema:
               $ref: '#/components/schemas/PatchedRatingCreateUpdateRequest'
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '200':
           content:
@@ -2621,9 +2543,8 @@ paths:
       tags:
         - requests
       security:
-        - jwtAuth: []
-        - cookieAuth: []
         - tokenAuth: []
+        - cookieAuth: []
       responses:
         '204':
           description: No response body
@@ -4271,10 +4192,6 @@ components:
       type: apiKey
       in: cookie
       name: sessionid
-    jwtAuth:
-      type: http
-      scheme: bearer
-      bearerFormat: JWT
     tokenAuth:
       type: apiKey
       in: header
