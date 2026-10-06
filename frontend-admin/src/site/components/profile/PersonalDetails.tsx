@@ -1,9 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { isAxiosError } from 'axios';
-import {
-  isValidPhoneNumber,
-  parsePhoneNumberFromString,
-} from 'libphonenumber-js';
+import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { InfoIcon, Loader2Icon, TriangleAlertIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
@@ -22,38 +19,25 @@ import {
 } from 'site/components/ui/field';
 import { Input } from 'site/components/ui/input';
 import { getApiErrorMessage } from 'site/lib/apiError';
+import {
+  emailSchema,
+  formatName,
+  formatPhone,
+  getMissingProfileFields,
+  nameSchema,
+  phoneSchema,
+  toE164,
+} from 'site/lib/person';
 import { cacheUser } from 'site/lib/session';
 
-const maxLength = 'Legfeljebb 150 karakter lehet.';
-
 const profileSchema = z.object({
-  email: z.email('Érvényes e-mail-címet adj meg!'),
-  first_name: z
-    .string()
-    .trim()
-    .min(1, 'Add meg a keresztneved!')
-    .max(150, maxLength),
-  last_name: z
-    .string()
-    .trim()
-    .min(1, 'Add meg a vezetékneved!')
-    .max(150, maxLength),
-  phone_number: z
-    .string()
-    .trim()
-    .min(1, 'Add meg a telefonszámod!')
-    .refine((value) => isValidPhoneNumber(value, 'HU'), {
-      message: 'Érvénytelen telefonszám.',
-    }),
+  email: emailSchema,
+  first_name: nameSchema('Add meg a keresztneved!'),
+  last_name: nameSchema('Add meg a vezetékneved!'),
+  phone_number: phoneSchema,
 });
 
 type ProfileValues = z.infer<typeof profileSchema>;
-
-function formatPhone(phone: string) {
-  return (
-    parsePhoneNumberFromString(phone, 'HU')?.formatInternational() ?? phone
-  );
-}
 
 function toValues(user: User): ProfileValues {
   return {
@@ -66,22 +50,12 @@ function toValues(user: User): ProfileValues {
   };
 }
 
-// The request form sends users here when any of these is missing.
-function isIncomplete(user: User) {
-  return (
-    !user.last_name ||
-    !user.first_name ||
-    !user.email ||
-    !user.profile.phone_number
-  );
-}
-
 function ReadOnlyDetails({ user }: { user: User }) {
   const values = toValues(user);
   const rows = [
     {
       label: 'Név',
-      value: `${values.last_name} ${values.first_name}`.trim(),
+      value: formatName(values.last_name, values.first_name),
     },
     { label: 'E-mail-cím', value: values.email },
     { label: 'Telefonszám', value: values.phone_number },
@@ -107,7 +81,7 @@ function ReadOnlyDetails({ user }: { user: User }) {
 
 export default function PersonalDetails({ user }: { user: User }) {
   const navigate = useNavigate();
-  const incomplete = isIncomplete(user);
+  const incomplete = getMissingProfileFields(user).length > 0;
   const {
     formState: { errors, isDirty, isSubmitting },
     handleSubmit,
@@ -129,9 +103,7 @@ export default function PersonalDetails({ user }: { user: User }) {
         first_name: values.first_name,
         last_name: values.last_name,
         profile: {
-          phone_number:
-            parsePhoneNumberFromString(values.phone_number, 'HU')?.number ??
-            values.phone_number,
+          phone_number: toE164(values.phone_number),
         },
       });
       cacheUser(data);

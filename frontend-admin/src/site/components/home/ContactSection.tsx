@@ -20,15 +20,12 @@ import {
 import { Input } from 'site/components/ui/input';
 import { Textarea } from 'site/components/ui/textarea';
 import { getApiErrorMessage, isRateLimited } from 'site/lib/apiError';
+import { emailSchema, nameSchema } from 'site/lib/person';
 
 const contactSchema = z.object({
-  email: z.email('Érvényes e-mail-címet adj meg!'),
+  email: emailSchema,
   message: z.string().trim().min(1, 'Írd meg, miben segíthetünk!'),
-  name: z
-    .string()
-    .trim()
-    .min(1, 'Add meg a neved!')
-    .max(150, 'Legfeljebb 150 karakter lehet.'),
+  name: nameSchema('Add meg a neved!'),
 });
 
 type ContactValues = z.infer<typeof contactSchema>;

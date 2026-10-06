@@ -15,6 +15,7 @@ import {
   setSession,
 } from 'helpers/LocalStorageHelper';
 import type { OAuthProvider } from 'site/lib/oauth';
+import { formatName } from 'site/lib/person';
 import { meQuery, queryClient } from 'site/lib/queries';
 
 export type SessionUser = {
@@ -61,7 +62,7 @@ export function cacheUser(data: User) {
     avatar_url: data.profile.avatar_url,
     groups: data.groups,
     id: data.id,
-    name: `${data.last_name ?? ''} ${data.first_name ?? ''}`.trim(),
+    name: formatName(data.last_name, data.first_name),
     role: data.role,
   });
 }

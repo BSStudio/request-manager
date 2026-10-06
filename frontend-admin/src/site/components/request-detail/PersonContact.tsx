@@ -1,8 +1,8 @@
-import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { MailIcon, PhoneIcon } from 'lucide-react';
 
 import type { UserNestedDetail } from 'api/models';
 import { Avatar, AvatarFallback, AvatarImage } from 'site/components/ui/avatar';
+import { formatPhone } from 'site/lib/person';
 import { getInitials } from 'site/lib/session';
 
 const linkClass =
@@ -13,10 +13,7 @@ export default function PersonContact({
 }: {
   person: UserNestedDetail;
 }) {
-  const phone = person.phone_number
-    ? (parsePhoneNumberFromString(person.phone_number)?.formatInternational() ??
-      person.phone_number)
-    : null;
+  const phone = person.phone_number ? formatPhone(person.phone_number) : null;
 
   return (
     <div className="flex gap-3">

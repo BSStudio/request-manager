@@ -1,5 +1,6 @@
-import { isValidPhoneNumber } from 'libphonenumber-js';
 import { z } from 'zod';
+
+import { emailSchema, nameSchema, phoneSchema } from 'site/lib/person';
 
 export const OTHER_TYPE = 'other';
 
@@ -27,24 +28,10 @@ const timeSchema = z
 const maxLength = (max: number) => `Legfeljebb ${max} karakter lehet.`;
 
 export const personalSchema = z.object({
-  requesterEmail: z.email('Érvényes e-mail-címet adj meg!'),
-  requesterFirstName: z
-    .string()
-    .trim()
-    .min(1, 'Add meg a keresztneved!')
-    .max(150, maxLength(150)),
-  requesterLastName: z
-    .string()
-    .trim()
-    .min(1, 'Add meg a vezetékneved!')
-    .max(150, maxLength(150)),
-  requesterMobile: z
-    .string()
-    .trim()
-    .min(1, 'Add meg a telefonszámod!')
-    .refine((value) => isValidPhoneNumber(value, 'HU'), {
-      message: 'Érvénytelen telefonszám.',
-    }),
+  requesterEmail: emailSchema,
+  requesterFirstName: nameSchema('Add meg a keresztneved!'),
+  requesterLastName: nameSchema('Add meg a vezetékneved!'),
+  requesterMobile: phoneSchema,
 });
 
 export const eventSchema = z

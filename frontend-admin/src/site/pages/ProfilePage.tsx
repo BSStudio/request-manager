@@ -9,6 +9,7 @@ import PersonalDetails from 'site/components/profile/PersonalDetails';
 import { Avatar, AvatarFallback, AvatarImage } from 'site/components/ui/avatar';
 import { Skeleton } from 'site/components/ui/skeleton';
 import { usePageTitle } from 'site/hooks/usePageTitle';
+import { formatName } from 'site/lib/person';
 import { meQuery } from 'site/lib/queries';
 import { getInitials } from 'site/lib/session';
 
@@ -21,8 +22,7 @@ function ProfilePage() {
   usePageTitle('Profilom');
   const { data: user, isError, isRefetching, refetch } = useQuery(meQuery());
 
-  const name =
-    user && `${user.last_name ?? ''} ${user.first_name ?? ''}`.trim();
+  const name = user && formatName(user.last_name, user.first_name);
   const badges = user
     ? [roleLabels[user.role], ...user.groups].filter(Boolean)
     : [];

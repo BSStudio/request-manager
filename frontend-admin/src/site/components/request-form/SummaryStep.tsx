@@ -1,6 +1,5 @@
 import type { ReactNode } from 'react';
 
-import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import { PencilIcon } from 'lucide-react';
 import { useFormContext } from 'react-hook-form';
 import { Link } from 'react-router';
@@ -12,6 +11,7 @@ import {
 } from 'site/components/request-form/schema';
 import { Button } from 'site/components/ui/button';
 import { formatRange } from 'site/lib/dates';
+import { formatName, formatPhone } from 'site/lib/person';
 
 export type Requester = { email: string; name: string; phone: string };
 
@@ -64,12 +64,8 @@ export default function SummaryStep({
   const type = values.type === OTHER_TYPE ? values.typeOther : values.type;
   const contact = requester ?? {
     email: values.requesterEmail,
-    name: `${values.requesterLastName} ${values.requesterFirstName}`,
-    phone:
-      parsePhoneNumberFromString(
-        values.requesterMobile,
-        'HU',
-      )?.formatInternational() ?? values.requesterMobile,
+    name: formatName(values.requesterLastName, values.requesterFirstName),
+    phone: formatPhone(values.requesterMobile),
   };
 
   return (

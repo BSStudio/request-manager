@@ -2,7 +2,6 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 
 import type { TurnstileInstance } from '@marsidev/react-turnstile';
 import { useQuery } from '@tanstack/react-query';
-import { parsePhoneNumberFromString } from 'libphonenumber-js';
 import {
   ArrowLeftIcon,
   ArrowRightIcon,
@@ -51,6 +50,12 @@ import Turnstile, { CAPTCHA_FAILED } from 'site/components/Turnstile';
 import { Button } from 'site/components/ui/button';
 import { usePageTitle } from 'site/hooks/usePageTitle';
 import { getApiErrorMessage, isRateLimited } from 'site/lib/apiError';
+import {
+  formatName,
+  formatPhone,
+  getMissingProfileFields,
+  toE164,
+} from 'site/lib/person';
 import { meQuery } from 'site/lib/queries';
 import { useSessionUser } from 'site/lib/session';
 
@@ -162,16 +167,9 @@ function NewRequestPage() {
     [form],
   );
 
-  // Requests are made in the user's name, so the profile has to be complete.
   useEffect(() => {
     if (!me.data) return;
-    const { email, first_name, last_name, profile } = me.data;
-    const missing = [
-      !last_name && 'vezetéknév',
-      !first_name && 'keresztnév',
-      !email && 'e-mail-cím',
-      !profile.phone_number && 'telefonszám',
-    ].filter(Boolean);
+    const missing = getMissingProfileFields(me.data);
     if (missing.length) {
       toast.warning('Előbb egészítsd ki a profilodat!', {
         description: `Hiányzik: ${missing.join(', ')}.`,
@@ -185,13 +183,8 @@ function NewRequestPage() {
     user && me.data
       ? {
           email: me.data.email ?? '',
-          name: `${me.data.last_name ?? ''} ${me.data.first_name ?? ''}`.trim(),
-          phone:
-            parsePhoneNumberFromString(
-              me.data.profile.phone_number ?? '',
-            )?.formatInternational() ??
-            me.data.profile.phone_number ??
-            '',
+          name: formatName(me.data.last_name, me.data.first_name),
+          phone: formatPhone(me.data.profile.phone_number ?? ''),
         }
       : null;
 
@@ -236,9 +229,7 @@ function NewRequestPage() {
           requester_email: values.requesterEmail.trim(),
           requester_first_name: values.requesterFirstName.trim(),
           requester_last_name: values.requesterLastName.trim(),
-          requester_mobile:
-            parsePhoneNumberFromString(values.requesterMobile, 'HU')?.number ??
-            values.requesterMobile,
+          requester_mobile: toE164(values.requesterMobile),
         }),
       });
       sessionStorage.removeItem(DRAFT_KEY);
