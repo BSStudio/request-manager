@@ -20,7 +20,9 @@ import { showErrorToast } from 'admin/helpers/showErrorToast';
 import { useToast } from 'admin/providers/ToastProvider';
 import { AvatarProviderEnum, UserAdminRetrieveUpdate } from 'api';
 import { isNotFound, setFieldErrors } from 'api/errors';
+import { getAvatarStyle, getInitials } from 'helpers/avatar';
 import { getUserId, isAdmin } from 'helpers/LocalStorageHelper';
+import { formatName } from 'helpers/names';
 
 const AvatarDialog = lazy(
   () => import('admin/components/UserProfile/AvatarDialog'),
@@ -75,6 +77,8 @@ const ProfileSection = ({ userData }: ProfileSectionProps) => {
   const queryClient = useQueryClient();
   const userIsStaff = ['admin', 'staff'].includes(userData.role);
   const disabled = isPending || userIsStaff || !isAdmin();
+  const fullName =
+    formatName(userData.last_name, userData.first_name) || userData.username;
 
   const saveButtonItems = [
     {
@@ -278,10 +282,11 @@ const ProfileSection = ({ userData }: ProfileSectionProps) => {
           <span className="font-medium mb-2 text-900">Profilkép</span>
           <Avatar
             className="h-10rem w-10rem"
-            icon="pi pi-user"
             image={userData.profile.avatar_url}
-            pt={{ icon: { className: 'text-8xl' } }}
+            label={getInitials(fullName)}
+            pt={{ label: { className: 'font-medium select-none' } }}
             shape="circle"
+            style={{ ...getAvatarStyle(fullName), fontSize: '4.375rem' }}
           />
           <Button
             className="-mt-4 p-button-rounded"

@@ -1,7 +1,6 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { Avatar } from 'primereact/avatar';
 import { Button } from 'primereact/button';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { InputTextarea } from 'primereact/inputtextarea';
@@ -21,12 +20,12 @@ import {
 } from 'admin/api/mutations';
 import { requestCommentsListQuery } from 'admin/api/queries';
 import { queryKeys } from 'admin/api/queryKeys';
+import Avatar from 'admin/components/Avatar/Avatar';
 import { dateTimeToLocaleString } from 'admin/helpers/DateToLocaleStringCoverters';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import TimeAgo from 'admin/helpers/TimeAgo';
 import { useTheme } from 'admin/hooks/useTheme';
-import { UI_AVATAR_URL } from 'admin/localConstants';
 import { isNotFound } from 'api/errors';
 import {
   getAvatar,
@@ -103,9 +102,8 @@ const CommentCardHeader = ({
         <div className="align-items-center flex">
           <Avatar
             className="flex-shrink-0 h-2rem mr-2 w-2rem"
-            icon="pi pi-user"
-            image={avatarUrl || UI_AVATAR_URL + authorName}
-            shape="circle"
+            image={avatarUrl || undefined}
+            name={authorName}
           />
           <span className="font-medium mr-3 text-900">{authorName}</span>
         </div>
@@ -440,9 +438,8 @@ const CommentCardNew = ({
         <div className="align-items-center col-6 flex">
           <Avatar
             className="flex-shrink-0 h-2rem mr-2 w-2rem"
-            icon="pi pi-user"
-            image={avatarUrl || UI_AVATAR_URL + authorName}
-            shape="circle"
+            image={avatarUrl || undefined}
+            name={authorName}
           />
           <span className="font-medium mr-3 text-900">{authorName}</span>
         </div>

@@ -1,12 +1,11 @@
 import React from 'react';
 
-import { Avatar } from 'primereact/avatar';
 import { Divider } from 'primereact/divider';
 import { Tooltip } from 'primereact/tooltip';
 
+import Avatar from 'admin/components/Avatar/Avatar';
 import { dateTimeToLocaleString } from 'admin/helpers/DateToLocaleStringCoverters';
 import TimeAgo from 'admin/helpers/TimeAgo';
-import { UI_AVATAR_URL } from 'admin/localConstants';
 import { History } from 'api/models/history';
 
 export interface HistoryDates // TODO: Rename?
@@ -43,14 +42,9 @@ const HistoryComponent = ({
               <div className="mr-2">
                 <Avatar
                   className="flex-shrink-0 h-2rem mr-2 w-2rem"
-                  icon={entry.user ? 'pi pi-user' : 'pi pi-server'}
-                  image={
-                    entry.user
-                      ? entry.user.avatar_url ||
-                        UI_AVATAR_URL + entry.user.full_name
-                      : undefined
-                  }
-                  shape="circle"
+                  icon={entry.user ? undefined : 'pi pi-server'}
+                  image={entry.user?.avatar_url || undefined}
+                  name={entry.user?.full_name}
                 />
               </div>
               <div className="flex flex-column">

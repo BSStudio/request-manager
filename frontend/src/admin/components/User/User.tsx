@@ -11,7 +11,7 @@ interface UserProps {
 const User = ({ className, imageUrl, name }: UserProps) => {
   return (
     <div className={classNames('align-items-center flex', className)}>
-      <Avatar className="mr-2" image={imageUrl || undefined} />
+      <Avatar className="mr-2" image={imageUrl || undefined} name={name} />
       <div className="white-space-nowrap">{name}</div>
     </div>
   );

@@ -6,7 +6,9 @@ import type { DialogProps } from 'primereact/dialog';
 import { RadioButton } from 'primereact/radiobutton';
 import { classNames } from 'primereact/utils';
 
+import type { AvatarProviderEnum } from 'api/models';
 import { UserAdminRetrieveUpdate } from 'api/models/user-admin-retrieve-update';
+import { avatarProviderLabels } from 'helpers/avatar';
 
 interface AvatarDialogProps extends DialogProps {
   loading: boolean;
@@ -17,14 +19,8 @@ interface AvatarDialogProps extends DialogProps {
 type AvatarOptionProps = {
   image: string | null;
   onClick: React.MouseEventHandler<HTMLDivElement>;
-  provider: string;
+  provider: AvatarProviderEnum;
   selected: boolean;
-};
-
-const avatarProvider: Record<string, string> = {
-  'google-oauth2': 'Google',
-  gravatar: 'Gravatar',
-  'microsoft-graph': 'Microsoft',
 };
 
 const AvatarOption = ({
@@ -33,9 +29,6 @@ const AvatarOption = ({
   provider,
   selected,
 }: AvatarOptionProps) => {
-  const fallbackImage =
-    'https://placehold.co/500x500?text=Nem+el%C3%A9rhet%C5%91';
-
   return (
     <div className="col-12 lg:col-4">
       <div
@@ -49,11 +42,20 @@ const AvatarOption = ({
         )}
         onClick={image ? onClick : undefined}
       >
-        <img
-          alt={avatarProvider[provider]}
-          className="w-full"
-          src={image || fallbackImage}
-        />
+        {image ? (
+          <img
+            alt={avatarProviderLabels[provider]}
+            className="block w-full"
+            src={image}
+          />
+        ) : (
+          <div
+            className="align-items-center flex justify-content-center surface-200 text-500 text-xl"
+            style={{ aspectRatio: '1' }}
+          >
+            Nem elérhető
+          </div>
+        )}
         <div className="align-items-center flex flex-column gap-3 p-3">
           <div
             className={classNames('font-medium text-xl', {
@@ -61,7 +63,7 @@ const AvatarOption = ({
               'text-900': !!image,
             })}
           >
-            {avatarProvider[provider]}
+            {avatarProviderLabels[provider]}
           </div>
           <RadioButton
             checked={selected}
@@ -121,17 +123,19 @@ const AvatarDialog = forwardRef<React.Ref<HTMLDivElement>, AvatarDialogProps>(
         {...ref}
       >
         <div className="grid">
-          {['google-oauth2', 'gravatar', 'microsoft-graph'].map((provider) => (
-            <AvatarOption
-              key={provider}
-              image={userData.profile.avatar[provider]}
-              onClick={() => {
-                setSelectedProvider(provider);
-              }}
-              provider={provider}
-              selected={selectedProvider === provider}
-            />
-          ))}
+          {(Object.keys(avatarProviderLabels) as AvatarProviderEnum[]).map(
+            (provider) => (
+              <AvatarOption
+                key={provider}
+                image={userData.profile.avatar[provider]}
+                onClick={() => {
+                  setSelectedProvider(provider);
+                }}
+                provider={provider}
+                selected={selectedProvider === provider}
+              />
+            ),
+          )}
         </div>
       </Dialog>
     );

@@ -1,3 +1,7 @@
+.avatarIcon {
+  container-type: inline-size;
+}
+
 .avatarIcon img {
   height: 32px !important;
   width: 32px !important;
@@ -10,4 +14,10 @@
   height: 32px;
   justify-content: center;
   width: 32px;
+}
+
+.avatarIcon > [class~='p-avatar-text'] {
+  font-size: 43.75cqw;
+  font-weight: 500;
+  user-select: none;
 }

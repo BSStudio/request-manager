@@ -20,7 +20,11 @@ const AutoCompleteStaff = forwardRef<
   const itemTemplate = (item: UserAdminList) => {
     return (
       <div className="align-items-center flex">
-        <Avatar className="mr-2" image={item.avatar_url || undefined} />
+        <Avatar
+          className="mr-2"
+          image={item.avatar_url || undefined}
+          name={item.full_name}
+        />
         <div>{item.full_name}</div>
       </div>
     );

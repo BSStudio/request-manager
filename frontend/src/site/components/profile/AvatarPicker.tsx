@@ -6,13 +6,8 @@ import { toast } from 'sonner';
 import { getApiErrorMessage } from 'api/errors';
 import { meApi } from 'api/http';
 import type { AvatarProviderEnum as AvatarProvider, User } from 'api/models';
+import { avatarProviderLabels } from 'helpers/avatar';
 import { cacheUser } from 'helpers/session';
-
-const providerLabels: Record<AvatarProvider, string> = {
-  'google-oauth2': 'Google',
-  gravatar: 'Gravatar',
-  'microsoft-graph': 'Microsoft',
-};
 
 export default function AvatarPicker({ user }: { user: User }) {
   // { provider: <selected>, <provider>: <url or null>, ... }
@@ -20,7 +15,7 @@ export default function AvatarPicker({ user }: { user: User }) {
     user.profile.avatar as Record<string, string | null>,
   ).filter(
     (entry): entry is [AvatarProvider, string] =>
-      entry[0] in providerLabels && !!entry[1],
+      entry[0] in avatarProviderLabels && !!entry[1],
   );
 
   const select = useMutation({
@@ -89,7 +84,7 @@ export default function AvatarPicker({ user }: { user: User }) {
               )}
             </span>
             <span className={cn(!selected && 'text-muted-foreground')}>
-              {providerLabels[provider]}
+              {avatarProviderLabels[provider]}
             </span>
           </button>
         );

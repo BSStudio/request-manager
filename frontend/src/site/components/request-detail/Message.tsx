@@ -14,7 +14,6 @@ import { toast } from 'sonner';
 import { getApiErrorMessage } from 'api/errors';
 import { requestsApi } from 'api/http';
 import type { CommentListRetrieve } from 'api/models';
-import { getInitials } from 'helpers/names';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -25,7 +24,6 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from 'site/components/ui/alert-dialog';
-import { Avatar, AvatarFallback, AvatarImage } from 'site/components/ui/avatar';
 import { Button } from 'site/components/ui/button';
 import {
   DropdownMenu,
@@ -34,6 +32,7 @@ import {
   DropdownMenuTrigger,
 } from 'site/components/ui/dropdown-menu';
 import { Textarea } from 'site/components/ui/textarea';
+import UserAvatar from 'site/components/UserAvatar';
 import { formatMessageTime } from 'site/lib/dates';
 import { requestCommentsQuery } from 'site/lib/queries';
 
@@ -52,12 +51,13 @@ function MessageTime({ created }: { created: string }) {
 function StudioMessage({ message }: { message: CommentListRetrieve }) {
   return (
     <li className="flex gap-3">
-      <Avatar className="mt-0.5">
-        <AvatarImage alt="" src={message.author.avatar_url || undefined} />
-        <AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">
-          {getInitials(message.author.full_name)}
-        </AvatarFallback>
-      </Avatar>
+      <UserAvatar
+        className="mt-0.5"
+        user={{
+          avatar: message.author.avatar_url,
+          name: message.author.full_name,
+        }}
+      />
       <div className="min-w-0 max-w-[85%]">
         <p className="flex flex-wrap items-center gap-x-2 text-xs text-muted-foreground">
           <span className="font-medium text-foreground">

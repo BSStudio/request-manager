@@ -1,6 +1,6 @@
 import { useQuery } from '@tanstack/react-query';
 
-import { getInitials, formatName } from 'helpers/names';
+import { formatName } from 'helpers/names';
 import { meQuery } from 'helpers/session';
 import DetailCard from 'site/components/DetailCard';
 import LoadError from 'site/components/LoadError';
@@ -8,8 +8,8 @@ import PageHero from 'site/components/PageHero';
 import AvatarPicker from 'site/components/profile/AvatarPicker';
 import LoginMethods from 'site/components/profile/LoginMethods';
 import PersonalDetails from 'site/components/profile/PersonalDetails';
-import { Avatar, AvatarFallback, AvatarImage } from 'site/components/ui/avatar';
 import { Skeleton } from 'site/components/ui/skeleton';
+import UserAvatar from 'site/components/UserAvatar';
 import { usePageTitle } from 'site/hooks/usePageTitle';
 
 const roleLabels: Record<string, string> = {
@@ -32,12 +32,13 @@ function ProfilePage() {
         kicker="Profilom"
         media={
           user ? (
-            <Avatar className="size-20 shrink-0 ring-4 ring-white/10 sm:size-32">
-              <AvatarImage alt="" src={user.profile.avatar_url || undefined} />
-              <AvatarFallback className="bg-primary text-2xl font-semibold text-primary-foreground sm:text-4xl">
-                {getInitials(name || user.username)}
-              </AvatarFallback>
-            </Avatar>
+            <UserAvatar
+              className="size-20 shrink-0 ring-4 ring-white/10 sm:size-32"
+              user={{
+                avatar: user.profile.avatar_url,
+                name: name || user.username,
+              }}
+            />
           ) : (
             <span className="size-20 shrink-0 animate-pulse rounded-full bg-white/10 sm:size-32" />
           )
