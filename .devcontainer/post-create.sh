@@ -8,9 +8,6 @@ poetry config virtualenvs.in-project true
 poetry install --with=dev,test,debug
 cd ..
 
-echo "==> Frontend (pnpm)"
-cd frontend && pnpm install --frozen-lockfile && cd ..
-
 echo "==> Admin dashboard (pnpm)"
 cd frontend-admin && pnpm install --frozen-lockfile && cd ..
 

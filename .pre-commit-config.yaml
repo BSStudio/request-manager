@@ -89,40 +89,10 @@ repos:
         exclude: (^backend/templates/)|((poetry\.lock|package(-lock)?\.json|pnpm-lock\.yaml)$)
         exclude_types:
           - python
-        args: [--config, ./frontend/.prettierrc]
+        args: [--config, ./frontend-admin/.prettierrc]
   - repo: https://github.com/pre-commit/mirrors-eslint
     rev: v10.11.0
     hooks:
-      - id: eslint
-        name: 'Lint JavaScript code (Frontend)'
-        files: ^frontend/
-        types:
-          - text
-        types_or:
-          - javascript
-          - jsx
-        args: [
-            --config,
-            ./frontend/eslint.config.cjs,
-            --rule,
-            'import-x/no-unresolved:
-            off',
-            --fix,
-          ]
-        additional_dependencies:
-          - '@eslint/js@10.0.1'
-          - '@typescript-eslint/parser@8.70.1'
-          - eslint-config-prettier@10.1.8
-          - eslint-import-resolver-typescript@4.4.5
-          - eslint-plugin-import-x@4.17.1
-          - eslint-plugin-jsx-a11y@6.10.2
-          - eslint-plugin-prettier@5.5.6
-          - eslint-plugin-react-hooks@7.1.1
-          - eslint-plugin-react@7.37.5
-          - eslint@10.11.0
-          - globals@17.12.0
-          - prettier@3.9.9
-          - typescript-eslint@8.70.1
       - id: eslint
         name: 'Lint TypeScript code (Admin dashboard)'
         files: ^frontend-admin/
