@@ -8,6 +8,7 @@ import { usersRetrieveQuery } from 'admin/api/queries';
 import LastUpdatedAt from 'admin/components/LastUpdatedAt/LastUpdatedAt';
 import NavigationButton from 'admin/components/UserProfile/NavigationButton';
 import { queryClient } from 'api/queryClient';
+import { formatName } from 'helpers/names';
 
 const BanSection = lazy(
   () => import('admin/components/UserProfile/BanSection'),
@@ -30,7 +31,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
     staleTime: 'static',
   });
   return {
-    userFullName: `${user.last_name} ${user.first_name}`,
+    userFullName: formatName(user.last_name, user.first_name),
     userId: params.userId,
   };
 }

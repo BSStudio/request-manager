@@ -2,6 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 
 import { formatName } from 'helpers/names';
 import { meQuery } from 'helpers/session';
+import { usePageTitle } from 'hooks/usePageTitle';
 import DetailCard from 'site/components/DetailCard';
 import LoadError from 'site/components/LoadError';
 import PageHero from 'site/components/PageHero';
@@ -10,7 +11,6 @@ import LoginMethods from 'site/components/profile/LoginMethods';
 import PersonalDetails from 'site/components/profile/PersonalDetails';
 import { Skeleton } from 'site/components/ui/skeleton';
 import UserAvatar from 'site/components/UserAvatar';
-import { usePageTitle } from 'site/hooks/usePageTitle';
 
 const roleLabels: Record<string, string> = {
   admin: 'Adminisztrátor',

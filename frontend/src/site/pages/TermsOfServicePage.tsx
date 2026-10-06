@@ -1,7 +1,7 @@
 import { Link } from 'react-router';
 
+import { usePageTitle } from 'hooks/usePageTitle';
 import LegalDocument from 'site/components/LegalDocument';
-import { usePageTitle } from 'site/hooks/usePageTitle';
 
 function TermsOfServicePage() {
   usePageTitle('Szolgáltatási feltételek');

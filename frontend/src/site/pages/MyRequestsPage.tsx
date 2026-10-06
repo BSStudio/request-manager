@@ -10,12 +10,12 @@ import {
 import { Link } from 'react-router';
 
 import type { RequestList } from 'api/models';
+import { usePageTitle } from 'hooks/usePageTitle';
 import LoadError from 'site/components/LoadError';
 import PageHero from 'site/components/PageHero';
 import StatusBadge from 'site/components/StatusBadge';
 import { Button } from 'site/components/ui/button';
 import { Skeleton } from 'site/components/ui/skeleton';
-import { usePageTitle } from 'site/hooks/usePageTitle';
 import { formatTime } from 'site/lib/dates';
 import { myRequestsQuery } from 'site/lib/queries';
 import { getRequestStatus } from 'site/lib/requestStatus';

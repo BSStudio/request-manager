@@ -1,10 +1,10 @@
 import { HouseIcon, RotateCwIcon } from 'lucide-react';
 import { isRouteErrorResponse, Link, useRouteError } from 'react-router';
 
+import { usePageTitle } from 'hooks/usePageTitle';
 import { useReportRouteError } from 'hooks/useReportRouteError';
 import NoSignal from 'site/components/NoSignal';
 import { Button } from 'site/components/ui/button';
-import { usePageTitle } from 'site/hooks/usePageTitle';
 import NotFoundPage from 'site/pages/NotFoundPage';
 
 export default function ErrorPage() {
