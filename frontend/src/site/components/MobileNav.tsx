@@ -16,6 +16,7 @@ import {
 import { Link, NavLink, useLocation } from 'react-router';
 
 import { promptInstall, useCanInstall } from 'helpers/pwa';
+import type { SessionUser } from 'helpers/session';
 import BssLogo from 'site/components/BssLogo';
 import SocialLinks from 'site/components/SocialLinks';
 import { Button } from 'site/components/ui/button';
@@ -30,7 +31,6 @@ import {
 import UserAvatar from 'site/components/UserAvatar';
 import { useSignOut } from 'site/hooks/useSignOut';
 import { homeSections } from 'site/lib/homeSections';
-import type { SessionUser } from 'site/lib/session';
 
 type NavItem = { icon: LucideIcon; label: string; to: string };
 

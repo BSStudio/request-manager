@@ -10,6 +10,8 @@ import { z } from 'zod';
 import { getApiErrorMessage } from 'api/errors';
 import { meApi } from 'api/http';
 import type { User } from 'api/models';
+import { formatName } from 'helpers/names';
+import { cacheUser } from 'helpers/session';
 import { Button } from 'site/components/ui/button';
 import {
   Field,
@@ -21,14 +23,12 @@ import {
 import { Input } from 'site/components/ui/input';
 import {
   emailSchema,
-  formatName,
   formatPhone,
   getMissingProfileFields,
   nameSchema,
   phoneSchema,
   toE164,
 } from 'site/lib/person';
-import { cacheUser } from 'site/lib/session';
 
 const profileSchema = z.object({
   email: emailSchema,

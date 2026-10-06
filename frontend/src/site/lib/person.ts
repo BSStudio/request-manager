@@ -6,13 +6,6 @@ import { z } from 'zod';
 
 import type { User } from 'api/models';
 
-export function formatName(
-  lastName?: string | null,
-  firstName?: string | null,
-) {
-  return `${lastName ?? ''} ${firstName ?? ''}`.trim();
-}
-
 // Any country works with its calling code, a number typed without one is
 // taken as Hungarian.
 export function formatPhone(phone: string) {

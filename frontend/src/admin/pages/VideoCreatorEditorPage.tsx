@@ -31,9 +31,9 @@ import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import type { LoadErrorState } from 'admin/pages/ErrorPage';
 import { useToast } from 'admin/providers/ToastProvider';
-import { queryClient } from 'admin/router';
 import { isNotFound, setFieldErrors } from 'api/errors';
 import { UserNestedList, VideoAdminRetrieve } from 'api/models';
+import { queryClient } from 'api/queryClient';
 
 export interface IVideoCreator {
   additional_data: {

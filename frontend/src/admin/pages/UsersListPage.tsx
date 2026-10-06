@@ -12,7 +12,7 @@ import { InputText } from 'primereact/inputtext';
 
 import { usersListQuery } from 'admin/api/queries';
 import UsersDataTable from 'admin/components/UsersDataTable/UsersDataTable';
-import { queryClient } from 'admin/router';
+import { queryClient } from 'api/queryClient';
 
 export async function loader() {
   return queryClient.query({ ...usersListQuery(), staleTime: 'static' });

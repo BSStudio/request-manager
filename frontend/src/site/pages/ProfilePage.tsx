@@ -1,5 +1,7 @@
 import { useQuery } from '@tanstack/react-query';
 
+import { getInitials, formatName } from 'helpers/names';
+import { meQuery } from 'helpers/session';
 import DetailCard from 'site/components/DetailCard';
 import LoadError from 'site/components/LoadError';
 import PageHero from 'site/components/PageHero';
@@ -9,9 +11,6 @@ import PersonalDetails from 'site/components/profile/PersonalDetails';
 import { Avatar, AvatarFallback, AvatarImage } from 'site/components/ui/avatar';
 import { Skeleton } from 'site/components/ui/skeleton';
 import { usePageTitle } from 'site/hooks/usePageTitle';
-import { formatName } from 'site/lib/person';
-import { meQuery } from 'site/lib/queries';
-import { getInitials } from 'site/lib/session';
 
 const roleLabels: Record<string, string> = {
   admin: 'Adminisztrátor',

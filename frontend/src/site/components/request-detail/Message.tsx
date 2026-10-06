@@ -14,6 +14,7 @@ import { toast } from 'sonner';
 import { getApiErrorMessage } from 'api/errors';
 import { requestsApi } from 'api/http';
 import type { CommentListRetrieve } from 'api/models';
+import { getInitials } from 'helpers/names';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -35,7 +36,6 @@ import {
 import { Textarea } from 'site/components/ui/textarea';
 import { formatMessageTime } from 'site/lib/dates';
 import { requestCommentsQuery } from 'site/lib/queries';
-import { getInitials } from 'site/lib/session';
 
 function MessageTime({ created }: { created: string }) {
   const date = new Date(created);

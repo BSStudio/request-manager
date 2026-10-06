@@ -12,6 +12,7 @@ import {
 import { Link, useParams } from 'react-router';
 
 import { isNotFound } from 'api/errors';
+import { useSessionUser } from 'helpers/session';
 import DetailCard from 'site/components/DetailCard';
 import LoadError from 'site/components/LoadError';
 import PageHero from 'site/components/PageHero';
@@ -25,7 +26,6 @@ import { usePageTitle } from 'site/hooks/usePageTitle';
 import { formatRange } from 'site/lib/dates';
 import { requestQuery } from 'site/lib/queries';
 import { getRequestStatus, getRequestStep } from 'site/lib/requestStatus';
-import { useSessionUser } from 'site/lib/session';
 import NotFoundPage from 'site/pages/NotFoundPage';
 
 const backLink = (

@@ -1,5 +1,4 @@
 import { wrapCreateBrowserRouter } from '@sentry/react';
-import { QueryClient } from '@tanstack/react-query';
 import { BlockUI } from 'primereact/blockui';
 import { ProgressSpinner } from 'primereact/progressspinner';
 import {
@@ -17,16 +16,7 @@ import {
 import Layout from 'admin/Layout';
 import ErrorPage from 'admin/pages/ErrorPage';
 import type { loaderData as userProfileLoaderData } from 'admin/pages/UserProfilePage';
-
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      gcTime: 1000 * 60 * 5,
-      retry: 1,
-      staleTime: 1000 * 30,
-    },
-  },
-});
+import { queryClient } from 'api/queryClient';
 
 export async function requestLoader({ params }: LoaderFunctionArgs) {
   if (!params.requestId) {

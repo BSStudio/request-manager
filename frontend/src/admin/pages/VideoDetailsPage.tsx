@@ -26,8 +26,8 @@ import User from 'admin/components/User/User';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import useMobile from 'admin/hooks/useMobile';
-import { queryClient } from 'admin/router';
 import { isNotFound } from 'api/errors';
+import { queryClient } from 'api/queryClient';
 
 const AdditionalDataDialog = lazy(
   () => import('admin/components/AdditionalDataDialog/AdditionalDataDialog'),

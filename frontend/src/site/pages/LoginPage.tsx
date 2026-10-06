@@ -27,6 +27,7 @@ import {
   popRedirectedFrom,
   setRedirectedFrom,
 } from 'helpers/LocalStorageHelper';
+import { signIn, useSessionUser, whenSessionChecked } from 'helpers/session';
 import nightSkyImage from 'site/assets/night-sky.webp';
 import {
   AuthSchIcon,
@@ -37,7 +38,6 @@ import BssLogo from 'site/components/BssLogo';
 import { Button } from 'site/components/ui/button';
 import { usePageTitle } from 'site/hooks/usePageTitle';
 import { getAuthorizationUrl, type OAuthProvider } from 'site/lib/oauth';
-import { signIn, useSessionUser, whenSessionChecked } from 'site/lib/session';
 
 type LoginLocationState = {
   code?: string;

@@ -1,6 +1,6 @@
 import { Navigate, Outlet, useLocation } from 'react-router';
 
-import { useSessionUser } from 'site/lib/session';
+import { useSessionUser } from 'helpers/session';
 
 export default function RequireLogin() {
   const user = useSessionUser();

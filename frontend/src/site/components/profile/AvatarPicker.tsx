@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { getApiErrorMessage } from 'api/errors';
 import { meApi } from 'api/http';
 import type { AvatarProviderEnum as AvatarProvider, User } from 'api/models';
-import { cacheUser } from 'site/lib/session';
+import { cacheUser } from 'helpers/session';
 
 const providerLabels: Record<AvatarProvider, string> = {
   'google-oauth2': 'Google',

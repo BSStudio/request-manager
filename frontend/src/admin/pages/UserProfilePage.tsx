@@ -7,7 +7,7 @@ import { type LoaderFunctionArgs, useLoaderData } from 'react-router';
 import { usersRetrieveQuery } from 'admin/api/queries';
 import LastUpdatedAt from 'admin/components/LastUpdatedAt/LastUpdatedAt';
 import NavigationButton from 'admin/components/UserProfile/NavigationButton';
-import { queryClient } from 'admin/router';
+import { queryClient } from 'api/queryClient';
 
 const BanSection = lazy(
   () => import('admin/components/UserProfile/BanSection'),

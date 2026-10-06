@@ -37,9 +37,9 @@ import { showErrorToast } from 'admin/helpers/showErrorToast';
 import useMobile from 'admin/hooks/useMobile';
 import type { LoadErrorState } from 'admin/pages/ErrorPage';
 import { useToast } from 'admin/providers/ToastProvider';
-import { queryClient } from 'admin/router';
 import { isNotFound, setFieldErrors } from 'api/errors';
 import { RequestAdminRetrieve, UserNestedDetail } from 'api/models';
+import { queryClient } from 'api/queryClient';
 import { getName } from 'helpers/LocalStorageHelper';
 
 const NewRequesterForm = lazy(

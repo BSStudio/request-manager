@@ -15,6 +15,7 @@ import { toast } from 'sonner';
 import { getApiErrorMessage } from 'api/errors';
 import { meApi } from 'api/http';
 import type { User } from 'api/models';
+import { meQuery } from 'helpers/session';
 import {
   AuthSchIcon,
   GoogleIcon,
@@ -22,7 +23,6 @@ import {
 } from 'site/components/BrandIcons';
 import { Button } from 'site/components/ui/button';
 import { getAuthorizationUrl, type OAuthProvider } from 'site/lib/oauth';
-import { meQuery } from 'site/lib/queries';
 
 type LoginMethod = {
   // The account in accusative with its article, for the toasts.

@@ -1,5 +1,6 @@
+import { getInitials } from 'helpers/names';
+import { type SessionUser } from 'helpers/session';
 import { Avatar, AvatarFallback, AvatarImage } from 'site/components/ui/avatar';
-import { getInitials, type SessionUser } from 'site/lib/session';
 
 type UserAvatarProps = {
   className?: string;
