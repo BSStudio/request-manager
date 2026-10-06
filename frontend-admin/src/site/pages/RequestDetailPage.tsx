@@ -8,18 +8,17 @@ import {
   CalendarDaysIcon,
   ClapperboardIcon,
   MapPinIcon,
-  RefreshCwIcon,
 } from 'lucide-react';
 import { Link, useParams } from 'react-router';
 
 import DetailCard from 'site/components/DetailCard';
+import LoadError from 'site/components/LoadError';
 import PageHero from 'site/components/PageHero';
 import MessageThread from 'site/components/request-detail/MessageThread';
 import PersonContact from 'site/components/request-detail/PersonContact';
 import RequestProgress from 'site/components/request-detail/RequestProgress';
 import VideoList from 'site/components/request-detail/VideoList';
 import StatusBadge from 'site/components/StatusBadge';
-import { Button } from 'site/components/ui/button';
 import { Skeleton } from 'site/components/ui/skeleton';
 import { usePageTitle } from 'site/hooks/usePageTitle';
 import { isNotFound } from 'site/lib/apiError';
@@ -62,24 +61,12 @@ function RequestDetail({ id }: { id: number }) {
       <>
         <PageHero kicker={backLink} title="Hoppá" />
         <div className="relative z-10 mx-auto -mt-16 w-full max-w-6xl px-4 pb-24 sm:px-6">
-          <div className="flex flex-col items-center rounded-3xl border bg-card px-6 py-16 text-center shadow-sm">
-            <p className="font-semibold">Nem sikerült betölteni a felkérést.</p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Ellenőrizd az internetkapcsolatodat, és próbáld újra!
-            </p>
-            <Button
-              className="mt-6"
-              disabled={isRefetching}
-              onClick={() => void refetch()}
-              variant="outline"
-            >
-              <RefreshCwIcon
-                className={isRefetching ? 'animate-spin' : undefined}
-                data-icon="inline-start"
-              />
-              Újrapróbálom
-            </Button>
-          </div>
+          <LoadError
+            className="rounded-3xl border bg-card shadow-sm"
+            onRetry={() => void refetch()}
+            retrying={isRefetching}
+            title="Nem sikerült betölteni a felkérést."
+          />
         </div>
       </>
     );

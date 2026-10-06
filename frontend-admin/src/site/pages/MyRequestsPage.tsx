@@ -6,11 +6,11 @@ import {
   ChevronRightIcon,
   ClapperboardIcon,
   PlusIcon,
-  RefreshCwIcon,
 } from 'lucide-react';
 import { Link } from 'react-router';
 
 import type { RequestList } from 'api/models';
+import LoadError from 'site/components/LoadError';
 import PageHero from 'site/components/PageHero';
 import StatusBadge from 'site/components/StatusBadge';
 import { Button } from 'site/components/ui/button';
@@ -140,26 +140,11 @@ function MyRequestsPage() {
         <div className="overflow-hidden rounded-3xl border bg-card shadow-sm">
           {isPending && <LoadingRows />}
           {isError && (
-            <div className="flex flex-col items-center px-6 py-16 text-center">
-              <p className="font-semibold">
-                Nem sikerült betölteni a felkéréseidet.
-              </p>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Ellenőrizd az internetkapcsolatodat, és próbáld újra!
-              </p>
-              <Button
-                className="mt-6"
-                disabled={isRefetching}
-                onClick={() => void refetch()}
-                variant="outline"
-              >
-                <RefreshCwIcon
-                  className={isRefetching ? 'animate-spin' : undefined}
-                  data-icon="inline-start"
-                />
-                Újrapróbálom
-              </Button>
-            </div>
+            <LoadError
+              onRetry={() => void refetch()}
+              retrying={isRefetching}
+              title="Nem sikerült betölteni a felkéréseidet."
+            />
           )}
           {data?.length === 0 && (
             <div className="flex flex-col items-center px-6 py-20 text-center">

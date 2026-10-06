@@ -24,6 +24,7 @@ import { toast } from 'sonner';
 import type { ZodType } from 'zod';
 
 import { requestsApi } from 'api/http';
+import LoadError from 'site/components/LoadError';
 import PageHero from 'site/components/PageHero';
 import EventStep from 'site/components/request-form/EventStep';
 import NotesStep from 'site/components/request-form/NotesStep';
@@ -180,18 +181,19 @@ function NewRequestPage() {
     }
   }, [me.data, navigate]);
 
-  const requester: Requester | null = me.data
-    ? {
-        email: me.data.email ?? '',
-        name: `${me.data.last_name ?? ''} ${me.data.first_name ?? ''}`.trim(),
-        phone:
-          parsePhoneNumberFromString(
-            me.data.profile.phone_number ?? '',
-          )?.formatInternational() ??
-          me.data.profile.phone_number ??
-          '',
-      }
-    : null;
+  const requester: Requester | null =
+    user && me.data
+      ? {
+          email: me.data.email ?? '',
+          name: `${me.data.last_name ?? ''} ${me.data.first_name ?? ''}`.trim(),
+          phone:
+            parsePhoneNumberFromString(
+              me.data.profile.phone_number ?? '',
+            )?.formatInternational() ??
+            me.data.profile.phone_number ??
+            '',
+        }
+      : null;
 
   const goTo = (index: number) => {
     setStepIndex(index);
@@ -277,6 +279,8 @@ function NewRequestPage() {
   };
 
   const loading = !!user && me.isPending;
+  // Without the profile the summary would offer the anonymous personal step.
+  const loadFailed = !!user && !me.data && me.isError;
   const isSummary = step === 'summary';
 
   return (
@@ -316,7 +320,14 @@ function NewRequestPage() {
               <Loader2Icon className="size-8 animate-spin text-muted-foreground" />
             </div>
           )}
-          {!createdId && !loading && (
+          {!createdId && loadFailed && (
+            <LoadError
+              onRetry={() => void me.refetch()}
+              retrying={me.isRefetching}
+              title="Nem sikerült betölteni a profilodat."
+            />
+          )}
+          {!createdId && !loading && !loadFailed && (
             <FormProvider {...form}>
               {attemptedStep === step && <LiveValidation />}
               <form

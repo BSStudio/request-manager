@@ -1,13 +1,12 @@
 import { useQuery } from '@tanstack/react-query';
-import { RefreshCwIcon } from 'lucide-react';
 
 import DetailCard from 'site/components/DetailCard';
+import LoadError from 'site/components/LoadError';
 import PageHero from 'site/components/PageHero';
 import AvatarPicker from 'site/components/profile/AvatarPicker';
 import LoginMethods from 'site/components/profile/LoginMethods';
 import PersonalDetails from 'site/components/profile/PersonalDetails';
 import { Avatar, AvatarFallback, AvatarImage } from 'site/components/ui/avatar';
-import { Button } from 'site/components/ui/button';
 import { Skeleton } from 'site/components/ui/skeleton';
 import { usePageTitle } from 'site/hooks/usePageTitle';
 import { meQuery } from 'site/lib/queries';
@@ -67,26 +66,12 @@ function ProfilePage() {
       </PageHero>
       <div className="relative z-10 mx-auto -mt-16 grid w-full max-w-6xl items-start gap-6 px-4 pb-24 sm:px-6 lg:grid-cols-[1fr_20rem] lg:gap-8">
         {isError && !user && (
-          <div className="flex flex-col items-center rounded-3xl border bg-card px-6 py-16 text-center shadow-sm lg:col-span-2">
-            <p className="font-semibold">
-              Nem sikerült betölteni a profilodat.
-            </p>
-            <p className="mt-1 text-sm text-muted-foreground">
-              Ellenőrizd az internetkapcsolatodat, és próbáld újra!
-            </p>
-            <Button
-              className="mt-6"
-              disabled={isRefetching}
-              onClick={() => void refetch()}
-              variant="outline"
-            >
-              <RefreshCwIcon
-                className={isRefetching ? 'animate-spin' : undefined}
-                data-icon="inline-start"
-              />
-              Újrapróbálom
-            </Button>
-          </div>
+          <LoadError
+            className="rounded-3xl border bg-card shadow-sm lg:col-span-2"
+            onRetry={() => void refetch()}
+            retrying={isRefetching}
+            title="Nem sikerült betölteni a profilodat."
+          />
         )}
         {user && (
           <>
