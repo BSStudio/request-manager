@@ -63,11 +63,11 @@ models/request-external-sch-events-create-request.ts
 models/request-list.ts
 models/request-retrieve.ts
 models/session-user.ts
+models/social-login-request.ts
 models/status-enum.ts
 models/todo-admin-create-update-request.ts
 models/todo-admin-list-retrieve.ts
 models/todo-nested-request-video.ts
-models/token-obtain-pair-oauth2-request.ts
 models/user-admin-list.ts
 models/user-admin-retrieve-update-request.ts
 models/user-admin-retrieve-update.ts

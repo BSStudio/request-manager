@@ -14,7 +14,7 @@ from common.models import User
 from common.social_core.helpers import decorate_request
 
 
-class TokenObtainPairOAuth2Serializer(Serializer):
+class SocialLoginSerializer(Serializer):
     # This part is a heavily modified and stripped down
     # version of https://github.com/st4lk/django-rest-social-auth
 

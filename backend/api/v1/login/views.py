@@ -16,13 +16,13 @@ from rest_framework.views import APIView
 
 from api.v1.login.serializers import (
     SessionUserSerializer,
-    TokenObtainPairOAuth2Serializer,
+    SocialLoginSerializer,
 )
 from common.rest_framework.permissions import IsAuthenticated
 from common.social_core.helpers import handle_exception
 
 
-class TokenBlacklistView(APIView):
+class LogoutView(APIView):
     permission_classes = [IsAuthenticated]
 
     @extend_schema(request=None, responses={204: None})
@@ -32,18 +32,18 @@ class TokenBlacklistView(APIView):
         return Response(status=HTTP_204_NO_CONTENT)
 
 
-class TokenObtainPairOAuth2View(GenericAPIView):
+class SocialLoginView(GenericAPIView):
     # A leftover session must not block logging in again; login() replaces it.
     authentication_classes = []
     # Cross-site forms cannot send JSON, so they cannot log a victim in.
     parser_classes = [JSONParser]
     permission_classes = [AllowAny]
-    serializer_class = TokenObtainPairOAuth2Serializer
+    serializer_class = SocialLoginSerializer
     throttle_classes = [ScopedRateThrottle]
     throttle_scope = "login"
 
     @extend_schema(
-        request=TokenObtainPairOAuth2Serializer,
+        request=SocialLoginSerializer,
         responses=SessionUserSerializer,
     )
     @method_decorator(never_cache)

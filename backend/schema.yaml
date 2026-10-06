@@ -1860,7 +1860,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/TokenObtainPairOAuth2Request'
+              $ref: '#/components/schemas/SocialLoginRequest'
         required: true
       security:
         - {}
@@ -3670,6 +3670,18 @@ components:
         - id
         - name
         - role
+    SocialLoginRequest:
+      type: object
+      properties:
+        code:
+          type: string
+          minLength: 1
+        provider:
+          type: string
+          minLength: 1
+      required:
+        - code
+        - provider
     StatusEnum:
       enum:
         - 1
@@ -3751,18 +3763,6 @@ components:
       required:
         - id
         - title
-    TokenObtainPairOAuth2Request:
-      type: object
-      properties:
-        code:
-          type: string
-          minLength: 1
-        provider:
-          type: string
-          minLength: 1
-      required:
-        - code
-        - provider
     User:
       type: object
       properties:

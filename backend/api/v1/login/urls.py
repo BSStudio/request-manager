@@ -1,12 +1,12 @@
 from django.urls import path
 
-from api.v1.login.views import TokenBlacklistView, TokenObtainPairOAuth2View
+from api.v1.login.views import LogoutView, SocialLoginView
 
 urlpatterns = [
     path(
         "login/social",
-        TokenObtainPairOAuth2View.as_view(),
+        SocialLoginView.as_view(),
         name="social",
     ),
-    path("logout", TokenBlacklistView.as_view(), name="logout"),
+    path("logout", LogoutView.as_view(), name="logout"),
 ]

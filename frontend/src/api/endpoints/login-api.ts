@@ -40,7 +40,7 @@ import {
 // @ts-ignore
 import { SessionUser } from '../models';
 // @ts-ignore
-import { TokenObtainPairOAuth2Request } from '../models';
+import { SocialLoginRequest } from '../models';
 /**
  * LoginApi - axios parameter creator
  * @export
@@ -51,19 +51,19 @@ export const LoginApiAxiosParamCreator = function (
   return {
     /**
      *
-     * @param {TokenObtainPairOAuth2Request} tokenObtainPairOAuth2Request
+     * @param {SocialLoginRequest} socialLoginRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     loginSocialCreate: async (
-      tokenObtainPairOAuth2Request: TokenObtainPairOAuth2Request,
+      socialLoginRequest: SocialLoginRequest,
       options: AxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'tokenObtainPairOAuth2Request' is not null or undefined
+      // verify required parameter 'socialLoginRequest' is not null or undefined
       assertParamExists(
         'loginSocialCreate',
-        'tokenObtainPairOAuth2Request',
-        tokenObtainPairOAuth2Request,
+        'socialLoginRequest',
+        socialLoginRequest,
       );
       const localVarPath = `/api/v1/login/social`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -92,7 +92,7 @@ export const LoginApiAxiosParamCreator = function (
         ...options.headers,
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
-        tokenObtainPairOAuth2Request,
+        socialLoginRequest,
         localVarRequestOptions,
         configuration,
       );
@@ -114,19 +114,19 @@ export const LoginApiFp = function (configuration?: Configuration) {
   return {
     /**
      *
-     * @param {TokenObtainPairOAuth2Request} tokenObtainPairOAuth2Request
+     * @param {SocialLoginRequest} socialLoginRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async loginSocialCreate(
-      tokenObtainPairOAuth2Request: TokenObtainPairOAuth2Request,
+      socialLoginRequest: SocialLoginRequest,
       options?: AxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SessionUser>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.loginSocialCreate(
-          tokenObtainPairOAuth2Request,
+          socialLoginRequest,
           options,
         );
       return createRequestFunction(
@@ -152,16 +152,16 @@ export const LoginApiFactory = function (
   return {
     /**
      *
-     * @param {TokenObtainPairOAuth2Request} tokenObtainPairOAuth2Request
+     * @param {SocialLoginRequest} socialLoginRequest
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     loginSocialCreate(
-      tokenObtainPairOAuth2Request: TokenObtainPairOAuth2Request,
+      socialLoginRequest: SocialLoginRequest,
       options?: any,
     ): AxiosPromise<SessionUser> {
       return localVarFp
-        .loginSocialCreate(tokenObtainPairOAuth2Request, options)
+        .loginSocialCreate(socialLoginRequest, options)
         .then((request) => request(axios, basePath));
     },
   };
@@ -176,17 +176,17 @@ export const LoginApiFactory = function (
 export class LoginApi extends BaseAPI {
   /**
    *
-   * @param {TokenObtainPairOAuth2Request} tokenObtainPairOAuth2Request
+   * @param {SocialLoginRequest} socialLoginRequest
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof LoginApi
    */
   public loginSocialCreate(
-    tokenObtainPairOAuth2Request: TokenObtainPairOAuth2Request,
+    socialLoginRequest: SocialLoginRequest,
     options?: AxiosRequestConfig,
   ) {
     return LoginApiFp(this.configuration)
-      .loginSocialCreate(tokenObtainPairOAuth2Request, options)
+      .loginSocialCreate(socialLoginRequest, options)
       .then((request) => request(this.axios, this.basePath));
   }
 }

@@ -15,19 +15,19 @@
 /**
  *
  * @export
- * @interface TokenObtainPairOAuth2Request
+ * @interface SocialLoginRequest
  */
-export interface TokenObtainPairOAuth2Request {
+export interface SocialLoginRequest {
   /**
    *
    * @type {string}
-   * @memberof TokenObtainPairOAuth2Request
+   * @memberof SocialLoginRequest
    */
   code: string;
   /**
    *
    * @type {string}
-   * @memberof TokenObtainPairOAuth2Request
+   * @memberof SocialLoginRequest
    */
   provider: string;
 }
