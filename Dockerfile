@@ -32,17 +32,17 @@ ENV VITE_SENTRY_URL_ADMIN=$SENTRY_URL_ADMIN
 ENV VITE_TURNSTILE_SITE_KEY=$TURNSTILE_SITE_KEY
 
 # Set work directory
-WORKDIR /app/frontend-admin
+WORKDIR /app/frontend
 
 # Copy manifest, pnpm lockfile and workspace config to Docker environment
-COPY ./frontend-admin/package.json ./frontend-admin/pnpm-lock.yaml ./frontend-admin/pnpm-workspace.yaml /app/frontend-admin/
+COPY ./frontend/package.json ./frontend/pnpm-lock.yaml ./frontend/pnpm-workspace.yaml /app/frontend/
 
 # Enable pnpm via Corepack and install all required node packages
 RUN corepack enable
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Copy everything over to Docker environment
-COPY ./frontend-admin /app/frontend-admin
+COPY ./frontend /app/frontend
 
 # Build the frontend
 RUN pnpm run build
@@ -120,11 +120,11 @@ RUN apk update && apk add --no-cache libpq
 COPY ./backend /app/backend
 
 # Copy built frontend assets
-RUN mkdir -p /app/frontend-admin/build
-COPY --from=frontend-build /app/frontend-admin/build /app/frontend-admin/build-temp
+RUN mkdir -p /app/frontend/build
+COPY --from=frontend-build /app/frontend/build /app/frontend/build-temp
 
 # Have to move all static files other than index.html to root/ for whitenoise middleware
-WORKDIR /app/frontend-admin
+WORKDIR /app/frontend
 RUN mkdir build/root && mv build-temp/index.html build/index.html && mv build-temp/static build/static && mv build-temp/* build/root && rm -r build-temp
 
 # Change the owner of all files to the app user

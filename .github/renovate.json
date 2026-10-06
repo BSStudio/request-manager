@@ -84,12 +84,12 @@
       "matchUpdateTypes": ["minor", "patch"]
     },
     {
-      "description": "Group all minor and patch updates together for pnpm in /frontend-admin.",
+      "description": "Group all minor and patch updates together for pnpm in /frontend.",
       "addLabels": ["javascript"],
-      "groupName": "all non-major frontend-admin dependencies",
-      "groupSlug": "all-minor-patch-frontend-admin",
+      "groupName": "all non-major frontend dependencies",
+      "groupSlug": "all-minor-patch-frontend",
       "matchManagers": ["npm"],
-      "matchFileNames": ["frontend-admin/**"],
+      "matchFileNames": ["frontend/**"],
       "matchUpdateTypes": ["minor", "patch"],
       "postUpdateOptions": ["pnpmDedupe"]
     },

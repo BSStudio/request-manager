@@ -10,23 +10,23 @@ Workflow Support System for managing video shooting, filming and live-streaming
 requests of [Budavári Schönherz Stúdió](https://bsstudio.hu).
 
 [![Backend CI](https://github.com/BSStudio/request-manager/actions/workflows/backend.yml/badge.svg)](https://github.com/BSStudio/request-manager/actions/workflows/backend.yml)
-[![Frontend CI - Admin Dashboard](https://github.com/BSStudio/request-manager/actions/workflows/frontend-admin.yml/badge.svg)](https://github.com/BSStudio/request-manager/actions/workflows/frontend-admin.yml)
+[![Frontend CI](https://github.com/BSStudio/request-manager/actions/workflows/frontend.yml/badge.svg)](https://github.com/BSStudio/request-manager/actions/workflows/frontend.yml)
 [![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](LICENSE)
 
 ## Overview
 
 The project is a monorepo made up of two deployable applications backed by PostgreSQL and Redis:
 
-| Component                          | Stack                                                                  | Description                                                                               |
-| ---------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
-| [`backend`](backend)               | Django, Django REST Framework, Celery, PostgreSQL                      | REST API, business logic, admin panel and async workers.                                  |
-| [`frontend-admin`](frontend-admin) | React, TypeScript, Tailwind CSS, shadcn/ui, PrimeReact, TanStack Query | Public site where users submit and follow up requests, and the admin dashboard for staff. |
+| Component              | Stack                                                                  | Description                                                                               |
+| ---------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| [`backend`](backend)   | Django, Django REST Framework, Celery, PostgreSQL                      | REST API, business logic, admin panel and async workers.                                  |
+| [`frontend`](frontend) | React, TypeScript, Tailwind CSS, shadcn/ui, PrimeReact, TanStack Query | Public site where users submit and follow up requests, and the admin dashboard for staff. |
 
 The frontend is a static build served by the backend in production (through WhiteNoise). Authentication is handled via OAuth2 (AuthSCH, BSS Login, Google, Microsoft) with a session cookie.
 
 ```mermaid
 flowchart TD
-    frontend["frontend-admin<br/>(public site + admin)"] -->|REST · session| backend
+    frontend["frontend<br/>(public site + admin)"] -->|REST · session| backend
     backend["backend<br/>(Django + Celery)"] --> postgres[("PostgreSQL")]
     backend --> redis[("Redis")]
 ```
@@ -36,7 +36,7 @@ flowchart TD
 ```
 .
 ├── backend/         Django REST API, Celery workers, admin panel
-├── frontend-admin/  Public site and admin dashboard (Vite, TypeScript)
+├── frontend/        Public site and admin dashboard (Vite, TypeScript)
 ├── .devcontainer/   VS Code dev container (Python + Node + Poetry)
 ├── docker-compose.dev.yaml   PostgreSQL + Redis for local development
 └── docker-compose.yaml       Full production-like stack
@@ -69,7 +69,7 @@ docker compose -f docker-compose.dev.yaml up -d   # PostgreSQL + Redis
 ```
 
 - [Backend setup](backend/README.md)
-- [Frontend setup](frontend-admin/README.md)
+- [Frontend setup](frontend/README.md)
 
 **Prerequisites for manual setup:** Python + [Poetry](https://python-poetry.org/)
 and Node.js — the exact versions are pinned in `backend/.python-version` and the
@@ -90,7 +90,7 @@ Run all checks manually with `pre-commit run --all-files`.
 
 Node and Python versions are pinned in a single place each and kept up to date by Renovate:
 
-- Node.js — `frontend-admin/.nvmrc`
+- Node.js — `frontend/.nvmrc`
 - Python — `backend/.python-version`
 
 ## License
