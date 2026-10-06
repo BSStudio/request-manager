@@ -1,6 +1,5 @@
 from model_bakery import baker
 from rest_framework.authtoken.models import Token
-from rest_framework_simplejwt.tokens import AccessToken
 
 from common.models import User
 
@@ -12,9 +11,8 @@ def authorize(client, user):
 
 
 def login(client, user):
-    """Authenticate as a person, who carries a JWT."""
-    token = AccessToken.for_user(user)
-    client.credentials(HTTP_AUTHORIZATION=f"Bearer {str(token)}")
+    """Authenticate as a person, who has a session."""
+    client.force_login(user)
 
 
 def do_login(api_client, request, user):

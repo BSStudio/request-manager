@@ -97,6 +97,7 @@ def test_token_create_refresh_error_when_banned(admin_user, api_client, basic_us
     refresh_token = str(token)
 
     # Login as admin and ban user
+    api_client.credentials()
     login(api_client, admin_user)
     url = reverse("api:v1:admin:users:user-ban", kwargs={"pk": basic_user.id})
     api_client.post(url, {})

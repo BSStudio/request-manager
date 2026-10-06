@@ -5,7 +5,7 @@ them end to end to check the wiring: serializers, the status recalculation in th
 save hooks, and a video's progress reaching its request.
 """
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 from io import StringIO
 
 import pytest
@@ -19,8 +19,6 @@ from rest_framework.status import (
     HTTP_204_NO_CONTENT,
     is_success,
 )
-from rest_framework_simplejwt.tokens import AccessToken
-from rest_framework_simplejwt.utils import make_utc
 
 from video_requests.models import Request, Video
 
@@ -32,11 +30,7 @@ EVENT_END = "2020-11-21 14:30:20 +0100"
 
 @pytest.fixture
 def admin_api_client(api_client, admin_user):
-    """A client whose token stays valid inside the travelled-to time as well."""
-    token = AccessToken.for_user(admin_user)
-    token.set_iat(at_time=make_utc(datetime(2020, 11, 21, 0, 0)))
-    token.set_exp(lifetime=timedelta(hours=5))
-    api_client.credentials(HTTP_AUTHORIZATION=f"Bearer {str(token)}")
+    api_client.force_login(admin_user)
     return api_client
 
 
