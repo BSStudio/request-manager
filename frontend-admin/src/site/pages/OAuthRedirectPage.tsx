@@ -11,24 +11,28 @@ import {
 function OAuthRedirectPage() {
   const location = useLocation();
   const [response] = useState(() => readAuthorizationResponse(location.search));
+  // Back to the page the user started from, also when it was cancelled.
+  const target = `/${response?.operation ?? 'login'}`;
 
   useEffect(() => {
     forgetAuthorizationState();
-    if (!response) {
-      toast.error('A bejelentkezés megszakadt.', {
-        description: 'Próbáld újra!',
-        id: 'oauth-redirect',
-      });
+    if (!response?.code) {
+      toast.error(
+        response?.operation === 'profile'
+          ? 'A fiók összekapcsolása megszakadt.'
+          : 'A bejelentkezés megszakadt.',
+        { description: 'Próbáld újra!', id: 'oauth-redirect' },
+      );
     }
   }, [response]);
 
-  if (!response) return <Navigate replace to="/login" />;
+  if (!response?.code) return <Navigate replace to={target} />;
 
   return (
     <Navigate
       replace
       state={{ code: response.code, provider: response.provider }}
-      to={`/${response.operation}`}
+      to={target}
     />
   );
 }

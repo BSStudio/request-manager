@@ -74,23 +74,26 @@ export function getAuthorizationUrl(
   return `${url}?${query}`;
 }
 
-// Only accepts the code if the state carries the nonce this browser sent, so a
-// link with someone else's code cannot log the user into their account.
+// Only accepts the state if it carries the nonce this browser sent, so a link
+// with someone else's code cannot log the user into their account. The code is
+// missing when the user cancelled at the provider.
 export function readAuthorizationResponse(search: string) {
   const params = new URLSearchParams(search);
-  const code = params.get('code');
   const nonce = localStorage.getItem(STATE_KEY);
 
   try {
     const state = JSON.parse(atob(params.get('state') ?? '')) as OAuthState;
     if (
-      code &&
       nonce &&
       state.nonce === nonce &&
       state.provider in providers &&
       ['login', 'profile'].includes(state.operation)
     ) {
-      return { code, operation: state.operation, provider: state.provider };
+      return {
+        code: params.get('code'),
+        operation: state.operation,
+        provider: state.provider,
+      };
     }
   } catch {
     // Malformed state, handled like a missing one.
