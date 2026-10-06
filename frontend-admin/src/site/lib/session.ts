@@ -66,18 +66,32 @@ export function cacheUser(data: User) {
   });
 }
 
+let sessionCheck = Promise.resolve();
+
 // The cached user outlives the session when it expires on the server.
-export async function revalidateSession() {
-  if (!hasSession()) return;
-  try {
-    cacheUser(await queryClient.query(meQuery()));
-  } catch (error) {
-    // The API client already clears the session on 401.
-    if (isAxiosError(error) && error.response?.status === 403) clearSession();
-  }
+export function revalidateSession() {
+  sessionCheck = (async () => {
+    if (!hasSession()) return;
+    try {
+      cacheUser(await queryClient.query(meQuery()));
+    } catch (error) {
+      // The API client already clears the session on 401.
+      if (isAxiosError(error) && error.response?.status === 403) {
+        clearSession();
+      }
+    }
+  })();
+  return sessionCheck;
+}
+
+// Settles once the cached user is confirmed or cleared.
+export function whenSessionChecked() {
+  return sessionCheck;
 }
 
 export async function signIn(provider: OAuthProvider, code: string) {
+  // The check's 401 for an expired session would clear the new one.
+  await sessionCheck;
   const { data } = await loginApi.loginSocialCreate({ code, provider });
   setSession(data);
   queryClient.removeQueries({ queryKey: meQuery().queryKey });
@@ -87,10 +101,12 @@ export async function signIn(provider: OAuthProvider, code: string) {
 export async function signOut() {
   try {
     await logoutApi.logoutCreate({});
-  } finally {
-    clearSession();
-    queryClient.clear();
+  } catch (error) {
+    // Only a 401 means the server has no session left to end.
+    if (!isAxiosError(error) || error.response?.status !== 401) throw error;
   }
+  clearSession();
+  queryClient.clear();
 }
 
 export function getInitials(name: string) {

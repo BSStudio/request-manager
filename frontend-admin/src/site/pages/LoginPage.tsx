@@ -23,6 +23,7 @@ import { toast } from 'sonner';
 import { isAdminPath } from 'helpers/isAdminPath';
 import {
   getRole,
+  hasSession,
   popRedirectedFrom,
   setRedirectedFrom,
 } from 'helpers/LocalStorageHelper';
@@ -36,7 +37,7 @@ import BssLogo from 'site/components/BssLogo';
 import { Button } from 'site/components/ui/button';
 import { usePageTitle } from 'site/hooks/usePageTitle';
 import { getAuthorizationUrl, type OAuthProvider } from 'site/lib/oauth';
-import { signIn, useSessionUser } from 'site/lib/session';
+import { signIn, useSessionUser, whenSessionChecked } from 'site/lib/session';
 
 type LoginLocationState = {
   code?: string;
@@ -160,7 +161,16 @@ function LoginPage() {
           void navigate(location.pathname, { replace: true, state: null });
         });
     } else if (user && !attempted.current) {
-      leave(getRole());
+      let cancelled = false;
+      // The cached user may belong to an expired session.
+      void whenSessionChecked().then(() => {
+        if (cancelled || attempted.current || !hasSession()) return;
+        attempted.current = true;
+        leave(getRole());
+      });
+      return () => {
+        cancelled = true;
+      };
     }
   }, [code, provider, user, leave, navigate, location.pathname]);
 
