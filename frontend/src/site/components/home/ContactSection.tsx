@@ -7,6 +7,7 @@ import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
+import { getApiErrorMessage, isRateLimited } from 'api/errors';
 import { miscApi } from 'api/http';
 import SectionHeading from 'site/components/home/SectionHeading';
 import Turnstile, { CAPTCHA_FAILED } from 'site/components/Turnstile';
@@ -19,7 +20,6 @@ import {
 } from 'site/components/ui/field';
 import { Input } from 'site/components/ui/input';
 import { Textarea } from 'site/components/ui/textarea';
-import { getApiErrorMessage, isRateLimited } from 'site/lib/apiError';
 import { emailSchema, nameSchema } from 'site/lib/person';
 
 const contactSchema = z.object({

@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 
+import { getApiErrorMessage } from 'api/errors';
 import { requestsApi } from 'api/http';
 import type { CommentListRetrieve } from 'api/models';
 import {
@@ -32,7 +33,6 @@ import {
   DropdownMenuTrigger,
 } from 'site/components/ui/dropdown-menu';
 import { Textarea } from 'site/components/ui/textarea';
-import { getApiErrorMessage } from 'site/lib/apiError';
 import { formatMessageTime } from 'site/lib/dates';
 import { requestCommentsQuery } from 'site/lib/queries';
 import { getInitials } from 'site/lib/session';

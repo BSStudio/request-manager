@@ -22,6 +22,7 @@ import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import type { ZodType } from 'zod';
 
+import { getApiErrorMessage, isRateLimited } from 'api/errors';
 import { requestsApi } from 'api/http';
 import LoadError from 'site/components/LoadError';
 import PageHero from 'site/components/PageHero';
@@ -49,7 +50,6 @@ import SummaryStep, {
 import Turnstile, { CAPTCHA_FAILED } from 'site/components/Turnstile';
 import { Button } from 'site/components/ui/button';
 import { usePageTitle } from 'site/hooks/usePageTitle';
-import { getApiErrorMessage, isRateLimited } from 'site/lib/apiError';
 import {
   formatName,
   formatPhone,

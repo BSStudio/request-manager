@@ -1,7 +1,6 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { isAxiosError } from 'axios';
 import { Avatar } from 'primereact/avatar';
 import { Button } from 'primereact/button';
 import { confirmDialog } from 'primereact/confirmdialog';
@@ -28,6 +27,7 @@ import { showErrorToast } from 'admin/helpers/showErrorToast';
 import TimeAgo from 'admin/helpers/TimeAgo';
 import { useTheme } from 'admin/hooks/useTheme';
 import { UI_AVATAR_URL } from 'admin/localConstants';
+import { isNotFound } from 'api/errors';
 import {
   getAvatar,
   getName,
@@ -205,7 +205,7 @@ const CommentCard = ({
         });
       })
       .catch(async (error) => {
-        if (isAxiosError(error) && error.response?.status === 404) {
+        if (isNotFound(error)) {
           await queryClient.invalidateQueries({
             queryKey: queryKeys.requestComments(requestId),
           });
@@ -304,7 +304,7 @@ const CommentCardEdit = ({
         setEditing(0);
       })
       .catch(async (error) => {
-        if (isAxiosError(error) && error.response?.status === 404) {
+        if (isNotFound(error)) {
           await queryClient.invalidateQueries({
             queryKey: queryKeys.requestComments(requestId),
           });
@@ -419,7 +419,7 @@ const CommentCardNew = ({
       })
       .catch(async (error) => {
         // This should mean that the request no longer exists
-        if (isAxiosError(error) && error.response?.status === 404) {
+        if (isNotFound(error)) {
           await queryClient.invalidateQueries({
             queryKey: queryKeys.request(requestId),
           });

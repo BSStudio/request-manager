@@ -1,7 +1,6 @@
 import { forwardRef, useState } from 'react';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { isAxiosError } from 'axios';
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
 import type { DialogProps } from 'primereact/dialog';
@@ -11,6 +10,7 @@ import { requestCrewCreateMutation } from 'admin/api/mutations';
 import { queryKeys } from 'admin/api/queryKeys';
 import AutoCompleteStaff from 'admin/components/AutoCompleteStaff/AutoCompleteStaff';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
+import { isNotFound, setFieldErrors } from 'api/errors';
 import { UserNestedDetail } from 'api/models/user-nested-detail';
 
 import AutoCompleteCrewPosition from './AutoCompleteCrewPosition';
@@ -55,19 +55,12 @@ const AddCrewDialog = forwardRef<React.Ref<HTMLDivElement>, AddCrewDialogProps>(
           reset();
         })
         .catch(async (error) => {
-          if (isAxiosError(error)) {
-            if (error.response?.status === 404) {
-              await queryClient.invalidateQueries({
-                queryKey: queryKeys.request(requestId),
-              });
-              onHide();
-            } else if (error.response?.status === 400) {
-              for (const [key, value] of Object.entries(error.response.data)) {
-                // @ts-expect-error: Correct types will be sent in the API error response
-                setError(key, { message: value, type: 'backend' });
-              }
-              return;
-            }
+          if (setFieldErrors(error, setError)) return;
+          if (isNotFound(error)) {
+            await queryClient.invalidateQueries({
+              queryKey: queryKeys.request(requestId),
+            });
+            onHide();
           }
           showErrorToast(error);
         })

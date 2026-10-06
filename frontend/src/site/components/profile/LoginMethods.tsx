@@ -12,6 +12,7 @@ import { Link2Icon, Loader2Icon, Unlink2Icon } from 'lucide-react';
 import { useLocation, useNavigate } from 'react-router';
 import { toast } from 'sonner';
 
+import { getApiErrorMessage } from 'api/errors';
 import { meApi } from 'api/http';
 import type { User } from 'api/models';
 import {
@@ -20,7 +21,6 @@ import {
   MicrosoftIcon,
 } from 'site/components/BrandIcons';
 import { Button } from 'site/components/ui/button';
-import { getApiErrorMessage } from 'site/lib/apiError';
 import { getAuthorizationUrl, type OAuthProvider } from 'site/lib/oauth';
 import { meQuery } from 'site/lib/queries';
 

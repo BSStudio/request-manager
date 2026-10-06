@@ -11,6 +11,7 @@ import {
 } from 'lucide-react';
 import { Link, useParams } from 'react-router';
 
+import { isNotFound } from 'api/errors';
 import DetailCard from 'site/components/DetailCard';
 import LoadError from 'site/components/LoadError';
 import PageHero from 'site/components/PageHero';
@@ -21,7 +22,6 @@ import VideoList from 'site/components/request-detail/VideoList';
 import StatusBadge from 'site/components/StatusBadge';
 import { Skeleton } from 'site/components/ui/skeleton';
 import { usePageTitle } from 'site/hooks/usePageTitle';
-import { isNotFound } from 'site/lib/apiError';
 import { formatRange } from 'site/lib/dates';
 import { requestQuery } from 'site/lib/queries';
 import { getRequestStatus, getRequestStep } from 'site/lib/requestStatus';

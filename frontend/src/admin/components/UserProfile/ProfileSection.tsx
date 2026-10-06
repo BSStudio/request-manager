@@ -1,7 +1,6 @@
 import { lazy, useEffect, useState } from 'react';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
-import { isAxiosError } from 'axios';
 import { Avatar } from 'primereact/avatar';
 import { Button } from 'primereact/button';
 import { Chip } from 'primereact/chip';
@@ -20,6 +19,7 @@ import FormField from 'admin/components/FormField/FormField';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import { useToast } from 'admin/providers/ToastProvider';
 import { AvatarProviderEnum, UserAdminRetrieveUpdate } from 'api';
+import { isNotFound, setFieldErrors } from 'api/errors';
 import { getUserId, isAdmin } from 'helpers/LocalStorageHelper';
 
 const AvatarDialog = lazy(
@@ -132,32 +132,11 @@ const ProfileSection = ({ userData }: ProfileSectionProps) => {
         });
       })
       .catch(async (error) => {
-        if (isAxiosError(error)) {
-          if (error.response?.status === 404) {
-            await queryClient.invalidateQueries({
-              queryKey: queryKeys.user(userData.id),
-            });
-          } else if (error.response?.status === 400) {
-            for (const [key, value] of Object.entries(error.response.data)) {
-              if (
-                typeof value === 'object' &&
-                value !== null &&
-                !Array.isArray(value)
-              ) {
-                for (const [key2, value2] of Object.entries(value)) {
-                  // @ts-expect-error: Correct types will be sent in the API error response
-                  setError(`${key}.${key2}`, {
-                    message: value2,
-                    type: 'backend',
-                  });
-                }
-              } else {
-                // @ts-expect-error: Correct types will be sent in the API error response
-                setError(key, { message: value, type: 'backend' });
-              }
-            }
-            return;
-          }
+        if (setFieldErrors(error, setError)) return;
+        if (isNotFound(error)) {
+          await queryClient.invalidateQueries({
+            queryKey: queryKeys.user(userData.id),
+          });
         }
         showErrorToast(error);
       });

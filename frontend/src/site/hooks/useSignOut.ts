@@ -1,7 +1,7 @@
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
 
-import { getApiErrorMessage } from 'site/lib/apiError';
+import { getApiErrorMessage } from 'api/errors';
 import { signOut } from 'site/lib/session';
 
 export function useSignOut() {

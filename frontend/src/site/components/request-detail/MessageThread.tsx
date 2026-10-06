@@ -4,13 +4,13 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Loader2Icon, MessagesSquareIcon, SendIcon } from 'lucide-react';
 import { toast } from 'sonner';
 
+import { getApiErrorMessage, isRateLimited } from 'api/errors';
 import { requestsApi } from 'api/http';
 import DetailCard from 'site/components/DetailCard';
 import Message from 'site/components/request-detail/Message';
 import { Button } from 'site/components/ui/button';
 import { Skeleton } from 'site/components/ui/skeleton';
 import { Textarea } from 'site/components/ui/textarea';
-import { getApiErrorMessage, isRateLimited } from 'site/lib/apiError';
 import { requestCommentsQuery } from 'site/lib/queries';
 import { useSessionUser } from 'site/lib/session';
 

@@ -1,8 +1,8 @@
 import { QueryClient, queryOptions } from '@tanstack/react-query';
 
+import { isNotFound } from 'api/errors';
 import { meApi, requestsApi } from 'api/http';
 import type { RequestList } from 'api/models';
-import { isNotFound } from 'site/lib/apiError';
 
 export const queryClient = new QueryClient({
   defaultOptions: {

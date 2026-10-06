@@ -3,9 +3,9 @@ import { cn } from 'cn';
 import { CheckIcon, Loader2Icon } from 'lucide-react';
 import { toast } from 'sonner';
 
+import { getApiErrorMessage } from 'api/errors';
 import { meApi } from 'api/http';
 import type { AvatarProviderEnum as AvatarProvider, User } from 'api/models';
-import { getApiErrorMessage } from 'site/lib/apiError';
 import { cacheUser } from 'site/lib/session';
 
 const providerLabels: Record<AvatarProvider, string> = {

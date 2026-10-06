@@ -2,7 +2,6 @@ import { forwardRef, useEffect, useState } from 'react';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { QueryExecuteOptions } from '@tanstack/react-query';
-import { isAxiosError } from 'axios';
 import { Button } from 'primereact/button';
 import { ConfirmPopup } from 'primereact/confirmpopup';
 import { Dialog } from 'primereact/dialog';
@@ -23,6 +22,7 @@ import { queryKeys } from 'admin/api/queryKeys';
 import AutoCompleteStaffMultiple from 'admin/components/AutoCompleteStaff/AutoCompleteStaffMultiple';
 import { TodoStatusTag } from 'admin/components/StatusTag/StatusTag';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
+import { isNotFound } from 'api/errors';
 import { StatusEnum, TodoAdminListRetrieve } from 'api/models';
 
 interface TodoDialogCreateProps extends DialogProps {
@@ -130,7 +130,7 @@ const TodoDialog = forwardRef<
         onHide();
       })
       .catch(async (error) => {
-        if (isAxiosError(error) && error.response?.status === 404) {
+        if (isNotFound(error)) {
           await invalidateQueries();
         }
         setError('description', {

@@ -39,11 +39,13 @@ import {
   dateTimeToLocaleString,
   dateToLocaleString,
 } from 'admin/helpers/DateToLocaleStringCoverters';
+import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import useMobile from 'admin/hooks/useMobile';
 import { useToast } from 'admin/providers/ToastProvider';
 import { queryClient } from 'admin/router';
 import { RequestAdditionalDataRecordingType } from 'admin/types/additionalDataTypes';
+import { isNotFound } from 'api/errors';
 import { RequestAdminRetrieve } from 'api/models';
 import { getUserId, isAdmin } from 'helpers/LocalStorageHelper';
 
@@ -156,7 +158,7 @@ const RequestDetailsPage = () => {
         });
       })
       .catch((error) => {
-        if (isAxiosError(error) && error.response?.status === 404) {
+        if (isNotFound(error)) {
           void navigate('/requests', { replace: true });
           void queryClient.invalidateQueries({
             queryKey: queryKeys.requests(),
@@ -203,7 +205,7 @@ const RequestDetailsPage = () => {
         });
       })
       .catch(async (error) => {
-        if (isAxiosError(error) && error.response?.status === 404) {
+        if (isNotFound(error)) {
           await queryClient.invalidateQueries({
             queryKey: queryKeys.request(requestId),
           });
@@ -238,15 +240,14 @@ const RequestDetailsPage = () => {
         setAdditionalDataDialogOpen(false);
       })
       .catch(async (error) => {
-        if (isAxiosError(error)) {
-          if (error.response?.status === 404) {
-            await queryClient.invalidateQueries({
-              queryKey: queryKeys.request(requestId),
-            });
-          } else if (error.response?.status === 400) {
-            setAdditionalDataDialogError(error.response.data?.additional_data);
-            return;
-          }
+        if (isAxiosError(error) && error.response?.status === 400) {
+          setAdditionalDataDialogError(getErrorMessage(error));
+          return;
+        }
+        if (isNotFound(error)) {
+          await queryClient.invalidateQueries({
+            queryKey: queryKeys.request(requestId),
+          });
         }
         showErrorToast(error);
       })
@@ -333,7 +334,7 @@ const RequestDetailsPage = () => {
         setRecordingIsEditing(false);
       })
       .catch(async (error) => {
-        if (isAxiosError(error) && error.response?.status === 404) {
+        if (isNotFound(error)) {
           await queryClient.invalidateQueries({
             queryKey: queryKeys.request(requestId),
           });
