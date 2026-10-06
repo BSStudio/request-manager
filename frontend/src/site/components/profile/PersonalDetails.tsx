@@ -7,8 +7,11 @@ import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
+import { getApiErrorMessage } from 'api/errors';
 import { meApi } from 'api/http';
 import type { User } from 'api/models';
+import { formatName } from 'helpers/names';
+import { cacheUser } from 'helpers/session';
 import { Button } from 'site/components/ui/button';
 import {
   Field,
@@ -18,17 +21,14 @@ import {
   FieldLabel,
 } from 'site/components/ui/field';
 import { Input } from 'site/components/ui/input';
-import { getApiErrorMessage } from 'site/lib/apiError';
 import {
   emailSchema,
-  formatName,
   formatPhone,
   getMissingProfileFields,
   nameSchema,
   phoneSchema,
   toE164,
 } from 'site/lib/person';
-import { cacheUser } from 'site/lib/session';
 
 const profileSchema = z.object({
   email: emailSchema,

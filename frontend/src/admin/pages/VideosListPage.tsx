@@ -9,7 +9,7 @@ import {
 import LinkButton from 'admin/components/LinkButton/LinkButton';
 import VideosDataTable from 'admin/components/VideosDataTable/VideosDataTable';
 import useMobile from 'admin/hooks/useMobile';
-import { queryClient } from 'admin/router';
+import { queryClient } from 'api/queryClient';
 
 export async function loader({ params }: LoaderFunctionArgs) {
   if (!params.requestId) {

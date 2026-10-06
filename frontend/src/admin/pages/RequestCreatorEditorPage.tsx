@@ -32,11 +32,14 @@ import { queryKeys } from 'admin/api/queryKeys';
 import AutoCompleteStaff from 'admin/components/AutoCompleteStaff/AutoCompleteStaff';
 import FormField from 'admin/components/FormField/FormField';
 import LastUpdatedAt from 'admin/components/LastUpdatedAt/LastUpdatedAt';
+import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import useMobile from 'admin/hooks/useMobile';
+import type { LoadErrorState } from 'admin/pages/ErrorPage';
 import { useToast } from 'admin/providers/ToastProvider';
-import { queryClient } from 'admin/router';
+import { isNotFound, setFieldErrors } from 'api/errors';
 import { RequestAdminRetrieve, UserNestedDetail } from 'api/models';
+import { queryClient } from 'api/queryClient';
 import { getName } from 'helpers/LocalStorageHelper';
 
 const NewRequesterForm = lazy(
@@ -273,18 +276,11 @@ const RequestCreatorEditorPage = () => {
         }
       })
       .catch(async (error) => {
-        if (isAxiosError(error)) {
-          if (error.response?.status === 404) {
-            await queryClient.invalidateQueries({
-              queryKey: queryKeys.request(requestId),
-            });
-          } else if (error.response?.status === 400) {
-            for (const [key, value] of Object.entries(error.response.data)) {
-              // @ts-expect-error: Correct types will be sent in the API error response
-              setError(key, { message: value, type: 'backend' });
-            }
-            return;
-          }
+        if (setFieldErrors(error, setError)) return;
+        if (isNotFound(error)) {
+          await queryClient.invalidateQueries({
+            queryKey: queryKeys.request(requestId),
+          });
         }
         showErrorToast(error);
       })
@@ -298,9 +294,9 @@ const RequestCreatorEditorPage = () => {
     if (isAxiosError(error)) {
       void navigate('/error', {
         state: {
-          statusCode: error.response?.status,
-          statusText: error.response?.statusText,
-        },
+          message: getErrorMessage(error),
+          status: error.response?.status,
+        } satisfies LoadErrorState,
       });
     } else {
       showErrorToast(error);

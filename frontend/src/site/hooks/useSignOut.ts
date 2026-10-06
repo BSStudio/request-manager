@@ -1,8 +1,8 @@
 import { useNavigate } from 'react-router';
 import { toast } from 'sonner';
 
-import { getApiErrorMessage } from 'site/lib/apiError';
-import { signOut } from 'site/lib/session';
+import { getApiErrorMessage } from 'api/errors';
+import { signOut } from 'helpers/session';
 
 export function useSignOut() {
   const navigate = useNavigate();

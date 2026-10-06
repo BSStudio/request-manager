@@ -1,9 +1,9 @@
 import { ArrowUpRightIcon, MailIcon } from 'lucide-react';
 import { Link } from 'react-router';
 
+import { useSessionUser } from 'helpers/session';
 import BssLogo from 'site/components/BssLogo';
 import SocialLinks from 'site/components/SocialLinks';
-import { useSessionUser } from 'site/lib/session';
 
 type FooterLink = { external?: boolean; label: string; to: string };
 

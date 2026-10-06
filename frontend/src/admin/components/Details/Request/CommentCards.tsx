@@ -1,8 +1,6 @@
 import React, { Dispatch, SetStateAction, useState } from 'react';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { isAxiosError } from 'axios';
-import { Avatar } from 'primereact/avatar';
 import { Button } from 'primereact/button';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { InputTextarea } from 'primereact/inputtextarea';
@@ -22,12 +20,13 @@ import {
 } from 'admin/api/mutations';
 import { requestCommentsListQuery } from 'admin/api/queries';
 import { queryKeys } from 'admin/api/queryKeys';
+import Avatar from 'admin/components/Avatar/Avatar';
 import { dateTimeToLocaleString } from 'admin/helpers/DateToLocaleStringCoverters';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import TimeAgo from 'admin/helpers/TimeAgo';
 import { useTheme } from 'admin/hooks/useTheme';
-import { UI_AVATAR_URL } from 'admin/localConstants';
+import { isNotFound } from 'api/errors';
 import {
   getAvatar,
   getName,
@@ -103,9 +102,8 @@ const CommentCardHeader = ({
         <div className="align-items-center flex">
           <Avatar
             className="flex-shrink-0 h-2rem mr-2 w-2rem"
-            icon="pi pi-user"
-            image={avatarUrl || UI_AVATAR_URL + authorName}
-            shape="circle"
+            image={avatarUrl || undefined}
+            name={authorName}
           />
           <span className="font-medium mr-3 text-900">{authorName}</span>
         </div>
@@ -205,7 +203,7 @@ const CommentCard = ({
         });
       })
       .catch(async (error) => {
-        if (isAxiosError(error) && error.response?.status === 404) {
+        if (isNotFound(error)) {
           await queryClient.invalidateQueries({
             queryKey: queryKeys.requestComments(requestId),
           });
@@ -304,7 +302,7 @@ const CommentCardEdit = ({
         setEditing(0);
       })
       .catch(async (error) => {
-        if (isAxiosError(error) && error.response?.status === 404) {
+        if (isNotFound(error)) {
           await queryClient.invalidateQueries({
             queryKey: queryKeys.requestComments(requestId),
           });
@@ -419,7 +417,7 @@ const CommentCardNew = ({
       })
       .catch(async (error) => {
         // This should mean that the request no longer exists
-        if (isAxiosError(error) && error.response?.status === 404) {
+        if (isNotFound(error)) {
           await queryClient.invalidateQueries({
             queryKey: queryKeys.request(requestId),
           });
@@ -440,9 +438,8 @@ const CommentCardNew = ({
         <div className="align-items-center col-6 flex">
           <Avatar
             className="flex-shrink-0 h-2rem mr-2 w-2rem"
-            icon="pi pi-user"
-            image={avatarUrl || UI_AVATAR_URL + authorName}
-            shape="circle"
+            image={avatarUrl || undefined}
+            name={authorName}
           />
           <span className="font-medium mr-3 text-900">{authorName}</span>
         </div>

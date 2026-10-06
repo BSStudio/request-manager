@@ -12,7 +12,7 @@ import {
   getLatestSemester,
   getSemesters,
 } from 'admin/helpers/SemesterHelper';
-import { queryClient } from 'admin/router';
+import { queryClient } from 'api/queryClient';
 
 export async function loader() {
   return queryClient.query({

@@ -18,6 +18,7 @@ Dockerfile
 */.DS_Store
 */.dockerignore
 */.env*
+!frontend/.env.production
 */.git
 */.gitignore
 */.idea

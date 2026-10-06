@@ -1,7 +1,6 @@
 import { MouseEventHandler, useState } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
-import { Avatar } from 'primereact/avatar';
 import { Button } from 'primereact/button';
 import { Dropdown } from 'primereact/dropdown';
 import { ProgressBar } from 'primereact/progressbar';
@@ -9,10 +8,10 @@ import { Tooltip } from 'primereact/tooltip';
 import { classNames } from 'primereact/utils';
 
 import { requestVideoRatingsListQuery } from 'admin/api/queries';
+import Avatar from 'admin/components/Avatar/Avatar';
 import RatingDialog from 'admin/components/RatingDialog/RatingDialog';
 import { dateTimeToLocaleString } from 'admin/helpers/DateToLocaleStringCoverters';
 import TimeAgo from 'admin/helpers/TimeAgo';
-import { UI_AVATAR_URL } from 'admin/localConstants';
 import { RatingAdminListRetrieve } from 'api/models';
 import { getUserId, isAdmin } from 'helpers/LocalStorageHelper';
 
@@ -62,9 +61,8 @@ const Rating = ({
             <Tooltip className="text-xs" target=".created-date-text" />
             <Avatar
               className="flex-shrink-0 h-2rem mr-2 w-2rem"
-              icon="pi pi-user"
-              image={avatarUrl || UI_AVATAR_URL + authorName}
-              shape="circle"
+              image={avatarUrl || undefined}
+              name={authorName}
             />
             <span className="font-medium mr-3 text-900">{authorName}</span>
             <span

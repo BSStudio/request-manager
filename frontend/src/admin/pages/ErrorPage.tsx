@@ -7,51 +7,55 @@ import {
   useRouteError,
 } from 'react-router';
 
-const errorTranslation = {
-  401: {
-    message:
-      'Az oldal megtekintéséhez be kell jelentkezned. Lehet, hogy a korábbi munkameneted lejárt.',
-    statusText: 'Bejelentkezés szükséges',
-  },
-  404: {
-    message:
-      'Az általad keresett oldal nem létezik. Lehet, hogy törlésre került, megváltozott a címe vagy ideiglenesen nem elérhető.',
-    statusText: 'Az oldal nem található',
-  },
+import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
+import { useReportRouteError } from 'hooks/useReportRouteError';
+
+// Editor pages whose data fails to load navigate here with this state instead
+// of throwing.
+export type LoadErrorState = { message: string; status?: number };
+
+const loggedOut = {
+  message:
+    'Az oldal megtekintéséhez be kell jelentkezned. Lehet, hogy a korábbi munkameneted lejárt.',
+  title: 'Bejelentkezés szükséges',
+};
+
+const notFound = {
+  message:
+    'Az általad keresett oldal nem létezik. Lehet, hogy törlésre került, megváltozott a címe vagy ideiglenesen nem elérhető.',
+  title: 'Az oldal nem található',
+};
+
+const unexpected = {
+  message:
+    'Töltsd újra az oldalt, és ha így sem működik, jelezd a hibát a fejlesztőknek.',
+  title: 'Váratlan hiba történt',
 };
 
 const ErrorPage = () => {
-  const { state } = useLocation();
+  const { state } = useLocation() as { state: LoadErrorState | null };
   const error = useRouteError();
   const navigate = useNavigate();
 
-  let message = '';
-  let statusCode = 'HIBA';
-  let statusText = '';
+  useReportRouteError(error);
 
+  let status: number | undefined;
+  let loadError: string | undefined;
   if (isRouteErrorResponse(error)) {
-    statusCode = error.status.toString();
-    if (error.status == 404) {
-      ({ message, statusText } = errorTranslation[error.status]);
-    } else {
-      message = error.data;
-      statusText = error.statusText;
-    }
-  } else if (isAxiosError(error) && error.response) {
-    statusCode = error.response.status.toString();
-    if (error.response.status == 401) {
-      // eslint-disable-next-line react-hooks/immutability
-      window.location.href = '/';
-    } else if (error.response.status == 404) {
-      ({ message, statusText } = errorTranslation[error.response.status]);
-    } else {
-      statusText = error.response.statusText;
-    }
+    status = error.status;
+  } else if (isAxiosError(error)) {
+    status = error.response?.status;
+    loadError = getErrorMessage(error);
   } else if (!error && state) {
-    ({ statusCode, statusText } = state);
-    if (Number(statusCode) == 404) {
-      ({ message, statusText } = errorTranslation[404]);
-    }
+    ({ message: loadError, status } = state);
+  }
+
+  let text = unexpected;
+  // The API client is already on its way to the login page.
+  if (status === 401) text = loggedOut;
+  else if (status === 404) text = notFound;
+  else if (loadError) {
+    text = { message: loadError, title: 'Nem sikerült betölteni az oldalt' };
   }
 
   return (
@@ -65,13 +69,15 @@ const ErrorPage = () => {
           className="text-center"
         >
           <span className="font-bold inline-block px-3 text-2xl text-pink-500">
-            {statusCode}
+            {status ?? 'HIBA'}
           </span>
         </div>
         <div className="font-bold mb-5 mt-6 text-6xl text-900 text-center">
-          {statusText}
+          {text.title}
         </div>
-        <p className="mb-6 mt-0 text-3xl text-700 text-center">{message}</p>
+        <p className="mb-6 mt-0 text-3xl text-700 text-center">
+          {text.message}
+        </p>
         <div className="text-center">
           <Button
             className="p-button-text mr-2"
@@ -81,9 +87,17 @@ const ErrorPage = () => {
               void navigate(-1);
             }}
           />
+          {text !== notFound && (
+            <Button
+              className="p-button-text mr-2"
+              icon="pi pi-refresh"
+              label="Újratöltés"
+              onClick={() => window.location.reload()}
+            />
+          )}
           <Button
             icon="pi pi-home"
-            label="Ugrás a Kezdőoldalra"
+            label="Ugrás a kezdőlapra"
             onClick={() => {
               void navigate('/', { replace: true });
             }}

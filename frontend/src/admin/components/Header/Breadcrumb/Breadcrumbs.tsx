@@ -10,6 +10,8 @@ import {
   useRouteError,
 } from 'react-router';
 
+import { usePageTitle } from 'hooks/usePageTitle';
+
 type BreadcrumbsType = {
   name: string;
   path: string;
@@ -40,6 +42,16 @@ const Breadcrumbs = () => {
         path: match.pathname,
       };
     });
+
+  // Most specific first, so open tabs can be told apart.
+  usePageTitle(
+    [
+      ...(error
+        ? ['Hiba történt']
+        : breadcrumbs.map(({ name }) => name).reverse()),
+      'Admin',
+    ].join(' | '),
+  );
 
   return (
     <ul className="align-items-center border-bottom-1 border-top-1 flex font-medium list-none m-0 overflow-x-auto px-3 py-3 sm:px-5 surface-border surface-card">

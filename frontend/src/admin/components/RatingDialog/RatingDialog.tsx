@@ -2,7 +2,6 @@ import { forwardRef, useEffect, useState } from 'react';
 
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import type { QueryExecuteOptions } from '@tanstack/react-query';
-import { isAxiosError } from 'axios';
 import { Button } from 'primereact/button';
 import { ConfirmPopup, confirmPopup } from 'primereact/confirmpopup';
 import { Dialog } from 'primereact/dialog';
@@ -25,6 +24,7 @@ import {
 } from 'admin/api/queries';
 import { queryKeys } from 'admin/api/queryKeys';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
+import { isNotFound } from 'api/errors';
 import { RatingAdminListRetrieve } from 'api/models';
 
 interface RatingDialogProps extends DialogProps {
@@ -155,7 +155,7 @@ const RatingDialog = forwardRef<React.Ref<HTMLDivElement>, RatingDialogProps>(
         })
         .catch(async (error) => {
           // This should mean that the video no longer exists
-          if (isAxiosError(error) && error.response?.status === 404) {
+          if (isNotFound(error)) {
             await queryClient.invalidateQueries({
               queryKey: queryKeys.video(requestId, videoId),
             });
@@ -181,7 +181,7 @@ const RatingDialog = forwardRef<React.Ref<HTMLDivElement>, RatingDialogProps>(
           onHide();
         })
         .catch(async (error) => {
-          if (isAxiosError(error) && error.response?.status === 404) {
+          if (isNotFound(error)) {
             await queryClient.invalidateQueries({
               queryKey: queryKeys.video(requestId, videoId),
             });

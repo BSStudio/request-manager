@@ -14,7 +14,11 @@ const AutoCompleteStaffMultiple = forwardRef<
   const selectedItemTemplate = (item: UserAdminList) => {
     return (
       <div className="align-items-center flex h-1rem">
-        <Avatar className="mr-2 -ml-3" image={item.avatar_url || undefined} />
+        <Avatar
+          className="mr-2 -ml-3"
+          image={item.avatar_url || undefined}
+          name={item.full_name}
+        />
         <div>{item.full_name}</div>
       </div>
     );

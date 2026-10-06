@@ -4,17 +4,15 @@ import { QueryClientProvider } from '@tanstack/react-query';
 import { createRoot } from 'react-dom/client';
 import { RouterProvider } from 'react-router/dom';
 
+import { queryClient } from 'api/queryClient';
 import { initSentry } from 'helpers/initSentry';
+import { revalidateSession } from 'helpers/session';
 import { Toaster } from 'site/components/ui/sonner';
-import { queryClient } from 'site/lib/queries';
-import { revalidateSession } from 'site/lib/session';
 import router from 'site/router';
 
 import 'site/index.css';
 
-if (import.meta.env.PROD) {
-  initSentry(import.meta.env.VITE_SENTRY_URL);
-}
+initSentry('site');
 
 void revalidateSession();
 

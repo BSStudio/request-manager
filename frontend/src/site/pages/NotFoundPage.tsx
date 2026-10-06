@@ -1,9 +1,9 @@
 import { HouseIcon } from 'lucide-react';
 import { Link } from 'react-router';
 
+import { usePageTitle } from 'hooks/usePageTitle';
 import NoSignal from 'site/components/NoSignal';
 import { Button } from 'site/components/ui/button';
-import { usePageTitle } from 'site/hooks/usePageTitle';
 
 export default function NotFoundPage() {
   usePageTitle('Az oldal nem található');

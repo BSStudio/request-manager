@@ -11,8 +11,10 @@ import huLocal from 'timeago.js/esm/lang/hu';
 
 import { ThemeProvider } from 'admin/providers/ThemeProvider';
 import { ToastProvider } from 'admin/providers/ToastProvider';
-import router, { queryClient } from 'admin/router';
+import router from 'admin/router';
+import { queryClient } from 'api/queryClient';
 import { initSentry } from 'helpers/initSentry';
+import { revalidateSession } from 'helpers/session';
 
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import 'primeicons/primeicons.css';
@@ -20,9 +22,9 @@ import 'primeflex/primeflex.css';
 
 import 'admin/index.css';
 
-if (import.meta.env.PROD) {
-  initSentry(import.meta.env.VITE_SENTRY_URL_ADMIN);
-}
+initSentry('admin');
+
+void revalidateSession();
 
 addLocale('hu', locales['hu']);
 

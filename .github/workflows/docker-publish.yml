@@ -62,14 +62,6 @@ jobs:
         uses: docker/build-push-action@v7.4.0
         with:
           context: .
-          build-args: |
-            "AUTHSCH_CLIENT_ID=60451969490994503646"
-            "BSS_CLIENT_ID=Yn93BqJIJX6u5B0wbh0ufuuNPx64piMMKRZBP7iQ"
-            "GOOGLE_CLIENT_ID=593937386712-8pu2vh1ukq17oidh9f4snkjf9oa88tvb.apps.googleusercontent.com"
-            "MICROSOFT_CLIENT_ID=0e576fd5-f891-4e67-8738-38eabe902271"
-            "SENTRY_URL=https://5d84e5aa35114e5bbe49ca9b8a013440@o354977.ingest.sentry.io/5989036"
-            "SENTRY_URL_ADMIN=https://7465a5ea2a94e1a874b64fd3c71f920a@o354977.ingest.sentry.io/4506152601845760"
-            "TURNSTILE_SITE_KEY=0x4AAAAAACoVmrCiCNRaI98A"
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

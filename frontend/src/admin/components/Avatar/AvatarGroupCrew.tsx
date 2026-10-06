@@ -1,12 +1,11 @@
 import { forwardRef, Fragment } from 'react';
 
-import { Avatar } from 'primereact/avatar';
 import { AvatarGroup } from 'primereact/avatargroup';
 import type { AvatarGroupProps } from 'primereact/avatargroup';
 import { Tooltip } from 'primereact/tooltip';
 import { classNames } from 'primereact/utils';
 
-import { UI_AVATAR_URL } from 'admin/localConstants';
+import Avatar from 'admin/components/Avatar/Avatar';
 
 interface AvatarGroupCrewProps extends AvatarGroupProps {
   crew?: {
@@ -45,9 +44,8 @@ const AvatarGroupCrew = forwardRef<
           <Avatar
             className={'avatarTooltip' + index}
             data-pr-tooltip={item.full_name}
-            icon="pi pi-user"
-            image={item.avatar_url || UI_AVATAR_URL + item.full_name}
-            shape="circle"
+            image={item.avatar_url || undefined}
+            name={item.full_name}
           />
         </Fragment>
       ))}
@@ -65,7 +63,6 @@ const AvatarGroupCrew = forwardRef<
             )}
             data-pr-tooltip={additionalCrewMemberNames}
             label={'+' + (crewSize - 4).toString()}
-            shape="circle"
           />
         </Fragment>
       )}

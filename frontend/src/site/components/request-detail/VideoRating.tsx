@@ -4,6 +4,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { Loader2Icon, PencilIcon, Trash2Icon } from 'lucide-react';
 import { toast } from 'sonner';
 
+import { getApiErrorMessage } from 'api/errors';
 import { requestsApi } from 'api/http';
 import type { RatingRetrieve, VideoListRetrieve } from 'api/models';
 import StarRating from 'site/components/StarRating';
@@ -20,7 +21,6 @@ import {
 import { Button } from 'site/components/ui/button';
 import { Field, FieldDescription, FieldLabel } from 'site/components/ui/field';
 import { Textarea } from 'site/components/ui/textarea';
-import { getApiErrorMessage } from 'site/lib/apiError';
 import { requestVideosQuery } from 'site/lib/queries';
 
 type Draft = { rating: number; review: string };

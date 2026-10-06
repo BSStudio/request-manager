@@ -1,7 +1,6 @@
 import { useState } from 'react';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { isAxiosError } from 'axios';
 import type { AutoCompleteChangeEvent } from 'primereact/autocomplete';
 import { Button } from 'primereact/button';
 import { Column } from 'primereact/column';
@@ -22,6 +21,7 @@ import AutoCompleteStaff from 'admin/components/AutoCompleteStaff/AutoCompleteSt
 import User from 'admin/components/User/User';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import useMobile from 'admin/hooks/useMobile';
+import { isNotFound } from 'api/errors';
 import { CrewMemberAdminListRetrieve } from 'api/models';
 
 import AddCrewDialog from './AddCrewDialog';
@@ -76,7 +76,7 @@ const CrewDataTable = ({ requestId }: CrewDataTableProps) => {
         });
       })
       .catch(async (error) => {
-        if (isAxiosError(error) && error.response?.status === 404) {
+        if (isNotFound(error)) {
           await queryClient.invalidateQueries({
             queryKey: queryKeys.requestCrew(requestId),
           });
@@ -168,7 +168,7 @@ const CrewDataTable = ({ requestId }: CrewDataTableProps) => {
         });
       })
       .catch(async (error) => {
-        if (isAxiosError(error) && error.response?.status === 404) {
+        if (isNotFound(error)) {
           await queryClient.invalidateQueries({
             queryKey: queryKeys.requestCrew(requestId),
           });

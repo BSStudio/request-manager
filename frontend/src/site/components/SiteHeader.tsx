@@ -2,13 +2,13 @@ import { cn } from 'cn';
 import { ArrowRightIcon } from 'lucide-react';
 import { Link, useLocation } from 'react-router';
 
+import { useSessionUser } from 'helpers/session';
 import BssLogo from 'site/components/BssLogo';
 import MobileNav from 'site/components/MobileNav';
 import { Button } from 'site/components/ui/button';
 import UserMenu from 'site/components/UserMenu';
 import { useScrolled } from 'site/hooks/useScrolled';
 import { homeSections } from 'site/lib/homeSections';
-import { useSessionUser } from 'site/lib/session';
 
 // Over a dark hero the header is see-through until the page is scrolled. The
 // buttons follow the header's colour fade, a transition of their own would lag.

@@ -1,23 +1,8 @@
-import { QueryClient, queryOptions } from '@tanstack/react-query';
+import { queryOptions } from '@tanstack/react-query';
 
-import { meApi, requestsApi } from 'api/http';
+import { isNotFound } from 'api/errors';
+import { requestsApi } from 'api/http';
 import type { RequestList } from 'api/models';
-import { isNotFound } from 'site/lib/apiError';
-
-export const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 1,
-      staleTime: 1000 * 30,
-    },
-  },
-});
-
-export const meQuery = () =>
-  queryOptions({
-    queryFn: async () => (await meApi.meRetrieve()).data,
-    queryKey: ['me'],
-  });
 
 export const myRequestsQuery = () =>
   queryOptions({

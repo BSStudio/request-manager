@@ -1,12 +1,15 @@
 import { useSyncExternalStore } from 'react';
 
+import { queryOptions } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 
-import { loginApi, logoutApi } from 'api/http';
+import { loginApi, logoutApi, meApi } from 'api/http';
 import type { User } from 'api/models';
+import { queryClient } from 'api/queryClient';
 import {
   clearSession,
   getAvatar,
+  getGroups,
   getName,
   getUserId,
   hasSession,
@@ -14,12 +17,11 @@ import {
   SESSION_CHANGE_EVENT,
   setSession,
 } from 'helpers/LocalStorageHelper';
-import type { OAuthProvider } from 'site/lib/oauth';
-import { formatName } from 'site/lib/person';
-import { meQuery, queryClient } from 'site/lib/queries';
+import { formatName } from 'helpers/names';
 
 export type SessionUser = {
   avatar?: string;
+  groups: string[];
   id: number;
   isPrivileged: boolean;
   name: string;
@@ -29,11 +31,18 @@ function readUser(): SessionUser | null {
   if (!hasSession()) return null;
   return {
     avatar: getAvatar(),
+    groups: getGroups(),
     id: getUserId(),
     isPrivileged: isPrivileged(),
     name: getName(),
   };
 }
+
+export const meQuery = () =>
+  queryOptions({
+    queryFn: async () => (await meApi.meRetrieve()).data,
+    queryKey: ['me'],
+  });
 
 let user = readUser();
 const listeners = new Set<() => void>();
@@ -90,7 +99,7 @@ export function whenSessionChecked() {
   return sessionCheck;
 }
 
-export async function signIn(provider: OAuthProvider, code: string) {
+export async function signIn(provider: string, code: string) {
   // The check's 401 for an expired session would clear the new one.
   await sessionCheck;
   const { data } = await loginApi.loginSocialCreate({ code, provider });
@@ -108,14 +117,4 @@ export async function signOut() {
   }
   clearSession();
   queryClient.clear();
-}
-
-export function getInitials(name: string) {
-  return name
-    .split(' ')
-    .filter(Boolean)
-    .slice(0, 2)
-    .map((part) => part[0])
-    .join('')
-    .toUpperCase();
 }

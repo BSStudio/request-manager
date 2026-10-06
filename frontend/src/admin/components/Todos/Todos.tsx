@@ -1,7 +1,6 @@
 import { lazy, MouseEventHandler, useState } from 'react';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { isAxiosError } from 'axios';
 import { Button } from 'primereact/button';
 import { confirmDialog } from 'primereact/confirmdialog';
 import { Panel } from 'primereact/panel';
@@ -25,6 +24,7 @@ import { dateTimeToLocaleString } from 'admin/helpers/DateToLocaleStringCoverter
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import TimeAgo from 'admin/helpers/TimeAgo';
 import useMobile from 'admin/hooks/useMobile';
+import { isNotFound } from 'api/errors';
 import { TodoAdminListRetrieve } from 'api/models/todo-admin-list-retrieve';
 import { getUserId, isAdmin } from 'helpers/LocalStorageHelper';
 
@@ -74,7 +74,7 @@ const Todo = ({ data, onEdit }: TodoProps) => {
         await invalidateQueries();
       })
       .catch(async (error) => {
-        if (isAxiosError(error) && error.response?.status === 404) {
+        if (isNotFound(error)) {
           await invalidateQueries();
         }
         showErrorToast(error);

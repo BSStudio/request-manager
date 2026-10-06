@@ -1,9 +1,8 @@
 import { MailIcon, PhoneIcon } from 'lucide-react';
 
 import type { UserNestedDetail } from 'api/models';
-import { Avatar, AvatarFallback, AvatarImage } from 'site/components/ui/avatar';
+import UserAvatar from 'site/components/UserAvatar';
 import { formatPhone } from 'site/lib/person';
-import { getInitials } from 'site/lib/session';
 
 const linkClass =
   'flex min-w-0 items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground';
@@ -17,12 +16,10 @@ export default function PersonContact({
 
   return (
     <div className="flex gap-3">
-      <Avatar size="lg">
-        <AvatarImage alt="" src={person.avatar_url || undefined} />
-        <AvatarFallback className="bg-primary text-xs font-semibold text-primary-foreground">
-          {getInitials(person.full_name)}
-        </AvatarFallback>
-      </Avatar>
+      <UserAvatar
+        size="lg"
+        user={{ avatar: person.avatar_url, name: person.full_name }}
+      />
       <div className="min-w-0 space-y-1">
         <p className="font-medium">{person.full_name}</p>
         {person.email && (

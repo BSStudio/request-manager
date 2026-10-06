@@ -23,9 +23,11 @@ import LastUpdatedAt from 'admin/components/LastUpdatedAt/LastUpdatedAt';
 import LinkButton from 'admin/components/LinkButton/LinkButton';
 import { VideoStatusTag } from 'admin/components/StatusTag/StatusTag';
 import User from 'admin/components/User/User';
+import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import useMobile from 'admin/hooks/useMobile';
-import { queryClient } from 'admin/router';
+import { isNotFound } from 'api/errors';
+import { queryClient } from 'api/queryClient';
 
 const AdditionalDataDialog = lazy(
   () => import('admin/components/AdditionalDataDialog/AdditionalDataDialog'),
@@ -84,7 +86,7 @@ const VideoDetailsPage = () => {
         });
       })
       .catch((error) => {
-        if (isAxiosError(error) && error.response?.status === 404) {
+        if (isNotFound(error)) {
           void navigate(`/requests/${requestId}/videos`, { replace: true });
           void queryClient.invalidateQueries({
             queryKey: queryKeys.requestVideos(requestId),
@@ -122,15 +124,14 @@ const VideoDetailsPage = () => {
         setAdditionalDataDialogOpen(false);
       })
       .catch(async (error) => {
-        if (isAxiosError(error)) {
-          if (error.response?.status === 404) {
-            await queryClient.invalidateQueries({
-              queryKey: queryKeys.video(requestId, videoId),
-            });
-          } else if (error.response?.status === 400) {
-            setAdditionalDataDialogError(error.response.data?.additional_data);
-            return;
-          }
+        if (isAxiosError(error) && error.response?.status === 400) {
+          setAdditionalDataDialogError(getErrorMessage(error));
+          return;
+        }
+        if (isNotFound(error)) {
+          await queryClient.invalidateQueries({
+            queryKey: queryKeys.video(requestId, videoId),
+          });
         }
         showErrorToast(error);
       })
@@ -158,7 +159,7 @@ const VideoDetailsPage = () => {
         });
       })
       .catch(async (error) => {
-        if (isAxiosError(error) && error.response?.status === 404) {
+        if (isNotFound(error)) {
           await queryClient.invalidateQueries({
             queryKey: queryKeys.video(requestId, videoId),
           });
@@ -195,7 +196,7 @@ const VideoDetailsPage = () => {
         setAiredAddDialogOpen(false);
       })
       .catch(async (error) => {
-        if (isAxiosError(error) && error.response?.status === 404) {
+        if (isNotFound(error)) {
           await queryClient.invalidateQueries({
             queryKey: queryKeys.video(requestId, videoId),
           });

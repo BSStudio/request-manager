@@ -4,17 +4,27 @@ import { Avatar as PrimeAvatar } from 'primereact/avatar';
 import type { AvatarProps as PrimeAvatarProps } from 'primereact/avatar';
 import { classNames } from 'primereact/utils';
 
+import { getAvatarStyle, getInitials } from 'helpers/avatar';
+
 import stylesModule from './Avatar.module.css';
 
-const Avatar = forwardRef<React.Ref<HTMLDivElement>, PrimeAvatarProps>(
-  ({ className, ...props }, ref) => {
+interface AvatarProps extends PrimeAvatarProps {
+  // Colored initials, shown without a picture or when it fails to load.
+  name?: string;
+}
+
+const Avatar = forwardRef<React.Ref<HTMLDivElement>, AvatarProps>(
+  ({ className, name, style, ...props }, ref) => {
     return (
       <PrimeAvatar
         icon="pi pi-user"
+        label={name ? getInitials(name) : undefined}
         shape="circle"
+        {...(name ? { imageAlt: name } : {})}
         {...props}
         {...ref}
         className={classNames(stylesModule.avatarIcon, className)}
+        style={name ? { ...getAvatarStyle(name), ...style } : style}
       />
     );
   },

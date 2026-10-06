@@ -1,26 +1,26 @@
 import React from 'react';
 
-import { isAdminPath } from 'helpers/isAdminPath';
-import {
-  hasSession,
-  isPrivileged,
-  setRedirectedFrom,
-} from 'helpers/LocalStorageHelper';
+import { setRedirectedFrom } from 'helpers/LocalStorageHelper';
+import { useSessionUser } from 'helpers/session';
 
 type AuthenticationProviderProps = {
   children: React.JSX.Element;
 };
 
+// Follows the session, so logging out in another tab or losing the staff role
+// leaves the admin too.
 export const AuthenticationProvider = ({
   children,
 }: AuthenticationProviderProps) => {
-  if (!hasSession() && isAdminPath(window.location.pathname)) {
+  const user = useSessionUser();
+
+  if (!user) {
     setRedirectedFrom(window.location.pathname);
     window.location.replace('/login');
     return;
   }
 
-  if (!isPrivileged() && isAdminPath(window.location.pathname)) {
+  if (!user.isPrivileged) {
     window.location.replace('/');
     return;
   }

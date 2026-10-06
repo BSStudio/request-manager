@@ -14,9 +14,9 @@ import { TodoStatusTag } from 'admin/components/StatusTag/StatusTag';
 import { TODO_STATUSES } from 'admin/components/StatusTag/statusTagConsts';
 import { StatusStyle } from 'admin/components/StatusTag/StatusTagTypes';
 import Todos from 'admin/components/Todos/Todos';
-import { queryClient } from 'admin/router';
 import { StatusEnum } from 'api/models/status-enum';
 import { UserAdminList } from 'api/models/user-admin-list';
+import { queryClient } from 'api/queryClient';
 
 export async function loader() {
   return queryClient.query({
