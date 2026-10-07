@@ -2,12 +2,15 @@ from django.utils.crypto import constant_time_compare
 from social_core.backends.open_id_connect import OpenIdConnectAuth
 from social_core.exceptions import AuthTokenError
 
+from common.social_core.strategy import DRFStrategy
+
 
 class BrowserNonceOpenIdConnectAuth(OpenIdConnectAuth):
-    # The frontend builds the authorization URL, so social_core never stored the
-    # nonce. The browser that started the login sends it with the code instead,
-    # so a code from someone else's login fails.
+    # For the API, the frontend builds the authorization URL, so social_core has no
+    # stored nonce to check. The browser sends its own with the code instead.
     def validate_claims(self, id_token):
+        if not isinstance(self.strategy, DRFStrategy):
+            return super().validate_claims(id_token)
         self.validate_temporal_claims(id_token)
         nonce = self.data.get("nonce")
         if not nonce or not constant_time_compare(nonce, id_token.get("nonce", "")):

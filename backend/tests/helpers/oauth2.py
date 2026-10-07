@@ -1,5 +1,6 @@
 """Mocked OAuth2 identity providers for the login and connect tests."""
 
+import json
 import random
 import re
 import time
@@ -78,7 +79,8 @@ class MockedProvider:
         )
         # Force backends loading, to trash the PSA cache.
         load_backends((provider.backend_path,), force_load=True)
-        #: What the browser that started the login keeps and sends with the code.
+        #: Goes into the ID token. The browser that started an API login keeps it
+        #: and sends it with the code.
         self.nonce = token_urlsafe()
 
     @property
@@ -92,10 +94,8 @@ class MockedProvider:
             responses.get(url, json=body)
         for url, body in self.provider.extra_body.items():
             responses.get(url, body=body() if callable(body) else body)
-        access_token_body = self.provider.access_token_body
         if isinstance(self.backend, OpenIdConnectAuth):
             self._mock_discovery()
-            access_token_body = {**access_token_body, "id_token": self.id_token()}
 
         start_url = self.backend.start().url
         target_url = self._target_url(start_url)
@@ -106,14 +106,20 @@ class MockedProvider:
                 self.provider.user_data_url, json=self.provider.user_data_body
             )
 
-        responses.add(
+        # Answered on request, so a test can still change the nonce.
+        responses.add_callback(
             {"GET": responses.GET, "POST": responses.POST}[
                 self.backend.ACCESS_TOKEN_METHOD
             ],
             self.backend.access_token_url(),
-            status=200,
-            json=access_token_body,
+            callback=lambda request: (200, {}, json.dumps(self._access_token_body())),
+            content_type="application/json",
         )
+
+    def _access_token_body(self):
+        if isinstance(self.backend, OpenIdConnectAuth):
+            return {**self.provider.access_token_body, "id_token": self.id_token()}
+        return self.provider.access_token_body
 
     def _mock_discovery(self):
         endpoint = self.backend.OIDC_ENDPOINT

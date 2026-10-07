@@ -3,11 +3,14 @@
 The provider endpoints are mocked in tests/helpers/oauth2_providers.py.
 """
 
+from urllib.parse import parse_qs, urlparse
+
 import pytest
 import responses
+from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework.reverse import reverse
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_200_OK, HTTP_302_FOUND, HTTP_400_BAD_REQUEST
 
 from tests.factories import make_user
 from tests.helpers.oauth2_providers import (
@@ -50,6 +53,25 @@ def test_openid_login_needs_the_nonce_of_the_browser_that_started_it(
         .objects.filter(email__iexact=provider.user_data_body["email"])
         .exists()
     )
+
+
+@pytest.mark.parametrize("provider", [AUTHSCH, BSS_LOGIN], **by_name)
+def test_django_admin_login_checks_the_nonce_social_core_stored(
+    client, mock_provider, provider
+):
+    # Here social_django builds the authorization URL, not the frontend.
+    mocked = mock_provider(provider)
+    start = client.post(reverse("social:begin", args=[provider.name]))
+    query = parse_qs(urlparse(start.url).query)
+    mocked.nonce = query["nonce"][0]
+
+    response = client.get(
+        reverse("social:complete", args=[provider.name]),
+        {"code": mocked.code(), "state": query["state"][0]},
+    )
+
+    assert response.status_code == HTTP_302_FOUND
+    assert response.url == settings.SOCIAL_AUTH_LOGIN_REDIRECT_URL
 
 
 def test_login_matches_an_inactive_placeholder_account(api_client, mock_provider):
