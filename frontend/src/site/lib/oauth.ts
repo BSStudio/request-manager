@@ -14,6 +14,10 @@ const STATE_KEY = 'oauth-state';
 // Registered at the providers, so the path must not change.
 const redirectUri = `${window.location.origin}/redirect`;
 
+// Their ID token carries the nonce, which the backend matches against the one
+// sent with the code.
+const openIdProviders = new Set<OAuthProvider>(['authsch', 'bss-login']);
+
 const providers: Record<
   OAuthProvider,
   { params: Record<string, string>; url: string }
@@ -68,6 +72,7 @@ export function getAuthorizationUrl(
   const { params, url } = providers[provider];
   const query = new URLSearchParams({
     ...params,
+    ...(openIdProviders.has(provider) && { nonce }),
     response_type: 'code',
     state: btoa(JSON.stringify(state)),
   });
@@ -91,6 +96,7 @@ export function readAuthorizationResponse(search: string) {
     ) {
       return {
         code: params.get('code'),
+        nonce,
         operation: state.operation,
         provider: state.provider,
       };

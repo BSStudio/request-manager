@@ -31,7 +31,11 @@ function OAuthRedirectPage() {
   return (
     <Navigate
       replace
-      state={{ code: response.code, provider: response.provider }}
+      state={{
+        code: response.code,
+        nonce: response.nonce,
+        provider: response.provider,
+      }}
       to={target}
     />
   );

@@ -62,13 +62,13 @@ function accountOf(provider: OAuthProvider) {
   );
 }
 
-type ConnectState = { code?: string; provider?: OAuthProvider };
+type ConnectState = { code?: string; nonce?: string; provider?: OAuthProvider };
 
 export default function LoginMethods({ user }: { user: User }) {
   const queryClient = useQueryClient();
   const location = useLocation();
   const navigate = useNavigate();
-  const { code, provider } = (location.state ?? {}) as ConnectState;
+  const { code, nonce, provider } = (location.state ?? {}) as ConnectState;
   const [redirecting, setRedirecting] = useState<OAuthProvider | null>(null);
   const attempted = useRef(false);
 
@@ -82,8 +82,15 @@ export default function LoginMethods({ user }: { user: User }) {
     queryClient.invalidateQueries({ queryKey: meQuery().queryKey });
 
   const connect = useMutation({
-    mutationFn: (values: { code: string; provider: OAuthProvider }) =>
-      meApi.meSocialCreate(values.provider, { code: values.code }),
+    mutationFn: (values: {
+      code: string;
+      nonce?: string;
+      provider: OAuthProvider;
+    }) =>
+      meApi.meSocialCreate(values.provider, {
+        code: values.code,
+        nonce: values.nonce,
+      }),
     onError: (error) =>
       toast.error('Nem sikerült összekapcsolni a fiókot.', {
         description: getApiErrorMessage(error),
@@ -113,9 +120,9 @@ export default function LoginMethods({ user }: { user: User }) {
   useEffect(() => {
     if (code && provider && !attempted.current) {
       attempted.current = true;
-      connectAccount({ code, provider });
+      connectAccount({ code, nonce, provider });
     }
-  }, [code, connectAccount, provider]);
+  }, [code, connectAccount, nonce, provider]);
 
   // Going back from the provider restores the page with a spinning button.
   useEffect(() => {
