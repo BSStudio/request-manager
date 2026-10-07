@@ -8,7 +8,6 @@ For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 
-from datetime import timedelta
 from ipaddress import ip_network
 from pathlib import Path
 from re import match
@@ -68,7 +67,6 @@ INSTALLED_APPS = [
     "drf_spectacular",
     "corsheaders",
     "health_check",
-    "rest_framework_simplejwt.token_blacklist",
     "phonenumber_field",
     "simple_history",
     "common",
@@ -250,10 +248,10 @@ SERVICE_ACCOUNTS_GROUP = config("SERVICE_ACCOUNTS_GROUP", default="Service Accou
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        # Before Session: the current frontends send no CSRF token.
-        "rest_framework_simplejwt.authentication.JWTAuthentication",
-        "rest_framework.authentication.SessionAuthentication",
+        # First, so unauthenticated requests get 401 (with its WWW-Authenticate
+        # header) instead of Session's 403; the frontends log out on a 401.
         "rest_framework.authentication.TokenAuthentication",
+        "rest_framework.authentication.SessionAuthentication",
     ],
     "DEFAULT_RENDERER_CLASSES": ["rest_framework.renderers.JSONRenderer"],
     "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
@@ -265,16 +263,6 @@ REST_FRAMEWORK = {
     },
     "EXCEPTION_HANDLER": "common.rest_framework.exception.exception_handler",
     "TEST_REQUEST_DEFAULT_FORMAT": "json",
-}
-
-# Simple JWT Settings
-# https://github.com/davesque/django-rest-framework-simplejwt
-
-SIMPLE_JWT = {
-    "ACCESS_TOKEN_LIFETIME": timedelta(minutes=10),
-    "REFRESH_TOKEN_LIFETIME": timedelta(hours=6),
-    "ROTATE_REFRESH_TOKENS": True,
-    "BLACKLIST_AFTER_ROTATION": True,
 }
 
 # Internationalization

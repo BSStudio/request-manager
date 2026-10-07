@@ -79,8 +79,6 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -88,9 +86,7 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -137,8 +133,6 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -146,9 +140,7 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -203,8 +195,6 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -212,9 +202,7 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -268,8 +256,6 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -277,9 +263,7 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -323,8 +307,6 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -332,9 +314,7 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
 
@@ -387,8 +367,6 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
       const localVarHeaderParameter = {} as any;
       const localVarQueryParameter = {} as any;
 
-      // authentication cookieAuth required
-
       // authentication tokenAuth required
       await setApiKeyToObject(
         localVarHeaderParameter,
@@ -396,9 +374,7 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
         configuration,
       );
 
-      // authentication jwtAuth required
-      // http bearer authentication required
-      await setBearerAuthToObject(localVarHeaderParameter, configuration);
+      // authentication cookieAuth required
 
       if (isResponsible !== undefined) {
         localVarQueryParameter['is_responsible'] = isResponsible;

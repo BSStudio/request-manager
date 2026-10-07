@@ -19,7 +19,7 @@ import {
 } from 'helpers/LocalStorageHelper';
 import { formatName } from 'helpers/names';
 
-export type SessionUser = {
+export type CurrentUser = {
   avatar?: string;
   groups: string[];
   id: number;
@@ -27,7 +27,7 @@ export type SessionUser = {
   name: string;
 };
 
-function readUser(): SessionUser | null {
+function readUser(): CurrentUser | null {
   if (!hasSession()) return null;
   return {
     avatar: getAvatar(),
@@ -110,7 +110,7 @@ export async function signIn(provider: string, code: string) {
 
 export async function signOut() {
   try {
-    await logoutApi.logoutCreate({});
+    await logoutApi.logoutCreate();
   } catch (error) {
     // Only a 401 means the server has no session left to end.
     if (!isAxiosError(error) || error.response?.status !== 401) throw error;

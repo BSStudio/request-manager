@@ -8,11 +8,9 @@ import responses
 from django.contrib.auth import get_user_model
 from rest_framework.reverse import reverse
 from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
-from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
 from tests.factories import make_user
 from tests.helpers.oauth2_providers import (
-    ALL_PROVIDERS,
     GOOGLE,
     MICROSOFT,
     MICROSOFT_AVATAR_URL,
@@ -20,33 +18,12 @@ from tests.helpers.oauth2_providers import (
 
 pytestmark = pytest.mark.django_db
 
-by_name = {"ids": lambda provider: provider.name}
-
 
 def log_in(api_client, mocked):
     return api_client.post(
         reverse("api:v1:login:social"),
         {"provider": mocked.name, "code": mocked.code()},
     )
-
-
-@pytest.mark.parametrize("provider", ALL_PROVIDERS, **by_name)
-def test_login_hands_back_a_usable_token_pair(api_client, mock_provider, provider):
-    mocked = mock_provider(provider)
-
-    response = log_in(api_client, mocked)
-
-    assert response.status_code == HTTP_200_OK
-    assert "access" in response.data
-    assert "refresh" in response.data
-
-    access_token = AccessToken(response.data["access"])
-    refresh_token = RefreshToken(response.data["refresh"])
-
-    assert access_token["token_type"] == "access"
-    assert refresh_token["token_type"] == "refresh"
-    # Raises when the check fails, returns None otherwise.
-    assert access_token.verify() is None
 
 
 def test_login_matches_an_inactive_placeholder_account(api_client, mock_provider):
@@ -88,7 +65,7 @@ def test_login_without_any_photo_leaves_the_avatar_provider_unset(
 
 def test_a_banned_account_cannot_log_in(api_client, mock_provider):
     # The provider still authenticates them; the pipeline is what turns them
-    # away, by e-mail, before any token is minted.
+    # away, by e-mail, before a session starts.
     banned_user = make_user(email=GOOGLE.user_data_body["email"], banned=True)
     mocked = mock_provider(GOOGLE)
 
