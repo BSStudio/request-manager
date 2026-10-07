@@ -1,7 +1,7 @@
 """The user a login hands back.
 
-The frontend caches these instead of calling /me on every page load, so the
-shape is a contract.
+The frontend caches it as the logged-in user until the next page load fetches
+/me, so the shape is a contract.
 """
 
 import pytest

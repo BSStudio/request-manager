@@ -20,6 +20,7 @@ from rest_framework.status import (
     is_success,
 )
 
+from tests.api.helpers import login
 from video_requests.models import Request, Video
 
 pytestmark = pytest.mark.django_db
@@ -30,7 +31,7 @@ EVENT_END = "2020-11-21 14:30:20 +0100"
 
 @pytest.fixture
 def admin_api_client(api_client, admin_user):
-    api_client.force_login(admin_user)
+    login(api_client, admin_user)
     return api_client
 
 

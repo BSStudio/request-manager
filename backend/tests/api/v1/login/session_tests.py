@@ -94,6 +94,12 @@ def test_logout_ends_the_session(csrf_client, mock_provider):
     assert csrf_client.get(ME_URL).status_code == HTTP_401_UNAUTHORIZED
 
 
+def test_logout_needs_a_session(api_client):
+    response = api_client.post(reverse("api:v1:login:logout"))
+
+    assert response.status_code == HTTP_401_UNAUTHORIZED
+
+
 def test_a_ban_ends_the_session(api_client, mock_provider):
     log_in(api_client, mock_provider)
 
