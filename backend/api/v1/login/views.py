@@ -2,6 +2,7 @@ from django.contrib.auth import login, logout
 from django.utils.decorators import method_decorator
 from django.views.decorators.cache import never_cache
 from drf_spectacular.utils import extend_schema
+from rest_framework.exceptions import ValidationError
 from rest_framework.generics import GenericAPIView
 from rest_framework.parsers import JSONParser
 from rest_framework.permissions import AllowAny
@@ -52,6 +53,9 @@ class SocialLoginView(GenericAPIView):
 
         try:
             input_serializer.is_valid(raise_exception=True)
+        except ValidationError:
+            # handle_exception only reads messages off social-auth errors.
+            raise
         except Exception as e:
             message = handle_exception(e)
             return Response(data=message, status=HTTP_400_BAD_REQUEST)

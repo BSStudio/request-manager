@@ -65,7 +65,7 @@ def test_login_without_any_photo_leaves_the_avatar_provider_unset(
 
 def test_a_banned_account_cannot_log_in(api_client, mock_provider):
     # The provider still authenticates them; the pipeline is what turns them
-    # away, by e-mail, before any token is minted.
+    # away, by e-mail, before a session starts.
     banned_user = make_user(email=GOOGLE.user_data_body["email"], banned=True)
     mocked = mock_provider(GOOGLE)
 

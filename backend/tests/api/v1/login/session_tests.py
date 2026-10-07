@@ -3,6 +3,7 @@ from rest_framework.reverse import reverse
 from rest_framework.status import (
     HTTP_200_OK,
     HTTP_204_NO_CONTENT,
+    HTTP_400_BAD_REQUEST,
     HTTP_401_UNAUTHORIZED,
     HTTP_403_FORBIDDEN,
     HTTP_415_UNSUPPORTED_MEDIA_TYPE,
@@ -68,6 +69,21 @@ def test_login_rejects_form_data(api_client, mock_provider):
     )
 
     assert response.status_code == HTTP_415_UNSUPPORTED_MEDIA_TYPE
+
+
+@pytest.mark.parametrize(
+    "data,field",
+    [
+        ({"provider": "unknown", "code": "code"}, "provider"),
+        ({"provider": GOOGLE.name}, "code"),
+    ],
+    ids=["unknown provider", "missing code"],
+)
+def test_login_names_the_invalid_field(api_client, data, field):
+    response = api_client.post(reverse("api:v1:login:social"), data)
+
+    assert response.status_code == HTTP_400_BAD_REQUEST
+    assert field in response.data
 
 
 def test_session_requests_need_a_csrf_token(csrf_client, mock_provider):
