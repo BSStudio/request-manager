@@ -217,3 +217,24 @@ class TestToStaff:
         assert message.subject == "Lejárt határidejű felkérés - Test Request"
         assert message.to == [video_request.responsible.email]
         assert set(message.cc) == {editor_in_chief.email, production_manager.email}
+
+
+@pytest.mark.parametrize(
+    "send_email",
+    [email_user_new_comment, email_crew_new_comment],
+    ids=["requester", "crew"],
+)
+def test_an_inline_avatar_falls_back_to_the_default(crew, send_email, video_request):
+    author = make_user(
+        avatar={
+            "provider": "microsoft-graph",
+            "microsoft-graph": "data:image/jpg;base64,/9j/4AAQ",
+        }
+    )
+    comment = baker.make("video_requests.Comment", request=video_request, author=author)
+
+    send_email(comment.id)
+
+    html = only_message().alternatives[0].content
+    assert "data:image" not in html
+    assert "images/default_avatar." in html
