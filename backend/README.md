@@ -6,9 +6,7 @@ Django REST API, business logic, Django admin panel and Celery workers for the R
 
 ## Setup
 
-Requires Python (version pinned in [`.python-version`](.python-version)),
-[Poetry](https://python-poetry.org/) and a running PostgreSQL + Redis (start them
-from the repository root with `docker compose -f docker-compose.dev.yaml up -d`).
+Requires Python (version pinned in [`.python-version`](.python-version)), [Poetry](https://python-poetry.org/) and a running PostgreSQL + Redis (start them from the repository root with `docker compose -f docker-compose.dev.yaml up -d`).
 
 ```bash
 cd backend
@@ -22,9 +20,7 @@ The API is now available at <http://localhost:8000>.
 
 ### Environment
 
-All settings are read from `backend/.env`. Start from
-[`.env.sample`](.env.sample), which documents every variable and its default.
-For local development set:
+All settings are read from `backend/.env`. Start from [`.env.sample`](.env.sample), which documents every variable and its default. For local development set:
 
 ```ini
 DJANGO_SETTINGS_MODULE = core.settings.debug
@@ -60,30 +56,22 @@ poetry run pytest
 
 Coverage must stay at or above 90% (`fail_under = 90`).
 
-> **PyCharm:** to use pytest instead of the Django test runner, enable
-> _Settings → Python → Django → Do not use Django test runner_,
-> and set the default test runner to pytest under
-> _Settings → Python → Tools → Integrated Tools_.
+> **PyCharm:** to use pytest instead of the Django test runner, enable _Settings → Python → Django → Do not use Django test runner_, and set the default test runner to pytest under _Settings → Python → Tools → Integrated Tools_.
 
 ## Code style
 
-Formatting and linting are enforced by pre-commit (Black, isort, flake8,
-bandit, pyupgrade, django-upgrade). Install the hooks once from the repository
-root with `pre-commit install`.
+Formatting and linting are enforced by pre-commit (Black, isort, flake8, bandit, pyupgrade, django-upgrade). Install the hooks once from the repository root with `pre-commit install`.
 
 ## Upgrading runtime versions
 
-Renovate keeps most versions current automatically. A few values encode the
-**minimum** supported version and are intentionally left for you to bump by hand
-when you raise it — Renovate does not touch these floors:
+Renovate keeps most versions current automatically. A few values encode the **minimum** supported version and are intentionally left for you to bump by hand when you raise it — Renovate does not touch these floors:
 
 | When you upgrade… | Also bump…                                                                                                                                    |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
 | Python            | `requires-python` in `pyproject.toml`, and the pyupgrade `--py<version>-plus` arg in [`.pre-commit-config.yaml`](../.pre-commit-config.yaml). |
 | Django            | the django-upgrade `--target-version` arg in [`.pre-commit-config.yaml`](../.pre-commit-config.yaml).                                         |
 
-The runtime versions themselves live in [`.python-version`](.python-version)
-(Python) and the `.nvmrc` files (Node) and are bumped by Renovate.
+The runtime versions themselves live in [`.python-version`](.python-version) (Python) and the `.nvmrc` files (Node) and are bumped by Renovate.
 
 ## OpenAPI schema
 
@@ -99,8 +87,7 @@ CI fails if the committed schema differs from the generated one.
 
 ## Management commands
 
-Run `poetry run python manage.py help` to list every available command. In
-addition to Django's built-ins, the project ships these commands:
+Run `poetry run python manage.py help` to list every available command. In addition to Django's built-ins, the project ships these commands:
 
 | Command                     | App              | Purpose                                                  |
 | --------------------------- | ---------------- | -------------------------------------------------------- |
@@ -112,19 +99,15 @@ addition to Django's built-ins, the project ships these commands:
 | `email_unfinished_requests` | `video_requests` | Notify about unfinished requests.                        |
 | `email_weekly_tasks`        | `video_requests` | Send the weekly task summary e-mail.                     |
 
-The e-mail and status commands are normally invoked on a schedule by Celery
-beat; run them manually for testing or one-off operations.
+The e-mail and status commands are normally invoked on a schedule by Celery beat; run them manually for testing or one-off operations.
 
 ## Runbooks
 
 ### Merging duplicate users
 
-When a person ends up with two accounts, reassign their related objects to the
-account you want to keep, then delete the duplicate.
+When a person ends up with two accounts, reassign their related objects to the account you want to keep, then delete the duplicate.
 
-The Django admin **delete** page lists every related object for a user; if there
-are only a few, edit them by hand. For bulk reassignment use the shell — example
-moving the `Video` objects edited by user `123` to user `234`:
+The Django admin **delete** page lists every related object for a user; if there are only a few, edit them by hand. For bulk reassignment use the shell — example moving the `Video` objects edited by user `123` to user `234`:
 
 ```bash
 poetry run python manage.py shell
@@ -142,5 +125,4 @@ print(videos)              # review before changing
 videos.update(editor=new)
 ```
 
-Repeat for every relation that points at the old user, then delete it from the
-admin panel.
+Repeat for every relation that points at the old user, then delete it from the admin panel.

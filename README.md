@@ -6,8 +6,7 @@
 
 # Request Manager
 
-Workflow Support System for managing video shooting, filming and live-streaming
-requests of [Budavári Schönherz Stúdió](https://bsstudio.hu).
+Workflow Support System for managing video shooting, filming and live-streaming requests of [Budavári Schönherz Stúdió](https://bsstudio.hu).
 
 [![Backend CI](https://github.com/BSStudio/request-manager/actions/workflows/backend.yml/badge.svg)](https://github.com/BSStudio/request-manager/actions/workflows/backend.yml)
 [![Frontend CI](https://github.com/BSStudio/request-manager/actions/workflows/frontend.yml/badge.svg)](https://github.com/BSStudio/request-manager/actions/workflows/frontend.yml)
@@ -44,21 +43,15 @@ flowchart TD
 
 ## Getting started
 
-The fastest way to get a complete toolchain is the **dev container**, which
-provisions Python, Node and Poetry and starts PostgreSQL + Redis automatically.
+The fastest way to get a complete toolchain is the **dev container**, which provisions Python, Node and Poetry and starts PostgreSQL + Redis automatically.
 
 ### Option A — Dev Container (recommended)
 
-1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) and
-   the [VS Code Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers)
-   extension.
+1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) and the [VS Code Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension.
 2. Open the repository in VS Code and run **Dev Containers: Reopen in Container**.
-3. Once the post-create step finishes, create the `.env` files (see each
-   component's README) and run the apps.
+3. Once the post-create step finishes, create the `.env` files (see each component's README) and run the apps.
 
-> **Windows + WSL:** if the container fails to start with a
-> `distro-services/<distro>.sock: no such file` error, enable Docker Desktop →
-> Settings → Resources → **WSL Integration** for your distro (e.g. `Debian`).
+> **Windows + WSL:** if the container fails to start with a `distro-services/<distro>.sock: no such file` error, enable Docker Desktop → Settings → Resources → **WSL Integration** for your distro (e.g. `Debian`).
 
 ### Option B — Manual setup
 
@@ -71,15 +64,11 @@ docker compose -f docker-compose.dev.yaml up -d   # PostgreSQL + Redis
 - [Backend setup](backend/README.md)
 - [Frontend setup](frontend/README.md)
 
-**Prerequisites for manual setup:** Python + [Poetry](https://python-poetry.org/)
-and Node.js — the exact versions are pinned in `backend/.python-version` and the
-`.nvmrc` files — plus Docker for PostgreSQL + Redis.
+**Prerequisites for manual setup:** Python + [Poetry](https://python-poetry.org/) and Node.js — the exact versions are pinned in `backend/.python-version` and the `.nvmrc` files — plus Docker for PostgreSQL + Redis.
 
 ## Development
 
-This repository uses [pre-commit](https://pre-commit.com/) for formatting and
-linting (Black, isort, flake8, Prettier, ESLint and more). Install the hooks at
-once from the repository root:
+This repository uses [pre-commit](https://pre-commit.com/) for formatting and linting (Black, isort, flake8, Prettier, ESLint and more). Install the hooks at once from the repository root:
 
 ```bash
 pipx install pre-commit   # or: pip install pre-commit
