@@ -19,7 +19,7 @@ import {
 } from 'helpers/LocalStorageHelper';
 import { formatName } from 'helpers/names';
 
-export type SessionUser = {
+export type CurrentUser = {
   avatar?: string;
   groups: string[];
   id: number;
@@ -27,7 +27,7 @@ export type SessionUser = {
   name: string;
 };
 
-function readUser(): SessionUser | null {
+function readUser(): CurrentUser | null {
   if (!hasSession()) return null;
   return {
     avatar: getAvatar(),

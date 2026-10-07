@@ -16,7 +16,7 @@ import {
 import { Link, NavLink, useLocation } from 'react-router';
 
 import { promptInstall, useCanInstall } from 'helpers/pwa';
-import type { SessionUser } from 'helpers/session';
+import type { CurrentUser } from 'helpers/session';
 import BssLogo from 'site/components/BssLogo';
 import SocialLinks from 'site/components/SocialLinks';
 import { Button } from 'site/components/ui/button';
@@ -39,7 +39,7 @@ const linkClassName =
 
 type MobileNavProps = {
   className?: string;
-  user: SessionUser | null;
+  user: CurrentUser | null;
 };
 
 export default function MobileNav({ className, user }: MobileNavProps) {

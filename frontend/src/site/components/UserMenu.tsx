@@ -10,7 +10,7 @@ import {
 import { Link } from 'react-router';
 
 import { promptInstall, useCanInstall } from 'helpers/pwa';
-import type { SessionUser } from 'helpers/session';
+import type { CurrentUser } from 'helpers/session';
 import { Button } from 'site/components/ui/button';
 import {
   DropdownMenu,
@@ -25,7 +25,7 @@ import { useSignOut } from 'site/hooks/useSignOut';
 
 type UserMenuProps = {
   className?: string;
-  user: SessionUser;
+  user: CurrentUser;
 };
 
 export default function UserMenu({ className, user }: UserMenuProps) {
