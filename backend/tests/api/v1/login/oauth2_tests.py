@@ -11,6 +11,8 @@ from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
 
 from tests.factories import make_user
 from tests.helpers.oauth2_providers import (
+    AUTHSCH,
+    BSS_LOGIN,
     GOOGLE,
     MICROSOFT,
     MICROSOFT_AVATAR_URL,
@@ -18,11 +20,35 @@ from tests.helpers.oauth2_providers import (
 
 pytestmark = pytest.mark.django_db
 
+by_name = {"ids": lambda provider: provider.name}
+
 
 def log_in(api_client, mocked):
     return api_client.post(
         reverse("api:v1:login:social"),
-        {"provider": mocked.name, "code": mocked.code()},
+        {"provider": mocked.name, "code": mocked.code(), "nonce": mocked.nonce},
+    )
+
+
+@pytest.mark.parametrize("provider", [AUTHSCH, BSS_LOGIN], **by_name)
+@pytest.mark.parametrize(
+    "nonce", [{}, {"nonce": "someone-elses"}], ids=["missing", "foreign"]
+)
+def test_openid_login_needs_the_nonce_of_the_browser_that_started_it(
+    api_client, mock_provider, provider, nonce
+):
+    mocked = mock_provider(provider)
+
+    response = api_client.post(
+        reverse("api:v1:login:social"),
+        {"provider": mocked.name, "code": mocked.code(), **nonce},
+    )
+
+    assert response.status_code == HTTP_400_BAD_REQUEST
+    assert (
+        not get_user_model()
+        .objects.filter(email__iexact=provider.user_data_body["email"])
+        .exists()
     )
 
 

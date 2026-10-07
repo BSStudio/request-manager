@@ -16,8 +16,8 @@ SOCIAL_AUTH_AUTHSCH_KEY = "12345678901234567890"  # nosec
 SOCIAL_AUTH_AUTHSCH_SECRET = "TNcJ3UoBMUqpfYLBqlGlqN0Lsw1LHyIFvEtMTatL65RtTKAc6JnAYyNdDHX2DLFxkWLHpef8Wu8GHIAr"  # nosec
 
 # BSS Login OAuth2 settings:
-AUTH_BSS_CLIENT_ID = "DrOiL0kPpOgCdsMuNe07W7YH83vN20TGuxTdcb26"  # nosec
-AUTH_BSS_CLIENT_SECRET = "kFIVw4i1oLScJczZN2hebatRsS8APPwoe8JpUWb93JlZ4TZJw7ZlWihAlOnv5xwtQRsjEUj668u12uCmzfVkjOCH3mBfU7MUlE3uJX8EZ1TzxTgR9oPYr4gHJu9KIhFn"  # nosec
+SOCIAL_AUTH_BSS_LOGIN_KEY = "DrOiL0kPpOgCdsMuNe07W7YH83vN20TGuxTdcb26"  # nosec
+SOCIAL_AUTH_BSS_LOGIN_SECRET = "kFIVw4i1oLScJczZN2hebatRsS8APPwoe8JpUWb93JlZ4TZJw7ZlWihAlOnv5xwtQRsjEUj668u12uCmzfVkjOCH3mBfU7MUlE3uJX8EZ1TzxTgR9oPYr4gHJu9KIhFn"  # nosec
 # Set on the names the pipeline reads. AUTH_BSS_* only reaches the settings
 # through the environment, which CI does not provide.
 SOCIAL_AUTH_BSS_LOGIN_SUPERUSER_GROUP = "Admin"

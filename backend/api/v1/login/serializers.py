@@ -19,6 +19,7 @@ class SocialLoginSerializer(Serializer):
     # version of https://github.com/st4lk/django-rest-social-auth
 
     code = CharField()
+    nonce = CharField(required=False)
     provider = CharField()
 
     def get_user(self):

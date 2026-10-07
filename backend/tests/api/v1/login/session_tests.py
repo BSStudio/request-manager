@@ -22,7 +22,7 @@ def log_in(client, mock_provider, provider=GOOGLE):
     mocked = mock_provider(provider)
     return client.post(
         reverse("api:v1:login:social"),
-        {"provider": mocked.name, "code": mocked.code()},
+        {"provider": mocked.name, "code": mocked.code(), "nonce": mocked.nonce},
     )
 
 

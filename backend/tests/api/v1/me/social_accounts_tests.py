@@ -30,7 +30,9 @@ def social_url(provider_name):
 
 
 def connect(api_client, mocked):
-    return api_client.post(social_url(mocked.name), {"code": mocked.code()})
+    return api_client.post(
+        social_url(mocked.name), {"code": mocked.code(), "nonce": mocked.nonce}
+    )
 
 
 class TestConnect:

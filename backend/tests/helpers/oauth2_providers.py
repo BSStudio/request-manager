@@ -50,6 +50,7 @@ BSS_LOGIN = Provider(
         "preferred_username": "foobar",
         "nickname": "foobar",
         "groups": ["Group1", "Group2"],
+        "sub": "4d7e3a40b0f9c1e2a7d5b8f6c3e1a9d2b4f6e8c0a1b3d5f7e9c2a4b6d8f0e1c3",
     },
 )
 

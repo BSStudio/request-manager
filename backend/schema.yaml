@@ -2802,6 +2802,9 @@ components:
         code:
           type: string
           minLength: 1
+        nonce:
+          type: string
+          minLength: 1
       required:
         - code
     PaginatedRequestAdminListList:
@@ -3674,6 +3677,9 @@ components:
       type: object
       properties:
         code:
+          type: string
+          minLength: 1
+        nonce:
           type: string
           minLength: 1
         provider:
