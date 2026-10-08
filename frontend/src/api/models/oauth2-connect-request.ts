@@ -29,5 +29,5 @@ export interface OAuth2ConnectRequest {
    * @type {string}
    * @memberof OAuth2ConnectRequest
    */
-  nonce?: string;
+  nonce: string;
 }

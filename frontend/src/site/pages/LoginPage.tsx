@@ -147,7 +147,7 @@ function LoginPage() {
   }, [from]);
 
   useEffect(() => {
-    if (code && provider) {
+    if (code && nonce && provider) {
       if (attempted.current) return;
       attempted.current = true;
       signIn(provider, code, nonce)
@@ -187,7 +187,9 @@ function LoginPage() {
 
   const startLogin = (target: OAuthProvider) => {
     setPending(target);
-    window.location.assign(getAuthorizationUrl(target, 'login'));
+    void getAuthorizationUrl(target, 'login').then((url) =>
+      window.location.assign(url),
+    );
   };
 
   return (

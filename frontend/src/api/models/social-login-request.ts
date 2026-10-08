@@ -29,7 +29,7 @@ export interface SocialLoginRequest {
    * @type {string}
    * @memberof SocialLoginRequest
    */
-  nonce?: string;
+  nonce: string;
   /**
    *
    * @type {string}

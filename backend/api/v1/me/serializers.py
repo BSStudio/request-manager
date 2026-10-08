@@ -11,7 +11,7 @@ from common.models import User
 
 class OAuth2ConnectSerializer(Serializer):
     code = CharField()
-    nonce = CharField(required=False)
+    nonce = CharField()
 
 
 class UserProfileSerializer(ModelSerializer):

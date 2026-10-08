@@ -22,7 +22,7 @@ def log_in(client, mock_provider, provider=GOOGLE):
     mocked = mock_provider(provider)
     return client.post(
         reverse("api:v1:login:social"),
-        {"provider": mocked.name, "code": mocked.code(), "nonce": mocked.nonce},
+        {"provider": mocked.name, "code": mocked.code(), "nonce": mocked.browser_nonce},
     )
 
 
@@ -74,10 +74,11 @@ def test_login_rejects_form_data(api_client, mock_provider):
 @pytest.mark.parametrize(
     "data,field",
     [
-        ({"provider": "unknown", "code": "code"}, "provider"),
-        ({"provider": GOOGLE.name}, "code"),
+        ({"provider": "unknown", "code": "code", "nonce": "nonce"}, "provider"),
+        ({"provider": GOOGLE.name, "nonce": "nonce"}, "code"),
+        ({"provider": GOOGLE.name, "code": "code"}, "nonce"),
     ],
-    ids=["unknown provider", "missing code"],
+    ids=["unknown provider", "missing code", "missing nonce"],
 )
 def test_login_names_the_invalid_field(api_client, data, field):
     response = api_client.post(reverse("api:v1:login:social"), data)

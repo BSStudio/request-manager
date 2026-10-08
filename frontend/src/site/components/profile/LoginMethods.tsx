@@ -14,7 +14,7 @@ import { toast } from 'sonner';
 
 import { getApiErrorMessage } from 'api/errors';
 import { meApi } from 'api/http';
-import type { User } from 'api/models';
+import type { OAuth2ConnectRequest, User } from 'api/models';
 import { meQuery } from 'helpers/session';
 import {
   AuthSchIcon,
@@ -82,15 +82,11 @@ export default function LoginMethods({ user }: { user: User }) {
     queryClient.invalidateQueries({ queryKey: meQuery().queryKey });
 
   const connect = useMutation({
-    mutationFn: (values: {
-      code: string;
-      nonce?: string;
-      provider: OAuthProvider;
-    }) =>
-      meApi.meSocialCreate(values.provider, {
-        code: values.code,
-        nonce: values.nonce,
-      }),
+    mutationFn: ({
+      provider,
+      ...request
+    }: OAuth2ConnectRequest & { provider: OAuthProvider }) =>
+      meApi.meSocialCreate(provider, request),
     onError: (error) =>
       toast.error('Nem sikerült összekapcsolni a fiókot.', {
         description: getApiErrorMessage(error),
@@ -118,7 +114,7 @@ export default function LoginMethods({ user }: { user: User }) {
   // The provider sends the user back here through /redirect with a code.
   const { mutate: connectAccount } = connect;
   useEffect(() => {
-    if (code && provider && !attempted.current) {
+    if (code && nonce && provider && !attempted.current) {
       attempted.current = true;
       connectAccount({ code, nonce, provider });
     }
@@ -193,8 +189,8 @@ export default function LoginMethods({ user }: { user: User }) {
                     disabled={busy}
                     onClick={() => {
                       setRedirecting(method);
-                      window.location.assign(
-                        getAuthorizationUrl(method, 'profile'),
+                      void getAuthorizationUrl(method, 'profile').then((url) =>
+                        window.location.assign(url),
                       );
                     }}
                     size="sm"

@@ -26,26 +26,25 @@ pytestmark = pytest.mark.django_db
 by_name = {"ids": lambda provider: provider.name}
 
 
-def log_in(api_client, mocked):
+def log_in(api_client, mocked, nonce=None):
     return api_client.post(
         reverse("api:v1:login:social"),
-        {"provider": mocked.name, "code": mocked.code(), "nonce": mocked.nonce},
+        {
+            "provider": mocked.name,
+            "code": mocked.code(),
+            "nonce": mocked.browser_nonce if nonce is None else nonce,
+        },
     )
 
 
 @pytest.mark.parametrize("provider", [AUTHSCH, BSS_LOGIN], **by_name)
-@pytest.mark.parametrize(
-    "nonce", [{}, {"nonce": "someone-elses"}], ids=["missing", "foreign"]
-)
+@pytest.mark.parametrize("nonce", ["", "someone-elses"], ids=["empty", "foreign"])
 def test_openid_login_needs_the_nonce_of_the_browser_that_started_it(
     api_client, mock_provider, provider, nonce
 ):
     mocked = mock_provider(provider)
 
-    response = api_client.post(
-        reverse("api:v1:login:social"),
-        {"provider": mocked.name, "code": mocked.code(), **nonce},
-    )
+    response = log_in(api_client, mocked, nonce)
 
     assert response.status_code == HTTP_400_BAD_REQUEST
     assert (
@@ -53,6 +52,18 @@ def test_openid_login_needs_the_nonce_of_the_browser_that_started_it(
         .objects.filter(email__iexact=provider.user_data_body["email"])
         .exists()
     )
+
+
+@pytest.mark.parametrize("provider", [AUTHSCH, BSS_LOGIN], **by_name)
+def test_openid_login_does_not_accept_the_nonce_the_provider_got(
+    api_client, mock_provider, provider
+):
+    # That is the hash, which the state in the redirect URL gives away too.
+    mocked = mock_provider(provider)
+
+    response = log_in(api_client, mocked, mocked.nonce)
+
+    assert response.status_code == HTTP_400_BAD_REQUEST
 
 
 @pytest.mark.parametrize("provider", [AUTHSCH, BSS_LOGIN], **by_name)

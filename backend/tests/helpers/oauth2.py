@@ -1,5 +1,6 @@
 """Mocked OAuth2 identity providers for the login and connect tests."""
 
+import hashlib
 import json
 import random
 import re
@@ -79,9 +80,9 @@ class MockedProvider:
         )
         # Force backends loading, to trash the PSA cache.
         load_backends((provider.backend_path,), force_load=True)
-        #: Goes into the ID token. The browser that started an API login keeps it
-        #: and sends it with the code.
-        self.nonce = token_urlsafe()
+        self.browser_nonce = token_urlsafe()
+        #: Goes into the ID token.
+        self.nonce = hashlib.sha256(self.browser_nonce.encode()).hexdigest()
 
     @property
     def name(self):

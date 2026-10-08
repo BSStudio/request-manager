@@ -99,7 +99,7 @@ export function whenSessionChecked() {
   return sessionCheck;
 }
 
-export async function signIn(provider: string, code: string, nonce?: string) {
+export async function signIn(provider: string, code: string, nonce: string) {
   // The check's 401 for an expired session would clear the new one.
   await sessionCheck;
   const { data } = await loginApi.loginSocialCreate({ code, nonce, provider });

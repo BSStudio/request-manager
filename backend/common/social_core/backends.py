@@ -1,19 +1,21 @@
+import hashlib
+
 from django.utils.crypto import constant_time_compare
 from social_core.backends.open_id_connect import OpenIdConnectAuth
 from social_core.exceptions import AuthTokenError
 
-from common.social_core.strategy import DRFStrategy
-
 
 class BrowserNonceOpenIdConnectAuth(OpenIdConnectAuth):
-    # For the API, the frontend builds the authorization URL, so social_core has no
-    # stored nonce to check. The browser sends its own with the code instead.
+    # Set by the API views. There the frontend builds the authorization URL, so
+    # social_core stored no nonce, and the provider got this one's SHA-256 hash.
+    browser_nonce = None
+
     def validate_claims(self, id_token):
-        if not isinstance(self.strategy, DRFStrategy):
+        if self.browser_nonce is None:
             return super().validate_claims(id_token)
         self.validate_temporal_claims(id_token)
-        nonce = self.data.get("nonce")
-        if not nonce or not constant_time_compare(nonce, id_token.get("nonce", "")):
+        nonce = hashlib.sha256(self.browser_nonce.encode()).hexdigest()
+        if not constant_time_compare(nonce, id_token.get("nonce", "")):
             raise AuthTokenError(self, "Incorrect id_token: nonce")
 
 

@@ -2807,6 +2807,7 @@ components:
           minLength: 1
       required:
         - code
+        - nonce
     PaginatedRequestAdminListList:
       type: object
       properties:
@@ -3687,6 +3688,7 @@ components:
           minLength: 1
       required:
         - code
+        - nonce
         - provider
     StatusEnum:
       enum:

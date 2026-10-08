@@ -4,19 +4,17 @@ export type OAuthProvider =
 export type OAuthOperation = 'login' | 'profile';
 
 type OAuthState = {
-  nonce: string;
+  hashedNonce: string;
   operation: OAuthOperation;
   provider: OAuthProvider;
 };
+
+type StoredNonce = { hashedNonce: string; nonce: string };
 
 const STATE_KEY = 'oauth-state';
 
 // Registered at the providers, so the path must not change.
 const redirectUri = `${window.location.origin}/redirect`;
-
-// Their ID token carries the nonce, which the backend matches against the one
-// sent with the code.
-const openIdProviders = new Set<OAuthProvider>(['authsch', 'bss-login']);
 
 const providers: Record<
   OAuthProvider,
@@ -61,36 +59,52 @@ const providers: Record<
   },
 };
 
-export function getAuthorizationUrl(
+async function sha256(text: string) {
+  const digest = await crypto.subtle.digest(
+    'SHA-256',
+    new TextEncoder().encode(text),
+  );
+  return Array.from(new Uint8Array(digest), (byte) =>
+    byte.toString(16).padStart(2, '0'),
+  ).join('');
+}
+
+// URLs only ever carry the nonce's hash, the nonce itself goes to the backend
+// with the code. So a leaked redirect URL is not enough to redeem the code.
+export async function getAuthorizationUrl(
   provider: OAuthProvider,
   operation: OAuthOperation,
 ) {
   const nonce = crypto.randomUUID();
-  localStorage.setItem(STATE_KEY, nonce);
+  const hashedNonce = await sha256(nonce);
+  const stored: StoredNonce = { hashedNonce, nonce };
+  localStorage.setItem(STATE_KEY, JSON.stringify(stored));
 
-  const state: OAuthState = { nonce, operation, provider };
+  const state: OAuthState = { hashedNonce, operation, provider };
   const { params, url } = providers[provider];
   const query = new URLSearchParams({
     ...params,
-    ...(openIdProviders.has(provider) && { nonce }),
+    nonce: hashedNonce,
     response_type: 'code',
     state: btoa(JSON.stringify(state)),
   });
   return `${url}?${query}`;
 }
 
-// Only accepts the state if it carries the nonce this browser sent, so a link
+// Only accepts the state if it carries this browser's hashed nonce, so a link
 // with someone else's code cannot log the user into their account. The code is
 // missing when the user cancelled at the provider.
 export function readAuthorizationResponse(search: string) {
   const params = new URLSearchParams(search);
-  const nonce = localStorage.getItem(STATE_KEY);
 
   try {
+    const { hashedNonce, nonce } = JSON.parse(
+      localStorage.getItem(STATE_KEY) ?? '',
+    ) as StoredNonce;
     const state = JSON.parse(atob(params.get('state') ?? '')) as OAuthState;
     if (
-      nonce &&
-      state.nonce === nonce &&
+      hashedNonce &&
+      state.hashedNonce === hashedNonce &&
       state.provider in providers &&
       ['login', 'profile'].includes(state.operation)
     ) {

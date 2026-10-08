@@ -108,6 +108,7 @@ class OAuth2ConnectDisconnectView(GenericAPIView):
         try:
             request.backend.REDIRECT_STATE = False
             request.backend.STATE_PARAMETER = False
+            request.backend.browser_nonce = serializer.validated_data["nonce"]
 
             user = request.backend.complete(user=self.request.user)
 
