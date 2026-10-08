@@ -10,6 +10,12 @@ from video_requests.models import Comment, Request, Todo, Video
 TEXT_HTML = "text/html"
 
 
+def get_email_avatar_url(user):
+    # Microsoft avatars are stored as data: URIs, which Gmail and Outlook do not show.
+    url = user.avatar_url
+    return url if url and not url.lower().startswith("data:") else None
+
+
 @shared_task
 def email_user_new_request_confirmation(request_id):
     request = Request.objects.get(pk=request_id)  # nosec B113
@@ -73,6 +79,7 @@ def email_user_new_comment(comment_id):
     comment = Comment.objects.get(pk=comment_id)  # nosec B113
     context = {
         "comment": comment,
+        "commenter_avatar_url": get_email_avatar_url(comment.author),
         "commenter_name": comment.author.get_full_name_eastern_order(),
     }
 
@@ -140,6 +147,7 @@ def email_crew_new_comment(comment_id):
     comment = Comment.objects.get(pk=comment_id)  # nosec B113
     context = {
         "comment": comment,
+        "commenter_avatar_url": get_email_avatar_url(comment.author),
         "commenter_name": comment.author.get_full_name_eastern_order(),
     }
 
