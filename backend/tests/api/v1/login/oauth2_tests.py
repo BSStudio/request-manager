@@ -11,6 +11,7 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework.reverse import reverse
 from rest_framework.status import HTTP_200_OK, HTTP_302_FOUND, HTTP_400_BAD_REQUEST
+from social_core.exceptions import AuthTokenError
 
 from tests.factories import make_user
 from tests.helpers.oauth2_providers import (
@@ -23,7 +24,9 @@ from tests.helpers.oauth2_providers import (
 
 pytestmark = pytest.mark.django_db
 
-by_name = {"ids": lambda provider: provider.name}
+OPENID_PROVIDERS = pytest.mark.parametrize(
+    "provider", [AUTHSCH, BSS_LOGIN], ids=lambda provider: provider.name
+)
 
 
 def log_in(api_client, mocked, nonce=None):
@@ -37,7 +40,18 @@ def log_in(api_client, mocked, nonce=None):
     )
 
 
-@pytest.mark.parametrize("provider", [AUTHSCH, BSS_LOGIN], **by_name)
+def log_in_to_django_admin(client, mocked, nonce=None):
+    # Here social_django builds the authorization URL, not the frontend.
+    start = client.post(reverse("social:begin", args=[mocked.name]))
+    query = parse_qs(urlparse(start.url).query)
+    mocked.nonce = query["nonce"][0] if nonce is None else nonce
+    return client.get(
+        reverse("social:complete", args=[mocked.name]),
+        {"code": mocked.code(), "state": query["state"][0]},
+    )
+
+
+@OPENID_PROVIDERS
 @pytest.mark.parametrize("nonce", ["", "someone-elses"], ids=["empty", "foreign"])
 def test_openid_login_needs_the_nonce_of_the_browser_that_started_it(
     api_client, mock_provider, provider, nonce
@@ -54,7 +68,7 @@ def test_openid_login_needs_the_nonce_of_the_browser_that_started_it(
     )
 
 
-@pytest.mark.parametrize("provider", [AUTHSCH, BSS_LOGIN], **by_name)
+@OPENID_PROVIDERS
 def test_openid_login_does_not_accept_the_nonce_the_provider_got(
     api_client, mock_provider, provider
 ):
@@ -66,7 +80,7 @@ def test_openid_login_does_not_accept_the_nonce_the_provider_got(
     assert response.status_code == HTTP_400_BAD_REQUEST
 
 
-@pytest.mark.parametrize("provider", [AUTHSCH, BSS_LOGIN], **by_name)
+@OPENID_PROVIDERS
 def test_openid_login_allows_the_provider_clock_to_run_ahead(
     api_client, mock_provider, provider
 ):
@@ -76,23 +90,23 @@ def test_openid_login_allows_the_provider_clock_to_run_ahead(
     assert log_in(api_client, mocked).status_code == HTTP_200_OK
 
 
-@pytest.mark.parametrize("provider", [AUTHSCH, BSS_LOGIN], **by_name)
+@OPENID_PROVIDERS
 def test_django_admin_login_checks_the_nonce_social_core_stored(
     client, mock_provider, provider
 ):
-    # Here social_django builds the authorization URL, not the frontend.
-    mocked = mock_provider(provider)
-    start = client.post(reverse("social:begin", args=[provider.name]))
-    query = parse_qs(urlparse(start.url).query)
-    mocked.nonce = query["nonce"][0]
-
-    response = client.get(
-        reverse("social:complete", args=[provider.name]),
-        {"code": mocked.code(), "state": query["state"][0]},
-    )
+    response = log_in_to_django_admin(client, mock_provider(provider))
 
     assert response.status_code == HTTP_302_FOUND
     assert response.url == settings.SOCIAL_AUTH_LOGIN_REDIRECT_URL
+
+
+@OPENID_PROVIDERS
+@pytest.mark.parametrize("nonce", ["", "someone-elses"], ids=["empty", "foreign"])
+def test_django_admin_login_rejects_a_nonce_social_core_did_not_store(
+    client, mock_provider, provider, nonce
+):
+    with pytest.raises(AuthTokenError, match="nonce"):
+        log_in_to_django_admin(client, mock_provider(provider), nonce)
 
 
 def test_login_matches_an_inactive_placeholder_account(api_client, mock_provider):
