@@ -40,7 +40,7 @@ def sentry_tunnel(request):
     if dsn != settings.SENTRY_FRONTEND_DSN:
         return HttpResponseBadRequest()
 
-    dsn = urlsplit(dsn)
+    dsn = urlsplit(settings.SENTRY_FRONTEND_DSN)
     try:
         response = requests.post(
             f"https://{dsn.hostname}/api{dsn.path}/envelope/",
