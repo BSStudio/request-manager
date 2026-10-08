@@ -25,6 +25,7 @@ type NoSignalProps = {
   actions: ReactNode;
   children: ReactNode;
   code: string;
+  footer?: ReactNode;
   title: string;
 };
 
@@ -32,6 +33,7 @@ export default function NoSignal({
   actions,
   children,
   code,
+  footer,
   title,
 }: NoSignalProps) {
   return (
@@ -70,6 +72,9 @@ export default function NoSignal({
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           {actions}
         </div>
+        {footer && (
+          <div className="mt-8 border-t border-white/10 pt-6">{footer}</div>
+        )}
       </div>
     </section>
   );
