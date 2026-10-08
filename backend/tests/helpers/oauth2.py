@@ -1,5 +1,6 @@
 """Mocked OAuth2 identity providers for the login and connect tests."""
 
+import functools
 import hashlib
 import json
 import random
@@ -28,8 +29,6 @@ from common.social_core.helpers import load_strategy
 
 GRAVATAR_URL = re.compile(r"https://(www|secure)\.gravatar\.com/avatar/.*")
 
-#: Signs the ID tokens of every mocked OpenID Connect provider.
-ID_TOKEN_KEY = rsa.generate_private_key(public_exponent=65537, key_size=2048)
 ID_TOKEN_KEY_ID = "test-key"
 
 #: social_core caches these across tests; every test has to start from empty.
@@ -63,6 +62,15 @@ class Provider:
 def reset_social_core_caches():
     for cache in SOCIAL_CORE_CACHES:
         cache.reset_cache()
+    # Kept for a day, so the first test's mocked answers would reach all later ones.
+    OpenIdConnectAuth.oidc_config.invalidate()
+    OpenIdConnectAuth.get_jwks_keys.invalidate()
+
+
+@functools.cache
+def id_token_key():
+    """Signs the ID tokens of every mocked OpenID Connect provider."""
+    return rsa.generate_private_key(public_exponent=65537, key_size=2048)
 
 
 class MockedProvider:
@@ -136,7 +144,7 @@ class MockedProvider:
             },
         )
         jwk = jwt.algorithms.RSAAlgorithm.to_jwk(
-            ID_TOKEN_KEY.public_key(), as_dict=True
+            id_token_key().public_key(), as_dict=True
         )
         responses.get(
             f"{endpoint}/jwks",
@@ -156,7 +164,7 @@ class MockedProvider:
             "nonce": self.nonce,
         }
         return jwt.encode(
-            claims, ID_TOKEN_KEY, algorithm="RS256", headers={"kid": ID_TOKEN_KEY_ID}
+            claims, id_token_key(), algorithm="RS256", headers={"kid": ID_TOKEN_KEY_ID}
         )
 
     def _target_url(self, start_url):
