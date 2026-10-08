@@ -13,6 +13,8 @@ from rest_framework.status import (
     HTTP_502_BAD_GATEWAY,
 )
 
+from core.settings import base as base_settings
+
 DSN = "https://public@o1.ingest.sentry.io/2"
 ENVELOPE_URL = "https://o1.ingest.sentry.io/api/2/envelope/"
 
@@ -89,7 +91,10 @@ def test_rejects_other_dsn(client, dsn):
 
 
 @responses.activate
-@pytest.mark.parametrize("body", ["", "not json", "[]"])
+@pytest.mark.parametrize(
+    "body",
+    ["", "not json", "[]", pytest.param("[" * 100_000, id="deeply_nested")],
+)
 def test_rejects_malformed_envelope(client, body):
     response = post_envelope(client, body)
 
@@ -110,3 +115,9 @@ def test_only_post(client):
     response = client.get(reverse("api:v1:misc:sentry_tunnel"))
 
     assert response.status_code == HTTP_405_METHOD_NOT_ALLOWED
+
+
+def test_frontend_dsn_matches_frontend_build():
+    env = (base_settings.FRONTEND_DIR / ".env.production").read_text(encoding="utf-8")
+
+    assert f"VITE_SENTRY_URL = {base_settings.SENTRY_FRONTEND_DSN}\n" in env

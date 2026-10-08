@@ -9,15 +9,11 @@ logger = logging.getLogger("api.access")
 
 
 class SentryUserMiddleware:
-    """Tells Sentry who hit an error by user ID only, see SENTRY_DATA_COLLECTION.
-
-    Requests with an API token are left out, as DRF authenticates them later.
-    """
-
     def __init__(self, get_response):
         self.get_response = get_response
 
     def __call__(self, request):
+        # Requests with an API token are left out: DRF authenticates them later.
         if request.user.is_authenticated:
             sentry_sdk.set_user({"id": request.user.pk})
         return self.get_response(request)

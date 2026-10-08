@@ -33,11 +33,11 @@ GOOGLE_CALENDAR_ID = config("GOOGLE_CALENDAR_ID")
 
 sentry_sdk.init(
     data_collection=SENTRY_DATA_COLLECTION,
+    disabled_integrations=[RedisIntegration()],
     dsn=config("SENTRY_URL"),
     integrations=[
         CeleryIntegration(monitor_beat_tasks=True),
         DjangoIntegration(middleware_spans=True),
-        RedisIntegration(),
     ],
 )
 ignore_logger("django.security.DisallowedHost")

@@ -389,19 +389,21 @@ TURNSTILE_SECRET_KEY = config("TURNSTILE_SECRET_KEY", default=None)
 # https://docs.sentry.io/platforms/python/configuration/options/#data_collection
 
 # Personal data stays out of Sentry, a third-party service: no names, e-mail or
-# IP addresses, request bodies or task arguments. SentryUserMiddleware adds the
-# user ID.
-_SENTRY_PRIVATE_KEYS = {
-    "mode": "denylist",
-    "terms": ["forwarded", "-ip", "remote-", "via", "-user"],
-}
+# IP addresses, local variables, query strings, request bodies or task
+# arguments. SentryUserMiddleware adds the user ID.
 SENTRY_DATA_COLLECTION = {
     "cookies": {"mode": "off"},
     "database_query_data": False,
     "http_bodies": [],
-    "http_headers": {"request": _SENTRY_PRIVATE_KEYS},
+    "http_headers": {
+        "request": {
+            "mode": "denylist",
+            "terms": ["forwarded", "-ip", "referer", "remote-", "via", "-user"],
+        },
+    },
     "queues": False,
-    "url_query_params": _SENTRY_PRIVATE_KEYS,
+    "stack_frame_variables": False,
+    "url_query_params": {"mode": "off"},
     "user_info": False,
 }
 

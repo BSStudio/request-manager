@@ -44,11 +44,12 @@ GOOGLE_CALENDAR_ID = config("GOOGLE_CALENDAR_ID")
 
 sentry_sdk.init(
     data_collection=SENTRY_DATA_COLLECTION,
+    # It records Redis keys, and the session cache keys are the session IDs.
+    disabled_integrations=[RedisIntegration()],
     dsn=config("SENTRY_URL"),
     integrations=[
         CeleryIntegration(monitor_beat_tasks=True),
         DjangoIntegration(middleware_spans=True),
-        RedisIntegration(),
     ],
     # Set traces_sample_rate to 1.0 to capture 100%
     # of transactions for performance monitoring.

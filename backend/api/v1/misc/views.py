@@ -35,7 +35,7 @@ def sentry_tunnel(request):
     envelope_header = request.body.split(b"\n", 1)[0]
     try:
         dsn = json.loads(envelope_header).get("dsn")
-    except (AttributeError, ValueError):
+    except (AttributeError, RecursionError, ValueError):
         return HttpResponseBadRequest()
     if dsn != settings.SENTRY_FRONTEND_DSN:
         return HttpResponseBadRequest()
@@ -46,7 +46,8 @@ def sentry_tunnel(request):
             f"https://{dsn.hostname}/api{dsn.path}/envelope/",
             data=request.body,
             headers={"Content-Type": "application/x-sentry-envelope"},
-            timeout=10,
+            # Short, so a slow Sentry cannot hold up all request threads.
+            timeout=(2, 5),
         )
     except RequestException:
         return HttpResponse(status=502)
