@@ -384,6 +384,15 @@ HEALTH_CHECK_READINESS_CHECKS = [
 
 TURNSTILE_SECRET_KEY = config("TURNSTILE_SECRET_KEY", default=None)
 
+# Sentry tunnel
+# https://docs.sentry.io/platforms/javascript/troubleshooting/#using-the-tunnel-option
+
+# The only DSN the tunnel passes reports on to. Keep it the same as
+# VITE_SENTRY_URL in frontend/.env.production.
+SENTRY_FRONTEND_DSN = (
+    "https://5d84e5aa35114e5bbe49ca9b8a013440@o354977.ingest.sentry.io/5989036"
+)
+
 # drf-spectacular
 # https://drf-spectacular.readthedocs.io/en/latest/
 

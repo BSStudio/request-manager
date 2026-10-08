@@ -56,5 +56,6 @@ export function initSentry(app: 'admin' | 'site') {
         useNavigationType,
       }),
     ],
+    tunnel: '/api/v1/misc/tunnel',
   });
 }
