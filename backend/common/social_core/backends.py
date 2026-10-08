@@ -6,9 +6,18 @@ from social_core.exceptions import AuthTokenError
 
 
 class BrowserNonceOpenIdConnectAuth(OpenIdConnectAuth):
+    # Seconds the provider's clock may run ahead of ours.
+    JWT_LEEWAY = 60
+
     # Set by the API views. There the frontend builds the authorization URL, so
     # social_core stored no nonce, and the provider got this one's SHA-256 hash.
     browser_nonce = None
+
+    def validate_temporal_claims(self, id_token):
+        # PyJWT already checked nbf with the leeway, social_core would again without.
+        super().validate_temporal_claims(
+            {claim: value for claim, value in id_token.items() if claim != "nbf"}
+        )
 
     def validate_claims(self, id_token):
         if self.browser_nonce is None:

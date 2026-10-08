@@ -83,6 +83,7 @@ class MockedProvider:
         self.browser_nonce = token_urlsafe()
         #: Goes into the ID token.
         self.nonce = hashlib.sha256(self.browser_nonce.encode()).hexdigest()
+        self.clock_ahead_seconds = 0
 
     @property
     def name(self):
@@ -143,13 +144,14 @@ class MockedProvider:
         )
 
     def id_token(self):
-        now = int(time.time())
+        now = int(time.time()) + self.clock_ahead_seconds
         client_id, _ = self.backend.get_key_and_secret()
         claims = {
             "iss": self.backend.OIDC_ENDPOINT,
             "sub": self.provider.user_data_body["sub"],
             "aud": client_id,
             "iat": now,
+            "nbf": now,
             "exp": now + 300,
             "nonce": self.nonce,
         }

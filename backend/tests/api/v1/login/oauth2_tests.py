@@ -67,6 +67,16 @@ def test_openid_login_does_not_accept_the_nonce_the_provider_got(
 
 
 @pytest.mark.parametrize("provider", [AUTHSCH, BSS_LOGIN], **by_name)
+def test_openid_login_allows_the_provider_clock_to_run_ahead(
+    api_client, mock_provider, provider
+):
+    mocked = mock_provider(provider)
+    mocked.clock_ahead_seconds = 30
+
+    assert log_in(api_client, mocked).status_code == HTTP_200_OK
+
+
+@pytest.mark.parametrize("provider", [AUTHSCH, BSS_LOGIN], **by_name)
 def test_django_admin_login_checks_the_nonce_social_core_stored(
     client, mock_provider, provider
 ):
