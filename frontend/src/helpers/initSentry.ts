@@ -1,12 +1,18 @@
 import { useEffect } from 'react';
 
-import { init, reactRouterBrowserTracingIntegration } from '@sentry/react';
+import {
+  addEventProcessor,
+  init,
+  reactRouterBrowserTracingIntegration,
+} from '@sentry/react';
 import {
   createRoutesFromChildren,
   matchRoutes,
   useLocation,
   useNavigationType,
 } from 'react-router';
+
+import { getUserId, hasSession } from 'helpers/LocalStorageHelper';
 
 const privateHeaders = {
   deny: ['forwarded', '-ip', 'remote-', 'via', '-user'],
@@ -42,4 +48,8 @@ export function initSentry(app: 'admin' | 'site') {
     tracesSampleRate: 0.15,
     tunnel: '/api/v1/misc/tunnel',
   });
+  // Only the ID: personal data stays out of Sentry.
+  addEventProcessor((event) =>
+    hasSession() ? { ...event, user: { id: getUserId() } } : event,
+  );
 }
