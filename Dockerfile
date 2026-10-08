@@ -26,8 +26,11 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 # Copy everything over to Docker environment
 COPY ./frontend /app/frontend
 
-# Build the frontend
-RUN pnpm run build
+# Build the frontend; the Sentry plugin injects the release and, given the
+# token, uploads the source maps and removes them from the build
+ARG SENTRY_RELEASE
+RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN,env=SENTRY_AUTH_TOKEN \
+    pnpm run build
 
 ##################################################
 

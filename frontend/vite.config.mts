@@ -1,5 +1,6 @@
 import path from 'path';
 
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
 import basicSsl from '@vitejs/plugin-basic-ssl';
 import react from '@vitejs/plugin-react';
@@ -8,13 +9,17 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const { BACKEND_URL } = loadEnv(mode, import.meta.dirname, '');
+  const { BACKEND_URL, SENTRY_AUTH_TOKEN } = loadEnv(
+    mode,
+    import.meta.dirname,
+    '',
+  );
 
   return {
     build: {
       assetsDir: 'static/frontend',
       outDir: 'build',
-      // sourcemap: true, // When you want to use source-map-explorer
+      sourcemap: 'hidden',
     },
     plugins: [
       basicSsl(),
@@ -26,6 +31,8 @@ export default defineConfig(({ mode }) => {
           globIgnores: ['service-worker.js'],
           // Fonts and images are cached by the worker when first used.
           globPatterns: ['index.html', '**/*.{css,js}', '*.{png,svg}'],
+          // The service worker does not report to Sentry.
+          sourcemap: false,
         },
         injectRegister: false,
         manifest: {
@@ -72,6 +79,21 @@ export default defineConfig(({ mode }) => {
         registerType: 'prompt',
         srcDir: 'src',
         strategies: 'injectManifest',
+      }),
+      // Injects the release from SENTRY_RELEASE. Without the token the source
+      // maps are not uploaded, but kept for `pnpm analyze`.
+      sentryVitePlugin({
+        authToken: SENTRY_AUTH_TOKEN,
+        org: 'budavari-schonherz-studio',
+        project: 'request-manager-frontend',
+        // The release workflow creates the releases with their commits. Builds
+        // from main must not create one: a commit hash among the recent
+        // releases makes Sentry stop treating releases as versions.
+        release: { create: false, finalize: false, setCommits: false },
+        sourcemaps: {
+          filesToDeleteAfterUpload: SENTRY_AUTH_TOKEN ? 'build/**/*.map' : [],
+        },
+        telemetry: false,
       }),
     ],
     resolve: {
