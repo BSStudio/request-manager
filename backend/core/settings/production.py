@@ -43,6 +43,7 @@ GOOGLE_CALENDAR_ID = config("GOOGLE_CALENDAR_ID")
 # https://sentry.io
 
 sentry_sdk.init(
+    data_collection=SENTRY_DATA_COLLECTION,
     dsn=config("SENTRY_URL"),
     integrations=[
         CeleryIntegration(monitor_beat_tasks=True),
@@ -53,8 +54,5 @@ sentry_sdk.init(
     # of transactions for performance monitoring.
     # We recommend adjusting this value in production,
     traces_sample_rate=0.15,
-    # If you wish to associate users to errors (assuming you are using
-    # django.contrib.auth) you may enable sending PII data.
-    send_default_pii=True,
 )
 ignore_logger("django.security.DisallowedHost")

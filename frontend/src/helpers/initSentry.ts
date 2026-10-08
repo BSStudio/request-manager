@@ -39,6 +39,7 @@ export function initSentry(app: 'admin' | 'site') {
         useNavigationType,
       }),
     ],
+    tracesSampleRate: 0.15,
     tunnel: '/api/v1/misc/tunnel',
   });
 }

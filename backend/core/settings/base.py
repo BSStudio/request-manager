@@ -82,6 +82,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "common.middleware.SentryUserMiddleware",
     "common.middleware.RequestLoggingMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -384,11 +385,29 @@ HEALTH_CHECK_READINESS_CHECKS = [
 
 TURNSTILE_SECRET_KEY = config("TURNSTILE_SECRET_KEY", default=None)
 
-# Sentry tunnel
-# https://docs.sentry.io/platforms/javascript/troubleshooting/#using-the-tunnel-option
+# Sentry
+# https://docs.sentry.io/platforms/python/configuration/options/#data_collection
 
-# The only DSN the tunnel passes reports on to. Keep it the same as
+# Personal data stays out of Sentry, a third-party service: no names, e-mail or
+# IP addresses, request bodies or task arguments. SentryUserMiddleware adds the
+# user ID.
+_SENTRY_PRIVATE_KEYS = {
+    "mode": "denylist",
+    "terms": ["forwarded", "-ip", "remote-", "via", "-user"],
+}
+SENTRY_DATA_COLLECTION = {
+    "cookies": {"mode": "off"},
+    "database_query_data": False,
+    "http_bodies": [],
+    "http_headers": {"request": _SENTRY_PRIVATE_KEYS},
+    "queues": False,
+    "url_query_params": _SENTRY_PRIVATE_KEYS,
+    "user_info": False,
+}
+
+# The only DSN the Sentry tunnel passes reports on to. Keep it the same as
 # VITE_SENTRY_URL in frontend/.env.production.
+# https://docs.sentry.io/platforms/javascript/troubleshooting/#using-the-tunnel-option
 SENTRY_FRONTEND_DSN = (
     "https://5d84e5aa35114e5bbe49ca9b8a013440@o354977.ingest.sentry.io/5989036"
 )
