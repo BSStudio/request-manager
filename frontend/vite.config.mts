@@ -1,5 +1,6 @@
 import path from 'path';
 
+import { sentryVitePlugin } from '@sentry/vite-plugin';
 import tailwindcss from '@tailwindcss/vite';
 import basicSsl from '@vitejs/plugin-basic-ssl';
 import react from '@vitejs/plugin-react';
@@ -14,7 +15,7 @@ export default defineConfig(({ mode }) => {
     build: {
       assetsDir: 'static/frontend',
       outDir: 'build',
-      // sourcemap: true, // When you want to use source-map-explorer
+      sourcemap: 'hidden',
     },
     plugins: [
       basicSsl(),
@@ -26,6 +27,8 @@ export default defineConfig(({ mode }) => {
           globIgnores: ['service-worker.js'],
           // Fonts and images are cached by the worker when first used.
           globPatterns: ['index.html', '**/*.{css,js}', '*.{png,svg}'],
+          // The service worker does not report to Sentry.
+          sourcemap: false,
         },
         injectRegister: false,
         manifest: {
@@ -72,6 +75,21 @@ export default defineConfig(({ mode }) => {
         registerType: 'prompt',
         srcDir: 'src',
         strategies: 'injectManifest',
+      }),
+      // Injects the release from SENTRY_RELEASE and, given SENTRY_AUTH_TOKEN,
+      // uploads the source maps.
+      sentryVitePlugin({
+        // Docker caches a passed build step, so a failed upload would never
+        // be retried.
+        errorHandler: (error) => {
+          throw error;
+        },
+        org: 'budavari-schonherz-studio',
+        project: 'request-manager-frontend',
+        // Only tagged versions become releases, created with their commits by
+        // the release workflow.
+        release: { create: false, finalize: false, setCommits: false },
+        telemetry: false,
       }),
     ],
     resolve: {

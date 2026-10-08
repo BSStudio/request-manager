@@ -2,9 +2,30 @@ import logging
 import time
 from ipaddress import ip_address
 
+import sentry_sdk
 from django.conf import settings
 
 logger = logging.getLogger("api.access")
+
+
+class SentryUserMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        # The user is read when an event is sent, as DRF authenticates API
+        # tokens only in the view. Without Sentry, the scope is not per request.
+        if sentry_sdk.is_initialized():
+            sentry_sdk.get_isolation_scope().add_event_processor(
+                lambda event, hint: self._add_user_id(event, request)
+            )
+        return self.get_response(request)
+
+    @staticmethod
+    def _add_user_id(event, request):
+        if request.user.is_authenticated:
+            event["user"] = {"id": request.user.pk}
+        return event
 
 
 class RequestLoggingMiddleware:

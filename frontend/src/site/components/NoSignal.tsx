@@ -21,10 +21,14 @@ const middleBars = [
 ];
 const bottomBars = ['#00214c', '#ffffff', '#32006a', '#131313'];
 
+export const outlineOnInk =
+  'border-white/20 bg-transparent text-white hover:bg-white/10 hover:text-white dark:border-white/20 dark:bg-transparent dark:hover:bg-white/10';
+
 type NoSignalProps = {
   actions: ReactNode;
   children: ReactNode;
   code: string;
+  footer?: ReactNode;
   title: string;
 };
 
@@ -32,6 +36,7 @@ export default function NoSignal({
   actions,
   children,
   code,
+  footer,
   title,
 }: NoSignalProps) {
   return (
@@ -70,6 +75,9 @@ export default function NoSignal({
         <div className="mt-8 flex flex-wrap justify-center gap-3">
           {actions}
         </div>
+        {footer && (
+          <div className="mt-8 border-t border-white/10 pt-6">{footer}</div>
+        )}
       </div>
     </section>
   );

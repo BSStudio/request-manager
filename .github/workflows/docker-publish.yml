@@ -30,6 +30,8 @@ jobs:
       # Mint the OIDC token and write the build provenance attestation.
       id-token: write
       attestations: write
+    outputs:
+      release: ${{ steps.release.outputs.name }}
 
     steps:
       - name: Checkout repository
@@ -57,6 +59,16 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
 
+      # Sentry reads package@version names as semantic versions.
+      - name: Name the Sentry release
+        id: release
+        run: |
+          if [ "$GITHUB_REF_TYPE" = tag ]; then
+            echo "name=request-manager@${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+          else
+            echo "name=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Build and push Docker image
         id: build-and-push
         uses: docker/build-push-action@v7.4.0
@@ -65,6 +77,10 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          build-args: SENTRY_RELEASE=${{ steps.release.outputs.name }}
+          # Pull request images are not pushed, and their code is not reviewed
+          # yet, Renovate's included. Without the token the upload is skipped.
+          secrets: ${{ github.event_name != 'pull_request' && format('SENTRY_AUTH_TOKEN={0}', secrets.SENTRY_AUTH_TOKEN) || '' }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           # Provenance handled by the attest step below; buildkit's own
@@ -82,3 +98,28 @@ jobs:
           # an untagged referrer artifact. Verify with:
           #   gh attestation verify oci://<image> --owner BSStudio
           push-to-registry: false
+
+  sentry-release:
+    name: Create Sentry release
+    needs: build-and-push
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Create Sentry release
+        uses: getsentry/action-release@v3.7.1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: budavari-schonherz-studio
+        with:
+          projects: request-manager-backend request-manager-frontend
+          release: ${{ needs.build-and-push.outputs.release }}
+          disable_telemetry: true

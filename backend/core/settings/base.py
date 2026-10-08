@@ -82,6 +82,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "common.middleware.SentryUserMiddleware",
     "common.middleware.RequestLoggingMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
@@ -383,6 +384,35 @@ HEALTH_CHECK_READINESS_CHECKS = [
 # https://developers.cloudflare.com/turnstile/
 
 TURNSTILE_SECRET_KEY = config("TURNSTILE_SECRET_KEY", default=None)
+
+# Sentry
+# https://docs.sentry.io/platforms/python/configuration/options/#data_collection
+
+# Personal data stays out of Sentry, a third-party service: no names, e-mail or
+# IP addresses, local variables, query strings, request bodies or task
+# arguments. SentryUserMiddleware adds the user ID.
+SENTRY_DATA_COLLECTION = {
+    "cookies": {"mode": "off"},
+    "database_query_data": False,
+    "http_bodies": [],
+    "http_headers": {
+        "request": {
+            "mode": "denylist",
+            "terms": ["forwarded", "-ip", "referer", "remote-", "via", "-user"],
+        },
+    },
+    "queues": False,
+    "stack_frame_variables": False,
+    "url_query_params": {"mode": "off"},
+    "user_info": False,
+}
+
+# The only DSN the Sentry tunnel passes reports on to. Keep it the same as
+# VITE_SENTRY_URL in frontend/.env.production.
+# https://docs.sentry.io/platforms/javascript/troubleshooting/#using-the-tunnel-option
+SENTRY_FRONTEND_DSN = (
+    "https://5d84e5aa35114e5bbe49ca9b8a013440@o354977.ingest.sentry.io/5989036"
+)
 
 # drf-spectacular
 # https://drf-spectacular.readthedocs.io/en/latest/

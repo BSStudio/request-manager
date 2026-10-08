@@ -82,6 +82,10 @@ Node and Python versions are pinned in a single place each and kept up to date b
 - Node.js — `frontend/.nvmrc`
 - Python — `backend/.python-version`
 
+## Releases
+
+Publishing a GitHub release with a `vX.Y.Z` tag builds the Docker image tagged `X.Y.Z`, `X.Y` and `latest`, and creates the Sentry release `request-manager@X.Y.Z` with its commits. The backend and the frontend report that release with their errors; images built from `main` report the commit hash instead. The workflow needs the `SENTRY_AUTH_TOKEN` repository secret, a Sentry organization token, to create the release and upload the frontend's source maps.
+
 ## License
 
 Distributed under the GNU General Public License v3.0. See [`LICENSE`](LICENSE).

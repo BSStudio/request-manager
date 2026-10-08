@@ -1,7 +1,15 @@
-import pytest
-from django.test import RequestFactory
+from unittest.mock import patch
 
-from common.middleware import RequestLoggingMiddleware
+import pytest
+import sentry_sdk
+from django.contrib.auth.models import AnonymousUser
+from django.http import HttpResponse
+from django.test import RequestFactory
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+from rest_framework.views import APIView
+
+from common.middleware import RequestLoggingMiddleware, SentryUserMiddleware
 
 
 def resolve(remote_addr, forwarded=None):
@@ -43,3 +51,42 @@ def resolve(remote_addr, forwarded=None):
 )
 def test_client_ip(remote_addr, forwarded, expected):
     assert resolve(remote_addr, forwarded) == expected
+
+
+class UserView(APIView):
+    def get(self, request):
+        return Response({"id": request.user.pk})
+
+
+def sentry_user(request, view=lambda request: HttpResponse()):
+    """The user of an event that Sentry sends during the request."""
+    with (
+        sentry_sdk.isolation_scope() as scope,
+        patch("common.middleware.sentry_sdk.is_initialized", return_value=True),
+    ):
+        SentryUserMiddleware(view)(request)
+        return scope.apply_to_event({}, {}).get("user")
+
+
+@pytest.mark.django_db
+def test_sentry_user_is_only_the_id(basic_user):
+    request = RequestFactory().get("/")
+    request.user = basic_user
+
+    assert sentry_user(request) == {"id": basic_user.pk}
+
+
+@pytest.mark.django_db
+def test_sentry_user_of_api_token(service_account):
+    token = Token.objects.get_or_create(user=service_account)[0]
+    request = RequestFactory().get("/", HTTP_AUTHORIZATION=f"Token {token}")
+    request.user = AnonymousUser()
+
+    assert sentry_user(request, UserView.as_view()) == {"id": service_account.pk}
+
+
+def test_sentry_user_not_set_when_logged_out():
+    request = RequestFactory().get("/")
+    request.user = AnonymousUser()
+
+    assert sentry_user(request) is None

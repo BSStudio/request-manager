@@ -7,6 +7,7 @@ import {
   useRouteError,
 } from 'react-router';
 
+import CrashFeedback from 'admin/components/CrashFeedback';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
 import { useReportRouteError } from 'hooks/useReportRouteError';
 
@@ -37,7 +38,7 @@ const ErrorPage = () => {
   const error = useRouteError();
   const navigate = useNavigate();
 
-  useReportRouteError(error);
+  const eventId = useReportRouteError(error);
 
   let status: number | undefined;
   let loadError: string | undefined;
@@ -103,6 +104,11 @@ const ErrorPage = () => {
             }}
           />
         </div>
+        {eventId && (
+          <div className="max-w-30rem mt-6 mx-auto">
+            <CrashFeedback eventId={eventId} key={eventId} />
+          </div>
+        )}
       </div>
     </div>
   );

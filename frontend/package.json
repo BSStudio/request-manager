@@ -62,6 +62,7 @@
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@openapitools/openapi-generator-cli": "2.41.0",
+    "@sentry/vite-plugin": "5.4.1",
     "@tailwindcss/vite": "4.3.3",
     "@tanstack/eslint-plugin-query": "5.103.2",
     "@tanstack/react-query-devtools": "5.103.2",

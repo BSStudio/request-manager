@@ -26,8 +26,11 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 # Copy everything over to Docker environment
 COPY ./frontend /app/frontend
 
-# Build the frontend
-RUN pnpm run build
+# Build the frontend; the Sentry plugin injects the release and, given the
+# token, uploads the source maps, which the image then leaves out
+ARG SENTRY_RELEASE
+RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN,env=SENTRY_AUTH_TOKEN \
+    pnpm run build && find build -name '*.map' -delete
 
 ##################################################
 
@@ -132,6 +135,11 @@ ENTRYPOINT ["/app/entrypoint.sh"]
 # Set health check
 HEALTHCHECK --start-period=20s --interval=30s --retries=5 --timeout=30s \
     CMD python manage.py health_check readyz --no-http
+
+# Release reported to Sentry, picked up by sentry_sdk from the environment.
+# Set late: it changes every build and invalidates the cache of later layers.
+ARG SENTRY_RELEASE
+ENV SENTRY_RELEASE=$SENTRY_RELEASE
 
 # Start the server
 CMD ["gunicorn", "--bind=0.0.0.0:8000", "--workers=5", "--threads=2", "--timeout=60", "--graceful-timeout=30", "core.wsgi"]
