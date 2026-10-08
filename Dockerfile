@@ -27,10 +27,10 @@ RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 COPY ./frontend /app/frontend
 
 # Build the frontend; the Sentry plugin injects the release and, given the
-# token, uploads the source maps and removes them from the build
+# token, uploads the source maps, which the image then leaves out
 ARG SENTRY_RELEASE
 RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN,env=SENTRY_AUTH_TOKEN \
-    pnpm run build
+    pnpm run build && find build -name '*.map' -delete
 
 ##################################################
 

@@ -9,11 +9,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const { BACKEND_URL, SENTRY_AUTH_TOKEN } = loadEnv(
-    mode,
-    import.meta.dirname,
-    '',
-  );
+  const { BACKEND_URL } = loadEnv(mode, import.meta.dirname, '');
 
   return {
     build: {
@@ -80,19 +76,19 @@ export default defineConfig(({ mode }) => {
         srcDir: 'src',
         strategies: 'injectManifest',
       }),
-      // Injects the release from SENTRY_RELEASE. Without the token the source
-      // maps are not uploaded, but kept for `pnpm analyze`.
+      // Injects the release from SENTRY_RELEASE and, given SENTRY_AUTH_TOKEN,
+      // uploads the source maps.
       sentryVitePlugin({
-        authToken: SENTRY_AUTH_TOKEN,
+        // Docker caches a passed build step, so a failed upload would never
+        // be retried.
+        errorHandler: (error) => {
+          throw error;
+        },
         org: 'budavari-schonherz-studio',
         project: 'request-manager-frontend',
-        // The release workflow creates the releases with their commits. Builds
-        // from main must not create one: a commit hash among the recent
-        // releases makes Sentry stop treating releases as versions.
+        // Only tagged versions become releases, created with their commits by
+        // the release workflow.
         release: { create: false, finalize: false, setCommits: false },
-        sourcemaps: {
-          filesToDeleteAfterUpload: SENTRY_AUTH_TOKEN ? 'build/**/*.map' : [],
-        },
         telemetry: false,
       }),
     ],

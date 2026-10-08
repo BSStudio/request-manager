@@ -78,8 +78,9 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           build-args: SENTRY_RELEASE=${{ steps.release.outputs.name }}
-          # Missing on pull requests from forks; the build then skips the upload.
-          secrets: SENTRY_AUTH_TOKEN=${{ secrets.SENTRY_AUTH_TOKEN }}
+          # Pull request images are not pushed, and their code is not reviewed
+          # yet, Renovate's included. Without the token the upload is skipped.
+          secrets: ${{ github.event_name != 'pull_request' && format('SENTRY_AUTH_TOKEN={0}', secrets.SENTRY_AUTH_TOKEN) || '' }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
           # Provenance handled by the attest step below; buildkit's own
