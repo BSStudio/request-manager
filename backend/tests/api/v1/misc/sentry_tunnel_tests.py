@@ -57,6 +57,22 @@ def test_forwards_frontend_envelope(client, status):
 
 
 @responses.activate
+def test_passes_on_rate_limits(client):
+    rate_limits = "60:error:organization:usage_exceeded"
+    responses.post(
+        ENVELOPE_URL,
+        headers={"Retry-After": "60", "X-Sentry-Rate-Limits": rate_limits},
+        status=HTTP_429_TOO_MANY_REQUESTS,
+    )
+
+    response = post_envelope(client, make_envelope(DSN))
+
+    assert response.status_code == HTTP_429_TOO_MANY_REQUESTS
+    assert response["Retry-After"] == "60"
+    assert response["X-Sentry-Rate-Limits"] == rate_limits
+
+
+@responses.activate
 @pytest.mark.parametrize(
     "dsn",
     [

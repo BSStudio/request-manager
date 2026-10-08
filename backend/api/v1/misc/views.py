@@ -50,4 +50,11 @@ def sentry_tunnel(request):
         )
     except RequestException:
         return HttpResponse(status=502)
-    return HttpResponse(status=response.status_code)
+
+    forwarded = HttpResponse(status=response.status_code)
+    # Without these the SDK takes a 429 as a limit on everything and drops even
+    # user feedback for a minute, without trying to send it.
+    for header in ("Retry-After", "X-Sentry-Rate-Limits"):
+        if header in response.headers:
+            forwarded[header] = response.headers[header]
+    return forwarded
