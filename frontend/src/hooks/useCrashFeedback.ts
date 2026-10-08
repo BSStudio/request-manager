@@ -15,7 +15,12 @@ export function useCrashFeedback(eventId: string) {
   const [message, setMessage] = useState('');
   const feedback = useMutation({
     mutationFn: (text: string) =>
-      sendFeedback({ associatedEventId: eventId, message: text }),
+      sendFeedback({
+        associatedEventId: eventId,
+        message: text,
+        // Sentry would send the whole address, query string included.
+        url: window.location.origin + window.location.pathname,
+      }),
     // Offline, Sentry fails at once and the form says so, instead of waiting.
     networkMode: 'always',
   });

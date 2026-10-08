@@ -1,9 +1,13 @@
 from unittest.mock import patch
 
 import pytest
+import sentry_sdk
 from django.contrib.auth.models import AnonymousUser
 from django.http import HttpResponse
 from django.test import RequestFactory
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+from rest_framework.views import APIView
 
 from common.middleware import RequestLoggingMiddleware, SentryUserMiddleware
 
@@ -49,22 +53,40 @@ def test_client_ip(remote_addr, forwarded, expected):
     assert resolve(remote_addr, forwarded) == expected
 
 
-def set_sentry_user(user):
-    request = RequestFactory().get("/")
-    request.user = user
-    with patch("common.middleware.sentry_sdk.set_user") as set_user:
-        SentryUserMiddleware(lambda request: HttpResponse())(request)
-    return set_user
+class UserView(APIView):
+    def get(self, request):
+        return Response({"id": request.user.pk})
+
+
+def sentry_user(request, view=lambda request: HttpResponse()):
+    """The user of an event that Sentry sends during the request."""
+    with (
+        sentry_sdk.isolation_scope() as scope,
+        patch("common.middleware.sentry_sdk.is_initialized", return_value=True),
+    ):
+        SentryUserMiddleware(view)(request)
+        return scope.apply_to_event({}, {}).get("user")
 
 
 @pytest.mark.django_db
 def test_sentry_user_is_only_the_id(basic_user):
-    set_user = set_sentry_user(basic_user)
+    request = RequestFactory().get("/")
+    request.user = basic_user
 
-    set_user.assert_called_once_with({"id": basic_user.pk})
+    assert sentry_user(request) == {"id": basic_user.pk}
+
+
+@pytest.mark.django_db
+def test_sentry_user_of_api_token(service_account):
+    token = Token.objects.get_or_create(user=service_account)[0]
+    request = RequestFactory().get("/", HTTP_AUTHORIZATION=f"Token {token}")
+    request.user = AnonymousUser()
+
+    assert sentry_user(request, UserView.as_view()) == {"id": service_account.pk}
 
 
 def test_sentry_user_not_set_when_logged_out():
-    set_user = set_sentry_user(AnonymousUser())
+    request = RequestFactory().get("/")
+    request.user = AnonymousUser()
 
-    set_user.assert_not_called()
+    assert sentry_user(request) is None
