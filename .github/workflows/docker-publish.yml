@@ -30,6 +30,8 @@ jobs:
       # Mint the OIDC token and write the build provenance attestation.
       id-token: write
       attestations: write
+    outputs:
+      release: ${{ steps.release.outputs.name }}
 
     steps:
       - name: Checkout repository
@@ -95,3 +97,28 @@ jobs:
           # an untagged referrer artifact. Verify with:
           #   gh attestation verify oci://<image> --owner BSStudio
           push-to-registry: false
+
+  sentry-release:
+    name: Create Sentry release
+    needs: build-and-push
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Create Sentry release
+        uses: getsentry/action-release@v3.7.1
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: budavari-schonherz-studio
+        with:
+          projects: request-manager-backend request-manager-frontend
+          release: ${{ needs.build-and-push.outputs.release }}
+          disable_telemetry: true
