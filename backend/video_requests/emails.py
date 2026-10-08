@@ -13,7 +13,7 @@ TEXT_HTML = "text/html"
 def get_email_avatar_url(user):
     # Microsoft avatars are stored as data: URIs, which Gmail and Outlook do not show.
     url = user.avatar_url
-    return url if url and not url.startswith("data:") else None
+    return url if url and not url.lower().startswith("data:") else None
 
 
 @shared_task
