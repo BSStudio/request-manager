@@ -30,7 +30,9 @@ def social_url(provider_name):
 
 
 def connect(api_client, mocked):
-    return api_client.post(social_url(mocked.name), {"code": mocked.code()})
+    return api_client.post(
+        social_url(mocked.name), {"code": mocked.code(), "nonce": mocked.browser_nonce}
+    )
 
 
 class TestConnect:
@@ -92,7 +94,9 @@ class TestConnect:
     def test_an_unknown_provider_is_rejected(self, api_client, basic_user):
         login(api_client, basic_user)
 
-        response = api_client.post(social_url("not-a-provider"), {"code": "whatever"})
+        response = api_client.post(
+            social_url("not-a-provider"), {"code": "whatever", "nonce": "whatever"}
+        )
 
         assert response.status_code == HTTP_400_BAD_REQUEST
         assert response.data["provider"] == "Invalid provider."

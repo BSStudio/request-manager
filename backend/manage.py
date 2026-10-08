@@ -6,8 +6,8 @@ import sys
 
 
 def main():
-    os.environ.setdefault("DJANGO_SETTINGS_MODULE", "core.settings.production")
     try:
+        from decouple import config
         from django.core.management import execute_from_command_line
     except ImportError as exc:
         raise ImportError(
@@ -15,6 +15,10 @@ def main():
             "available on your PYTHONPATH environment variable? Did you "
             "forget to activate a virtual environment?"
         ) from exc
+    os.environ.setdefault(
+        "DJANGO_SETTINGS_MODULE",
+        config("DJANGO_SETTINGS_MODULE", default="core.settings.production"),
+    )
     execute_from_command_line(sys.argv)
 
 

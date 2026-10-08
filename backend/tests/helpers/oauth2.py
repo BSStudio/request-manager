@@ -1,12 +1,20 @@
 """Mocked OAuth2 identity providers for the login and connect tests."""
 
+import functools
+import hashlib
+import json
 import random
 import re
+import time
 from dataclasses import dataclass, field
+from secrets import token_urlsafe
 from string import ascii_letters, digits
 from urllib.parse import urlparse
 
+import jwt
 import responses
+from cryptography.hazmat.primitives.asymmetric import rsa
+from social_core.backends.open_id_connect import OpenIdConnectAuth
 from social_core.backends.utils import load_backends
 from social_core.tests.models import (
     TestAssociation,
@@ -20,6 +28,8 @@ from social_core.utils import module_member, parse_qs, url_add_parameters
 from common.social_core.helpers import load_strategy
 
 GRAVATAR_URL = re.compile(r"https://(www|secure)\.gravatar\.com/avatar/.*")
+
+ID_TOKEN_KEY_ID = "test-key"
 
 #: social_core caches these across tests; every test has to start from empty.
 SOCIAL_CORE_CACHES = (
@@ -52,6 +62,15 @@ class Provider:
 def reset_social_core_caches():
     for cache in SOCIAL_CORE_CACHES:
         cache.reset_cache()
+    # Kept for a day, so the first test's mocked answers would reach all later ones.
+    OpenIdConnectAuth.oidc_config.invalidate()
+    OpenIdConnectAuth.get_jwks_keys.invalidate()
+
+
+@functools.cache
+def id_token_key():
+    """Signs the ID tokens of every mocked OpenID Connect provider."""
+    return rsa.generate_private_key(public_exponent=65537, key_size=2048)
 
 
 class MockedProvider:
@@ -69,6 +88,10 @@ class MockedProvider:
         )
         # Force backends loading, to trash the PSA cache.
         load_backends((provider.backend_path,), force_load=True)
+        self.browser_nonce = token_urlsafe()
+        #: Goes into the ID token.
+        self.nonce = hashlib.sha256(self.browser_nonce.encode()).hexdigest()
+        self.clock_ahead_seconds = 0
 
     @property
     def name(self):
@@ -81,6 +104,8 @@ class MockedProvider:
             responses.get(url, json=body)
         for url, body in self.provider.extra_body.items():
             responses.get(url, body=body() if callable(body) else body)
+        if isinstance(self.backend, OpenIdConnectAuth):
+            self._mock_discovery()
 
         start_url = self.backend.start().url
         target_url = self._target_url(start_url)
@@ -91,13 +116,55 @@ class MockedProvider:
                 self.provider.user_data_url, json=self.provider.user_data_body
             )
 
-        responses.add(
+        # Answered on request, so a test can still change the nonce.
+        responses.add_callback(
             {"GET": responses.GET, "POST": responses.POST}[
                 self.backend.ACCESS_TOKEN_METHOD
             ],
             self.backend.access_token_url(),
-            status=200,
-            json=self.provider.access_token_body,
+            callback=lambda request: (200, {}, json.dumps(self._access_token_body())),
+            content_type="application/json",
+        )
+
+    def _access_token_body(self):
+        if isinstance(self.backend, OpenIdConnectAuth):
+            return {**self.provider.access_token_body, "id_token": self.id_token()}
+        return self.provider.access_token_body
+
+    def _mock_discovery(self):
+        endpoint = self.backend.OIDC_ENDPOINT
+        responses.get(
+            f"{endpoint}/.well-known/openid-configuration",
+            json={
+                "issuer": endpoint,
+                "authorization_endpoint": f"{endpoint}/authorize",
+                "token_endpoint": f"{endpoint}/token",
+                "userinfo_endpoint": self.provider.user_data_url,
+                "jwks_uri": f"{endpoint}/jwks",
+            },
+        )
+        jwk = jwt.algorithms.RSAAlgorithm.to_jwk(
+            id_token_key().public_key(), as_dict=True
+        )
+        responses.get(
+            f"{endpoint}/jwks",
+            json={"keys": [{**jwk, "alg": "RS256", "kid": ID_TOKEN_KEY_ID}]},
+        )
+
+    def id_token(self):
+        now = int(time.time()) + self.clock_ahead_seconds
+        client_id, _ = self.backend.get_key_and_secret()
+        claims = {
+            "iss": self.backend.OIDC_ENDPOINT,
+            "sub": self.provider.user_data_body["sub"],
+            "aud": client_id,
+            "iat": now,
+            "nbf": now,
+            "exp": now + 300,
+            "nonce": self.nonce,
+        }
+        return jwt.encode(
+            claims, id_token_key(), algorithm="RS256", headers={"kid": ID_TOKEN_KEY_ID}
         )
 
     def _target_url(self, start_url):

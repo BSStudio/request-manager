@@ -19,9 +19,10 @@ class SocialLoginSerializer(Serializer):
     # version of https://github.com/st4lk/django-rest-social-auth
 
     code = CharField()
+    nonce = CharField()
     provider = CharField()
 
-    def get_user(self):
+    def get_user(self, nonce):
         origin = self.context["request"].strategy.request.META.get("HTTP_ORIGIN")
         if origin:
             relative_path = urlparse(self.context["request"].backend.redirect_uri).path
@@ -34,6 +35,7 @@ class SocialLoginSerializer(Serializer):
         # it is responsibility of front-end to check state
         self.context["request"].backend.REDIRECT_STATE = False
         self.context["request"].backend.STATE_PARAMETER = False
+        self.context["request"].backend.browser_nonce = nonce
 
         user = self.context["request"].backend.complete(request=self.context["request"])
         return user
@@ -43,7 +45,7 @@ class SocialLoginSerializer(Serializer):
             raise ValidationError({"provider": _("Invalid provider.")})
 
         decorate_request(self.context["request"], attrs["provider"])
-        user = self.get_user()
+        user = self.get_user(attrs["nonce"])
 
         if isinstance(user, HttpResponse):
             # error happened and pipeline returned HttpResponse instead of user

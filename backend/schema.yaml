@@ -2802,8 +2802,12 @@ components:
         code:
           type: string
           minLength: 1
+        nonce:
+          type: string
+          minLength: 1
       required:
         - code
+        - nonce
     PaginatedRequestAdminListList:
       type: object
       properties:
@@ -3676,11 +3680,15 @@ components:
         code:
           type: string
           minLength: 1
+        nonce:
+          type: string
+          minLength: 1
         provider:
           type: string
           minLength: 1
       required:
         - code
+        - nonce
         - provider
     StatusEnum:
       enum:

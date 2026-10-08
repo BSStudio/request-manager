@@ -42,6 +42,7 @@ import { getAuthorizationUrl, type OAuthProvider } from 'site/lib/oauth';
 type LoginLocationState = {
   code?: string;
   from?: string;
+  nonce?: string;
   provider?: OAuthProvider;
 };
 
@@ -121,7 +122,8 @@ function LoginPage() {
   const navigate = useNavigate();
   const location = useLocation();
   const user = useSessionUser();
-  const { code, from, provider } = (location.state ?? {}) as LoginLocationState;
+  const { code, from, nonce, provider } = (location.state ??
+    {}) as LoginLocationState;
   const [pending, setPending] = useState<OAuthProvider | 'session' | null>(
     code ? 'session' : null,
   );
@@ -145,10 +147,10 @@ function LoginPage() {
   }, [from]);
 
   useEffect(() => {
-    if (code && provider) {
+    if (code && nonce && provider) {
       if (attempted.current) return;
       attempted.current = true;
-      signIn(provider, code)
+      signIn(provider, code, nonce)
         .then(({ role }) => {
           toast.success('Sikeresen bejelentkeztél.');
           leave(role);
@@ -172,7 +174,7 @@ function LoginPage() {
         cancelled = true;
       };
     }
-  }, [code, provider, user, leave, navigate, location.pathname]);
+  }, [code, nonce, provider, user, leave, navigate, location.pathname]);
 
   // Going back from the provider restores the page with a spinning button.
   useEffect(() => {
@@ -185,7 +187,9 @@ function LoginPage() {
 
   const startLogin = (target: OAuthProvider) => {
     setPending(target);
-    window.location.assign(getAuthorizationUrl(target, 'login'));
+    void getAuthorizationUrl(target, 'login').then((url) =>
+      window.location.assign(url),
+    );
   };
 
   return (
