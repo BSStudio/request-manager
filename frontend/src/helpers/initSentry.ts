@@ -31,20 +31,27 @@ export function initSentry(app: 'admin' | 'site') {
         request: privateHeaders,
         response: privateHeaders,
       },
-      urlQueryParams: privateHeaders,
+      urlQueryParams: false,
       userInfo: false,
     },
     dsn: import.meta.env.VITE_SENTRY_URL,
     initialScope: { tags: { app } },
-    integrations: [
+    integrations: (defaults) => [
+      // A session on every page load would make the backend call Sentry each
+      // time, for release health we do not use.
+      ...defaults.filter(({ name }) => name !== 'BrowserSession'),
       reactRouterBrowserTracingIntegration({
         createRoutesFromChildren,
+        // Named after the element, whose alt text or label can be a name.
+        enableInp: false,
         matchRoutes,
         useEffect,
         useLocation,
         useNavigationType,
       }),
     ],
+    // Clicked elements and visited URLs can carry personal data.
+    maxBreadcrumbs: 0,
     tracesSampleRate: 0.15,
     tunnel: '/api/v1/misc/tunnel',
   });

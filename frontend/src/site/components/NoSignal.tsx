@@ -21,6 +21,9 @@ const middleBars = [
 ];
 const bottomBars = ['#00214c', '#ffffff', '#32006a', '#131313'];
 
+export const outlineOnInk =
+  'border-white/20 bg-transparent text-white hover:bg-white/10 hover:text-white dark:border-white/20 dark:bg-transparent dark:hover:bg-white/10';
+
 type NoSignalProps = {
   actions: ReactNode;
   children: ReactNode;

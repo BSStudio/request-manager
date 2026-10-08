@@ -1,8 +1,5 @@
-import { useState } from 'react';
-
 import { isAxiosError } from 'axios';
 import { Button } from 'primereact/button';
-import { InputTextarea } from 'primereact/inputtextarea';
 import {
   isRouteErrorResponse,
   useLocation,
@@ -10,6 +7,7 @@ import {
   useRouteError,
 } from 'react-router';
 
+import CrashFeedback from 'admin/components/CrashFeedback';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
 import { useReportRouteError } from 'hooks/useReportRouteError';
 
@@ -39,9 +37,8 @@ const ErrorPage = () => {
   const { state } = useLocation() as { state: LoadErrorState | null };
   const error = useRouteError();
   const navigate = useNavigate();
-  const [message, setMessage] = useState('');
 
-  const { feedback, reported } = useReportRouteError(error);
+  const eventId = useReportRouteError(error);
 
   let status: number | undefined;
   let loadError: string | undefined;
@@ -107,54 +104,9 @@ const ErrorPage = () => {
             }}
           />
         </div>
-        {reported && (
+        {eventId && (
           <div className="max-w-30rem mt-6 mx-auto">
-            {feedback.isSuccess ? (
-              <p className="m-0 text-700 text-center">
-                Köszönjük, hogy segítesz kijavítani a hibát!
-              </p>
-            ) : (
-              <form
-                onSubmit={(event) => {
-                  event.preventDefault();
-                  if (message.trim()) feedback.mutate(message.trim());
-                }}
-              >
-                <label className="block font-medium" htmlFor="crash-feedback">
-                  Mit csináltál, amikor a hiba történt?
-                </label>
-                <small
-                  className="block mb-2 mt-1 text-600"
-                  id="crash-feedback-hint"
-                >
-                  Ha leírod, könnyebben megtaláljuk és kijavítjuk.
-                </small>
-                <InputTextarea
-                  aria-describedby="crash-feedback-hint"
-                  autoResize
-                  className="w-full"
-                  id="crash-feedback"
-                  onChange={(event) => setMessage(event.target.value)}
-                  readOnly={feedback.isPending}
-                  rows={3}
-                  value={message}
-                />
-                {feedback.isError && (
-                  <small className="block p-error" role="alert">
-                    Nem sikerült elküldeni. Próbáld újra!
-                  </small>
-                )}
-                <div className="flex justify-content-end mt-2">
-                  <Button
-                    disabled={!message.trim()}
-                    icon="pi pi-send"
-                    label="Küldés"
-                    loading={feedback.isPending}
-                    type="submit"
-                  />
-                </div>
-              </form>
-            )}
+            <CrashFeedback eventId={eventId} key={eventId} />
           </div>
         )}
       </div>

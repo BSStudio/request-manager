@@ -1,7 +1,6 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo } from 'react';
 
-import { captureException, isInitialized, sendFeedback } from '@sentry/react';
-import { useMutation } from '@tanstack/react-query';
+import { captureException, isEnabled } from '@sentry/react';
 import { isAxiosError } from 'axios';
 import { isRouteErrorResponse } from 'react-router';
 
@@ -9,21 +8,19 @@ import { isRouteErrorResponse } from 'react-router';
 // Sentry would not see them. HTTP errors are not frontend bugs: a missing page
 // is expected and the backend reports its own failures.
 export function useReportRouteError(error: unknown) {
-  const reported =
-    isInitialized() &&
-    !!error &&
-    !isRouteErrorResponse(error) &&
-    !isAxiosError(error);
-  const eventId = useRef<string>(undefined);
+  // A new ID for each error, so feedback about the last one starts over.
+  const eventId = useMemo(() => {
+    const reported =
+      isEnabled() &&
+      !!error &&
+      !isRouteErrorResponse(error) &&
+      !isAxiosError(error);
+    return reported ? crypto.randomUUID().replaceAll('-', '') : undefined;
+  }, [error]);
 
   useEffect(() => {
-    if (reported) eventId.current = captureException(error);
-  }, [error, reported]);
+    if (eventId) captureException(error, { event_id: eventId });
+  }, [error, eventId]);
 
-  const feedback = useMutation({
-    mutationFn: (message: string) =>
-      sendFeedback({ associatedEventId: eventId.current, message }),
-  });
-
-  return { feedback, reported };
+  return eventId;
 }
