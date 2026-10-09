@@ -14,13 +14,13 @@ import { TodoStatusTag } from 'admin/components/StatusTag/StatusTag';
 import { TODO_STATUSES } from 'admin/components/StatusTag/statusTagConsts';
 import { StatusStyle } from 'admin/components/StatusTag/StatusTagTypes';
 import Todos from 'admin/components/Todos/Todos';
-import { StatusEnum } from 'api/models/status-enum';
 import { UserAdminList } from 'api/models/user-admin-list';
 import { queryClient } from 'api/queryClient';
+import { TodoStatus } from 'helpers/statuses';
 
 export async function loader() {
   return queryClient.query({
-    ...todosListQuery([], '-created', [1]),
+    ...todosListQuery([], '-created', [TodoStatus.OPEN]),
     staleTime: 'static',
   });
 }
@@ -30,7 +30,9 @@ const TodosPage = () => {
   const [selectedAssignees, setSelectedAssignees] = useState<UserAdminList[]>(
     [],
   );
-  const [selectedStatuses, setSelectedStatuses] = useState<number[]>([1]);
+  const [selectedStatuses, setSelectedStatuses] = useState<number[]>([
+    TodoStatus.OPEN,
+  ]);
 
   const { data, dataUpdatedAt, isLoading, refetch } = useQuery(
     todosListQuery(
@@ -66,7 +68,7 @@ const TodosPage = () => {
                 setSelectedStatuses(e.value)
               }
               optionLabel="text"
-              options={Object.values(StatusEnum).map((status) =>
+              options={Object.values(TodoStatus).map((status) =>
                 Object.assign({}, { value: status }, TODO_STATUSES[status]),
               )}
               placeholder="Státusz"

@@ -13,6 +13,7 @@ import LinkButton from 'admin/components/LinkButton/LinkButton';
 import { VideoStatusTag } from 'admin/components/StatusTag/StatusTag';
 import User from 'admin/components/User/User';
 import { VideoAdminRetrieve } from 'api/models';
+import { VideoStatus } from 'helpers/statuses';
 
 const RatingDialog = lazy(
   () => import('admin/components/RatingDialog/RatingDialog'),
@@ -78,7 +79,7 @@ const VideosDataTable = forwardRef<
         <Button
           aria-label="Értékelés"
           className="mr-2 p-button-outlined"
-          disabled={status < 3}
+          disabled={status < VideoStatus.EDITED}
           icon={rated ? 'pi pi-star-fill' : 'pi pi-star'}
           onClick={() => {
             setRatingDialogIsRated(rated);
