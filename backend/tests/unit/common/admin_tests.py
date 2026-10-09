@@ -100,3 +100,20 @@ def test_changelists_link_to_the_user_admin(client, model_name):
 
     assert response.status_code == HTTP_200_OK
     assert user_change_url(user.id) in response.content.decode()
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "model_name",
+    ["comment", "crewmember", "rating", "request", "todo", "video"],
+)
+def test_changelists_can_be_searched(client, model_name):
+    # Django resolves the search_fields lookups only once someone searches.
+    user = make_user(username="searching_admin", is_admin=True, is_superuser=True)
+
+    client.force_login(user)
+    response = client.get(
+        reverse(f"admin:video_requests_{model_name}_changelist"), {"q": "title"}
+    )
+
+    assert response.status_code == HTTP_200_OK

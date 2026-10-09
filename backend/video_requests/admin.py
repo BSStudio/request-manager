@@ -119,7 +119,7 @@ class RatingHistoryAdmin(SimpleHistoryAdmin):
         "part_of_review",
         "author_link",
     ]
-    search_fields = ["request__title"]
+    search_fields = ["video__title", "video__request__title"]
 
     @admin.display(description="Review")
     def part_of_review(self, obj):
