@@ -24,6 +24,8 @@ const WorkedOnSection = lazy(
   () => import('admin/components/UserProfile/WorkedOnSection'),
 );
 
+const sections = ['ban', 'profile', 'workedOn'];
+
 export type loaderData = Awaited<ReturnType<typeof loader>>;
 
 export async function loader({ params }: LoaderFunctionArgs) {
@@ -42,7 +44,8 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
 const UserProfilePage = () => {
   const [searchParams, setSearchParams] = useSearchParams();
-  const section = searchParams.get('section') ?? 'profile';
+  const param = searchParams.get('section');
+  const section = param && sections.includes(param) ? param : 'profile';
   const setSection = (value: string) =>
     setSearchParams({ section: value }, { replace: true });
   const { userId } = useLoaderData() as loaderData;
