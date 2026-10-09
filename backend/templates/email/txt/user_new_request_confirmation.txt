@@ -9,12 +9,11 @@ Várható befejezés: {% language 'hu' %}{{ request.end_datetime|date:"SHORT_DAT
 Helyszín: {{ request.place }}
 Videó típusa: {{ request.type }}
 
-További részleteket bejelentkezés után itt találsz: {{ request.url }}
-{% if not is_registered %}
-Amennyiben a felkéréshez megadott e-mail címedet használó AuthSCH, Google vagy Microsoft fiókkal belépsz az oldalra folyamatosan követheted a felkérésed állapotát és üzenetet írhatsz nekünk, valamint az elkészült anyagot értékelheted is.
-{% endif %}
-
 Hamarosan keresni fogunk, hogy el tudjuk-e vállalni az esemény rögzítését.
 
+További részleteket bejelentkezés után itt találsz: {{ request.url }}
+{% if not is_registered %}
+Ha a felkéréshez megadott e-mail-címedhez tartozó AuthSCH-, Google- vagy Microsoft-fiókkal belépsz az oldalra, folyamatosan követheted a felkérésed állapotát, üzenetet írhatsz nekünk, és az elkészült anyagot is értékelheted.
+{% endif %}
 Üdvözlettel:
 a Budavári Schönherz Stúdió csapata
