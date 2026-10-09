@@ -1,7 +1,7 @@
-import { showErrorToast } from 'admin/helpers/showErrorToast';
+import { useRef } from 'react';
+
 import { useTheme } from 'admin/hooks/useTheme';
 import { promptInstall, useCanInstall } from 'helpers/pwa';
-import { signOut } from 'helpers/session';
 
 import AvatarButton from './Button/AvatarButton';
 import Button from './Button/Button';
@@ -13,15 +13,18 @@ import SandwichMenu from './SandwichMenu';
 const Menubar = () => {
   const [darkMode, setDarkMode] = useTheme();
   const canInstall = useCanInstall();
+  const sandwichRef = useRef(null);
 
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-    } catch (error) {
-      showErrorToast(error);
-      return;
+  // On phones the menu covers the page, so picking a page closes it. The
+  // sandwich button is only visible there.
+  const closeOnNavigate = (event: React.MouseEvent) => {
+    const sandwich = sandwichRef.current as HTMLAnchorElement | null;
+    if (
+      sandwich?.offsetParent &&
+      (event.target as Element).closest('a[href]')
+    ) {
+      sandwich.click();
     }
-    window.location.href = '/';
   };
 
   return (
@@ -30,8 +33,11 @@ const Menubar = () => {
       style={{ minHeight: '80px' }}
     >
       <Logo />
-      <SandwichMenu />
-      <div className="absolute flex-grow-1 hidden justify-content-between left-0 lg:flex lg:shadow-none lg:static shadow-2 surface-overlay top-100 w-full z-1">
+      <SandwichMenu ref={sandwichRef} />
+      <div
+        className="absolute flex-grow-1 hidden justify-content-between left-0 lg:flex lg:shadow-none lg:static shadow-2 surface-overlay top-100 w-full z-1"
+        onClick={closeOnNavigate}
+      >
         <ul className="flex flex-column lg:flex-row list-none m-0 p-0 select-none">
           <Button icon="pi-home" label="Kezdőlap" path="/" />
           <DropdownButton
@@ -61,11 +67,6 @@ const Menubar = () => {
               onClick={() => void promptInstall()}
             />
           )}
-          <IconButton
-            icon="pi-sign-out"
-            label="Kijelentkezés"
-            onClick={() => void handleSignOut()}
-          />
           <AvatarButton />
         </ul>
       </div>

@@ -1,8 +1,12 @@
-import { Suspense, lazy, useState } from 'react';
+import { Suspense, lazy } from 'react';
 
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { ProgressBar } from 'primereact/progressbar';
-import { type LoaderFunctionArgs, useLoaderData } from 'react-router';
+import {
+  type LoaderFunctionArgs,
+  useLoaderData,
+  useSearchParams,
+} from 'react-router';
 
 import { usersRetrieveQuery } from 'admin/api/queries';
 import LastUpdatedAt from 'admin/components/LastUpdatedAt/LastUpdatedAt';
@@ -19,6 +23,8 @@ const ProfileSection = lazy(
 const WorkedOnSection = lazy(
   () => import('admin/components/UserProfile/WorkedOnSection'),
 );
+
+const sections = ['ban', 'profile', 'workedOn'];
 
 export type loaderData = Awaited<ReturnType<typeof loader>>;
 
@@ -37,7 +43,11 @@ export async function loader({ params }: LoaderFunctionArgs) {
 }
 
 const UserProfilePage = () => {
-  const [section, setSection] = useState<string>('profile');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const param = searchParams.get('section');
+  const section = param && sections.includes(param) ? param : 'profile';
+  const setSection = (value: string) =>
+    setSearchParams({ section: value }, { replace: true });
   const { userId } = useLoaderData() as loaderData;
 
   const { data, dataUpdatedAt, refetch } = useSuspenseQuery(
@@ -49,16 +59,19 @@ const UserProfilePage = () => {
       <div className="flex flex-column lg:flex-row p-fluid">
         <ul className="border-round flex flex-row h-full justify-content-evenly lg:flex-column lg:justify-content-start lg:mb-0 lg:mr-5 list-none m-0 mb-5 md:justify-content-between shadow-2 surface-card p-0">
           <NavigationButton
+            active={section === 'profile'}
             icon="pi pi-user"
             onClick={() => setSection('profile')}
             text="Profil"
           />
           <NavigationButton
+            active={section === 'ban'}
             icon="pi pi-ban"
             onClick={() => setSection('ban')}
             text="Kitiltás"
           />
           <NavigationButton
+            active={section === 'workedOn'}
             icon="pi pi-list"
             onClick={() => setSection('workedOn')}
             text="Anyagok"

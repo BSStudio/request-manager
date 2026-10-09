@@ -22,6 +22,8 @@ const DropdownButton = ({
 }: ButtonDropdownProps) => {
   const btnRef = useRef(null);
 
+  const close = () => (btnRef.current as HTMLAnchorElement | null)?.click();
+
   return (
     <li className="lg:relative">
       {/* Button */}
@@ -51,6 +53,7 @@ const DropdownButton = ({
           <li key={`dropdown-${item.label}-${index}`}>
             <Link
               className="align-items-center border-left-2 border-transparent flex hover:border-primary hover:text-900 no-underline p-3 p-ripple text-600 transition-colors transition-duration-150"
+              onClick={close}
               to={href(item.path)}
             >
               <i className={`mr-2 pi ${item.icon}`}></i>
