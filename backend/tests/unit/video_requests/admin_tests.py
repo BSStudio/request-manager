@@ -7,7 +7,7 @@ from model_bakery import baker
 from rest_framework.status import HTTP_200_OK, HTTP_302_FOUND
 
 from tests.factories import make_user
-from video_requests.models import Request
+from video_requests.models import Request, Todo
 
 EVERY_MODEL = pytest.mark.parametrize(
     "model_name", ["comment", "crewmember", "rating", "request", "todo", "video"]
@@ -91,6 +91,28 @@ def test_request_admin_keeps_who_added_the_request(client):
     assert changed.status_code == HTTP_302_FOUND
     video_request.refresh_from_db()
     assert video_request.requested_by == admin
+
+
+@pytest.mark.django_db
+def test_todo_admin_rejects_a_video_of_another_request(client):
+    admin = make_user(username="todo_admin", is_admin=True, is_superuser=True)
+    video_request = baker.make("video_requests.Request", requester=admin)
+
+    client.force_login(admin)
+    response = client.post(
+        reverse("admin:video_requests_todo_add"),
+        {
+            "request": video_request.id,
+            "video": baker.make("video_requests.Video").id,
+            "creator": admin.id,
+            "description": "Cut the trailer",
+            "status": Todo.Statuses.OPEN,
+        },
+    )
+
+    assert response.status_code == HTTP_200_OK
+    assert "video" in response.context["adminform"].form.errors
+    assert not Todo.objects.exists()
 
 
 @pytest.mark.django_db

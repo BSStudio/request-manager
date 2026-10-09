@@ -221,5 +221,15 @@ class Todo(AbstractTodo):
         choices=Statuses, default=Statuses.OPEN, db_index=True
     )
 
+    def clean(self):
+        if (
+            self.video_id is not None
+            and self.request_id is not None
+            and self.video.request_id != self.request_id
+        ):
+            raise ValidationError(
+                {"video": [_("The video must belong to this request.")]}
+            )
+
     def __str__(self):
         return f"Todo || {self.request.title} - {self.description[0:25]}[...]"

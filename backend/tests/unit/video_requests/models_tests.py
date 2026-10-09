@@ -147,6 +147,32 @@ class TestVideoAiredDates:
         ]
 
 
+class TestTodoValidation:
+    @pytest.mark.parametrize("with_video", [True, False])
+    def test_a_todo_of_the_request_is_valid(self, video, video_request, with_video):
+        todo = baker.make(
+            "video_requests.Todo",
+            request=video_request,
+            video=video if with_video else None,
+        )
+
+        todo.full_clean()  # Should not raise
+
+    def test_the_video_must_belong_to_the_request(self, video_request):
+        todo = baker.make(
+            "video_requests.Todo",
+            request=video_request,
+            video=baker.make("video_requests.Video"),
+        )
+
+        with pytest.raises(ValidationError) as error:
+            todo.full_clean()
+
+        assert error.value.message_dict == {
+            "video": ["The video must belong to this request."]
+        }
+
+
 class TestVideoValidation:
     def test_a_freshly_built_video_is_valid(self, video):
         video.refresh_from_db()
