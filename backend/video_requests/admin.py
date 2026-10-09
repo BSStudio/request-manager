@@ -20,6 +20,18 @@ def user_link(user):
     return change_link(user, user.get_full_name_eastern_order())
 
 
+class AddedByMixin:
+    added_by_field = None
+
+    def get_readonly_fields(self, request, obj=None):
+        return [*super().get_readonly_fields(request, obj), self.added_by_field]
+
+    def save_model(self, request, obj, form, change):
+        if not change:
+            setattr(obj, self.added_by_field, request.user)
+        super().save_model(request, obj, form, change)
+
+
 class KeepParentMixin:
     parent_fields = []
 
@@ -31,7 +43,8 @@ class KeepParentMixin:
 
 
 @admin.register(Request)
-class RequestHistoryAdmin(SimpleHistoryAdmin):
+class RequestHistoryAdmin(AddedByMixin, SimpleHistoryAdmin):
+    added_by_field = "requested_by"
     autocomplete_fields = ["requester", "responsible"]
     list_display = [
         "id",
@@ -45,7 +58,6 @@ class RequestHistoryAdmin(SimpleHistoryAdmin):
     list_filter = ["status"]
     list_select_related = ["requester"]
     ordering = ["-id"]
-    readonly_fields = ["requested_by"]
     search_fields = ["title"]
 
     def get_queryset(self, request):
@@ -61,11 +73,6 @@ class RequestHistoryAdmin(SimpleHistoryAdmin):
 
     def view_on_site(self, obj):
         return obj.admin_url
-
-    def save_model(self, request, obj, form, change):
-        if not change:
-            obj.requested_by = request.user
-        super().save_model(request, obj, form, change)
 
 
 @admin.register(CrewMember)
@@ -112,8 +119,9 @@ class VideoHistoryAdmin(KeepParentMixin, SimpleHistoryAdmin):
 
 
 @admin.register(Comment)
-class CommentHistoryAdmin(KeepParentMixin, SimpleHistoryAdmin):
-    autocomplete_fields = ["request", "author"]
+class CommentHistoryAdmin(AddedByMixin, KeepParentMixin, SimpleHistoryAdmin):
+    added_by_field = "author"
+    autocomplete_fields = ["request"]
     list_display = ["id", "request_link", "part_of_comment", "internal", "author_link"]
     list_filter = ["internal"]
     list_select_related = ["request", "author"]
@@ -134,8 +142,9 @@ class CommentHistoryAdmin(KeepParentMixin, SimpleHistoryAdmin):
 
 
 @admin.register(Rating)
-class RatingHistoryAdmin(KeepParentMixin, SimpleHistoryAdmin):
-    autocomplete_fields = ["video", "author"]
+class RatingHistoryAdmin(AddedByMixin, KeepParentMixin, SimpleHistoryAdmin):
+    added_by_field = "author"
+    autocomplete_fields = ["video"]
     list_display = [
         "id",
         "video_link",
@@ -161,8 +170,9 @@ class RatingHistoryAdmin(KeepParentMixin, SimpleHistoryAdmin):
 
 
 @admin.register(Todo)
-class TodoAdmin(KeepParentMixin, admin.ModelAdmin):
-    autocomplete_fields = ["request", "video", "creator", "assignees"]
+class TodoAdmin(AddedByMixin, KeepParentMixin, admin.ModelAdmin):
+    added_by_field = "creator"
+    autocomplete_fields = ["request", "video", "assignees"]
     list_display = [
         "id",
         "created",

@@ -122,6 +122,41 @@ def test_admins_cannot_move_anything_to_another_parent(
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize(
+    ("model_name", "added_by_field", "form"),
+    [
+        ("comment", "author", {"text": "When will it be ready?"}),
+        ("rating", "author", {"rating": 5, "review": ""}),
+        (
+            "todo",
+            "creator",
+            {"description": "Cut the trailer", "status": Todo.Statuses.OPEN},
+        ),
+    ],
+)
+def test_admins_credit_new_objects_to_whoever_added_them(
+    client, model_name, added_by_field, form
+):
+    admin = make_user(username="adding_admin", is_admin=True, is_superuser=True)
+    video = baker.make("video_requests.Video")
+    url = reverse(f"admin:video_requests_{model_name}_add")
+
+    client.force_login(admin)
+    add_page = client.get(url)
+    # Each form ignores the parent it does not have.
+    added = client.post(url, {"request": video.request_id, "video": video.id, **form})
+    assert added.status_code == HTTP_302_FOUND
+    obj = apps.get_model("video_requests", model_name).objects.get()
+    change_page = client.get(
+        reverse(f"admin:video_requests_{model_name}_change", args=(obj.id,))
+    )
+
+    assert added_by_field not in add_page.context["adminform"].form.fields
+    assert added_by_field not in change_page.context["adminform"].form.fields
+    assert getattr(obj, added_by_field) == admin
+
+
+@pytest.mark.django_db
 def test_todo_admin_rejects_a_video_of_another_request(client):
     admin = make_user(username="todo_admin", is_admin=True, is_superuser=True)
     video_request = baker.make("video_requests.Request", requester=admin)
@@ -132,7 +167,6 @@ def test_todo_admin_rejects_a_video_of_another_request(client):
         {
             "request": video_request.id,
             "video": baker.make("video_requests.Video").id,
-            "creator": admin.id,
             "description": "Cut the trailer",
             "status": Todo.Statuses.OPEN,
         },
