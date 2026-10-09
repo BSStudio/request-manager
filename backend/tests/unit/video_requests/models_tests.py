@@ -76,6 +76,13 @@ class TestRequestUrls:
         )
 
 
+class TestVideoAdminUrl:
+    def test_points_at_the_dashboard(self, video, video_request):
+        assert video.admin_url == (
+            f"{settings.BASE_URL}/admin/requests/{video_request.id}/videos/{video.id}"
+        )
+
+
 class TestVideoPublishedUrl:
     def test_is_none_until_the_video_is_published(self, video):
         assert video.published_url is None

@@ -1,4 +1,5 @@
 import pytest
+from django.apps import apps
 from django.contrib.admin.sites import AdminSite
 from django.contrib.auth.models import Permission
 from django.contrib.messages.storage.fallback import FallbackStorage
@@ -274,16 +275,18 @@ def test_admin_login_tells_a_logged_in_user_why_they_are_back(client):
 
 
 @pytest.mark.django_db
-def test_request_admin_links_to_the_request_in_the_app(client):
+@pytest.mark.parametrize("model_name", ["request", "video"])
+def test_admins_link_to_the_same_page_in_the_app(client, model_name):
     user = make_user(username="linking_admin", is_admin=True, is_superuser=True)
-    video_request = baker.make("video_requests.Request", requester=user)
+    make_one_of_each(user)
+    obj = apps.get_model("video_requests", model_name).objects.get()
 
     client.force_login(user)
     response = client.get(
-        reverse("admin:video_requests_request_change", args=(video_request.id,))
+        reverse(f"admin:video_requests_{model_name}_change", args=(obj.id,))
     )
 
-    assert video_request.admin_url in response.content.decode()
+    assert f'href="{obj.admin_url}"' in response.content.decode()
 
 
 @pytest.mark.django_db

@@ -167,6 +167,10 @@ class Video(models.Model):
         return self.request.requester
 
     @property
+    def admin_url(self) -> str:
+        return f"{self.request.admin_url}/videos/{self.id}"
+
+    @property
     def published_url(self) -> str:
         published_url = self.additional_data.get("publishing", {}).get("website")
         return published_url

@@ -95,6 +95,9 @@ class VideoHistoryAdmin(SimpleHistoryAdmin):
     def avg_rating(self, obj):
         return obj.avg_rating  # Annotated by Video.objects.
 
+    def view_on_site(self, obj):
+        return obj.admin_url
+
 
 @admin.register(Comment)
 class CommentHistoryAdmin(SimpleHistoryAdmin):
