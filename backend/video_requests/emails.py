@@ -110,7 +110,7 @@ def email_staff_weekly_tasks(recording, editing_no_vids, editing_unedited_vids):
     msg_plain = render_to_string("email/txt/staff_weekly_tasks.txt", context)
     msg_html = render_to_string("email/html/staff_weekly_tasks.html", context)
 
-    subject = "Eheti forgatások és vágandó anyagok"
+    subject = "E heti forgatások és vágandó anyagok"
 
     msg = EmailMultiAlternatives(
         subject=subject,
@@ -278,7 +278,7 @@ def email_responsible_overdue_request(request):
     msg_plain = render_to_string("email/txt/responsible_overdue_request.txt", context)
     msg_html = render_to_string("email/html/responsible_overdue_request.html", context)
 
-    subject = f"Lejárt határidejű felkérés - {request.title}"
+    subject = f"{request.title} | Lejárt határidejű felkérés"
     responsible_email_address = (
         [request.responsible.email]
         if request.responsible and request.responsible.is_staff

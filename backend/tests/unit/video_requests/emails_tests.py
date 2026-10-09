@@ -199,7 +199,7 @@ class TestToStaff:
         email_staff_weekly_tasks([], [], [])
 
         message = only_message()
-        assert message.subject == "Eheti forgatások és vágandó anyagok"
+        assert message.subject == "E heti forgatások és vágandó anyagok"
         assert message.to == [django_settings.WEEKLY_TASK_EMAIL]
         assert message.reply_to == [django_settings.WEEKLY_TASK_EMAIL]
 
@@ -214,7 +214,7 @@ class TestToStaff:
         email_responsible_overdue_request(video_request)
 
         message = only_message()
-        assert message.subject == "Lejárt határidejű felkérés - Test Request"
+        assert message.subject == "Test Request | Lejárt határidejű felkérés"
         assert message.to == [video_request.responsible.email]
         assert set(message.cc) == {editor_in_chief.email, production_manager.email}
 

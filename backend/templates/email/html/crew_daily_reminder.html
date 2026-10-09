@@ -1,10 +1,10 @@
 {% extends 'email/html/email_base.html' %}
-{% block preheader %}Szia! Ne felejtsd, ma lesz a(z) {{ request.title }} forgatás.{% endblock %}
+{% block preheader %}Szia! Ma forgatás lesz, ne felejtsd! Egyeztess a többiekkel is.{% endblock %}
 {% block heading %}Mai forgatás{% endblock %}
 {% block content %}
     <p style="margin: 0 0 16px">Szia!</p>
     <p style="margin: 0 0 24px">
-        Ne felejtsd, ma lesz a(z) <strong style="color: #0f1b2d">{{ request.title }}</strong> forgatás. Egyeztess a többiekkel is.
+        Ma forgatás lesz, ne felejtsd! Egyeztess a többiekkel is.
     </p>
 
     {% include "email/html/partials/event_card.html" with request=request show_crew=True %}
