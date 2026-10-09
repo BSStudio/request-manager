@@ -1,7 +1,5 @@
-import { showErrorToast } from 'admin/helpers/showErrorToast';
 import { useTheme } from 'admin/hooks/useTheme';
 import { promptInstall, useCanInstall } from 'helpers/pwa';
-import { signOut } from 'helpers/session';
 
 import AvatarButton from './Button/AvatarButton';
 import Button from './Button/Button';
@@ -13,16 +11,6 @@ import SandwichMenu from './SandwichMenu';
 const Menubar = () => {
   const [darkMode, setDarkMode] = useTheme();
   const canInstall = useCanInstall();
-
-  const handleSignOut = async () => {
-    try {
-      await signOut();
-    } catch (error) {
-      showErrorToast(error);
-      return;
-    }
-    window.location.href = '/';
-  };
 
   return (
     <div
@@ -61,11 +49,6 @@ const Menubar = () => {
               onClick={() => void promptInstall()}
             />
           )}
-          <IconButton
-            icon="pi-sign-out"
-            label="Kijelentkezés"
-            onClick={() => void handleSignOut()}
-          />
           <AvatarButton />
         </ul>
       </div>

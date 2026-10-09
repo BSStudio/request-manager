@@ -1,8 +1,12 @@
-import { Suspense, lazy, useState } from 'react';
+import { Suspense, lazy } from 'react';
 
 import { useSuspenseQuery } from '@tanstack/react-query';
 import { ProgressBar } from 'primereact/progressbar';
-import { type LoaderFunctionArgs, useLoaderData } from 'react-router';
+import {
+  type LoaderFunctionArgs,
+  useLoaderData,
+  useSearchParams,
+} from 'react-router';
 
 import { usersRetrieveQuery } from 'admin/api/queries';
 import LastUpdatedAt from 'admin/components/LastUpdatedAt/LastUpdatedAt';
@@ -37,7 +41,10 @@ export async function loader({ params }: LoaderFunctionArgs) {
 }
 
 const UserProfilePage = () => {
-  const [section, setSection] = useState<string>('profile');
+  const [searchParams, setSearchParams] = useSearchParams();
+  const section = searchParams.get('section') ?? 'profile';
+  const setSection = (value: string) =>
+    setSearchParams({ section: value }, { replace: true });
   const { userId } = useLoaderData() as loaderData;
 
   const { data, dataUpdatedAt, refetch } = useSuspenseQuery(
