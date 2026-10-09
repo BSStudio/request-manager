@@ -1,291 +1,32 @@
 {% extends 'email/html/email_base.html' %}
-{% load i18n %}
-{% block title %}Forgatási felkérésedet fogadtuk{% endblock %}
 {% block preheader %}Kedves {{ request.requester.first_name }}! Köszönjük, hogy felkerestél minket! Forgatási felkérésedet fogadtuk.{% endblock %}
-{% block hero %}Kedves {{ request.requester.first_name }}!{% endblock %}
+{% block heading %}Forgatási felkérésedet fogadtuk{% endblock %}
 {% block content %}
-    <!-- start copy block -->
-    <tr>
-        <td align="center" bgcolor="#e9ecef">
-            <!--[if (gte mso 9)|(IE)]>
-            <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
-                <tr>
-                    <td align="center" valign="top" width="600">
-            <![endif]-->
-            <table
-                border="0"
-                cellpadding="0"
-                cellspacing="0"
-                width="100%"
-                style="max-width: 600px"
-            >
-                <!-- start copy -->
-                <tr>
-                    <td
-                        align="left"
-                        bgcolor="#ffffff"
-                        style="
-                               padding: 24px;
-                               font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                               font-size: 16px;
-                               line-height: 24px;
-                              "
-                    >
-                        <p style="margin: 0">
-                            Köszönjük, hogy felkerestél minket!<br /><br />
-                            Forgatási felkérésedet az alábbi részletekkel fogadtuk:
-                        </p>
-                        <br />
+    <p style="margin: 0 0 16px">Kedves {{ request.requester.first_name }}!</p>
+    <p style="margin: 0 0 24px">
+        Köszönjük, hogy felkerestél minket! Forgatási felkérésedet az alábbi részletekkel fogadtuk:
+    </p>
 
-                        <table
-                            border="0"
-                            cellpadding="0"
-                            cellspacing="0"
-                            width="100%"
-                            bgcolor="#f0f0f0"
-                        >
-                            <tr>
-                                <td
-                                    align="left"
-                                    width="25%"
-                                    style="
-                                           padding: 6px 12px;
-                                           font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                           font-size: 16px;
-                                           line-height: 24px;
-                                          "
-                                >
-                                    Esemény neve
-                                </td>
-                                <td
-                                    align="left"
-                                    width="75%"
-                                    style="
-                                           padding: 6px 12px;
-                                           font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                           font-size: 16px;
-                                           line-height: 24px;
-                                          "
-                                >
-                                    {{ request.title }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td
-                                    align="left"
-                                    width="25%"
-                                    style="
-                                           padding: 6px 12px;
-                                           font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                           font-size: 16px;
-                                           line-height: 24px;
-                                          "
-                                >
-                                    Kezdés időpontja
-                                </td>
-                                <td
-                                    align="left"
-                                    width="75%"
-                                    style="
-                                           padding: 6px 12px;
-                                           font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                           font-size: 16px;
-                                           line-height: 24px;
-                                          "
-                                >
-                                    {% language 'hu' %}
-                                        {{ request.start_datetime|date:"SHORT_DATETIME_FORMAT" }}
-                                    {% endlanguage %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td
-                                    align="left"
-                                    width="25%"
-                                    style="
-                                           padding: 6px 12px;
-                                           font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                           font-size: 16px;
-                                           line-height: 24px;
-                                          "
-                                >
-                                    Várható befejezés
-                                </td>
-                                <td
-                                    align="left"
-                                    width="75%"
-                                    style="
-                                           padding: 6px 12px;
-                                           font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                           font-size: 16px;
-                                           line-height: 24px;
-                                          "
-                                >
-                                    {% language 'hu' %}
-                                        {{ request.end_datetime|date:"SHORT_DATETIME_FORMAT" }}
-                                    {% endlanguage %}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td
-                                    align="left"
-                                    width="25%"
-                                    style="
-                                           padding: 6px 12px;
-                                           font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                           font-size: 16px;
-                                           line-height: 24px;
-                                          "
-                                >
-                                    Helyszín
-                                </td>
-                                <td
-                                    align="left"
-                                    width="75%"
-                                    style="
-                                           padding: 6px 12px;
-                                           font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                           font-size: 16px;
-                                           line-height: 24px;
-                                          "
-                                >
-                                    {{ request.place }}
-                                </td>
-                            </tr>
-                            <tr>
-                                <td
-                                    align="left"
-                                    width="25%"
-                                    style="
-                                           padding: 6px 12px;
-                                           font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                           font-size: 16px;
-                                           line-height: 24px;
-                                          "
-                                >
-                                    Videó típusa
-                                </td>
-                                <td
-                                    align="left"
-                                    width="75%"
-                                    style="
-                                           padding: 6px 12px;
-                                           font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                           font-size: 16px;
-                                           line-height: 24px;
-                                          "
-                                >
-                                    {{ request.type }}
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <!-- end copy -->
+    {% include "email/html/partials/event_card.html" with request=request show_type=True %}
 
-                <!-- start button -->
-                <tr>
-                    <td align="left" bgcolor="#ffffff">
-                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                            <tr>
-                                <td align="center" bgcolor="#ffffff" style="padding: 12px">
-                                    <table border="0" cellpadding="0" cellspacing="0">
-                                        <tr>
-                                            <td
-                                                align="center"
-                                                bgcolor="#1a82e2"
-                                                style="border-radius: 6px"
-                                            >
-                                                <a
-                                                    href="{{ request.url }}"
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    style="
-                                                           display: inline-block;
-                                                           padding: 16px 36px;
-                                                           font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                                           font-size: 16px;
-                                                           color: #ffffff;
-                                                           text-decoration: none;
-                                                           border-radius: 6px;
-                                                          "
-                                                >
-                                                    További részletek
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <!-- end button -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 0 0 24px; border-collapse: separate">
+        <tr>
+            <td bgcolor="#eaf2fb" style="padding: 16px 20px; border-left: 4px solid #005baa; border-radius: 8px; font-weight: 600; color: #0f1b2d">
+                Hamarosan keresni fogunk, hogy el tudjuk-e vállalni az esemény rögzítését.
+            </td>
+        </tr>
+    </table>
 
-                <!-- start copy -->
-                <tr>
-                    <td
-                        align="left"
-                        bgcolor="#ffffff"
-                        style="
-                               padding: 24px;
-                               font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                               font-size: 16px;
-                               line-height: 24px;
-                              "
-                    >
-                        <p style="margin: 0">
-                            Ha a gomb nem működik másold a következő linket a böngésződ
-                            címsorába:
-                            <br />
-                            <a
-                                href="{{ request.url }}"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                {{ request.url }}
-                            </a>
-                            {% if not is_registered %}
-                                <br /><br />Amennyiben a felkéréshez megadott e-mail címedet
-                                használó AuthSCH, Google vagy Microsoft fiókkal belépsz az oldalra
-                                folyamatosan követheted a felkérésed állapotát és üzenetet írhatsz
-                                nekünk, valamint az elkészült anyagot értékelheted is.
-                            {% endif %}
-                            <br /><br />
-                            <strong>Hamarosan keresni fogunk, hogy el tudjuk-e vállalni az esemény
-                                rögzítését.</strong>
-                        </p>
-                    </td>
-                </tr>
-                <!-- end copy -->
+    {% if not is_registered %}
+        <p style="margin: 0 0 16px">
+            Ha a felkéréshez megadott e-mail-címedhez tartozó AuthSCH-, Google- vagy Microsoft-fiókkal belépsz az oldalra, folyamatosan követheted a felkérésed állapotát, üzenetet írhatsz nekünk, és az elkészült anyagot is értékelheted.
+        </p>
+    {% endif %}
 
-                <!-- start signature -->
-                <tr>
-                    <td
-                        align="left"
-                        bgcolor="#ffffff"
-                        style="
-                               padding: 24px;
-                               font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                               font-size: 16px;
-                               line-height: 24px;
-                               border-bottom: 3px solid #014dff;
-                              "
-                    >
-                        <p style="margin: 0">
-                            Üdvözlettel:<br />
-                            a Budavári Schönherz Stúdió csapata
-                        </p>
-                    </td>
-                </tr>
-                <!-- end signature -->
-            </table>
-            <!--[if (gte mso 9)|(IE)]>
-                    </td>
-                </tr>
-            </table>
-            <![endif]-->
-        </td>
-    </tr>
-    <!-- end copy block -->
+    {% include "email/html/partials/button.html" with url=request.url label="További részletek" %}
+
+    <p style="margin: 0; font-size: 13px; line-height: 20px; color: #64748b">
+        Ha a gomb nem működik, másold a következő linket a böngésződ címsorába:<br />
+        <a href="{{ request.url }}" target="_blank" rel="noopener noreferrer" style="color: #005baa; word-break: break-all">{{ request.url }}</a>
+    </p>
 {% endblock %}

@@ -1,172 +1,45 @@
 {% extends 'email/html/email_base.html' %}
-{% block title %}Felkérésedhez új videót publikáltunk{% endblock %}
 {% block preheader %}Kedves {{ video.request.requester.first_name }}! Felkérésedhez új videót publikáltunk {{ video.title }} címmel.{% endblock %}
-{% block hero %}Kedves {{ video.request.requester.first_name }}!{% endblock %}
+{% block heading %}Új videót publikáltunk{% endblock %}
 {% block content %}
-    <!-- start copy block -->
-    <tr>
-        <td align="center" bgcolor="#e9ecef">
-            <!--[if (gte mso 9)|(IE)]>
-            <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
-                <tr>
-                    <td align="center" valign="top" width="600">
-            <![endif]-->
-            <table
-                border="0"
-                cellpadding="0"
-                cellspacing="0"
-                width="100%"
-                style="max-width: 600px"
-            >
-                <!-- start copy -->
-                <tr>
-                    <td
-                        align="left"
-                        bgcolor="#ffffff"
-                        style="
-                               padding: 24px;
-                               font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                               font-size: 16px;
-                               line-height: 24px;
-                              "
-                    >
-                        <p style="margin: 0">
-                            Felkérésedhez új videót publikáltunk
-                            <strong>{{ video.title }}</strong> címmel, melyet az alábbi gombra
-                            kattintva tekinthetsz meg.
-                        </p>
-                    </td>
-                </tr>
-                <!-- end copy -->
+    <p style="margin: 0 0 16px">Kedves {{ video.request.requester.first_name }}!</p>
+    <p style="margin: 0 0 24px">
+        Felkérésedhez új videót publikáltunk, melyet az alábbi gombra kattintva tekinthetsz meg.
+    </p>
 
-                <!-- start button -->
-                <tr>
-                    <td align="left" bgcolor="#ffffff">
-                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                            <tr>
-                                <td align="center" bgcolor="#ffffff" style="padding: 12px">
-                                    <table border="0" cellpadding="0" cellspacing="0">
-                                        <tr>
-                                            <td
-                                                align="center"
-                                                bgcolor="#1a82e2"
-                                                style="border-radius: 6px"
-                                            >
-                                                <a
-                                                    href="{{ video.published_url }}"
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    style="
-                                                           display: inline-block;
-                                                           padding: 16px 36px;
-                                                           font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                                           font-size: 16px;
-                                                           color: #ffffff;
-                                                           text-decoration: none;
-                                                           border-radius: 6px;
-                                                          "
-                                                >
-                                                    Videó megtekintése
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <!-- end button -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 0 0 24px; border: 1px solid #dde4ed; border-radius: 12px; border-collapse: separate">
+        <tr>
+            <td width="48" valign="middle" style="width: 48px; padding: 20px 0 20px 20px">
+                <table role="presentation" width="48" cellpadding="0" cellspacing="0" border="0" style="border-collapse: separate">
+                    <tr>
+                        <td
+                            align="center"
+                            valign="middle"
+                            width="48"
+                            height="48"
+                            bgcolor="#005baa"
+                            style="width: 48px; height: 48px; border-radius: 50%; font-size: 18px; line-height: 48px; color: #ffffff"
+                        >&#9654;&#xFE0E;</td>
+                    </tr>
+                </table>
+            </td>
+            <td valign="middle" style="padding: 20px 20px 20px 16px">
+                <p style="margin: 0; font-size: 18px; line-height: 26px; font-weight: 700; color: #0f1b2d">{{ video.title }}</p>
+                <p style="margin: 2px 0 0; font-size: 15px; line-height: 22px; color: #64748b">{{ video.request.title }}</p>
+            </td>
+        </tr>
+    </table>
 
-                <!-- start copy -->
-                <tr>
-                    <td
-                        align="left"
-                        bgcolor="#ffffff"
-                        style="
-                               padding: 24px;
-                               font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                               font-size: 16px;
-                               line-height: 24px;
-                              "
-                    >
-                        <p style="margin: 0">
-                            Kiváncsiak vagyunk a véleményedre. Kérjük az alábbi gombra kattinva
-                            értékeld az elkészült videót és a munkánkat!
-                            {% if not is_registered %}<br /><br />Az oldalra a felkéréshez megadott e-mail címedet
-                                használó AuthSCH, Google vagy Microsoft fiókkal tudsz belépni.
-                            {% endif %}
-                        </p>
-                    </td>
-                </tr>
-                <!-- end copy -->
+    {% include "email/html/partials/button.html" with url=video.published_url label="Videó megtekintése" %}
 
-                <!-- start button -->
-                <tr>
-                    <td align="left" bgcolor="#ffffff">
-                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                            <tr>
-                                <td align="center" bgcolor="#ffffff" style="padding: 12px">
-                                    <table border="0" cellpadding="0" cellspacing="0">
-                                        <tr>
-                                            <td
-                                                align="center"
-                                                bgcolor="#f7a00a"
-                                                style="border-radius: 6px"
-                                            >
-                                                <a
-                                                    href="{{ video.request.url }}"
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    style="
-                                                           display: inline-block;
-                                                           padding: 16px 36px;
-                                                           font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                                           font-size: 16px;
-                                                           color: #ffffff;
-                                                           text-decoration: none;
-                                                           border-radius: 6px;
-                                                          "
-                                                >
-                                                    Értékelés
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <!-- end button -->
+    <p style="margin: 8px 0 16px; padding-top: 24px; border-top: 1px solid #e8edf3">
+        Kíváncsiak vagyunk a véleményedre. Kérjük, az alábbi gombra kattintva értékeld az elkészült videót és a munkánkat!
+    </p>
+    {% if not is_registered %}
+        <p style="margin: 0 0 16px">
+            Az oldalra a felkéréshez megadott e-mail-címedhez tartozó AuthSCH-, Google- vagy Microsoft-fiókkal tudsz belépni.
+        </p>
+    {% endif %}
 
-                <!-- start signature -->
-                <tr>
-                    <td
-                        align="left"
-                        bgcolor="#ffffff"
-                        style="
-                               padding: 24px;
-                               font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                               font-size: 16px;
-                               line-height: 24px;
-                               border-bottom: 3px solid #014dff;
-                              "
-                    >
-                        <p style="margin: 0">
-                            Üdvözlettel:<br />
-                            a Budavári Schönherz Stúdió csapata
-                        </p>
-                    </td>
-                </tr>
-                <!-- end signature -->
-            </table>
-            <!--[if (gte mso 9)|(IE)]>
-                    </td>
-                </tr>
-            </table>
-            <![endif]-->
-        </td>
-    </tr>
-    <!-- end copy block -->
+    {% include "email/html/partials/button.html" with url=video.request.url label="Értékelés" secondary=True %}
 {% endblock %}

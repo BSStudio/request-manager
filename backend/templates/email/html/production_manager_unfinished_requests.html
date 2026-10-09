@@ -1,143 +1,33 @@
 {% extends 'email/html/email_base.html' %}
-{% load i18n %}
-{% block title %}Lezáratlan anyagok{% endblock %}
 {% block preheader %}Szia! Az alábbi anyagok elkészültek, de még nincsenek lezárva:{% endblock %}
-{% block hero %}Szia!{% endblock %}
+{% block heading %}Lezáratlan anyagok{% endblock %}
 {% block content %}
-    <!-- start copy block -->
-    <tr>
-        <td align="center" bgcolor="#e9ecef">
-            <!--[if (gte mso 9)|(IE)]>
-            <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
-                <tr>
-                    <td align="center" valign="top" width="600">
-            <![endif]-->
-            <table
-                border="0"
-                cellpadding="0"
-                cellspacing="0"
-                width="100%"
-                style="max-width: 600px"
-            >
-                <!-- start recording -->
-                <tr>
-                    <td
-                        align="left"
-                        bgcolor="#ffffff"
-                        style="
-                               padding: 24px;
-                               font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                               font-size: 16px;
-                               line-height: 24px;
-                              "
-                    >
-                        <p style="margin: 0">
-                            <strong>
-                                Az alábbi anyagok elkészültek, de még nincsenek lezárva:
-                            </strong>
-                        </p>
+    <p style="margin: 0 0 16px">Szia!</p>
+    <p style="margin: 0 0 24px">Az alábbi anyagok elkészültek, de még nincsenek lezárva:</p>
 
-                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                            <tr>
-                                <td
-                                    align="left"
-                                    bgcolor="#1a82e2"
-                                    width="60%"
-                                    style="
-                                           padding: 12px;
-                                           font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                           font-size: 16px;
-                                           line-height: 24px;
-                                           color: white;
-                                          "
-                                >
-                                    <strong>Esemény neve</strong>
-                                </td>
-                                <td
-                                    align="left"
-                                    bgcolor="#1a82e2"
-                                    width="40%"
-                                    style="
-                                           padding: 12px;
-                                           font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                           font-size: 16px;
-                                           line-height: 24px;
-                                           color: white;
-                                          "
-                                >
-                                    <strong>Dátum</strong>
-                                </td>
-                            </tr>
-                            {% for req in requests %}
-                                <tr
-                                    style="border: solid; border-width: 1px 0; border-color: #e3e6e4"
-                                >
-                                    <td
-                                        align="left"
-                                        width="60%"
-                                        style="
-                                               padding: 6px 12px;
-                                               font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                               font-size: 16px;
-                                               line-height: 24px;
-                                              "
-                                    >
-                                        <a
-                                            href="{{ req.admin_url }}"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                        >
-                                            {{ req.title }}
-                                        </a>
-                                    </td>
-                                    <td
-                                        align="left"
-                                        width="40%"
-                                        style="
-                                               padding: 6px 12px;
-                                               font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                               font-size: 16px;
-                                               line-height: 24px;
-                                              "
-                                    >
-                                        {% language 'hu' %}
-                                            {{ req.start_datetime|date:"N j l" }}
-                                        {% endlanguage %}
-                                    </td>
-                                </tr>
-                            {% endfor %}
-                        </table>
-                    </td>
-                </tr>
-                <!-- end recording -->
-
-                <!-- start signature -->
-                <tr>
-                    <td
-                        align="left"
-                        bgcolor="#ffffff"
-                        style="
-                               padding: 24px;
-                               font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                               font-size: 16px;
-                               line-height: 24px;
-                               border-bottom: 3px solid #014dff;
-                              "
-                    >
-                        <p style="margin: 0">
-                            Üdv:<br />
-                            Felkéréskezelő robotka
-                        </p>
-                    </td>
-                </tr>
-                <!-- end signature -->
-            </table>
-            <!--[if (gte mso 9)|(IE)]>
-                    </td>
-                </tr>
-            </table>
-            <![endif]-->
-        </td>
-    </tr>
-    <!-- end copy block -->
+    <table
+        role="presentation"
+        width="100%"
+        cellpadding="0"
+        cellspacing="0"
+        border="0"
+        style="margin: 0 0 8px; border: 1px solid #dde4ed; border-radius: 12px; border-collapse: separate; font-size: 14px; line-height: 20px"
+    >
+        {% for req in requests %}
+            <tr>
+                <td width="58" valign="top" style="width: 58px; padding: 16px 0 16px 16px;{% if not forloop.first %} border-top: 1px solid #e8edf3;{% endif %}">
+                    {% include "email/html/partials/date_tile.html" with date=req.start_datetime %}
+                </td>
+                <td valign="top" style="padding: 14px 16px 16px 14px;{% if not forloop.first %} border-top: 1px solid #e8edf3;{% endif %}">
+                    <p style="margin: 0 0 8px; font-size: 16px; line-height: 24px; font-weight: 700">
+                        <a href="{{ req.admin_url }}" target="_blank" rel="noopener noreferrer" style="color: #005baa; text-decoration: none">{{ req.title }}</a>
+                    </p>
+                    <p style="margin: 0">
+                        {% include "email/html/partials/pill.html" with label=req.get_status_display tone="gray" %}
+                    </p>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
 {% endblock %}
+{% block signature %}Üdv:<br />Felkéréskezelő robotka{% endblock %}

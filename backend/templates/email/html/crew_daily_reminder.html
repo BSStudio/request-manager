@@ -1,110 +1,14 @@
 {% extends 'email/html/email_base.html' %}
-{% block title %}Mai forgatás emlékeztető{% endblock %}
-{% block preheader %}Szia! Ne felejtsd, ma lesz a(z) {{ request.title }} forgatás.{% endblock %}
-{% block hero %}Szia!{% endblock %}
+{% block preheader %}Szia! Ma forgatás lesz, ne felejtsd! Egyeztess a többiekkel is.{% endblock %}
+{% block heading %}Mai forgatás{% endblock %}
 {% block content %}
-    <!-- start copy block -->
-    <tr>
-        <td align="center" bgcolor="#e9ecef">
-            <!--[if (gte mso 9)|(IE)]>
-            <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
-                <tr>
-                    <td align="center" valign="top" width="600">
-            <![endif]-->
-            <table
-                border="0"
-                cellpadding="0"
-                cellspacing="0"
-                width="100%"
-                style="max-width: 600px"
-            >
-                <!-- start copy -->
-                <tr>
-                    <td
-                        align="left"
-                        bgcolor="#ffffff"
-                        style="
-                               padding: 24px;
-                               font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                               font-size: 16px;
-                               line-height: 24px;
-                              "
-                    >
-                        <p style="margin: 0">
-                            Ne felejtsd, ma lesz a(z)
-                            <strong>{{ request.title }}</strong> forgatás. Egyeztess a
-                            többiekkel is.
-                        </p>
-                    </td>
-                </tr>
-                <!-- end copy -->
+    <p style="margin: 0 0 16px">Szia!</p>
+    <p style="margin: 0 0 24px">
+        Ma forgatás lesz, ne felejtsd! Egyeztess a többiekkel is.
+    </p>
 
-                <!-- start button -->
-                <tr>
-                    <td align="left" bgcolor="#ffffff">
-                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                            <tr>
-                                <td align="center" bgcolor="#ffffff" style="padding: 12px">
-                                    <table border="0" cellpadding="0" cellspacing="0">
-                                        <tr>
-                                            <td
-                                                align="center"
-                                                bgcolor="#1a82e2"
-                                                style="border-radius: 6px"
-                                            >
-                                                <a
-                                                    href="{{ request.admin_url }}"
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    style="
-                                                           display: inline-block;
-                                                           padding: 16px 36px;
-                                                           font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                                           font-size: 16px;
-                                                           color: #ffffff;
-                                                           text-decoration: none;
-                                                           border-radius: 6px;
-                                                          "
-                                                >
-                                                    Részletek
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <!-- end button -->
+    {% include "email/html/partials/event_card.html" with request=request show_crew=True %}
 
-                <!-- start signature -->
-                <tr>
-                    <td
-                        align="left"
-                        bgcolor="#ffffff"
-                        style="
-                               padding: 24px;
-                               font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                               font-size: 16px;
-                               line-height: 24px;
-                               border-bottom: 3px solid #014dff;
-                              "
-                    >
-                        <p style="margin: 0">
-                            Üdv:<br />
-                            Felkéréskezelő robotka
-                        </p>
-                    </td>
-                </tr>
-                <!-- end signature -->
-            </table>
-            <!--[if (gte mso 9)|(IE)]>
-                    </td>
-                </tr>
-            </table>
-            <![endif]-->
-        </td>
-    </tr>
-    <!-- end copy block -->
+    {% include "email/html/partials/button.html" with url=request.admin_url label="Részletek" %}
 {% endblock %}
+{% block signature %}Üdv:<br />Felkéréskezelő robotka{% endblock %}

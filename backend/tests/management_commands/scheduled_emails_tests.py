@@ -146,7 +146,7 @@ class TestWeeklyTasks:
 
         assert len(mail.outbox) == 1
         assert django_settings.WEEKLY_TASK_EMAIL in mail.outbox[0].to
-        assert mail.outbox[0].subject == "Eheti forgatások és vágandó anyagok"
+        assert mail.outbox[0].subject == "E heti forgatások és vágandó anyagok"
 
     def test_a_quiet_week_is_reported_instead_of_mailed(
         self, editing, recording, time_machine
@@ -327,7 +327,7 @@ class TestOverdueRequests:
             assert production_manager.email in message.cc
             assert editor_in_chief.email in message.cc
             assert (
-                message.subject == f"Lejárt határidejű felkérés - {video_request.title}"
+                message.subject == f"{video_request.title} | Lejárt határidejű felkérés"
             )
 
     def test_nothing_overdue_is_reported_instead_of_mailed(self, requests):

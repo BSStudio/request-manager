@@ -1,6 +1,11 @@
-Szia!
+{% load i18n %}Szia!
 
-Ne felejtsd, ma lesz a(z) {{ request.title }} forgatás. Egyeztess a többiekkel is.
+Ma forgatás lesz, ne felejtsd! Egyeztess a többiekkel is.
+
+Esemény: {{ request.title }}
+Időpont: {% language 'hu' %}{{ request.start_datetime|date:"H:i" }}–{{ request.end_datetime|date:"H:i" }}{% endlanguage %}
+Helyszín: {{ request.place }}
+Stáb: {% for crew_member in request.crew.all %}{{ crew_member.member.get_full_name_eastern_order }} ({{ crew_member.position }}){% if not forloop.last %}, {% endif %}{% endfor %}
 
 Részletek: {{ request.admin_url }}
 

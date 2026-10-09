@@ -1,6 +1,6 @@
 Kedves {{ name }}!
 
-Alábbi üzenetedet megkaptuk, rövidesen igyekszünk rá válaszolni.
+Megkaptuk az alábbi üzenetedet, hamarosan válaszolunk.
 
 {{ message }}
 

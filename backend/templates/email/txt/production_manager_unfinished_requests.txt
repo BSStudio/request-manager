@@ -1,9 +1,10 @@
 {% load i18n %}Szia!
 
 Az alábbi anyagok elkészültek, de még nincsenek lezárva:
-Esemény neve | Dátum | URL
-{% for req in requests %}{{ req.title }} | {% language 'hu' %}{{ req.start_datetime|date:"N j l" }}{% endlanguage %} | {{ req.admin_url }}
+{% for req in requests %}
+- {{ req.title }} ({{ req.get_status_display }})
+  {% language 'hu' %}{{ req.start_datetime|date:"Y. N j., l" }}{% endlanguage %}
+  {{ req.admin_url }}
 {% endfor %}
-
 Üdv:
 Felkéréskezelő robotka

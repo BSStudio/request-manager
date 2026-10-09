@@ -1,135 +1,24 @@
 {% extends 'email/html/email_base.html' %}
 {% load i18n %}
-{% block title %}Lejárt határidejű felkérés{% endblock %}
 {% block preheader %}Szia! A(z) {{ request.title }} felkérés határideje lejárt, de még nem készült el (minden) videó.{% endblock %}
-{% block hero %}Szia!{% endblock %}
+{% block heading %}Lejárt határidejű felkérés{% endblock %}
 {% block content %}
-    <!-- start copy block -->
-    <tr>
-        <td align="center" bgcolor="#e9ecef">
-            <!--[if (gte mso 9)|(IE)]>
-            <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
-                <tr>
-                    <td align="center" valign="top" width="600">
-            <![endif]-->
-            <table
-                border="0"
-                cellpadding="0"
-                cellspacing="0"
-                width="100%"
-                style="max-width: 600px"
-            >
-                <!-- start recording -->
-                <tr>
-                    <td
-                        align="left"
-                        bgcolor="#ffffff"
-                        style="
-                               padding: 24px;
-                               font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                               font-size: 16px;
-                               line-height: 24px;
-                              "
-                    >
-                        <p style="margin: 0">
-                            A(z) <strong>{{ request.title }}</strong> felkérés határideje
-                            lejárt, de még nem készült el (minden) videó. A felkérés határideje
-                            <strong>
-                                {% language 'hu' %}
-                                    {{ request.deadline|date:"N j l" }}
-                                {% endlanguage %}
-                            </strong>
-                            volt.
-                        </p>
-                    </td>
-                </tr>
-                <!-- end recording -->
+    <p style="margin: 0 0 16px">Szia!</p>
+    <p style="margin: 0 0 24px">
+        A(z) <strong style="color: #0f1b2d">{{ request.title }}</strong> felkérés határideje lejárt, de még nem készült el (minden) videó.
+    </p>
 
-                <!-- start recording -->
-                <tr>
-                    <td
-                        align="left"
-                        bgcolor="#ffffff"
-                        style="
-                               padding: 24px;
-                               font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                               font-size: 16px;
-                               line-height: 24px;
-                              "
-                    >
-                        <p style="margin: 0">
-                            Kérlek nézz rá és intézkedj, hogy minél hamarabb le lehessen zárni.
-                        </p>
-                    </td>
-                </tr>
-                <!-- end recording -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 0 0 24px; border-collapse: separate">
+        <tr>
+            <td bgcolor="#fdecec" style="padding: 16px 20px; border-left: 4px solid #d93a3f; border-radius: 8px; color: #7a1d21">
+                Határidő:
+                <strong>{% language 'hu' %}{{ request.deadline|date:"Y. F j., l" }}{% endlanguage %}</strong>
+            </td>
+        </tr>
+    </table>
 
-                <!-- start button -->
-                <tr>
-                    <td align="left" bgcolor="#ffffff">
-                        <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                            <tr>
-                                <td align="center" bgcolor="#ffffff" style="padding: 12px">
-                                    <table border="0" cellpadding="0" cellspacing="0">
-                                        <tr>
-                                            <td
-                                                align="center"
-                                                bgcolor="#1a82e2"
-                                                style="border-radius: 6px"
-                                            >
-                                                <a
-                                                    href="{{ request.admin_url }}"
-                                                    target="_blank"
-                                                    rel="noopener noreferrer"
-                                                    style="
-                                                           display: inline-block;
-                                                           padding: 16px 36px;
-                                                           font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                                           font-size: 16px;
-                                                           color: #ffffff;
-                                                           text-decoration: none;
-                                                           border-radius: 6px;
-                                                          "
-                                                >
-                                                    Ugrás
-                                                </a>
-                                            </td>
-                                        </tr>
-                                    </table>
-                                </td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <!-- end button -->
+    <p style="margin: 0 0 16px">Kérlek, nézz rá, és intézkedj, hogy minél hamarabb le lehessen zárni.</p>
 
-                <!-- start signature -->
-                <tr>
-                    <td
-                        align="left"
-                        bgcolor="#ffffff"
-                        style="
-                               padding: 24px;
-                               font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                               font-size: 16px;
-                               line-height: 24px;
-                               border-bottom: 3px solid #014dff;
-                              "
-                    >
-                        <p style="margin: 0">
-                            Üdv:<br />
-                            Felkéréskezelő robotka
-                        </p>
-                    </td>
-                </tr>
-                <!-- end signature -->
-            </table>
-            <!--[if (gte mso 9)|(IE)]>
-                    </td>
-                </tr>
-            </table>
-            <![endif]-->
-        </td>
-    </tr>
-    <!-- end copy block -->
+    {% include "email/html/partials/button.html" with url=request.admin_url label="Ugrás a felkéréshez" %}
 {% endblock %}
+{% block signature %}Üdv:<br />Felkéréskezelő robotka{% endblock %}

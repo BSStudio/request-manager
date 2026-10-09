@@ -1,383 +1,177 @@
-{% load i18n %}
 {% load static %}
 {% load extra_tags %}
 <!DOCTYPE html>
-<html lang="hu">
+<html lang="hu" xmlns:v="urn:schemas-microsoft-com:vml" xmlns:o="urn:schemas-microsoft-com:office:office">
     <head>
         <meta charset="utf-8" />
-        <meta http-equiv="x-ua-compatible" content="ie=edge" />
-        <title>{% block title %} Title {% endblock %}</title>
         <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta http-equiv="x-ua-compatible" content="ie=edge" />
+        <meta name="x-apple-disable-message-reformatting" />
+        <meta name="color-scheme" content="light only" />
+        <meta name="supported-color-schemes" content="light only" />
+        <title>Budavári Schönherz Stúdió</title>
+        {# Outlook does not inherit the font into nested tables. #}
+        <!--[if mso]>
+        <noscript>
+            <xml>
+                <o:OfficeDocumentSettings>
+                    <o:PixelsPerInch>96</o:PixelsPerInch>
+                </o:OfficeDocumentSettings>
+            </xml>
+        </noscript>
         <style type="text/css">
-            /**
-            * Google webfonts. Recommended to include the .woff version for cross-client compatibility.
-            */
-            @media screen {
-                @font-face {
-                    font-family: 'Source Sans Pro';
-                    font-style: normal;
-                    font-weight: 400;
-                    src: local('Source Sans Pro Regular'), local('SourceSansPro-Regular'),
-                         url(https://fonts.gstatic.com/s/sourcesanspro/v10/ODelI1aHBYDBqgeIAH2zlBM0YzuT7MdOe03otPbuUS0.woff)
-                         format('woff');
-                }
-
-                @font-face {
-                    font-family: 'Source Sans Pro';
-                    font-style: normal;
-                    font-weight: 700;
-                    src: local('Source Sans Pro Bold'), local('SourceSansPro-Bold'),
-                         url(https://fonts.gstatic.com/s/sourcesanspro/v10/toadOcfmlt9b38dHJxOBGFkQc6VGVFSmCnC_l7QZG60.woff)
-                         format('woff');
-                }
+            table, td, p, a, span, h1 {
+                font-family: 'Segoe UI', Arial, sans-serif !important;
             }
-
-            /**
-            * Avoid browser level font resizing.
-            * 1. Windows Mobile
-            * 2. iOS / OSX
-            */
-            body,
-            table,
-            td,
-            a {
-                -ms-text-size-adjust: 100%; /* 1 */
-                -webkit-text-size-adjust: 100%; /* 2 */
-            }
-
-            /**
-            * Remove extra space added to tables and cells in Outlook.
-            */
-            table,
-            td {
-                mso-table-rspace: 0;
-                mso-table-lspace: 0;
-            }
-
-            /**
-            * Better fluid images in Internet Explorer.
-            */
-            img {
-                -ms-interpolation-mode: bicubic;
-            }
-
-            /**
-            * Remove blue links for iOS devices.
-            */
+        </style>
+        <![endif]-->
+        {# Only enhancements live here: every e-mail must look right with the inline styles alone. #}
+        <style type="text/css">
             a[x-apple-data-detectors] {
-                font-family: inherit !important;
+                color: inherit !important;
                 font-size: inherit !important;
+                font-family: inherit !important;
                 font-weight: inherit !important;
                 line-height: inherit !important;
-                color: inherit !important;
                 text-decoration: none !important;
             }
 
-            /**
-            * Fix centering issues in Android 4.4.
-            */
-            div[style*='margin: 16px 0;'] {
-                margin: 0 !important;
-            }
-
-            body {
-                width: 100% !important;
-                height: 100% !important;
-                padding: 0 !important;
-                margin: 0 !important;
-            }
-
-            /**
-            * Collapse table borders to avoid space between cells.
-            */
-            table {
-                border-collapse: collapse !important;
-            }
-
-            /**
-            * No separator lines on the first, second and last rows
-            */
-            tr:first-child {
-                border-top: none !important;
-            }
-
-            tr:nth-child(2) {
-                border-top: none !important;
-            }
-
-            tr:last-child {
-                border-bottom: none !important;
-            }
-
-            a {
-                color: #1a82e2;
-            }
-
-            img {
-                height: auto;
-                line-height: 100%;
-                text-decoration: none;
-                border: 0;
-                outline: none;
+            @media screen and (max-width: 480px) {
+                .card {
+                    padding: 28px 20px !important;
+                }
             }
         </style>
     </head>
-    <body style="background-color: #e9ecef">
-        <!-- start preheader -->
-        <div
-            class="preheader"
-            style="
-                   display: none;
-                   max-width: 0;
-                   max-height: 0;
-                   overflow: hidden;
-                   font-size: 1px;
-                   line-height: 1px;
-                   color: #fff;
-                   opacity: 0;
-                  "
-        >
-            {% block preheader %} Preheader {% endblock %}
+    <body style="margin: 0; padding: 0; background-color: #eef2f7; word-spacing: normal; -webkit-text-size-adjust: 100%; -ms-text-size-adjust: 100%">
+        <div style="display: none; max-height: 0; max-width: 0; overflow: hidden; opacity: 0; font-size: 1px; line-height: 1px; color: #eef2f7; mso-hide: all">
+            {% block preheader %}{% endblock %}
+            {# Keeps the start of the body out of the inbox preview after the preheader. #}
+            &#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;&#847;&zwnj;&nbsp;
         </div>
-        <!-- end preheader -->
 
-        <!-- start body -->
-        <table border="0" cellpadding="0" cellspacing="0" width="100%">
-            <!-- start logo -->
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" bgcolor="#eef2f7" style="background-color: #eef2f7">
             <tr>
-                <td align="center" bgcolor="#e9ecef">
-                    <!--[if (gte mso 9)|(IE)]>
-                    <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
-                        <tr>
-                            <td align="center" valign="top" width="600">
+                <td align="center" style="padding: 32px 12px">
+                    <!--[if mso]>
+                    <table role="presentation" align="center" width="600" cellpadding="0" cellspacing="0" border="0"><tr><td>
                     <![endif]-->
                     <table
-                        border="0"
+                        role="presentation"
+                        width="100%"
                         cellpadding="0"
                         cellspacing="0"
-                        width="100%"
-                        style="max-width: 600px"
+                        border="0"
+                        style="max-width: 600px; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif"
                     >
                         <tr>
-                            <td align="center" valign="top" style="padding: 30px 24px">
-                                <a
-                                    href="https://bsstudio.hu"
-                                    target="_blank"
-                                    style="display: inline-block"
-                                >
+                            <td align="center" style="padding: 0 0 24px">
+                                <a href="https://bsstudio.hu" target="_blank" rel="noopener noreferrer" style="display: inline-block">
                                     <img
                                         src="{% settings_value "BASE_URL" %}{% static "images/bss_logo.png" %}"
                                         alt="Budavári Schönherz Stúdió"
-                                        width="280"
-                                        style="
-                                               display: block;
-                                               width: 280px;
-                                               max-width:280px;
-                                               min-width: 280px;
-                                              "
+                                        width="120"
+                                        style="display: block; width: 120px; max-width: 120px; height: auto; border: 0"
                                     />
                                 </a>
                             </td>
                         </tr>
-                    </table>
-                    <!--[if (gte mso 9)|(IE)]>
-                            </td>
-                        </tr>
-                    </table>
-                    <![endif]-->
-                </td>
-            </tr>
-            <!-- end logo -->
 
-            <!-- start hero -->
-            <tr>
-                <td align="center" bgcolor="#e9ecef">
-                    <!--[if (gte mso 9)|(IE)]>
-                    <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
                         <tr>
-                            <td align="center" valign="top" width="600">
-                    <![endif]-->
-                    <table
-                        border="0"
-                        cellpadding="0"
-                        cellspacing="0"
-                        width="100%"
-                        style="max-width: 600px"
-                    >
-                        <tr>
+                            {# Without word-break, a long URL or word in user text stretches the whole table past the screen. #}
                             <td
-                                align="left"
+                                class="card"
                                 bgcolor="#ffffff"
                                 style="
-                                       padding: 36px 24px 0;
-                                       font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                       border-top: 3px solid #014dff;
+                                       padding: 40px 36px;
+                                       background-color: #ffffff;
+                                       border: 1px solid #dde4ed;
+                                       border-radius: 16px;
+                                       font-size: 16px;
+                                       line-height: 26px;
+                                       color: #334155;
+                                       text-align: left;
+                                       overflow-wrap: anywhere;
+                                       word-break: break-word;
                                       "
                             >
-                                <h1
-                                    style="
-                                           margin: 0;
-                                           font-size: 32px;
-                                           font-weight: 700;
-                                           letter-spacing: -1px;
-                                           line-height: 48px;
-                                          "
-                                >
-                                    {% block hero %} Szia! {% endblock %}
+                                <h1 style="margin: 0 0 20px; font-size: 26px; line-height: 34px; font-weight: 700; letter-spacing: -0.3px; color: #0f1b2d">
+                                    {% block heading %}{% endblock %}
                                 </h1>
-                            </td>
-                        </tr>
-                    </table>
-                    <!--[if (gte mso 9)|(IE)]>
-                            </td>
-                        </tr>
-                    </table>
-                    <![endif]-->
-                </td>
-            </tr>
-            <!-- end hero -->
 
-            <!-- start content -->
-            {% block content %} Content {% endblock %}
-            <!-- end content -->
+                                {% block content %}{% endblock %}
 
-            <!-- start footer -->
-            <tr>
-                <td align="center" bgcolor="#e9ecef" style="padding: 24px">
-                    <!--[if (gte mso 9)|(IE)]>
-                    <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
-                        <tr>
-                            <td align="center" valign="top" width="600">
-                    <![endif]-->
-                    <table
-                        border="0"
-                        cellpadding="0"
-                        cellspacing="0"
-                        width="100%"
-                        style="max-width: 600px"
-                    >
-                        <!-- start social media -->
-                        <tr>
-                            <td
-                                align="center"
-                                bgcolor="#e9ecef"
-                                style="
-                                       padding: 6px 12px;
-                                       font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                       font-size: 14px;
-                                       line-height: 20px;
-                                       color: #666;
-                                      "
-                            >
-                                <a
-                                    href="https://facebook.com/bsstudio"
-                                    target="_blank"
-                                    style="display: inline-block"
-                                >
-                                    <img
-                                        src="{% settings_value "BASE_URL" %}{% static "images/facebook.png" %}"
-                                        alt="Likeold a Facebook oldalunkat!"
-                                        border="0"
-                                        width="50"
-                                        style="
-                                               width: 50px;
-                                               max-width: 50px;
-                                               min-width: 50px;
-                                               padding-right: 8px;
-                                               padding-left: 8px;
-                                              "
-                                    />
-                                </a>
-                                <a
-                                    href="https://instagram.com/budavari_schonherz_studio"
-                                    target="_blank"
-                                    style="display: inline-block"
-                                >
-                                    <img
-                                        src="{% settings_value "BASE_URL" %}{% static "images/instagram.png" %}"
-                                        alt="Kövess minket Instagramon!"
-                                        border="0"
-                                        width="50"
-                                        style="
-                                               width: 50px;
-                                               max-width: 50px;
-                                               min-width: 50px;
-                                               padding-right: 8px;
-                                               padding-left: 8px;
-                                              "
-                                    />
-                                </a>
-                                <a
-                                    href="https://www.tiktok.com/@bsstudio_"
-                                    target="_blank"
-                                    style="display: inline-block"
-                                >
-                                    <img
-                                        src="{% settings_value "BASE_URL" %}{% static "images/tiktok.png" %}"
-                                        alt="Nézd a TikTok videóinkat!"
-                                        border="0"
-                                        width="50"
-                                        style="
-                                               width: 50px;
-                                               max-width: 50px;
-                                               min-width: 50px;
-                                               padding-right: 8px;
-                                               padding-left: 8px;
-                                              "
-                                    />
-                                </a>
-                                <a
-                                    href="https://youtube.com/bsstudi0"
-                                    target="_blank"
-                                    style="display: inline-block"
-                                >
-                                    <img
-                                        src="{% settings_value "BASE_URL" %}{% static "images/youtube.png" %}"
-                                        alt="Iratkozz fel a YouTube csatornánkra!"
-                                        border="0"
-                                        width="50"
-                                        style="
-                                               width: 50px;
-                                               max-width: 50px;
-                                               min-width: 50px;
-                                               padding-right: 8px;
-                                               padding-left: 8px;
-                                              "
-                                    />
-                                </a>
-                            </td>
-                        </tr>
-                        <!-- end social media -->
-
-                        <!-- start copyright -->
-                        <tr>
-                            <td
-                                align="center"
-                                bgcolor="#e9ecef"
-                                style="
-                                       padding: 12px 24px;
-                                       font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                       font-size: 14px;
-                                       line-height: 20px;
-                                       color: #666;
-                                      "
-                            >
-                                <p style="margin: 0">
-                                    Copyright &copy; {% now "Y" %} Budavári Schönherz Stúdió. All rights reserved.
+                                <p style="margin: 32px 0 0">
+                                    {% block signature %}Üdvözlettel:<br />a Budavári Schönherz Stúdió csapata{% endblock %}
                                 </p>
                             </td>
                         </tr>
-                        <!-- end copyright -->
-                    </table>
-                    <!--[if (gte mso 9)|(IE)]>
+
+                        <tr>
+                            <td align="center" style="padding: 28px 24px 8px">
+                                <table role="presentation" cellpadding="0" cellspacing="0" border="0">
+                                    <tr>
+                                        <td style="padding: 0 6px">
+                                            <a href="https://facebook.com/bsstudio" target="_blank" rel="noopener noreferrer">
+                                                <img
+                                                    src="{% settings_value "BASE_URL" %}{% static "images/facebook.png" %}"
+                                                    alt="Facebook"
+                                                    width="28"
+                                                    height="28"
+                                                    style="display: block; width: 28px; height: 28px; border: 0"
+                                                />
+                                            </a>
+                                        </td>
+                                        <td style="padding: 0 6px">
+                                            <a href="https://instagram.com/budavari_schonherz_studio" target="_blank" rel="noopener noreferrer">
+                                                <img
+                                                    src="{% settings_value "BASE_URL" %}{% static "images/instagram.png" %}"
+                                                    alt="Instagram"
+                                                    width="28"
+                                                    height="28"
+                                                    style="display: block; width: 28px; height: 28px; border: 0"
+                                                />
+                                            </a>
+                                        </td>
+                                        <td style="padding: 0 6px">
+                                            <a href="https://www.tiktok.com/@bsstudio_" target="_blank" rel="noopener noreferrer">
+                                                <img
+                                                    src="{% settings_value "BASE_URL" %}{% static "images/tiktok.png" %}"
+                                                    alt="TikTok"
+                                                    width="28"
+                                                    height="28"
+                                                    style="display: block; width: 28px; height: 28px; border: 0"
+                                                />
+                                            </a>
+                                        </td>
+                                        <td style="padding: 0 6px">
+                                            <a href="https://youtube.com/bsstudi0" target="_blank" rel="noopener noreferrer">
+                                                <img
+                                                    src="{% settings_value "BASE_URL" %}{% static "images/youtube.png" %}"
+                                                    alt="YouTube"
+                                                    width="28"
+                                                    height="28"
+                                                    style="display: block; width: 28px; height: 28px; border: 0"
+                                                />
+                                            </a>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td align="center" style="padding: 8px 24px 0; font-size: 13px; line-height: 20px; color: #64748b">
+                                <a href="https://bsstudio.hu" target="_blank" rel="noopener noreferrer" style="color: #64748b; text-decoration: none; font-weight: 600">Budavári Schönherz Stúdió</a>
+                                <br />
+                                &copy; {% now "Y" %} Minden jog fenntartva.
                             </td>
                         </tr>
                     </table>
+                    <!--[if mso]>
+                    </td></tr></table>
                     <![endif]-->
                 </td>
             </tr>
-            <!-- end footer -->
         </table>
-        <!-- end body -->
     </body>
 </html>

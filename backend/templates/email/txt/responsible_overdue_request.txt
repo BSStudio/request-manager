@@ -1,8 +1,8 @@
 {% load i18n %}Szia!
 
-A(z) {{ request.title }} felkérés határideje lejárt, de még nem készült el (minden) videó. A felkérés határideje {% language 'hu' %}{{ request.deadline|date:"N j l" }}{% endlanguage %} volt.
+A(z) {{ request.title }} felkérés határideje lejárt, de még nem készült el (minden) videó. A felkérés határideje {% language 'hu' %}{{ request.deadline|date:"Y. F j., l" }}{% endlanguage %} volt.
 
-Kérlek nézz rá és intézkedj, hogy minél hamarabb le lehessen zárni.
+Kérlek, nézz rá, és intézkedj, hogy minél hamarabb le lehessen zárni.
 
 A felkérést itt találod: {{ request.admin_url }}
 

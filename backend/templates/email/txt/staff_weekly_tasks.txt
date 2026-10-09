@@ -1,20 +1,21 @@
 {% load i18n %}Sziasztok!
-
 {% if recording %}
-Közetkező heti forgatások:
-Esemény neve | Dátum | | Stáb | URL
-{% for request in recording %}{{ request.title }} | {% language 'hu' %}{{ request.start_datetime|date:"N j l, H:i" }}{% endlanguage %} | {{ request.crew.count }} | {{ request.admin_url }}
-{% endfor %}
-{% endif %}
-
-{% if editing_no_vids or editing_unedited_vids %}
+E heti forgatások:
+{% for request in recording %}
+- {{ request.title }} ({{ request.get_status_display }})
+  {% language 'hu' %}{{ request.start_datetime|date:"N j., l H:i" }}{% endlanguage %} · {{ request.place }}
+  Stáb: {% for crew_member in request.crew.all %}{{ crew_member.member.get_full_name_eastern_order }} ({{ crew_member.position }}){% if not forloop.last %}, {% endif %}{% empty %}még nincs{% endfor %}
+  {{ request.admin_url }}
+{% endfor %}{% endif %}{% if editing_no_vids or editing_unedited_vids %}
 Vágandó anyagok:
-Esemény/Videó neve | Vágó | URL
-{% for request in editing_no_vids %}{{ request.title }} | | {{ request.admin_url }}
-{% endfor %}
-{% for video in editing_unedited_vids %}{{ video.title }} | {{ video.editor.last_name }} {{ video.editor.first_name }} | {{ video.request.admin_url }}
-{% endfor %}
-{% endif %}
-
+{% for request in editing_no_vids %}
+- {{ request.title }}
+  Még nincs videó
+  {{ request.admin_url }}
+{% endfor %}{% for video in editing_unedited_vids %}
+- {{ video.title }} ({{ video.get_status_display }})
+  Vágó: {% if video.editor %}{{ video.editor.get_full_name_eastern_order }}{% else %}még nincs{% endif %}
+  {{ video.request.admin_url }}
+{% endfor %}{% endif %}
 Üdv:
 Felkéréskezelő robotka
