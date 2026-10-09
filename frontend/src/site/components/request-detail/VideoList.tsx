@@ -2,17 +2,14 @@ import { useQuery } from '@tanstack/react-query';
 import { cn } from 'cn';
 import { ArrowUpRightIcon, FilmIcon, PlayIcon } from 'lucide-react';
 
+import { VideoStatus } from 'helpers/statuses';
 import DetailCard from 'site/components/DetailCard';
 import VideoRating from 'site/components/request-detail/VideoRating';
 import StatusBadge from 'site/components/StatusBadge';
 import { Button } from 'site/components/ui/button';
 import { Skeleton } from 'site/components/ui/skeleton';
 import { requestVideosQuery } from 'site/lib/queries';
-import {
-  getRequestStep,
-  getVideoStatus,
-  VIDEO_PUBLISHED,
-} from 'site/lib/requestStatus';
+import { getRequestStep, getVideoStatus } from 'site/lib/requestStatus';
 
 type VideoListProps = {
   requestId: number;
@@ -87,7 +84,7 @@ export default function VideoList({ requestId, status }: VideoListProps) {
                   </Button>
                 )}
               </div>
-              {video.status >= VIDEO_PUBLISHED && (
+              {video.status >= VideoStatus.PUBLISHED && (
                 <VideoRating requestId={requestId} video={video} />
               )}
             </li>

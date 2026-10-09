@@ -10,6 +10,7 @@ import LinkButton from 'admin/components/LinkButton/LinkButton';
 import User from 'admin/components/User/User';
 import { RequestAdditionalDataType } from 'admin/types/additionalDataTypes';
 import { UserNestedDetail } from 'api/models';
+import { formatPhone } from 'helpers/phone';
 
 type RequesterContentProps = {
   additionalData: RequestAdditionalDataType;
@@ -43,7 +44,7 @@ export const RequesterContent = ({
             <Tag
               className="requester-different-data-tag"
               data-pr-tooltip={`Név: ${additionalData.requester.last_name} ${additionalData.requester.first_name}
-              Telefonszám: ${additionalData.requester.phone_number}`}
+              Telefonszám: ${formatPhone(additionalData.requester.phone_number)}`}
               icon="pi pi-exclamation-triangle"
               severity="warning"
               value="Eltérő adatok"
@@ -55,7 +56,7 @@ export const RequesterContent = ({
         <Chip
           className="mt-1 mr-2"
           icon="pi pi-phone"
-          label={requester.phone_number}
+          label={formatPhone(requester.phone_number)}
         />
         <Chip className="mt-1" icon="pi pi-envelope" label={requester.email} />
       </div>

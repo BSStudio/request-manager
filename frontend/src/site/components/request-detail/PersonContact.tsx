@@ -1,8 +1,8 @@
 import { MailIcon, PhoneIcon } from 'lucide-react';
 
 import type { UserNestedDetail } from 'api/models';
+import { formatPhone } from 'helpers/phone';
 import UserAvatar from 'site/components/UserAvatar';
-import { formatPhone } from 'site/lib/person';
 
 const linkClass =
   'flex min-w-0 items-center gap-2 text-sm text-muted-foreground transition-colors hover:text-foreground';

@@ -5,6 +5,7 @@ import { useFormContext } from 'react-hook-form';
 import { Link } from 'react-router';
 
 import { formatName } from 'helpers/names';
+import { formatPhone } from 'helpers/phone';
 import {
   OTHER_TYPE,
   type RequestFormValues,
@@ -12,7 +13,6 @@ import {
 } from 'site/components/request-form/schema';
 import { Button } from 'site/components/ui/button';
 import { formatRange } from 'site/lib/dates';
-import { formatPhone } from 'site/lib/person';
 
 export type Requester = { email: string; name: string; phone: string };
 

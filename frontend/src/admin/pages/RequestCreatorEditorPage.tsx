@@ -41,6 +41,7 @@ import { isNotFound, setFieldErrors } from 'api/errors';
 import { RequestAdminRetrieve, UserNestedDetail } from 'api/models';
 import { queryClient } from 'api/queryClient';
 import { getName } from 'helpers/LocalStorageHelper';
+import { toE164 } from 'helpers/phone';
 
 const NewRequesterForm = lazy(
   () => import('admin/components/RequestCreator/NewRequesterForm'),
@@ -228,7 +229,7 @@ const RequestCreatorEditorPage = () => {
         requester_email: data.requester_email,
         requester_first_name: data.requester_first_name,
         requester_last_name: data.requester_last_name,
-        requester_mobile: data.requester_mobile,
+        requester_mobile: toE164(data.requester_mobile),
       };
     }
 

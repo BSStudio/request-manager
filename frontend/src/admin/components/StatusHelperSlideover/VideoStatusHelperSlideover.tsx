@@ -7,6 +7,7 @@ import { classNames } from 'primereact/utils';
 
 import { VIDEO_STATUSES } from 'admin/components/StatusTag/statusTagConsts';
 import useMobile from 'admin/hooks/useMobile';
+import { VideoStatus } from 'helpers/statuses';
 
 import {
   ActiveCompleteTaskItem,
@@ -74,10 +75,10 @@ const VideoStatusHelperSlideover = ({
         )}
         <div className="flex-auto overflow-y-auto">
           <ul className="list-none m-0 p-0">
-            {status == 1 && (
+            {status === VideoStatus.PENDING && (
               <ActiveTask
-                icon={VIDEO_STATUSES[1].icon}
-                label={VIDEO_STATUSES[1].text}
+                icon={VIDEO_STATUSES[VideoStatus.PENDING].icon}
+                label={VIDEO_STATUSES[VideoStatus.PENDING].text}
               >
                 <ActivePendingTaskItem label="Felkérés beírva státuszú" />
                 {editor ? (
@@ -87,84 +88,99 @@ const VideoStatusHelperSlideover = ({
                 )}
               </ActiveTask>
             )}
-            {status > 1 && (
-              <Task label={VIDEO_STATUSES[2].text} type="complete" />
+            {status > VideoStatus.PENDING && (
+              <Task
+                label={VIDEO_STATUSES[VideoStatus.IN_PROGRESS].text}
+                type="complete"
+              />
             )}
 
-            {status < 2 && (
+            {status < VideoStatus.IN_PROGRESS && (
               <Task
-                icon={VIDEO_STATUSES[3].icon}
-                label={VIDEO_STATUSES[3].text}
+                icon={VIDEO_STATUSES[VideoStatus.EDITED].icon}
+                label={VIDEO_STATUSES[VideoStatus.EDITED].text}
                 type="pending"
               />
             )}
-            {status == 2 && (
+            {status === VideoStatus.IN_PROGRESS && (
               <ActiveTask
-                icon={VIDEO_STATUSES[3].icon}
-                label={VIDEO_STATUSES[3].text}
+                icon={VIDEO_STATUSES[VideoStatus.EDITED].icon}
+                label={VIDEO_STATUSES[VideoStatus.EDITED].text}
               >
                 <ActivePendingTaskItem label="Vágás befejezése" />
               </ActiveTask>
             )}
-            {status > 2 && (
-              <Task label={VIDEO_STATUSES[3].text} type="complete" />
+            {status > VideoStatus.IN_PROGRESS && (
+              <Task
+                label={VIDEO_STATUSES[VideoStatus.EDITED].text}
+                type="complete"
+              />
             )}
 
-            {status < 3 && (
+            {status < VideoStatus.EDITED && (
               <Task
-                icon={VIDEO_STATUSES[4].icon}
-                label={VIDEO_STATUSES[4].text}
+                icon={VIDEO_STATUSES[VideoStatus.CODED].icon}
+                label={VIDEO_STATUSES[VideoStatus.CODED].text}
                 type="pending"
               />
             )}
-            {status == 3 && (
+            {status === VideoStatus.EDITED && (
               <ActiveTask
-                icon={VIDEO_STATUSES[4].icon}
-                label={VIDEO_STATUSES[4].text}
+                icon={VIDEO_STATUSES[VideoStatus.CODED].icon}
+                label={VIDEO_STATUSES[VideoStatus.CODED].text}
               >
                 <ActivePendingTaskItem label="Videó kikódolása a weboldalra" />
               </ActiveTask>
             )}
-            {status > 3 && (
-              <Task label={VIDEO_STATUSES[4].text} type="complete" />
+            {status > VideoStatus.EDITED && (
+              <Task
+                label={VIDEO_STATUSES[VideoStatus.CODED].text}
+                type="complete"
+              />
             )}
 
-            {status < 4 && (
+            {status < VideoStatus.CODED && (
               <Task
-                icon={VIDEO_STATUSES[5].icon}
-                label={VIDEO_STATUSES[5].text}
+                icon={VIDEO_STATUSES[VideoStatus.PUBLISHED].icon}
+                label={VIDEO_STATUSES[VideoStatus.PUBLISHED].text}
                 type="pending"
               />
             )}
-            {status == 4 && (
+            {status === VideoStatus.CODED && (
               <ActiveTask
-                icon={VIDEO_STATUSES[5].icon}
-                label={VIDEO_STATUSES[5].text}
+                icon={VIDEO_STATUSES[VideoStatus.PUBLISHED].icon}
+                label={VIDEO_STATUSES[VideoStatus.PUBLISHED].text}
               >
                 <ActivePendingTaskItem label="Videó publikálása" />
               </ActiveTask>
             )}
-            {status > 4 && (
-              <Task label={VIDEO_STATUSES[5].text} type="complete" />
+            {status > VideoStatus.CODED && (
+              <Task
+                label={VIDEO_STATUSES[VideoStatus.PUBLISHED].text}
+                type="complete"
+              />
             )}
 
-            {status < 5 && (
+            {status < VideoStatus.PUBLISHED && (
               <Task
-                icon={VIDEO_STATUSES[6].icon}
-                label={VIDEO_STATUSES[6].text}
+                icon={VIDEO_STATUSES[VideoStatus.DONE].icon}
+                label={VIDEO_STATUSES[VideoStatus.DONE].text}
                 type="pending"
               />
             )}
-            {status == 5 && (
+            {status === VideoStatus.PUBLISHED && (
               <ActiveTask
-                icon={VIDEO_STATUSES[6].icon}
-                label={VIDEO_STATUSES[6].text}
+                icon={VIDEO_STATUSES[VideoStatus.DONE].icon}
+                label={VIDEO_STATUSES[VideoStatus.DONE].text}
               >
                 <ActivePendingTaskItem label="Logó nélküli export áthelyezése az archívumba" />
               </ActiveTask>
             )}
-            {status > 5 && (
-              <Task label={VIDEO_STATUSES[6].text} type="complete" />
+            {status > VideoStatus.PUBLISHED && (
+              <Task
+                label={VIDEO_STATUSES[VideoStatus.DONE].text}
+                type="complete"
+              />
             )}
           </ul>
         </div>

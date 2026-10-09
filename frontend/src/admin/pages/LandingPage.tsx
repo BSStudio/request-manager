@@ -21,6 +21,7 @@ import { adminApi } from 'api/http';
 import { RequestAdminList } from 'api/models/request-admin-list';
 import { VideoAdminSearch } from 'api/models/video-admin-search';
 import { getUserId } from 'helpers/LocalStorageHelper';
+import { RequestStatus, TodoStatus, VideoStatus } from 'helpers/statuses';
 
 const AvatarGroupCrew = lazy(
   () => import('admin/components/Avatar/AvatarGroupCrew'),
@@ -50,7 +51,7 @@ const LandingPage = () => {
         undefined,
         undefined,
         undefined,
-        [1],
+        [RequestStatus.REQUESTED],
       );
       return requests.data.results || [];
     },
@@ -70,7 +71,7 @@ const LandingPage = () => {
           undefined,
           currentDate,
           twoWeeksLaterDate,
-          [1, 2],
+          [RequestStatus.REQUESTED, RequestStatus.ACCEPTED],
         );
         return requests.data.results || [];
       },
@@ -136,7 +137,7 @@ const LandingPage = () => {
           undefined,
           undefined,
           undefined,
-          [1, 2],
+          [VideoStatus.PENDING, VideoStatus.IN_PROGRESS],
         );
         return requests.data.results || [];
       },
@@ -144,7 +145,7 @@ const LandingPage = () => {
     });
 
   const { data: todos, isLoading: todosLoading } = useQuery(
-    todosListQuery([getUserId()], 'created', [1]),
+    todosListQuery([getUserId()], 'created', [TodoStatus.OPEN]),
   );
 
   const statistics: StatisticsFieldProps[] = [

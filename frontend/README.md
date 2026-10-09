@@ -56,17 +56,18 @@ pnpm generate-client
 
 ## Scripts
 
-| Script                 | Description                                          |
-| ---------------------- | ---------------------------------------------------- |
-| `pnpm start`           | Start the Vite dev server (HTTPS, port 5173).        |
-| `pnpm start:network`   | Same, exposed on the local network (`--host`).       |
-| `pnpm build`           | Type-check (`tsc --noEmit`) and build into `build/`. |
-| `pnpm preview`         | Serve the production build locally.                  |
-| `pnpm lint`            | Run ESLint.                                          |
-| `pnpm lint:fix`        | Run ESLint with autofix.                             |
-| `pnpm format`          | Format sources with Prettier.                        |
-| `pnpm generate-client` | Regenerate the API client from the backend schema.   |
-| `pnpm analyze`         | Inspect the bundle with source-map-explorer.         |
+| Script                     | Description                                                   |
+| -------------------------- | ------------------------------------------------------------- |
+| `pnpm start`               | Start the Vite dev server (HTTPS, port 5173).                 |
+| `pnpm start:network`       | Same, exposed on the local network (`--host`).                |
+| `pnpm build`               | Type-check (`tsc --noEmit`) and build into `build/`.          |
+| `pnpm preview`             | Serve the production build locally.                           |
+| `pnpm lint`                | Run ESLint.                                                   |
+| `pnpm lint:fix`            | Run ESLint with autofix.                                      |
+| `pnpm format`              | Format sources with Prettier.                                 |
+| `pnpm generate-client`     | Regenerate the API client from the backend schema.            |
+| `pnpm generate-pwa-assets` | Regenerate the app icons in `public/` from `public/icon.svg`. |
+| `pnpm analyze`             | Inspect the bundle with source-map-explorer.                  |
 
 ## Code style
 

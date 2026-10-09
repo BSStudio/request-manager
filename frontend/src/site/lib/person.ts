@@ -1,23 +1,7 @@
-import {
-  isValidPhoneNumber,
-  parsePhoneNumberFromString,
-} from 'libphonenumber-js';
+import { isValidPhoneNumber } from 'libphonenumber-js';
 import { z } from 'zod';
 
 import type { User } from 'api/models';
-
-// Any country works with its calling code, a number typed without one is
-// taken as Hungarian.
-export function formatPhone(phone: string) {
-  return (
-    parsePhoneNumberFromString(phone, 'HU')?.formatInternational() ?? phone
-  );
-}
-
-// The API stores numbers in E.164.
-export function toE164(phone: string) {
-  return parsePhoneNumberFromString(phone, 'HU')?.number ?? phone;
-}
 
 // Requests are made in the user's name, so the request form needs all of
 // these and sends the user to their profile otherwise.

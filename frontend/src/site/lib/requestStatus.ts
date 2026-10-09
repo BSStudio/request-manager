@@ -5,34 +5,33 @@ import {
   TriangleAlertIcon,
 } from 'lucide-react';
 
+import { RequestStatus, VideoStatus } from 'helpers/statuses';
+
 export type StatusTone = 'active' | 'done' | 'failed' | 'inactive' | 'pending';
 
 export type StatusInfo = { label: string; tone: StatusTone };
 
 const requestStatuses: Record<number, StatusInfo> = {
-  0: { label: 'Elutasítva', tone: 'failed' },
-  1: { label: 'Elbírálás alatt', tone: 'pending' },
-  2: { label: 'Elvállalva', tone: 'active' },
-  3: { label: 'Leforgatva', tone: 'active' },
-  4: { label: 'Leforgatva', tone: 'active' },
-  5: { label: 'Elkészült', tone: 'done' },
-  6: { label: 'Elkészült', tone: 'done' },
-  7: { label: 'Elkészült', tone: 'done' },
-  9: { label: 'Lemondva', tone: 'inactive' },
-  10: { label: 'Meghiúsult', tone: 'inactive' },
+  [RequestStatus.DENIED]: { label: 'Elutasítva', tone: 'failed' },
+  [RequestStatus.REQUESTED]: { label: 'Elbírálás alatt', tone: 'pending' },
+  [RequestStatus.ACCEPTED]: { label: 'Elvállalva', tone: 'active' },
+  [RequestStatus.RECORDED]: { label: 'Leforgatva', tone: 'active' },
+  [RequestStatus.UPLOADED]: { label: 'Leforgatva', tone: 'active' },
+  [RequestStatus.EDITED]: { label: 'Elkészült', tone: 'done' },
+  [RequestStatus.ARCHIVED]: { label: 'Elkészült', tone: 'done' },
+  [RequestStatus.DONE]: { label: 'Elkészült', tone: 'done' },
+  [RequestStatus.CANCELED]: { label: 'Lemondva', tone: 'inactive' },
+  [RequestStatus.FAILED]: { label: 'Meghiúsult', tone: 'inactive' },
 };
 
 const videoStatuses: Record<number, StatusInfo> = {
-  1: { label: 'Vágásra vár', tone: 'pending' },
-  2: { label: 'Vágás alatt', tone: 'active' },
-  3: { label: 'Közzétételre vár', tone: 'active' },
-  4: { label: 'Közzétételre vár', tone: 'active' },
-  5: { label: 'Közzétéve', tone: 'done' },
-  6: { label: 'Közzétéve', tone: 'done' },
+  [VideoStatus.PENDING]: { label: 'Vágásra vár', tone: 'pending' },
+  [VideoStatus.IN_PROGRESS]: { label: 'Vágás alatt', tone: 'active' },
+  [VideoStatus.EDITED]: { label: 'Közzétételre vár', tone: 'active' },
+  [VideoStatus.CODED]: { label: 'Közzétételre vár', tone: 'active' },
+  [VideoStatus.PUBLISHED]: { label: 'Közzétéve', tone: 'done' },
+  [VideoStatus.DONE]: { label: 'Közzétéve', tone: 'done' },
 };
-
-// The API rejects ratings for videos below this status.
-export const VIDEO_PUBLISHED = 5;
 
 const unknownStatus: StatusInfo = { label: 'Ismeretlen', tone: 'inactive' };
 
@@ -66,27 +65,28 @@ export const requestSteps = [
 
 // The last step reached, null when the request stopped before it was done.
 export function getRequestStep(status: number) {
-  if (status === 1) return 0;
-  if (status === 2) return 1;
-  if (status === 3 || status === 4) return 2;
-  if (status >= 5 && status <= 7) return 3;
+  if (status === RequestStatus.REQUESTED) return 0;
+  if (status === RequestStatus.ACCEPTED) return 1;
+  if (status === RequestStatus.RECORDED || status === RequestStatus.UPLOADED)
+    return 2;
+  if (status >= RequestStatus.EDITED && status <= RequestStatus.DONE) return 3;
   return null;
 }
 
 type StoppedNotice = { icon: LucideIcon; text: string; title: string };
 
 const stoppedNotices: Record<number, StoppedNotice> = {
-  0: {
+  [RequestStatus.DENIED]: {
     icon: CircleXIcon,
     text: 'Sajnos most nem tudunk ott lenni az eseményeden. Reméljük, legközelebb összejön!',
     title: 'Ezt a felkérést nem tudtuk elvállalni',
   },
-  9: {
+  [RequestStatus.CANCELED]: {
     icon: BanIcon,
     text: 'Ha mégis szükségetek lenne ránk, küldj be egy új felkérést!',
     title: 'Lemondtátok a felkérést',
   },
-  10: {
+  [RequestStatus.FAILED]: {
     icon: TriangleAlertIcon,
     text: 'Valami közbejött, és nem sikerült rögzítenünk az eseményt. Sajnáljuk!',
     title: 'A forgatás meghiúsult',
@@ -94,5 +94,5 @@ const stoppedNotices: Record<number, StoppedNotice> = {
 };
 
 export function getStoppedNotice(status: number) {
-  return stoppedNotices[status] ?? stoppedNotices[0];
+  return stoppedNotices[status] ?? stoppedNotices[RequestStatus.DENIED];
 }

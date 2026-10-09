@@ -7,6 +7,7 @@ import { classNames } from 'primereact/utils';
 
 import { REQUEST_STATUSES } from 'admin/components/StatusTag/statusTagConsts';
 import useMobile from 'admin/hooks/useMobile';
+import { RequestStatus } from 'helpers/statuses';
 
 import {
   ActiveCompleteTaskItem,
@@ -76,98 +77,125 @@ const RequestStatusHelperSlideover = ({
         )}
         <div className="flex-auto overflow-y-auto">
           <ul className="list-none m-0 p-0">
-            {status == 0 && (
-              <Task label={REQUEST_STATUSES[0].text} type="failed" />
+            {status === RequestStatus.DENIED && (
+              <Task
+                label={REQUEST_STATUSES[RequestStatus.DENIED].text}
+                type="failed"
+              />
             )}
 
-            {status == 1 && (
+            {status === RequestStatus.REQUESTED && (
               <ActiveTask
-                icon={REQUEST_STATUSES[1].icon}
-                label={REQUEST_STATUSES[1].text}
+                icon={REQUEST_STATUSES[RequestStatus.REQUESTED].icon}
+                label={REQUEST_STATUSES[RequestStatus.REQUESTED].text}
               >
                 <ActivePendingTaskItem label="Elfogadásra vár" />
               </ActiveTask>
             )}
-            {status > 1 && (
-              <Task label={REQUEST_STATUSES[2].text} type="complete" />
-            )}
-
-            {status < 2 && status > 0 && (
+            {status > RequestStatus.REQUESTED && (
               <Task
-                icon={REQUEST_STATUSES[3].icon}
-                label={REQUEST_STATUSES[3].text}
-                type="pending"
+                label={REQUEST_STATUSES[RequestStatus.ACCEPTED].text}
+                type="complete"
               />
             )}
-            {status == 2 && (
+
+            {status < RequestStatus.ACCEPTED &&
+              status > RequestStatus.DENIED && (
+                <Task
+                  icon={REQUEST_STATUSES[RequestStatus.RECORDED].icon}
+                  label={REQUEST_STATUSES[RequestStatus.RECORDED].text}
+                  type="pending"
+                />
+              )}
+            {status === RequestStatus.ACCEPTED && (
               <ActiveTask
-                icon={REQUEST_STATUSES[3].icon}
-                label={REQUEST_STATUSES[3].text}
+                icon={REQUEST_STATUSES[RequestStatus.RECORDED].icon}
+                label={REQUEST_STATUSES[RequestStatus.RECORDED].text}
               >
                 <ActivePendingTaskItem label="Várakozás a forgatás időpontjára" />
               </ActiveTask>
             )}
-            {status > 2 && status < 9 && (
-              <Task label={REQUEST_STATUSES[3].text} type="complete" />
-            )}
+            {status > RequestStatus.ACCEPTED &&
+              status < RequestStatus.CANCELED && (
+                <Task
+                  label={REQUEST_STATUSES[RequestStatus.RECORDED].text}
+                  type="complete"
+                />
+              )}
 
-            {status == 9 && (
-              <Task label={REQUEST_STATUSES[9].text} type="failed" />
-            )}
-
-            {status == 10 && (
-              <Task label={REQUEST_STATUSES[9].text} type="failed" />
-            )}
-
-            {status < 3 && status > 0 && (
+            {status === RequestStatus.CANCELED && (
               <Task
-                icon={REQUEST_STATUSES[4].icon}
-                label={REQUEST_STATUSES[4].text}
-                type="pending"
+                label={REQUEST_STATUSES[RequestStatus.CANCELED].text}
+                type="failed"
               />
             )}
-            {status == 3 && (
+
+            {status === RequestStatus.FAILED && (
+              <Task
+                label={REQUEST_STATUSES[RequestStatus.FAILED].text}
+                type="failed"
+              />
+            )}
+
+            {status < RequestStatus.RECORDED &&
+              status > RequestStatus.DENIED && (
+                <Task
+                  icon={REQUEST_STATUSES[RequestStatus.UPLOADED].icon}
+                  label={REQUEST_STATUSES[RequestStatus.UPLOADED].text}
+                  type="pending"
+                />
+              )}
+            {status === RequestStatus.RECORDED && (
               <ActiveTask
-                icon={REQUEST_STATUSES[4].icon}
-                label={REQUEST_STATUSES[4].text}
+                icon={REQUEST_STATUSES[RequestStatus.UPLOADED].icon}
+                label={REQUEST_STATUSES[RequestStatus.UPLOADED].text}
               >
                 <ActivePendingTaskItem label="Nyersek helyének megadása" />
               </ActiveTask>
             )}
-            {status > 3 && status < 9 && (
-              <Task label={REQUEST_STATUSES[4].text} type="complete" />
-            )}
+            {status > RequestStatus.RECORDED &&
+              status < RequestStatus.CANCELED && (
+                <Task
+                  label={REQUEST_STATUSES[RequestStatus.UPLOADED].text}
+                  type="complete"
+                />
+              )}
 
-            {status < 4 && status > 0 && (
-              <Task
-                icon={REQUEST_STATUSES[5].icon}
-                label={REQUEST_STATUSES[5].text}
-                type="pending"
-              />
-            )}
-            {status == 4 && (
+            {status < RequestStatus.UPLOADED &&
+              status > RequestStatus.DENIED && (
+                <Task
+                  icon={REQUEST_STATUSES[RequestStatus.EDITED].icon}
+                  label={REQUEST_STATUSES[RequestStatus.EDITED].text}
+                  type="pending"
+                />
+              )}
+            {status === RequestStatus.UPLOADED && (
               <ActiveTask
-                icon={REQUEST_STATUSES[5].icon}
-                label={REQUEST_STATUSES[5].text}
+                icon={REQUEST_STATUSES[RequestStatus.EDITED].icon}
+                label={REQUEST_STATUSES[RequestStatus.EDITED].text}
               >
                 <ActivePendingTaskItem label="Videó(k) megvágása" />
               </ActiveTask>
             )}
-            {status > 4 && status < 9 && (
-              <Task label={REQUEST_STATUSES[5].text} type="complete" />
-            )}
+            {status > RequestStatus.UPLOADED &&
+              status < RequestStatus.CANCELED && (
+                <Task
+                  label={REQUEST_STATUSES[RequestStatus.EDITED].text}
+                  type="complete"
+                />
+              )}
 
-            {status < 5 && status > 0 && (
+            {status < RequestStatus.EDITED && status > RequestStatus.DENIED && (
               <Task
-                icon={REQUEST_STATUSES[6].icon}
-                label={REQUEST_STATUSES[6].text}
+                icon={REQUEST_STATUSES[RequestStatus.ARCHIVED].icon}
+                label={REQUEST_STATUSES[RequestStatus.ARCHIVED].text}
                 type="pending"
               />
             )}
-            {status == 5 && (
+            {status === RequestStatus.EDITED && (
               <ActiveTask
-                icon={REQUEST_STATUSES[6].icon}
-                label={REQUEST_STATUSES[6].text}
+                icon={REQUEST_STATUSES[RequestStatus.ARCHIVED].icon}
+                label={REQUEST_STATUSES[RequestStatus.ARCHIVED].text}
               >
                 {allVideosDone ? (
                   <ActiveCompleteTaskItem label="Minden videó lezárva" />
@@ -181,28 +209,37 @@ const RequestStatusHelperSlideover = ({
                 )}
               </ActiveTask>
             )}
-            {status > 5 && status < 9 && (
-              <Task label={REQUEST_STATUSES[6].text} type="complete" />
-            )}
+            {status > RequestStatus.EDITED &&
+              status < RequestStatus.CANCELED && (
+                <Task
+                  label={REQUEST_STATUSES[RequestStatus.ARCHIVED].text}
+                  type="complete"
+                />
+              )}
 
-            {status < 6 && status > 0 && (
-              <Task
-                icon={REQUEST_STATUSES[7].icon}
-                label={REQUEST_STATUSES[7].text}
-                type="pending"
-              />
-            )}
-            {status == 6 && (
+            {status < RequestStatus.ARCHIVED &&
+              status > RequestStatus.DENIED && (
+                <Task
+                  icon={REQUEST_STATUSES[RequestStatus.DONE].icon}
+                  label={REQUEST_STATUSES[RequestStatus.DONE].text}
+                  type="pending"
+                />
+              )}
+            {status === RequestStatus.ARCHIVED && (
               <ActiveTask
-                icon={REQUEST_STATUSES[7].icon}
-                label={REQUEST_STATUSES[7].text}
+                icon={REQUEST_STATUSES[RequestStatus.DONE].icon}
+                label={REQUEST_STATUSES[RequestStatus.DONE].text}
               >
                 <ActivePendingTaskItem label="Nyersek törlése" />
               </ActiveTask>
             )}
-            {status > 6 && status < 9 && (
-              <Task label={REQUEST_STATUSES[7].text} type="complete" />
-            )}
+            {status > RequestStatus.ARCHIVED &&
+              status < RequestStatus.CANCELED && (
+                <Task
+                  label={REQUEST_STATUSES[RequestStatus.DONE].text}
+                  type="complete"
+                />
+              )}
           </ul>
         </div>
       </div>

@@ -11,6 +11,7 @@ import { getApiErrorMessage } from 'api/errors';
 import { meApi } from 'api/http';
 import type { User } from 'api/models';
 import { formatName } from 'helpers/names';
+import { formatPhone, toE164 } from 'helpers/phone';
 import { cacheUser } from 'helpers/session';
 import { Button } from 'site/components/ui/button';
 import {
@@ -23,11 +24,9 @@ import {
 import { Input } from 'site/components/ui/input';
 import {
   emailSchema,
-  formatPhone,
   getMissingProfileFields,
   nameSchema,
   phoneSchema,
-  toE164,
 } from 'site/lib/person';
 
 const profileSchema = z.object({

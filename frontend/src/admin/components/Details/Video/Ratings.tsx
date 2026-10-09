@@ -14,6 +14,7 @@ import { dateTimeToLocaleString } from 'admin/helpers/DateToLocaleStringCoverter
 import TimeAgo from 'admin/helpers/TimeAgo';
 import { RatingAdminListRetrieve } from 'api/models';
 import { getUserId, isAdmin } from 'helpers/LocalStorageHelper';
+import { VideoStatus } from 'helpers/statuses';
 
 interface RatingAdminListDates // TODO: Rename?
   extends Omit<RatingAdminListRetrieve, 'created'> {
@@ -242,7 +243,7 @@ const Ratings = ({
       <div className="border-top-1 mt-5 pt-5 surface-border">
         <div className="align-items-center flex justify-content-between mb-5">
           <Button
-            disabled={videoStatus < 3}
+            disabled={videoStatus < VideoStatus.EDITED}
             label={isRated ? 'Értékelés szerkesztése' : 'Értékelés írása'}
             onClick={() => {
               setRatingDialogVisible(true);
