@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: BSS Request Manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 11:03+0200\n"
+"POT-Creation-Date: 2026-10-09 11:46+0200\n"
 "PO-Revision-Date: 2023-09-07 03:30+0200\n"
 "Last-Translator: Olivér Kecskeméty <kecskemety.oliver@simonyi.bme.hu>\n"
 "Language: Hungarian\n"
@@ -54,11 +54,11 @@ msgstr "Felelős"
 msgid "Editor"
 msgstr "Vágó"
 
-#: .\api\v1\login\serializers.py:70 .\api\v1\me\views.py:79
+#: .\api\v1\login\serializers.py:45 .\api\v1\me\views.py:79
 msgid "Invalid provider."
 msgstr "Érvénytelen szogláltató."
 
-#: .\api\v1\me\serializers.py:83 .\common\models.py:121
+#: .\api\v1\me\serializers.py:84 .\common\models.py:121
 msgid "E-mail address already in use."
 msgstr "Az e-mail cím már használatban van."
 
@@ -159,17 +159,58 @@ msgstr "Lapokra tördelt választ ad vissza."
 msgid "Error verifying captcha, please try again."
 msgstr "Hiba a captcha ellenőrzésekor, kérlek próbáld újra."
 
-#: .\core\settings\base.py:259
+#: .\core\settings\base.py:273
 msgid "English"
 msgstr "angol"
 
-#: .\core\settings\base.py:260
+#: .\core\settings\base.py:274
 msgid "Hungarian"
 msgstr "magyar"
 
 #: .\templates\admin\login.html:9
 msgid "Log in"
 msgstr "Bejelentkezés"
+
+#: .\video_requests\admin.py:43
+msgid "Number of videos"
+msgstr "Videók száma"
+
+#: .\video_requests\admin.py:47
+msgid "Requester"
+msgstr "Felkérő"
+
+#: .\video_requests\admin.py:64 .\video_requests\admin.py:85
+#: .\video_requests\admin.py:105 .\video_requests\admin.py:157
+msgid "Request"
+msgstr "Felkérés"
+
+#: .\video_requests\admin.py:68
+msgid "Crew member"
+msgstr "Stábtag"
+
+#: .\video_requests\admin.py:89
+msgid "Average rating"
+msgstr "Átlagos értékelés"
+
+#: .\video_requests\admin.py:101
+msgid "Comment"
+msgstr "Hozzászólás"
+
+#: .\video_requests\admin.py:109 .\video_requests\admin.py:135
+msgid "Author"
+msgstr "Szerző"
+
+#: .\video_requests\admin.py:127
+msgid "Review"
+msgstr "Szöveges értékelés"
+
+#: .\video_requests\admin.py:131 .\video_requests\admin.py:161
+msgid "Video"
+msgstr "Videó"
+
+#: .\video_requests\admin.py:167
+msgid "Assignees"
+msgstr "Felelősök"
 
 #: .\video_requests\models.py:47
 msgid "Elutasítva"

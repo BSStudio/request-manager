@@ -6,12 +6,12 @@ from django.test import RequestFactory
 from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 from model_bakery import baker
-from rest_framework.status import HTTP_200_OK
+from rest_framework.status import HTTP_200_OK, HTTP_302_FOUND
 
 from common.admin import UserAdmin
 from common.models import Ban, User
 from tests.factories import make_user
-from video_requests.admin import user_change_url
+from video_requests.models import Request
 
 
 def admin_request(user):
@@ -104,14 +104,53 @@ def test_ban_selected_users_reports_the_plural_form():
 def test_changelists_link_to_the_user_admin(client, model_name):
     # Every one of these lists renders a link to a user, so a hard coded admin
     # URL name would only break once the list is not empty.
-    user = make_user(username="linked_user", is_admin=True, is_superuser=True)
+    user = make_user(
+        username="linked_user",
+        first_name="Anna",
+        last_name="Kovács",
+        is_admin=True,
+        is_superuser=True,
+    )
     make_one_of_each(user)
 
     client.force_login(user)
     response = client.get(reverse(f"admin:video_requests_{model_name}_changelist"))
 
     assert response.status_code == HTTP_200_OK
-    assert user_change_url(user.id) in response.content.decode()
+    url = reverse("admin:common_user_change", args=(user.id,))
+    assert f'<a href="{url}">Kovács Anna</a>' in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_request_admin_keeps_who_added_the_request(client):
+    admin = make_user(username="adding_admin", is_admin=True, is_superuser=True)
+    requester = make_user(username="requester")
+    form = {
+        "title": "Added in the admin",
+        "start_datetime_0": "2026-10-10",
+        "start_datetime_1": "10:00:00",
+        "end_datetime_0": "2026-10-10",
+        "end_datetime_1": "12:00:00",
+        "type": "Type",
+        "place": "Place",
+        "status": Request.Statuses.REQUESTED,
+        "requester": requester.id,
+        "additional_data": "{}",
+        # Read-only in the admin, so both posts must ignore it.
+        "requested_by": requester.id,
+    }
+
+    client.force_login(admin)
+    added = client.post(reverse("admin:video_requests_request_add"), form)
+    video_request = Request.objects.get(title="Added in the admin")
+    changed = client.post(
+        reverse("admin:video_requests_request_change", args=(video_request.id,)),
+        form,
+    )
+
+    assert added.status_code == changed.status_code == HTTP_302_FOUND
+    video_request.refresh_from_db()
+    assert video_request.requested_by == admin
 
 
 @pytest.mark.django_db

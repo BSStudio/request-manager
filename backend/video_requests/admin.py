@@ -1,26 +1,23 @@
-from functools import cache
-
 from django.contrib import admin
-from django.contrib.admin import ModelAdmin
-from django.contrib.auth import get_user_model
-from django.db.models import Avg, Count
+from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html, format_html_join
-from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
 from simple_history.admin import SimpleHistoryAdmin
 
 from video_requests.models import Comment, CrewMember, Rating, Request, Todo, Video
 
 
-@cache
-def user_change_url_name():
-    # Built from the model so that swapping AUTH_USER_MODEL cannot break the link.
-    options = get_user_model()._meta
-    return f"admin:{options.app_label}_{options.model_name}_change"
+def change_link(obj, text):
+    options = obj._meta
+    url = reverse(
+        f"admin:{options.app_label}_{options.model_name}_change", args=(obj.pk,)
+    )
+    return format_html('<a href="{}">{}</a>', url, text)
 
 
-def user_change_url(user_id):
-    return reverse(user_change_url_name(), args=(user_id,))
+def user_link(user):
+    return change_link(user, user.get_full_name_eastern_order())
 
 
 @admin.register(Request)
@@ -37,21 +34,19 @@ class RequestHistoryAdmin(SimpleHistoryAdmin):
     ]
     list_select_related = ["requester"]
     ordering = ["-id"]
-    exclude = ["requested_by"]
     readonly_fields = ["requested_by"]
     search_fields = ["title"]
 
     def get_queryset(self, request):
         return super().get_queryset(request).annotate(num_of_videos=Count("videos"))
 
-    @admin.display(description="Number of Videos")
+    @admin.display(description=_("Number of videos"))
     def num_of_videos(self, obj):
         return obj.num_of_videos
 
-    @admin.display(description="Requester")
+    @admin.display(description=_("Requester"))
     def requester_link(self, obj):
-        url = user_change_url(obj.requester.id)
-        return format_html('<a href="{}">{}</a>', url, obj.requester.get_full_name())
+        return user_link(obj.requester)
 
     def save_model(self, request, obj, form, change):
         if not change:
@@ -66,15 +61,13 @@ class CrewMemberHistoryAdmin(SimpleHistoryAdmin):
     list_select_related = ["request", "member"]
     search_fields = ["request__title"]
 
-    @admin.display(description="Request")
+    @admin.display(description=_("Request"))
     def request_link(self, obj):
-        url = reverse("admin:video_requests_request_change", args=(obj.request.id,))
-        return format_html('<a href="{}">{}</a>', url, obj.request.title)
+        return change_link(obj.request, obj.request.title)
 
-    @admin.display(description="Crew Member")
+    @admin.display(description=_("Crew member"))
     def member_link(self, obj):
-        url = user_change_url(obj.member.id)
-        return format_html('<a href="{}">{}</a>', url, obj.member.get_full_name())
+        return user_link(obj.member)
 
 
 @admin.register(Video)
@@ -87,21 +80,15 @@ class VideoHistoryAdmin(SimpleHistoryAdmin):
     def get_queryset(self, request):
         # Here rather than list_select_related: the video autocompletes run this
         # queryset too, and label each video with the title of its request.
-        return (
-            super()
-            .get_queryset(request)
-            .annotate(avg_rating=Avg("ratings__rating"))
-            .select_related("request")
-        )
+        return super().get_queryset(request).select_related("request")
 
-    @admin.display(description="Request")
+    @admin.display(description=_("Request"))
     def request_link(self, obj):
-        url = reverse("admin:video_requests_request_change", args=(obj.request.id,))
-        return format_html('<a href="{}">{}</a>', url, obj.request.title)
+        return change_link(obj.request, obj.request.title)
 
-    @admin.display(description="Average Rating")
+    @admin.display(description=_("Average rating"))
     def avg_rating(self, obj):
-        return obj.avg_rating
+        return obj.avg_rating  # Annotated by Video.objects.
 
 
 @admin.register(Comment)
@@ -111,19 +98,17 @@ class CommentHistoryAdmin(SimpleHistoryAdmin):
     list_select_related = ["request", "author"]
     search_fields = ["request__title"]
 
-    @admin.display(description="Comment")
+    @admin.display(description=_("Comment"))
     def part_of_comment(self, obj):
         return obj.text[:100]
 
-    @admin.display(description="Request")
+    @admin.display(description=_("Request"))
     def request_link(self, obj):
-        url = reverse("admin:video_requests_request_change", args=(obj.request.id,))
-        return format_html('<a href="{}">{}</a>', url, obj.request.title)
+        return change_link(obj.request, obj.request.title)
 
-    @admin.display(description="Author")
+    @admin.display(description=_("Author"))
     def author_link(self, obj):
-        url = user_change_url(obj.author.id)
-        return format_html('<a href="{}">{}</a>', url, obj.author.get_full_name())
+        return user_link(obj.author)
 
 
 @admin.register(Rating)
@@ -139,23 +124,21 @@ class RatingHistoryAdmin(SimpleHistoryAdmin):
     list_select_related = ["video", "author"]
     search_fields = ["video__title", "video__request__title"]
 
-    @admin.display(description="Review")
+    @admin.display(description=_("Review"))
     def part_of_review(self, obj):
         return obj.review[:100]
 
-    @admin.display(description="Video")
+    @admin.display(description=_("Video"))
     def video_link(self, obj):
-        url = reverse("admin:video_requests_video_change", args=(obj.video.id,))
-        return format_html('<a href="{}">{}</a>', url, obj.video.title)
+        return change_link(obj.video, obj.video.title)
 
-    @admin.display(description="Author")
+    @admin.display(description=_("Author"))
     def author_link(self, obj):
-        url = user_change_url(obj.author.id)
-        return format_html('<a href="{}">{}</a>', url, obj.author.get_full_name())
+        return user_link(obj.author)
 
 
 @admin.register(Todo)
-class TodoAdmin(ModelAdmin):
+class TodoAdmin(admin.ModelAdmin):
     autocomplete_fields = ["request", "video", "creator", "assignees"]
     list_display = [
         "id",
@@ -171,28 +154,18 @@ class TodoAdmin(ModelAdmin):
     def get_queryset(self, request):
         return super().get_queryset(request).prefetch_related("assignees")
 
-    @admin.display(description="Request")
+    @admin.display(description=_("Request"))
     def request_link(self, obj):
-        url = reverse("admin:video_requests_request_change", args=(obj.request.id,))
-        return format_html('<a href="{}">{}</a>', url, obj.request.title)
+        return change_link(obj.request, obj.request.title)
 
-    @admin.display(description="Video")
+    @admin.display(description=_("Video"))
     def video_link(self, obj):
         if obj.video:
-            url = reverse("admin:video_requests_video_change", args=(obj.video.id,))
-            return format_html('<a href="{}">{}</a>', url, obj.video.title)
+            return change_link(obj.video, obj.video.title)
         return None
 
-    @admin.display(description="Assignees")
+    @admin.display(description=_("Assignees"))
     def assignee_names(self, obj):
         return format_html_join(
-            mark_safe("&comma;&nbsp;"),  # nosec B308
-            '<a href="{}">{}</a>',
-            (
-                (
-                    user_change_url(assignee.id),
-                    assignee.get_full_name_eastern_order(),
-                )
-                for assignee in obj.assignees.all()
-            ),
+            ", ", "{}", ((user_link(assignee),) for assignee in obj.assignees.all())
         )
