@@ -51,6 +51,7 @@ urlpatterns.insert(
 
 # Enable Django Admin when requested
 if settings.DJANGO_ADMIN and "django.contrib.admin" in settings.INSTALLED_APPS:
+    admin.site.site_header = admin.site.site_title = "Felkéréskezelő"
     urlpatterns.insert(0, path("django-admin/", admin.site.urls))
     urlpatterns.insert(
         0,

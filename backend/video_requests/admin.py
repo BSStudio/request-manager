@@ -32,6 +32,7 @@ class RequestHistoryAdmin(SimpleHistoryAdmin):
         "num_of_videos",
         "requester_link",
     ]
+    list_filter = ["status"]
     list_select_related = ["requester"]
     ordering = ["-id"]
     readonly_fields = ["requested_by"]
@@ -40,13 +41,16 @@ class RequestHistoryAdmin(SimpleHistoryAdmin):
     def get_queryset(self, request):
         return super().get_queryset(request).annotate(num_of_videos=Count("videos"))
 
-    @admin.display(description=_("Number of videos"))
+    @admin.display(description=_("Number of videos"), ordering="num_of_videos")
     def num_of_videos(self, obj):
         return obj.num_of_videos
 
     @admin.display(description=_("Requester"))
     def requester_link(self, obj):
         return user_link(obj.requester)
+
+    def view_on_site(self, obj):
+        return obj.admin_url
 
     def save_model(self, request, obj, form, change):
         if not change:
@@ -74,6 +78,7 @@ class CrewMemberHistoryAdmin(SimpleHistoryAdmin):
 class VideoHistoryAdmin(SimpleHistoryAdmin):
     autocomplete_fields = ["request", "editor"]
     list_display = ["id", "title", "status", "request_link", "avg_rating"]
+    list_filter = ["status"]
     ordering = ["-id"]
     search_fields = ["title"]
 
@@ -86,7 +91,7 @@ class VideoHistoryAdmin(SimpleHistoryAdmin):
     def request_link(self, obj):
         return change_link(obj.request, obj.request.title)
 
-    @admin.display(description=_("Average rating"))
+    @admin.display(description=_("Average rating"), ordering="avg_rating")
     def avg_rating(self, obj):
         return obj.avg_rating  # Annotated by Video.objects.
 
@@ -94,7 +99,8 @@ class VideoHistoryAdmin(SimpleHistoryAdmin):
 @admin.register(Comment)
 class CommentHistoryAdmin(SimpleHistoryAdmin):
     autocomplete_fields = ["request", "author"]
-    list_display = ["id", "request_link", "part_of_comment", "author_link"]
+    list_display = ["id", "request_link", "part_of_comment", "internal", "author_link"]
+    list_filter = ["internal"]
     list_select_related = ["request", "author"]
     search_fields = ["request__title"]
 
@@ -146,8 +152,10 @@ class TodoAdmin(admin.ModelAdmin):
         "request_link",
         "video_link",
         "description",
+        "status",
         "assignee_names",
     ]
+    list_filter = ["status"]
     list_select_related = ["request", "video"]
     search_fields = ["request__title", "video__title"]
 

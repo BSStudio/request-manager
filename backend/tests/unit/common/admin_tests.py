@@ -241,6 +241,37 @@ def test_changelists_can_be_searched(client, model_name):
     "model_name",
     ["comment", "crewmember", "rating", "request", "todo", "video"],
 )
+def test_changelists_can_be_sorted_by_every_column(client, model_name):
+    # Django resolves a column's ordering only once someone sorts by it.
+    user = make_user(username="sorting_admin", is_admin=True, is_superuser=True)
+    make_one_of_each(user)
+
+    client.force_login(user)
+    url = reverse(f"admin:video_requests_{model_name}_changelist")
+    columns = client.get(url).context["cl"].list_display
+
+    for index in range(len(columns)):
+        assert client.get(url, {"o": index}).status_code == HTTP_200_OK
+
+
+@pytest.mark.django_db
+def test_request_admin_links_to_the_request_in_the_app(client):
+    user = make_user(username="linking_admin", is_admin=True, is_superuser=True)
+    video_request = baker.make("video_requests.Request", requester=user)
+
+    client.force_login(user)
+    response = client.get(
+        reverse("admin:video_requests_request_change", args=(video_request.id,))
+    )
+
+    assert video_request.admin_url in response.content.decode()
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "model_name",
+    ["comment", "crewmember", "rating", "request", "todo", "video"],
+)
 @pytest.mark.parametrize("view", ["changelist", "add"])
 def test_admin_pages_run_as_many_queries_for_more_rows(client, model_name, view):
     user = make_user(username="counting_admin", is_admin=True, is_superuser=True)
