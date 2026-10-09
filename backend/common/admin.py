@@ -81,4 +81,5 @@ class UserAdmin(BaseUserAdmin):
 
 @admin.register(Ban)
 class BanAdmin(admin.ModelAdmin):
+    autocomplete_fields = ["receiver", "creator"]
     list_display = ("receiver", "created", "reason", "creator")

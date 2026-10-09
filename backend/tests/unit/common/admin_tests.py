@@ -1,7 +1,9 @@
 import pytest
 from django.contrib.admin.sites import AdminSite
 from django.contrib.messages.storage.fallback import FallbackStorage
+from django.db import connection
 from django.test import RequestFactory
+from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
 from model_bakery import baker
 from rest_framework.status import HTTP_200_OK
@@ -18,6 +20,26 @@ def admin_request(user):
     request.session = {}
     request._messages = FallbackStorage(request)
     return request
+
+
+def make_one_of_each(user):
+    video_request = baker.make(
+        "video_requests.Request", requester=user, responsible=user
+    )
+    video = baker.make("video_requests.Video", request=video_request, editor=user)
+    baker.make("video_requests.CrewMember", request=video_request, member=user)
+    baker.make("video_requests.Comment", request=video_request, author=user)
+    baker.make("video_requests.Rating", video=video, author=user)
+    baker.make(
+        "video_requests.Todo", request=video_request, video=video, creator=user
+    ).assignees.add(user)
+
+
+def count_queries(client, url, data=None):
+    with CaptureQueriesContext(connection) as queries:
+        response = client.get(url, data)
+    assert response.status_code == HTTP_200_OK
+    return len(queries)
 
 
 def ban_users(admin, usernames):
@@ -83,17 +105,7 @@ def test_changelists_link_to_the_user_admin(client, model_name):
     # Every one of these lists renders a link to a user, so a hard coded admin
     # URL name would only break once the list is not empty.
     user = make_user(username="linked_user", is_admin=True, is_superuser=True)
-
-    video_request = baker.make(
-        "video_requests.Request", requester=user, responsible=user
-    )
-    video = baker.make("video_requests.Video", request=video_request, editor=user)
-    baker.make("video_requests.CrewMember", request=video_request, member=user)
-    baker.make("video_requests.Comment", request=video_request, author=user)
-    baker.make("video_requests.Rating", video=video, author=user)
-    baker.make(
-        "video_requests.Todo", request=video_request, creator=user
-    ).assignees.add(user)
+    make_one_of_each(user)
 
     client.force_login(user)
     response = client.get(reverse(f"admin:video_requests_{model_name}_changelist"))
@@ -117,3 +129,47 @@ def test_changelists_can_be_searched(client, model_name):
     )
 
     assert response.status_code == HTTP_200_OK
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    "model_name",
+    ["comment", "crewmember", "rating", "request", "todo", "video"],
+)
+@pytest.mark.parametrize("view", ["changelist", "add"])
+def test_admin_pages_run_as_many_queries_for_more_rows(client, model_name, view):
+    user = make_user(username="counting_admin", is_admin=True, is_superuser=True)
+    client.force_login(user)
+    url = reverse(f"admin:video_requests_{model_name}_{view}")
+
+    make_one_of_each(user)
+    client.get(url)  # Fills Django's content type cache.
+    one_row = count_queries(client, url)
+    make_one_of_each(user)
+
+    assert count_queries(client, url) == one_row
+
+
+@pytest.mark.django_db
+@pytest.mark.filterwarnings("error::django.core.paginator.UnorderedObjectListWarning")
+@pytest.mark.parametrize(
+    ("model_name", "field_name"),
+    [("comment", "author"), ("rating", "video"), ("video", "request")],
+)
+def test_autocompletes_run_as_many_queries_for_more_results(
+    client, model_name, field_name
+):
+    user = make_user(username="counting_admin", is_admin=True, is_superuser=True)
+    client.force_login(user)
+    url = reverse("admin:autocomplete")
+    data = {
+        "app_label": "video_requests",
+        "model_name": model_name,
+        "field_name": field_name,
+    }
+
+    make_one_of_each(user)
+    one_result = count_queries(client, url, data)
+    make_one_of_each(user)
+
+    assert count_queries(client, url, data) == one_result

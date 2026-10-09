@@ -25,6 +25,7 @@ def user_change_url(user_id):
 
 @admin.register(Request)
 class RequestHistoryAdmin(SimpleHistoryAdmin):
+    autocomplete_fields = ["requester", "responsible"]
     list_display = [
         "id",
         "title",
@@ -34,6 +35,8 @@ class RequestHistoryAdmin(SimpleHistoryAdmin):
         "num_of_videos",
         "requester_link",
     ]
+    list_select_related = ["requester"]
+    ordering = ["-id"]
     exclude = ["requested_by"]
     readonly_fields = ["requested_by"]
     search_fields = ["title"]
@@ -58,7 +61,9 @@ class RequestHistoryAdmin(SimpleHistoryAdmin):
 
 @admin.register(CrewMember)
 class CrewMemberHistoryAdmin(SimpleHistoryAdmin):
+    autocomplete_fields = ["request", "member"]
     list_display = ["id", "request_link", "position", "member_link"]
+    list_select_related = ["request", "member"]
     search_fields = ["request__title"]
 
     @admin.display(description="Request")
@@ -74,11 +79,20 @@ class CrewMemberHistoryAdmin(SimpleHistoryAdmin):
 
 @admin.register(Video)
 class VideoHistoryAdmin(SimpleHistoryAdmin):
+    autocomplete_fields = ["request", "editor"]
     list_display = ["id", "title", "status", "request_link", "avg_rating"]
+    ordering = ["-id"]
     search_fields = ["title"]
 
     def get_queryset(self, request):
-        return super().get_queryset(request).annotate(avg_rating=Avg("ratings__rating"))
+        # Here rather than list_select_related: the video autocompletes run this
+        # queryset too, and label each video with the title of its request.
+        return (
+            super()
+            .get_queryset(request)
+            .annotate(avg_rating=Avg("ratings__rating"))
+            .select_related("request")
+        )
 
     @admin.display(description="Request")
     def request_link(self, obj):
@@ -92,7 +106,9 @@ class VideoHistoryAdmin(SimpleHistoryAdmin):
 
 @admin.register(Comment)
 class CommentHistoryAdmin(SimpleHistoryAdmin):
+    autocomplete_fields = ["request", "author"]
     list_display = ["id", "request_link", "part_of_comment", "author_link"]
+    list_select_related = ["request", "author"]
     search_fields = ["request__title"]
 
     @admin.display(description="Comment")
@@ -112,6 +128,7 @@ class CommentHistoryAdmin(SimpleHistoryAdmin):
 
 @admin.register(Rating)
 class RatingHistoryAdmin(SimpleHistoryAdmin):
+    autocomplete_fields = ["video", "author"]
     list_display = [
         "id",
         "video_link",
@@ -119,6 +136,7 @@ class RatingHistoryAdmin(SimpleHistoryAdmin):
         "part_of_review",
         "author_link",
     ]
+    list_select_related = ["video", "author"]
     search_fields = ["video__title", "video__request__title"]
 
     @admin.display(description="Review")
@@ -138,6 +156,7 @@ class RatingHistoryAdmin(SimpleHistoryAdmin):
 
 @admin.register(Todo)
 class TodoAdmin(ModelAdmin):
+    autocomplete_fields = ["request", "video", "creator", "assignees"]
     list_display = [
         "id",
         "created",
@@ -146,7 +165,11 @@ class TodoAdmin(ModelAdmin):
         "description",
         "assignee_names",
     ]
+    list_select_related = ["request", "video"]
     search_fields = ["request__title", "video__title"]
+
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related("assignees")
 
     @admin.display(description="Request")
     def request_link(self, obj):
