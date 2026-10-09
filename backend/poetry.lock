@@ -2516,34 +2516,34 @@ files = [
 
 [[package]]
 name = "social-auth-app-django"
-version = "6.1.0"
+version = "7.0.0"
 description = "Python Social Authentication, Django integration."
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "social_auth_app_django-6.1.0-py3-none-any.whl", hash = "sha256:b192b1f7c432c7d5d552ac44f43d07c7c01bfd528c6dfa0f7605df5a8495afd8"},
-    {file = "social_auth_app_django-6.1.0.tar.gz", hash = "sha256:7ce0489710f450dafd652833eea833505ccf5dacda6b188daa8bf90038986557"},
+    {file = "social_auth_app_django-7.0.0-py3-none-any.whl", hash = "sha256:2aab94273d5877e0192acc637bc1bff952897029a74ebdb4d3b9084852baa796"},
+    {file = "social_auth_app_django-7.0.0.tar.gz", hash = "sha256:29502f0ca9a71df66e6335fcbf35cd617ed8304dd1a7694bc636c9fe0d0bd91b"},
 ]
 
 [package.dependencies]
 asgiref = ">=3.8.1"
 Django = ">=5.2"
-social-auth-core = ">=5.2.0,<6.0.0"
+social-auth-core = ">=6.0.0,<7.0.0"
 
 [package.extras]
-dev = ["coverage (>=3.6)", "django-stubs (==6.0.9)", "django-stubs-ext (==6.0.9)", "mypy (==2.3.1)", "pre-commit", "pyright (==1.1.414)", "tox"]
+dev = ["coverage (>=3.6)", "django-stubs (==6.0.9)", "django-stubs-ext (==6.0.9)", "mypy (==2.4.0)", "pre-commit", "pyright (==1.1.414)", "tox"]
 
 [[package]]
 name = "social-auth-core"
-version = "5.2.0"
+version = "6.0.0"
 description = "Python social authentication made simple."
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "social_auth_core-5.2.0-py3-none-any.whl", hash = "sha256:e7b9990450291488deffce8d92d14d4396021b8d3c4a0ac5c32ec03bfaccc496"},
-    {file = "social_auth_core-5.2.0.tar.gz", hash = "sha256:72d3c52fe87d07c0db8421fee5f5ec33b3dacce449975b8a572cd0691e3de315"},
+    {file = "social_auth_core-6.0.0-py3-none-any.whl", hash = "sha256:375b4f65a979d21edf4a342d43dde61f851af6290041afbedc36bc8d19665bc8"},
+    {file = "social_auth_core-6.0.0.tar.gz", hash = "sha256:571c154bd60fea88d0b8e1912ecf5cf3ea48cde9e92ad0f7fbec4001bff09c98"},
 ]
 
 [package.dependencies]
@@ -2558,8 +2558,8 @@ requests-oauthlib = ">=2.0.0"
 [package.extras]
 all = ["social-auth-core[azuread]", "social-auth-core[google-onetap]", "social-auth-core[saml]", "social-auth-core[shopify]"]
 allpy3 = ["social-auth-core[all]"]
-dev = ["coverage (==7.16.2)", "flake8 (==7.4.1)", "mypy (==2.3.1)", "pyright (==1.1.414)", "pytest (==9.1.1)", "pytest-cov (==7.1.0)", "pytest-github-actions-annotate-failures (==0.4.2)", "pytest-profiling (==1.8.1)", "pytest-xdist (==3.8.0)", "responses (==0.26.3)", "ty (==0.0.84)", "types-defusedxml (==0.7.0.20260504)", "types-lxml (==2026.2.16)", "types-oauthlib (==3.3.0.20260724)", "types-requests (==2.33.0.20260906)", "types-requests-oauthlib (==2.0.0.20260907)"]
-google-onetap = ["google-auth (>=2.40.0,<2.60)"]
+dev = ["coverage (==7.16.2)", "flake8 (==7.4.1)", "mypy (==2.4.0)", "pyright (==1.1.414)", "pytest (==9.1.1)", "pytest-cov (==7.1.0)", "pytest-github-actions-annotate-failures (==0.4.2)", "pytest-profiling (==1.8.1)", "pytest-xdist (==3.8.0)", "responses (==0.26.3)", "ty (==0.0.84)", "types-defusedxml (==0.7.0.20260504)", "types-lxml (==2026.2.16)", "types-oauthlib (==3.3.0.20260724)", "types-requests (==2.33.0.20261006)", "types-requests-oauthlib (==2.0.0.20261006)"]
+google-onetap = ["google-auth (>=2.40.0,<2.61)"]
 saml = ["python3-saml (>=1.16.0)"]
 shopify = ["ShopifyAPI"]
 
@@ -2657,18 +2657,6 @@ files = [
 [package.extras]
 cli = ["tokenize-rt"]
 dateutil = ["python-dateutil (>=2.8.2)"]
-
-[[package]]
-name = "typing-extensions"
-version = "4.16.0"
-description = "Backported and Experimental Type Hints for Python 3.9+"
-optional = false
-python-versions = ">=3.9"
-groups = ["test"]
-files = [
-    {file = "typing_extensions-4.16.0-py3-none-any.whl", hash = "sha256:481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8"},
-    {file = "typing_extensions-4.16.0.tar.gz", hash = "sha256:dc983d19a509c94dba722ee6abd33940f7c05a89e243c47e907eb4db6f1a43e5"},
-]
 
 [[package]]
 name = "tzdata"
@@ -2822,4 +2810,4 @@ brotli = ["brotli"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14,<4.0"
-content-hash = "7938ff54fc2e26466a7f4312fc2e5b813c53ed23246188f20f5b273707b5aa2a"
+content-hash = "4ef8bc67ef89c6864635a6ca12d9e37e543099b362426e989111d840af605a05"

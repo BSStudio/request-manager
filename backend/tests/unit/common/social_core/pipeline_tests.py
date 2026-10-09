@@ -4,7 +4,7 @@ from unittest.mock import patch
 import pytest
 from django.contrib.auth.models import AnonymousUser
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
-from social_core.exceptions import NotAllowedToDisconnect
+from social_core.exceptions import AuthPolicyError
 from social_django.models import DjangoStorage, UserSocialAuth
 
 from common.social_core.pipeline import (
@@ -155,7 +155,7 @@ def test_last_login_method_cannot_be_disconnected():
     user = make_user()
     UserSocialAuth.objects.create(user=user, provider="google-oauth2", uid="uid-3")
 
-    with pytest.raises(NotAllowedToDisconnect):
+    with pytest.raises(AuthPolicyError, match="without another authentication method"):
         allowed_to_disconnect(
             anonymous_strategy(), user, "google-oauth2", DjangoStorage.user
         )

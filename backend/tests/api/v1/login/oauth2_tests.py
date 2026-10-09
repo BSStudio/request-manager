@@ -11,7 +11,8 @@ from django.conf import settings
 from django.contrib.auth import get_user_model
 from rest_framework.reverse import reverse
 from rest_framework.status import HTTP_200_OK, HTTP_302_FOUND, HTTP_400_BAD_REQUEST
-from social_core.exceptions import AuthTokenError
+from social_core.exceptions import AuthResponseError
+from social_django.models import UserSocialAuth
 
 from tests.factories import make_user
 from tests.helpers.oauth2_providers import (
@@ -105,7 +106,7 @@ def test_django_admin_login_checks_the_nonce_social_core_stored(
 def test_django_admin_login_rejects_a_nonce_social_core_did_not_store(
     client, mock_provider, provider, nonce
 ):
-    with pytest.raises(AuthTokenError, match="nonce"):
+    with pytest.raises(AuthResponseError, match="matched to the request"):
         log_in_to_django_admin(client, mock_provider(provider), nonce)
 
 
@@ -129,6 +130,25 @@ def test_login_matches_an_inactive_placeholder_account(api_client, mock_provider
     assert placeholder.is_active
     assert user_model.objects.filter(email__iexact="foobar@foobar.com").count() == 1
     assert placeholder.social_auth.filter(provider="microsoft-graph").exists()
+
+
+def test_a_google_account_connected_by_e_mail_still_logs_in(api_client, mock_provider):
+    # social-auth-core 6 identifies Google accounts by sub, not e-mail. The user's
+    # e-mail differs here, so only the old association can find them.
+    user = make_user(email="changed@example.com")
+    social = UserSocialAuth.objects.create(
+        user=user, provider=GOOGLE.name, uid=GOOGLE.user_data_body["email"]
+    )
+
+    assert log_in(api_client, mock_provider(GOOGLE)).status_code == HTTP_200_OK
+
+    social.refresh_from_db()
+    assert (social.uid, social.id_key) == (GOOGLE.user_data_body["sub"], "sub")
+    assert (
+        not get_user_model()
+        .objects.filter(email__iexact=GOOGLE.user_data_body["email"])
+        .exists()
+    )
 
 
 def test_login_without_any_photo_leaves_the_avatar_provider_unset(

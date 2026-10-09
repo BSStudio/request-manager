@@ -16,13 +16,6 @@ import responses
 from cryptography.hazmat.primitives.asymmetric import rsa
 from social_core.backends.open_id_connect import OpenIdConnectAuth
 from social_core.backends.utils import load_backends
-from social_core.tests.models import (
-    TestAssociation,
-    TestCode,
-    TestNonce,
-    TestUserSocialAuth,
-)
-from social_core.tests.models import User as TestUser
 from social_core.utils import module_member, parse_qs, url_add_parameters
 
 from common.social_core.helpers import load_strategy
@@ -30,15 +23,6 @@ from common.social_core.helpers import load_strategy
 GRAVATAR_URL = re.compile(r"https://(www|secure)\.gravatar\.com/avatar/.*")
 
 ID_TOKEN_KEY_ID = "test-key"
-
-#: social_core caches these across tests; every test has to start from empty.
-SOCIAL_CORE_CACHES = (
-    TestUser,
-    TestUserSocialAuth,
-    TestNonce,
-    TestAssociation,
-    TestCode,
-)
 
 
 @dataclass(frozen=True)
@@ -60,8 +44,6 @@ class Provider:
 
 
 def reset_social_core_caches():
-    for cache in SOCIAL_CORE_CACHES:
-        cache.reset_cache()
     # Kept for a day, so the first test's mocked answers would reach all later ones.
     OpenIdConnectAuth.oidc_config.invalidate()
     OpenIdConnectAuth.get_jwks_keys.invalidate()

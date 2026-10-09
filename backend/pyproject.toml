@@ -30,7 +30,7 @@ dependencies = [
     "python-decouple==3.8",
     "requests==2.34.2",
     "sentry-sdk==2.71.0",
-    "social-auth-app-django==6.1.0",
+    "social-auth-app-django==7.0.0",
     "whitenoise[brotli]==6.12.0"
 ]
 
@@ -104,7 +104,6 @@ pytest-django = "4.14.0"
 pytest-xdist = {extras = ["psutil"], version = "3.8.0"}
 responses = "0.26.3"
 time-machine = "3.5.1"
-typing_extensions = "4.16.0" # TODO: Remove when social-core no longer supports Python 3.9
 
 [tool.pytest]
 addopts = ["--cov", "--cov-report=html", "--cov-report=term", "--cov-report=xml", "-n=auto"]

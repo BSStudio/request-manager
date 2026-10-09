@@ -7,7 +7,7 @@ class DRFStrategy(DjangoStrategy):
         self.session = {}
         super(DjangoStrategy, self).__init__(storage, tpl)
 
-    def request_data(self, merge=True):
+    def get_request_data(self, merge=True):
         if not self.request:
             return {}
         return self.request.data
