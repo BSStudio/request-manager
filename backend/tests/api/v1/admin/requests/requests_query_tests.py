@@ -105,6 +105,7 @@ def test_filter_requests_multiple_status(admin_user, api_client, pagination):
     [
         ("created", [6, 2, 3, 1, 5, 4]),
         ("deadline", [4, 6, 2, 3, 1, 5]),
+        ("-id", [6, 5, 4, 3, 2, 1]),
         # There can be a difference in ordering of similar object if pagination is enabled.
         # Add created as secondary ordering field to make tests consistent.
         ("responsible__first_name,created", [6, 2, 5, 3, 1, 4]),

@@ -20,11 +20,12 @@ const firstPage = { first: 0, rows: 25 };
 const defaultSort: Sort = { field: 'start_datetime', order: -1 };
 
 // The table sorts the responsible column by full name, the API by its parts.
+// The id keeps rows with equal values in one place across pages.
 function toOrdering({ field, order }: Sort) {
   const fields =
     field === 'responsible.full_name'
-      ? ['responsible__last_name', 'responsible__first_name']
-      : [field];
+      ? ['responsible__last_name', 'responsible__first_name', 'id']
+      : [field, 'id'];
   return fields.map((name) => (order === -1 ? `-${name}` : name)).join(',');
 }
 
@@ -92,10 +93,13 @@ const RequestsListPage = () => {
           totalRecords={data?.count ?? 0}
         />
       </div>
-      <LastUpdatedAt
-        lastUpdatedAt={new Date(dataUpdatedAt)}
-        refetch={refetch}
-      />
+      {/* 0 while the previous page stands in for the next one. */}
+      {dataUpdatedAt > 0 && (
+        <LastUpdatedAt
+          lastUpdatedAt={new Date(dataUpdatedAt)}
+          refetch={refetch}
+        />
+      )}
     </div>
   );
 };
