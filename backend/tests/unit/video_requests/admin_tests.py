@@ -94,6 +94,30 @@ def test_request_admin_keeps_who_added_the_request(client):
 
 
 @pytest.mark.django_db
+def test_video_admin_cannot_move_a_video_to_another_request(client):
+    admin = make_user(username="video_admin", is_admin=True, is_superuser=True)
+    video = baker.make("video_requests.Video", title="Trailer")
+    original_request = video.request
+
+    client.force_login(admin)
+    add_form = client.get(reverse("admin:video_requests_video_add"))
+    response = client.post(
+        reverse("admin:video_requests_video_change", args=(video.id,)),
+        {
+            "title": "Trailer",
+            "request": baker.make("video_requests.Request").id,
+            "status": video.status,
+            "additional_data": "{}",
+        },
+    )
+
+    assert "request" in add_form.context["adminform"].form.fields
+    assert response.status_code == HTTP_302_FOUND
+    video.refresh_from_db()
+    assert video.request == original_request
+
+
+@pytest.mark.django_db
 def test_todo_admin_rejects_a_video_of_another_request(client):
     admin = make_user(username="todo_admin", is_admin=True, is_superuser=True)
     video_request = baker.make("video_requests.Request", requester=admin)

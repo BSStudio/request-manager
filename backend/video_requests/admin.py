@@ -87,6 +87,9 @@ class VideoHistoryAdmin(SimpleHistoryAdmin):
         # queryset too, and label each video with the title of its request.
         return super().get_queryset(request).select_related("request")
 
+    def get_readonly_fields(self, request, obj=None):
+        return [] if obj is None else ["request"]
+
     @admin.display(description=_("Request"))
     def request_link(self, obj):
         return change_link(obj.request, obj.request.title)
