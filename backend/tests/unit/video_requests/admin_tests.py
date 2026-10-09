@@ -94,27 +94,31 @@ def test_request_admin_keeps_who_added_the_request(client):
 
 
 @pytest.mark.django_db
-def test_video_admin_cannot_move_a_video_to_another_request(client):
-    admin = make_user(username="video_admin", is_admin=True, is_superuser=True)
-    video = baker.make("video_requests.Video", title="Trailer")
-    original_request = video.request
+@pytest.mark.parametrize(
+    ("model_name", "parent_fields"),
+    [
+        ("comment", {"request"}),
+        ("crewmember", {"request"}),
+        ("rating", {"video"}),
+        ("todo", {"request", "video"}),
+        ("video", {"request"}),
+    ],
+)
+def test_admins_cannot_move_anything_to_another_parent(
+    client, model_name, parent_fields
+):
+    user = make_user(username="moving_admin", is_admin=True, is_superuser=True)
+    make_one_of_each(user)
+    obj = apps.get_model("video_requests", model_name).objects.get()
 
-    client.force_login(admin)
-    add_form = client.get(reverse("admin:video_requests_video_add"))
-    response = client.post(
-        reverse("admin:video_requests_video_change", args=(video.id,)),
-        {
-            "title": "Trailer",
-            "request": baker.make("video_requests.Request").id,
-            "status": video.status,
-            "additional_data": "{}",
-        },
+    client.force_login(user)
+    add_page = client.get(reverse(f"admin:video_requests_{model_name}_add"))
+    change_page = client.get(
+        reverse(f"admin:video_requests_{model_name}_change", args=(obj.id,))
     )
 
-    assert "request" in add_form.context["adminform"].form.fields
-    assert response.status_code == HTTP_302_FOUND
-    video.refresh_from_db()
-    assert video.request == original_request
+    assert parent_fields <= set(add_page.context["adminform"].form.fields)
+    assert not parent_fields & set(change_page.context["adminform"].form.fields)
 
 
 @pytest.mark.django_db
