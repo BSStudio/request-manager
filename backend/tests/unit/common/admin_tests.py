@@ -255,6 +255,25 @@ def test_changelists_can_be_sorted_by_every_column(client, model_name):
 
 
 @pytest.mark.django_db
+def test_admin_login_passes_on_where_to_return(client):
+    next_url = reverse("admin:video_requests_request_changelist")
+
+    response = client.get(reverse("admin:login"), {"next": next_url})
+
+    hidden_input = f'<input type="hidden" name="next" value="{next_url}">'
+    assert hidden_input in response.content.decode()
+
+
+@pytest.mark.django_db
+def test_admin_login_tells_a_logged_in_user_why_they_are_back(client):
+    client.force_login(make_user(username="requester"))
+
+    response = client.get(reverse("admin:login"))
+
+    assert "requester, but are not authorized" in response.content.decode()
+
+
+@pytest.mark.django_db
 def test_request_admin_links_to_the_request_in_the_app(client):
     user = make_user(username="linking_admin", is_admin=True, is_superuser=True)
     video_request = baker.make("video_requests.Request", requester=user)

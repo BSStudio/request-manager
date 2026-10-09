@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: BSS Request Manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-09 11:46+0200\n"
+"POT-Creation-Date: 2026-10-09 23:18+0200\n"
 "PO-Revision-Date: 2023-09-07 03:30+0200\n"
 "Last-Translator: Olivér Kecskeméty <kecskemety.oliver@simonyi.bme.hu>\n"
 "Language: Hungarian\n"
@@ -83,18 +83,18 @@ msgstr "Profil"
 msgid "Is admin"
 msgstr "Adminisztrátor státusz"
 
-#: .\common\admin.py:42
+#: .\common\admin.py:45
 msgid "Ban selected users"
 msgstr "Kiválasztott felhasználók kitiltása"
 
-#: .\common\admin.py:59
+#: .\common\admin.py:62
 #, python-format
 msgid "Banned %(count)d user, skipped %(skipped)d: %(usernames)s."
 msgid_plural "Banned %(count)d users, skipped %(skipped)d: %(usernames)s."
 msgstr[0] "%(count)d felhasználó kitiltva, %(skipped)d kihagyva: %(usernames)s."
 msgstr[1] "%(count)d felhasználó kitiltva, %(skipped)d kihagyva: %(usernames)s."
 
-#: .\common\admin.py:74
+#: .\common\admin.py:77
 #, python-format
 msgid "Successfully banned %(count)d user."
 msgid_plural "Successfully banned %(count)d users."
@@ -167,48 +167,57 @@ msgstr "angol"
 msgid "Hungarian"
 msgstr "magyar"
 
-#: .\templates\admin\login.html:9
+#: .\templates\admin\login.html:8
+#, python-format
+msgid ""
+"You are authenticated as %(username)s, but are not authorized to access this "
+"page. Would you like to login to a different account?"
+msgstr ""
+"%(username)s néven vagy bejelentkezve, de ehhez az oldalhoz nincs "
+"hozzáférésed. Szeretnél másik fiókkal belépni?"
+
+#: .\templates\admin\login.html:18
 msgid "Log in"
 msgstr "Bejelentkezés"
 
-#: .\video_requests\admin.py:43
+#: .\video_requests\admin.py:44
 msgid "Number of videos"
 msgstr "Videók száma"
 
-#: .\video_requests\admin.py:47
+#: .\video_requests\admin.py:48
 msgid "Requester"
 msgstr "Felkérő"
 
-#: .\video_requests\admin.py:64 .\video_requests\admin.py:85
-#: .\video_requests\admin.py:105 .\video_requests\admin.py:157
+#: .\video_requests\admin.py:68 .\video_requests\admin.py:90
+#: .\video_requests\admin.py:111 .\video_requests\admin.py:165
 msgid "Request"
 msgstr "Felkérés"
 
-#: .\video_requests\admin.py:68
+#: .\video_requests\admin.py:72
 msgid "Crew member"
 msgstr "Stábtag"
 
-#: .\video_requests\admin.py:89
+#: .\video_requests\admin.py:94
 msgid "Average rating"
 msgstr "Átlagos értékelés"
 
-#: .\video_requests\admin.py:101
+#: .\video_requests\admin.py:107
 msgid "Comment"
 msgstr "Hozzászólás"
 
-#: .\video_requests\admin.py:109 .\video_requests\admin.py:135
+#: .\video_requests\admin.py:115 .\video_requests\admin.py:141
 msgid "Author"
 msgstr "Szerző"
 
-#: .\video_requests\admin.py:127
+#: .\video_requests\admin.py:133
 msgid "Review"
 msgstr "Szöveges értékelés"
 
-#: .\video_requests\admin.py:131 .\video_requests\admin.py:161
+#: .\video_requests\admin.py:137 .\video_requests\admin.py:169
 msgid "Video"
 msgstr "Videó"
 
-#: .\video_requests\admin.py:167
+#: .\video_requests\admin.py:175
 msgid "Assignees"
 msgstr "Felelősök"
 
