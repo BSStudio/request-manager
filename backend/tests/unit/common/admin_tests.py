@@ -261,17 +261,24 @@ def test_admin_login_passes_on_where_to_return(client):
 
     response = client.get(reverse("admin:login"), {"next": next_url})
 
-    hidden_input = f'<input type="hidden" name="next" value="{next_url}">'
-    assert hidden_input in response.content.decode()
+    content = response.content.decode()
+    assert f'<input type="hidden" name="next" value="{next_url}">' in content
+    assert "not authorized" not in content
 
 
 @pytest.mark.django_db
-def test_admin_login_tells_a_logged_in_user_why_they_are_back(client):
+def test_admin_login_has_a_logged_in_user_log_out_first(client):
     client.force_login(make_user(username="requester"))
+    login_url = f"{reverse('admin:login')}?next=/django-admin/"
 
-    response = client.get(reverse("admin:login"))
+    page = client.get(login_url).content.decode()
+    logged_out = client.post(reverse("admin_switch_account"), {"next": login_url})
 
-    assert "requester, but are not authorized" in response.content.decode()
+    assert "requester, but are not authorized" in page
+    assert reverse("social:begin", args=["bss-login"]) not in page
+    assert f'<input type="hidden" name="next" value="{login_url}">' in page
+    assert logged_out.url == login_url
+    assert "_auth_user_id" not in client.session
 
 
 @pytest.mark.django_db

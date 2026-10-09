@@ -10,13 +10,22 @@
                     access this page. Would you like to login to a different account?
                 {% endblocktranslate %}
             </p>
+            {# Logging in on top of a session links the BSS account to that user instead. #}
+            <form action="{% url "admin_switch_account" %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ app_path }}">
+                <div class="submit-row" style="padding: 0">
+                    <input type="submit" value="{% translate 'Log out' %}">
+                </div>
+            </form>
+        {% else %}
+            <form action="{% url "social:begin" "bss-login" %}" method="post" id="login-form">
+                {% csrf_token %}
+                <input type="hidden" name="next" value="{{ next }}">
+                <div class="submit-row" style="padding: 0">
+                    <input type="submit" value="{% translate 'Log in' %}">
+                </div>
+            </form>
         {% endif %}
-        <form action="{% url "social:begin" "bss-login" %}" method="post" id="login-form">
-            {% csrf_token %}
-            <input type="hidden" name="next" value="{{ next }}">
-            <div class="submit-row" style="padding: 0">
-                <input type="submit" value="{% translate 'Log in' %}">
-            </div>
-        </form>
     </div>
 {% endblock %}

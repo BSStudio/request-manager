@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: BSS Request Manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-09 23:18+0200\n"
+"POT-Creation-Date: 2026-10-10 00:15+0200\n"
 "PO-Revision-Date: 2023-09-07 03:30+0200\n"
 "Last-Translator: Olivér Kecskeméty <kecskemety.oliver@simonyi.bme.hu>\n"
 "Language: Hungarian\n"
@@ -177,6 +177,10 @@ msgstr ""
 "hozzáférésed. Szeretnél másik fiókkal belépni?"
 
 #: .\templates\admin\login.html:18
+msgid "Log out"
+msgstr "Kijelentkezés"
+
+#: .\templates\admin\login.html:26
 msgid "Log in"
 msgstr "Bejelentkezés"
 
@@ -189,7 +193,7 @@ msgid "Requester"
 msgstr "Felkérő"
 
 #: .\video_requests\admin.py:68 .\video_requests\admin.py:90
-#: .\video_requests\admin.py:111 .\video_requests\admin.py:165
+#: .\video_requests\admin.py:114 .\video_requests\admin.py:168
 msgid "Request"
 msgstr "Felkérés"
 
@@ -201,23 +205,23 @@ msgstr "Stábtag"
 msgid "Average rating"
 msgstr "Átlagos értékelés"
 
-#: .\video_requests\admin.py:107
+#: .\video_requests\admin.py:110
 msgid "Comment"
 msgstr "Hozzászólás"
 
-#: .\video_requests\admin.py:115 .\video_requests\admin.py:141
+#: .\video_requests\admin.py:118 .\video_requests\admin.py:144
 msgid "Author"
 msgstr "Szerző"
 
-#: .\video_requests\admin.py:133
+#: .\video_requests\admin.py:136
 msgid "Review"
 msgstr "Szöveges értékelés"
 
-#: .\video_requests\admin.py:137 .\video_requests\admin.py:169
+#: .\video_requests\admin.py:140 .\video_requests\admin.py:172
 msgid "Video"
 msgstr "Videó"
 
-#: .\video_requests\admin.py:175
+#: .\video_requests\admin.py:178
 msgid "Assignees"
 msgstr "Felelősök"
 
@@ -250,7 +254,7 @@ msgid "Archiválva"
 msgstr ""
 
 #: .\video_requests\models.py:54 .\video_requests\models.py:140
-#: .\video_requests\models.py:209
+#: .\video_requests\models.py:213
 msgid "Lezárva"
 msgstr ""
 
@@ -286,10 +290,10 @@ msgstr ""
 msgid "Közzétéve"
 msgstr ""
 
-#: .\video_requests\models.py:208
+#: .\video_requests\models.py:212
 msgid "Nyitva"
 msgstr ""
 
-#: .\video_requests\models.py:210
+#: .\video_requests\models.py:214
 msgid "Elvetve"
 msgstr ""
