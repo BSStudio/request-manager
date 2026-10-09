@@ -23,6 +23,7 @@ import { isNotFound, setFieldErrors } from 'api/errors';
 import { getAvatarStyle, getInitials } from 'helpers/avatar';
 import { getUserId, isAdmin } from 'helpers/LocalStorageHelper';
 import { formatName } from 'helpers/names';
+import { formatPhone, toE164 } from 'helpers/phone';
 
 const AvatarDialog = lazy(
   () => import('admin/components/UserProfile/AvatarDialog'),
@@ -51,6 +52,14 @@ const socialAccounts: Record<string, { icon: string; label: string }> = {
   },
 };
 
+function toFormValues(user: UserAdminRetrieveUpdate) {
+  const phone = user.profile.phone_number;
+  return {
+    ...user,
+    profile: { ...user.profile, phone_number: phone && formatPhone(phone) },
+  };
+}
+
 function getUserRole(role: string, banned: boolean) {
   if (banned) return 'Kitiltva';
   switch (role) {
@@ -68,7 +77,7 @@ const ProfileSection = ({ userData }: ProfileSectionProps) => {
     useState<boolean>(false);
   const { control, handleSubmit, reset, setError } =
     useForm<UserAdminRetrieveUpdate>({
-      defaultValues: userData,
+      defaultValues: toFormValues(userData),
     });
   const { isPending, mutateAsync } = useMutation(
     userUpdateMutation(userData.id),
@@ -91,7 +100,7 @@ const ProfileSection = ({ userData }: ProfileSectionProps) => {
   ];
 
   useEffect(() => {
-    reset({ ...userData });
+    reset(toFormValues(userData));
   }, [reset, userData]);
 
   const onAvatarSave = async (provider: string) => {
@@ -120,8 +129,10 @@ const ProfileSection = ({ userData }: ProfileSectionProps) => {
   };
 
   const onSubmit: SubmitHandler<UserAdminRetrieveUpdate> = async (data) => {
+    const phone = data.profile.phone_number;
     await mutateAsync({
       ...data,
+      profile: { ...data.profile, phone_number: phone && toE164(phone) },
     })
       .then(async (response) => {
         showToast({

@@ -25,6 +25,7 @@ import type { ZodType } from 'zod';
 import { getApiErrorMessage, isRateLimited } from 'api/errors';
 import { requestsApi } from 'api/http';
 import { formatName } from 'helpers/names';
+import { formatPhone, toE164 } from 'helpers/phone';
 import { meQuery, useSessionUser } from 'helpers/session';
 import { usePageTitle } from 'hooks/usePageTitle';
 import LoadError from 'site/components/LoadError';
@@ -52,7 +53,7 @@ import SummaryStep, {
 } from 'site/components/request-form/SummaryStep';
 import Turnstile, { CAPTCHA_FAILED } from 'site/components/Turnstile';
 import { Button } from 'site/components/ui/button';
-import { formatPhone, getMissingProfileFields, toE164 } from 'site/lib/person';
+import { getMissingProfileFields } from 'site/lib/person';
 
 type StepKey = 'event' | 'notes' | 'personal' | 'summary';
 

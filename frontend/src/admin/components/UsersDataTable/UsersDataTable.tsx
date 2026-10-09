@@ -13,6 +13,7 @@ import { usersListQuery } from 'admin/api/queries';
 import LinkButton from 'admin/components/LinkButton/LinkButton';
 import User from 'admin/components/User/User';
 import { UserAdminList } from 'api/models';
+import { formatPhone } from 'helpers/phone';
 
 import stylesModule from './UsersDataTable.module.css';
 
@@ -36,6 +37,10 @@ const UsersDataTable = forwardRef<
 
   const fullNameBodyTemplate = ({ avatar_url, full_name }: UserAdminList) => {
     return <User imageUrl={avatar_url} name={full_name} />;
+  };
+
+  const phoneNumberBodyTemplate = ({ phone_number }: UserAdminList) => {
+    return formatPhone(phone_number);
   };
 
   const actionBodyTemplate = ({ id }: UserAdminList) => {
@@ -107,6 +112,8 @@ const UsersDataTable = forwardRef<
         sortable
       />
       <Column
+        body={phoneNumberBodyTemplate}
+        bodyClassName="white-space-nowrap"
         field="phone_number"
         filter
         filterMatchMode={FilterMatchMode.CONTAINS}
