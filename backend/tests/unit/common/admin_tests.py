@@ -90,22 +90,20 @@ def test_ban_selected_users_needs_the_permission_to_add_bans(codenames, offered)
 @pytest.mark.django_db
 def test_ban_admin_credits_the_ban_to_whoever_added_it(client):
     admin = make_user(username="banning_admin", is_admin=True, is_superuser=True)
-    other_admin = make_user(username="other_admin", is_admin=True)
     to_ban = make_user(username="to_ban")
+    url = reverse("admin:common_ban_add")
 
     client.force_login(admin)
-    response = client.post(
-        reverse("admin:common_ban_add"),
-        # Read-only in the admin, so the form must ignore it.
-        {"receiver": to_ban.id, "creator": other_admin.id, "reason": ""},
-    )
+    form = client.get(url).context["adminform"].form
+    response = client.post(url, {"receiver": to_ban.id, "reason": ""})
 
+    assert "creator" not in form.fields
     assert response.status_code == HTTP_302_FOUND
     assert Ban.objects.get(receiver=to_ban).creator == admin
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("bans_self", [True, False])
+@pytest.mark.parametrize("bans_self", [True, False], ids=["self", "missing"])
 def test_ban_admin_needs_a_receiver_other_than_the_admin(client, bans_self):
     admin = make_user(username="banning_admin", is_admin=True, is_superuser=True)
 
@@ -135,6 +133,21 @@ def test_ban_admin_cannot_move_a_ban_to_another_user(client):
     assert response.status_code == HTTP_302_FOUND
     assert list(Ban.objects.values_list("receiver__username", "reason")) == [
         ("already_banned", "Changed")
+    ]
+
+
+@pytest.mark.django_db
+def test_ban_admin_finds_bans_by_the_receiver(client):
+    admin = make_user(username="banning_admin", is_admin=True, is_superuser=True)
+    make_user(username="already_banned", banned=True)
+    make_user(username="also_banned", banned=True)
+
+    client.force_login(admin)
+    response = client.get(reverse("admin:common_ban_changelist"), {"q": "already"})
+
+    assert response.status_code == HTTP_200_OK
+    assert [ban.receiver.username for ban in response.context["cl"].result_list] == [
+        "already_banned"
     ]
 
 

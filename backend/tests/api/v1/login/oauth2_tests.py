@@ -114,6 +114,15 @@ def test_django_admin_login_returns_to_the_page_it_started_from(client, mock_pro
     assert response.url == next_url
 
 
+def test_django_admin_login_does_not_return_to_another_site(client, mock_provider):
+    response = log_in_to_django_admin(
+        client, mock_provider(BSS_LOGIN), next_url="https://evil.example/"
+    )
+
+    assert response.status_code == HTTP_302_FOUND
+    assert response.url == settings.SOCIAL_AUTH_LOGIN_REDIRECT_URL
+
+
 @OPENID_PROVIDERS
 @pytest.mark.parametrize("nonce", ["", "someone-elses"], ids=["empty", "foreign"])
 def test_django_admin_login_rejects_a_nonce_social_core_did_not_store(

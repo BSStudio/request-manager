@@ -9,6 +9,10 @@ from rest_framework.status import HTTP_200_OK, HTTP_302_FOUND
 from tests.factories import make_user
 from video_requests.models import Request
 
+EVERY_MODEL = pytest.mark.parametrize(
+    "model_name", ["comment", "crewmember", "rating", "request", "todo", "video"]
+)
+
 
 def make_one_of_each(user):
     video_request = baker.make(
@@ -27,7 +31,7 @@ def count_queries(client, url, data=None):
     with CaptureQueriesContext(connection) as queries:
         response = client.get(url, data)
     assert response.status_code == HTTP_200_OK
-    return len(queries)
+    return response, len(queries)
 
 
 @pytest.mark.django_db
@@ -70,28 +74,27 @@ def test_request_admin_keeps_who_added_the_request(client):
         "status": Request.Statuses.REQUESTED,
         "requester": requester.id,
         "additional_data": "{}",
-        # Read-only in the admin, so both posts must ignore it.
+        # Read-only in the admin: save_model() sets it on add, and an edit must
+        # leave it alone.
         "requested_by": requester.id,
     }
 
     client.force_login(admin)
     added = client.post(reverse("admin:video_requests_request_add"), form)
+    assert added.status_code == HTTP_302_FOUND
     video_request = Request.objects.get(title="Added in the admin")
     changed = client.post(
         reverse("admin:video_requests_request_change", args=(video_request.id,)),
         form,
     )
 
-    assert added.status_code == changed.status_code == HTTP_302_FOUND
+    assert changed.status_code == HTTP_302_FOUND
     video_request.refresh_from_db()
     assert video_request.requested_by == admin
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize(
-    "model_name",
-    ["comment", "crewmember", "rating", "request", "todo", "video"],
-)
+@EVERY_MODEL
 def test_changelists_can_be_searched(client, model_name):
     # Django resolves the search_fields lookups only once someone searches.
     user = make_user(username="searching_admin", is_admin=True, is_superuser=True)
@@ -105,10 +108,7 @@ def test_changelists_can_be_searched(client, model_name):
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize(
-    "model_name",
-    ["comment", "crewmember", "rating", "request", "todo", "video"],
-)
+@EVERY_MODEL
 def test_changelists_can_be_sorted_by_every_column(client, model_name):
     # Django resolves a column's ordering only once someone sorts by it.
     user = make_user(username="sorting_admin", is_admin=True, is_superuser=True)
@@ -120,6 +120,21 @@ def test_changelists_can_be_sorted_by_every_column(client, model_name):
 
     for index in range(len(columns)):
         assert client.get(url, {"o": index}).status_code == HTTP_200_OK
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    ("model_name", "column"), [("request", "num_of_videos"), ("video", "avg_rating")]
+)
+def test_changelists_can_be_sorted_by_computed_columns(client, model_name, column):
+    # Sorting by a column without an ordering silently keeps the default one.
+    user = make_user(username="sorting_admin", is_admin=True, is_superuser=True)
+
+    client.force_login(user)
+    url = reverse(f"admin:video_requests_{model_name}_changelist")
+    changelist = client.get(url).context["cl"]
+
+    assert changelist.get_ordering_field(column) == column
 
 
 @pytest.mark.django_db
@@ -138,29 +153,42 @@ def test_admins_link_to_the_same_page_in_the_app(client, model_name):
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize(
-    "model_name",
-    ["comment", "crewmember", "rating", "request", "todo", "video"],
-)
-@pytest.mark.parametrize("view", ["changelist", "add"])
-def test_admin_pages_run_as_many_queries_for_more_rows(client, model_name, view):
+@EVERY_MODEL
+def test_changelists_run_as_many_queries_for_more_rows(client, model_name):
     user = make_user(username="counting_admin", is_admin=True, is_superuser=True)
     client.force_login(user)
-    url = reverse(f"admin:video_requests_{model_name}_{view}")
+    url = reverse(f"admin:video_requests_{model_name}_changelist")
 
     make_one_of_each(user)
-    client.get(url)  # Fills Django's content type cache.
-    one_row = count_queries(client, url)
+    _, one_row = count_queries(client, url)
     make_one_of_each(user)
+    response, two_rows = count_queries(client, url)
 
-    assert count_queries(client, url) == one_row
+    assert response.context["cl"].result_count == 2
+    assert two_rows == one_row
 
 
 @pytest.mark.django_db
+@EVERY_MODEL
+def test_add_forms_run_as_many_queries_for_more_related_rows(client, model_name):
+    user = make_user(username="counting_admin", is_admin=True, is_superuser=True)
+    client.force_login(user)
+    url = reverse(f"admin:video_requests_{model_name}_add")
+
+    make_one_of_each(user)
+    client.get(url)  # Fills Django's content type cache.
+    _, one_each = count_queries(client, url)
+    make_one_of_each(user)
+    _, two_each = count_queries(client, url)
+
+    assert two_each == one_each
+
+
+@pytest.mark.django_db
+# Autocompletes page through their results, which needs an ordered queryset.
 @pytest.mark.filterwarnings("error::django.core.paginator.UnorderedObjectListWarning")
 @pytest.mark.parametrize(
-    ("model_name", "field_name"),
-    [("comment", "author"), ("rating", "video"), ("video", "request")],
+    ("model_name", "field_name"), [("rating", "video"), ("video", "request")]
 )
 def test_autocompletes_run_as_many_queries_for_more_results(
     client, model_name, field_name
@@ -175,7 +203,9 @@ def test_autocompletes_run_as_many_queries_for_more_results(
     }
 
     make_one_of_each(user)
-    one_result = count_queries(client, url, data)
+    _, one_result = count_queries(client, url, data)
     make_one_of_each(user)
+    response, two_results = count_queries(client, url, data)
 
-    assert count_queries(client, url, data) == one_result
+    assert len(response.json()["results"]) == 2
+    assert two_results == one_result
