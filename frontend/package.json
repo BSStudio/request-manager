@@ -45,7 +45,8 @@
     "lint": "eslint src/",
     "lint:fix": "eslint --fix src/",
     "check-eslint-config": "eslint-config-prettier src/main.tsx",
-    "generate-client": "openapi-generator-cli generate && prettier --write src/api/**/*.ts"
+    "generate-client": "openapi-generator-cli generate && prettier --write src/api/**/*.ts",
+    "generate-pwa-assets": "pwa-assets-generator"
   },
   "browserslist": {
     "production": [
