@@ -149,7 +149,12 @@ export const requestVideoTodosListQuery = (
   refetchInterval: 1000 * 30,
 });
 
-export const requestsListQuery = (semester: Semester | null) => {
+export const requestsListQuery = (
+  semester: Semester | null,
+  page: number,
+  pageSize: number,
+  ordering: string,
+) => {
   const afterDate = semester?.afterDate.toISOString().split('T')[0];
   const beforeDate = semester?.beforeDate.toISOString().split('T')[0];
 
@@ -158,19 +163,23 @@ export const requestsListQuery = (semester: Semester | null) => {
       const requests = await adminApi.adminRequestsList(
         undefined,
         undefined,
-        undefined,
-        undefined,
-        semester ? 200 : 10000,
+        ordering,
+        page,
+        pageSize,
         undefined,
         undefined,
         afterDate,
         beforeDate,
       );
-      return requests.data.results || [];
+      return requests.data;
     },
-    queryKey: semester
-      ? queryKeys.requestsBySemester(afterDate, beforeDate)
-      : queryKeys.requests(),
+    queryKey: queryKeys.requestsList({
+      afterDate,
+      beforeDate,
+      ordering,
+      page,
+      pageSize,
+    }),
     refetchInterval: 1000 * 30,
   };
 };
