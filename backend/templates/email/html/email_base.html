@@ -78,6 +78,7 @@
                         </tr>
 
                         <tr>
+                            {# Without word-break, a long URL or word in user text stretches the whole table past the screen. #}
                             <td
                                 class="card"
                                 bgcolor="#ffffff"
@@ -90,6 +91,8 @@
                                        line-height: 26px;
                                        color: #334155;
                                        text-align: left;
+                                       overflow-wrap: anywhere;
+                                       word-break: break-word;
                                       "
                             >
                                 <h1 style="margin: 0 0 20px; font-size: 26px; line-height: 34px; font-weight: 700; letter-spacing: -0.3px; color: #0f1b2d">
