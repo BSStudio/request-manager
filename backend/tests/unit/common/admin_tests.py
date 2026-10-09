@@ -1,5 +1,6 @@
 import pytest
 from django.contrib.admin.sites import AdminSite
+from django.contrib.auth.models import Permission
 from django.contrib.messages.storage.fallback import FallbackStorage
 from django.db import connection
 from django.test import RequestFactory
@@ -94,6 +95,71 @@ def test_ban_selected_users_reports_the_plural_form():
     reported = ban_users(admin, ["first_to_ban", "second_to_ban"])
 
     assert reported == ["Successfully banned 2 users."]
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize(
+    ("codenames", "offered"),
+    [(["view_user"], False), (["view_user", "add_ban"], True)],
+)
+def test_ban_selected_users_needs_the_permission_to_add_bans(codenames, offered):
+    staff_member = make_user(username="staff_member", is_staff=True)
+    staff_member.user_permissions.set(Permission.objects.filter(codename__in=codenames))
+
+    actions = UserAdmin(User, AdminSite()).get_actions(admin_request(staff_member))
+
+    assert ("ban_selected_users" in actions) is offered
+
+
+@pytest.mark.django_db
+def test_ban_admin_credits_the_ban_to_whoever_added_it(client):
+    admin = make_user(username="banning_admin", is_admin=True, is_superuser=True)
+    other_admin = make_user(username="other_admin", is_admin=True)
+    to_ban = make_user(username="to_ban")
+
+    client.force_login(admin)
+    response = client.post(
+        reverse("admin:common_ban_add"),
+        # Read-only in the admin, so the form must ignore it.
+        {"receiver": to_ban.id, "creator": other_admin.id, "reason": ""},
+    )
+
+    assert response.status_code == HTTP_302_FOUND
+    assert Ban.objects.get(receiver=to_ban).creator == admin
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("bans_self", [True, False])
+def test_ban_admin_needs_a_receiver_other_than_the_admin(client, bans_self):
+    admin = make_user(username="banning_admin", is_admin=True, is_superuser=True)
+
+    client.force_login(admin)
+    response = client.post(
+        reverse("admin:common_ban_add"),
+        {"receiver": admin.id if bans_self else "", "reason": ""},
+    )
+
+    assert response.status_code == HTTP_200_OK
+    assert "receiver" in response.context["adminform"].form.errors
+    assert not Ban.objects.exists()
+
+
+@pytest.mark.django_db
+def test_ban_admin_cannot_move_a_ban_to_another_user(client):
+    admin = make_user(username="banning_admin", is_admin=True, is_superuser=True)
+    banned = make_user(username="already_banned", banned=True)
+    not_banned = make_user(username="not_banned")
+
+    client.force_login(admin)
+    response = client.post(
+        reverse("admin:common_ban_change", args=(banned.id,)),
+        {"receiver": not_banned.id, "reason": "Changed"},
+    )
+
+    assert response.status_code == HTTP_302_FOUND
+    assert list(Ban.objects.values_list("receiver__username", "reason")) == [
+        ("already_banned", "Changed")
+    ]
 
 
 @pytest.mark.django_db
