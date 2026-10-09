@@ -1,0 +1,63 @@
+{% load i18n %}
+<table
+    role="presentation"
+    width="100%"
+    cellpadding="0"
+    cellspacing="0"
+    border="0"
+    style="margin: 0 0 24px; border: 1px solid #dde4ed; border-radius: 12px; border-collapse: separate"
+>
+    <tr>
+        <td width="58" valign="top" style="width: 58px; padding: 20px 0 0 20px">
+            {% include "email/html/partials/date_tile.html" with date=request.start_datetime %}
+        </td>
+        <td valign="top" style="padding: 18px 20px 0 16px">
+            <p style="margin: 0 0 4px; font-size: 18px; line-height: 26px; font-weight: 700; color: #0f1b2d">{{ request.title }}</p>
+            <p style="margin: 0; font-size: 15px; line-height: 22px; color: #475569">
+                {% language 'hu' %}
+                    {% if request.start_datetime|date:"Ymd" == request.end_datetime|date:"Ymd" %}
+                        {{ request.start_datetime|date:"Y. F j., l" }}<br />
+                        {{ request.start_datetime|date:"H:i" }}&ndash;{{ request.end_datetime|date:"H:i" }}
+                    {% else %}
+                        {{ request.start_datetime|date:"Y. F j., l H:i" }} &ndash;<br />
+                        {{ request.end_datetime|date:"F j., l H:i" }}
+                    {% endif %}
+                {% endlanguage %}
+            </p>
+        </td>
+    </tr>
+    <tr>
+        <td colspan="2" style="padding: 16px 20px 18px">
+            <table
+                role="presentation"
+                width="100%"
+                cellpadding="0"
+                cellspacing="0"
+                border="0"
+                style="border-top: 1px solid #e8edf3; font-size: 15px; line-height: 22px"
+            >
+                <tr>
+                    <td width="96" valign="top" style="width: 96px; padding: 12px 12px 0 0; color: #64748b">Helyszín</td>
+                    <td valign="top" style="padding: 12px 0 0; color: #0f1b2d">{{ request.place }}</td>
+                </tr>
+                {% if show_type %}
+                    <tr>
+                        <td width="96" valign="top" style="width: 96px; padding: 8px 12px 0 0; color: #64748b">Videó típusa</td>
+                        <td valign="top" style="padding: 8px 0 0; color: #0f1b2d">{{ request.type }}</td>
+                    </tr>
+                {% endif %}
+                {% if show_crew %}
+                    <tr>
+                        <td width="96" valign="top" style="width: 96px; padding: 8px 12px 0 0; color: #64748b">Stáb</td>
+                        <td valign="top" style="padding: 8px 0 0; color: #0f1b2d">
+                            {% for crew_member in request.crew.all %}
+                                {{ crew_member.member.get_full_name_eastern_order }}
+                                <span style="color: #64748b">({{ crew_member.position }})</span>{% if not forloop.last %}<br />{% endif %}
+                            {% endfor %}
+                        </td>
+                    </tr>
+                {% endif %}
+            </table>
+        </td>
+    </tr>
+</table>

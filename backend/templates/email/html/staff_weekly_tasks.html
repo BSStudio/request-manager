@@ -1,290 +1,106 @@
 {% extends 'email/html/email_base.html' %}
 {% load i18n %}
-{% block title %}Következő heti forgatások és vágandó anyagok{% endblock %}
-{% block preheader %}Sziasztok! A következő heti forgatások és vágandó anyagok a következők:{% endblock %}
-{% block hero %}Sziasztok!{% endblock %}
+{% block preheader %}Sziasztok! Az e heti forgatások és vágandó anyagok a következők:{% endblock %}
+{% block heading %}E heti forgatások és vágandó anyagok{% endblock %}
 {% block content %}
-    <!-- start copy block -->
-    <tr>
-        <td align="center" bgcolor="#e9ecef">
-            <!--[if (gte mso 9)|(IE)]>
-            <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
+    <p style="margin: 0 0 24px">Sziasztok!</p>
+
+    {% if recording %}
+        <p style="margin: 0 0 8px; font-size: 13px; line-height: 20px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: #64748b">Forgatások</p>
+        <table
+            role="presentation"
+            width="100%"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            style="margin: 0 0 32px; border: 1px solid #dde4ed; border-radius: 12px; border-collapse: separate; font-size: 14px; line-height: 20px"
+        >
+            {% for request in recording %}
                 <tr>
-                    <td align="center" valign="top" width="600">
-            <![endif]-->
-            <table
-                border="0"
-                cellpadding="0"
-                cellspacing="0"
-                width="100%"
-                style="max-width: 600px"
-            >
-                <!-- start recording -->
-                {% if recording %}
-                    <tr>
-                        <td
-                            align="left"
-                            bgcolor="#ffffff"
-                            style="
-                                   padding: 24px;
-                                   font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                   font-size: 16px;
-                                   line-height: 24px;
-                                  "
-                        >
-                            <p style="margin: 0"><strong>Következő heti forgatások:</strong></p>
-
-                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                                <tr>
-                                    <td
-                                        align="left"
-                                        bgcolor="#1a82e2"
-                                        width="60%"
-                                        style="
-                                               padding: 12px;
-                                               font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                               font-size: 16px;
-                                               line-height: 24px;
-                                               color: white;
-                                              "
-                                    >
-                                        <strong>Esemény neve</strong>
-                                    </td>
-                                    <td
-                                        align="left"
-                                        bgcolor="#1a82e2"
-                                        width="30%"
-                                        style="
-                                               padding: 12px;
-                                               font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                               font-size: 16px;
-                                               line-height: 24px;
-                                               color: white;
-                                              "
-                                    >
-                                        <strong>Dátum</strong>
-                                    </td>
-                                    <td
-                                        align="left"
-                                        bgcolor="#1a82e2"
-                                        width="10%"
-                                        style="
-                                               padding: 12px;
-                                               font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                               font-size: 16px;
-                                               line-height: 24px;
-                                               color: white;
-                                              "
-                                    >
-                                        <strong>Stáb</strong>
-                                    </td>
-                                </tr>
-                                {% for request in recording %}
-                                    <tr
-                                        style="border: solid; border-width: 1px 0; border-color: #e3e6e4"
-                                    >
-                                        <td
-                                            align="left"
-                                            width="60%"
-                                            style="
-                                                   padding: 6px 12px;
-                                                   font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                                   font-size: 16px;
-                                                   line-height: 24px;
-                                                  "
-                                        >
-                                            <a
-                                                href="{{ request.admin_url }}"
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                            >
-                                                {{ request.title }}
-                                            </a>
-                                        </td>
-                                        <td
-                                            align="left"
-                                            width="30%"
-                                            style="
-                                                   padding: 6px 12px;
-                                                   font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                                   font-size: 16px;
-                                                   line-height: 24px;
-                                                  "
-                                        >
-                                            {% language 'hu' %}
-                                                {{ request.start_datetime|date:"N j l, H:i" }}
-                                            {% endlanguage %}
-                                        </td>
-                                        <td
-                                            align="left"
-                                            width="10%"
-                                            style="
-                                                   padding: 6px 12px;
-                                                   font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                                   font-size: 16px;
-                                                   line-height: 24px;
-                                                   text-align: center;
-                                                  "
-                                        >
-                                            {{ request.crew.count }}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </table>
-                        </td>
-                    </tr>
-                {% endif %}
-                <!-- end recording -->
-
-                <!-- start editing -->
-                {% if editing_no_vids or editing_unedited_vids %}
-                    <tr>
-                        <td
-                            align="left"
-                            bgcolor="#ffffff"
-                            style="
-                                   padding: 24px;
-                                   font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                   font-size: 16px;
-                                   line-height: 24px;
-                                  "
-                        >
-                            <p style="margin: 0"><strong>Vágandó anyagok:</strong></p>
-
-                            <table border="0" cellpadding="0" cellspacing="0" width="100%">
-                                <tr>
-                                    <td
-                                        align="left"
-                                        bgcolor="#f7a00a"
-                                        width="60%"
-                                        style="
-                                               padding: 12px;
-                                               font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                               font-size: 16px;
-                                               line-height: 24px;
-                                               color: white;
-                                              "
-                                    >
-                                        <strong>Esemény/Videó neve</strong>
-                                    </td>
-                                    <td
-                                        align="left"
-                                        bgcolor="#f7a00a"
-                                        width="40%"
-                                        style="
-                                               padding: 12px;
-                                               font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                               font-size: 16px;
-                                               line-height: 24px;
-                                               color: white;
-                                              "
-                                    >
-                                        <strong>Vágó</strong>
-                                    </td>
-                                </tr>
-                                {% for request in editing_no_vids %}
-                                    <tr
-                                        style="border: solid; border-width: 1px 0; border-color: #e3e6e4"
-                                    >
-                                        <td
-                                            align="left"
-                                            width="60%"
-                                            style="
-                                                   padding: 6px 12px;
-                                                   font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                                   font-size: 16px;
-                                                   line-height: 24px;
-                                                  "
-                                        >
-                                            <a
-                                                href="{{ request.admin_url }}"
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                            >
-                                                {{ request.title }}
-                                            </a>
-                                        </td>
-                                        <td
-                                            align="left"
-                                            width="40%"
-                                            style="
-                                                   padding: 6px 12px;
-                                                   font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                                   font-size: 16px;
-                                                   line-height: 24px;
-                                                  "
-                                        ></td>
-                                    </tr>
-                                {% endfor %}
-                                {% for video in editing_unedited_vids %}
-                                    <tr
-                                        style="border: solid; border-width: 1px 0; border-color: #e3e6e4"
-                                    >
-                                        <td
-                                            align="left"
-                                            width="60%"
-                                            style="
-                                                   padding: 6px 12px;
-                                                   font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                                   font-size: 16px;
-                                                   line-height: 24px;
-                                                  "
-                                        >
-                                            <a
-                                                href="{{ video.request.admin_url }}"
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                            >
-                                                {{ video.title }}
-                                            </a>
-                                        </td>
-                                        <td
-                                            align="left"
-                                            width="40%"
-                                            style="
-                                                   padding: 6px 12px;
-                                                   font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                                   font-size: 16px;
-                                                   line-height: 24px;
-                                                  "
-                                        >
-                                            {{ video.editor.last_name }} {{ video.editor.first_name }}
-                                        </td>
-                                    </tr>
-                                {% endfor %}
-                            </table>
-                        </td>
-                    </tr>
-                {% endif %}
-                <!-- end editing -->
-
-                <!-- start signature -->
-                <tr>
-                    <td
-                        align="left"
-                        bgcolor="#ffffff"
-                        style="
-                               padding: 24px;
-                               font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                               font-size: 16px;
-                               line-height: 24px;
-                               border-bottom: 3px solid #014dff;
-                              "
-                    >
-                        <p style="margin: 0">
-                            Üdv:<br />
-                            Felkéréskezelő robotka
+                    <td width="58" valign="top" style="width: 58px; padding: 16px 0 16px 16px;{% if not forloop.first %} border-top: 1px solid #e8edf3;{% endif %}">
+                        {% include "email/html/partials/date_tile.html" with date=request.start_datetime %}
+                    </td>
+                    <td valign="top" style="padding: 14px 16px 16px 14px;{% if not forloop.first %} border-top: 1px solid #e8edf3;{% endif %}">
+                        <p style="margin: 0 0 4px; font-size: 16px; line-height: 24px; font-weight: 700">
+                            <a href="{{ request.admin_url }}" target="_blank" rel="noopener noreferrer" style="color: #005baa; text-decoration: none">{{ request.title }}</a>
+                            {% if request.status == request.Statuses.ACCEPTED %}
+                                {% include "email/html/partials/pill.html" with label=request.get_status_display tone="green" %}
+                            {% else %}
+                                {% include "email/html/partials/pill.html" with label=request.get_status_display tone="amber" %}
+                            {% endif %}
+                        </p>
+                        <p style="margin: 0; color: #64748b">
+                            {% language 'hu' %}
+                                {% if request.start_datetime|date:"Ymd" == request.end_datetime|date:"Ymd" %}
+                                    {{ request.start_datetime|date:"H:i" }}&ndash;{{ request.end_datetime|date:"H:i" }}
+                                {% else %}
+                                    {{ request.start_datetime|date:"H:i" }} &ndash; {{ request.end_datetime|date:"N j. H:i" }}
+                                {% endif %}
+                            {% endlanguage %}
+                            &middot; {{ request.place }}
+                        </p>
+                        <p style="margin: 8px 0 0; color: #334155">
+                            {% for crew_member in request.crew.all %}
+                                {% if forloop.first %}<span style="color: #64748b">Stáb:</span>{% endif %}
+                                {{ crew_member.member.get_full_name_eastern_order }}
+                                <span style="color: #64748b">({{ crew_member.position }})</span>{% if not forloop.last %},{% endif %}
+                            {% empty %}
+                                {% include "email/html/partials/pill.html" with label="Még nincs stáb" tone="amber" %}
+                            {% endfor %}
                         </p>
                     </td>
                 </tr>
-                <!-- end signature -->
-            </table>
-            <!--[if (gte mso 9)|(IE)]>
+            {% endfor %}
+        </table>
+    {% endif %}
+
+    {% if editing_no_vids or editing_unedited_vids %}
+        <p style="margin: 0 0 8px; font-size: 13px; line-height: 20px; font-weight: 700; letter-spacing: 0.5px; text-transform: uppercase; color: #64748b">Vágandó anyagok</p>
+        <table
+            role="presentation"
+            width="100%"
+            cellpadding="0"
+            cellspacing="0"
+            border="0"
+            style="margin: 0 0 8px; border: 1px solid #dde4ed; border-radius: 12px; border-collapse: separate; font-size: 14px; line-height: 20px"
+        >
+            {% for request in editing_no_vids %}
+                <tr>
+                    <td width="58" valign="top" style="width: 58px; padding: 16px 0 16px 16px;{% if not forloop.first %} border-top: 1px solid #e8edf3;{% endif %}">
+                        {% include "email/html/partials/date_tile.html" with date=request.start_datetime %}
+                    </td>
+                    <td valign="top" style="padding: 14px 16px 16px 14px;{% if not forloop.first %} border-top: 1px solid #e8edf3;{% endif %}">
+                        <p style="margin: 0 0 8px; font-size: 16px; line-height: 24px; font-weight: 700">
+                            <a href="{{ request.admin_url }}" target="_blank" rel="noopener noreferrer" style="color: #005baa; text-decoration: none">{{ request.title }}</a>
+                        </p>
+                        <p style="margin: 0">
+                            {% include "email/html/partials/pill.html" with label="Még nincs videó" tone="amber" %}
+                        </p>
                     </td>
                 </tr>
-            </table>
-            <![endif]-->
-        </td>
-    </tr>
-    <!-- end copy block -->
+            {% endfor %}
+            {% for video in editing_unedited_vids %}
+                <tr>
+                    <td width="58" valign="top" style="width: 58px; padding: 16px 0 16px 16px;{% if editing_no_vids or not forloop.first %} border-top: 1px solid #e8edf3;{% endif %}">
+                        {% include "email/html/partials/date_tile.html" with date=video.request.start_datetime %}
+                    </td>
+                    <td valign="top" style="padding: 14px 16px 16px 14px;{% if editing_no_vids or not forloop.first %} border-top: 1px solid #e8edf3;{% endif %}">
+                        <p style="margin: 0 0 4px; font-size: 16px; line-height: 24px; font-weight: 700">
+                            <a href="{{ video.request.admin_url }}" target="_blank" rel="noopener noreferrer" style="color: #005baa; text-decoration: none">{{ video.title }}</a>
+                            {% include "email/html/partials/pill.html" with label=video.get_status_display tone="gray" %}
+                        </p>
+                        <p style="margin: 0 0 8px; color: #64748b">{{ video.request.title }}</p>
+                        <p style="margin: 0; color: #334155">
+                            {% if video.editor %}
+                                <span style="color: #64748b">Vágó:</span> {{ video.editor.get_full_name_eastern_order }}
+                            {% else %}
+                                {% include "email/html/partials/pill.html" with label="Még nincs vágó" tone="amber" %}
+                            {% endif %}
+                        </p>
+                    </td>
+                </tr>
+            {% endfor %}
+        </table>
+    {% endif %}
 {% endblock %}
+{% block signature %}Üdv:<br />Felkéréskezelő robotka{% endblock %}

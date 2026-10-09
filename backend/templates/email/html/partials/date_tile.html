@@ -1,0 +1,25 @@
+{% load i18n %}
+{% language 'hu' %}
+    <table
+        role="presentation"
+        width="56"
+        cellpadding="0"
+        cellspacing="0"
+        border="0"
+        style="width: 56px; border: 1px solid #c9d9ec; border-radius: 10px; border-collapse: separate"
+    >
+        <tr>
+            <td
+                align="center"
+                bgcolor="#005baa"
+                style="padding: 2px 0; border-radius: 9px 9px 0 0; font-size: 11px; line-height: 16px; font-weight: 700; letter-spacing: 1px; color: #ffffff"
+            >{{ date|date:"M"|upper }}</td>
+        </tr>
+        <tr>
+            <td align="center" style="padding: 4px 0 0; font-size: 22px; line-height: 26px; font-weight: 700; color: #0f1b2d">{{ date|date:"j" }}</td>
+        </tr>
+        <tr>
+            <td align="center" style="padding: 0 0 6px; font-size: 12px; line-height: 16px; color: #64748b">{{ date|date:"D" }}</td>
+        </tr>
+    </table>
+{% endlanguage %}

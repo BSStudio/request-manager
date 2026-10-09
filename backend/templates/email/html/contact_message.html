@@ -1,106 +1,13 @@
 {% extends 'email/html/email_base.html' %}
-{% block title %}Kapcsolatfelvétel{% endblock %}
 {% block preheader %}Kedves {{ name }}! Alábbi üzenetedet megkaptuk, rövidesen igyekszünk rá válaszolni.{% endblock %}
-{% block hero %}Kedves {{ name }}!{% endblock %}
+{% block heading %}Köszönjük az üzenetedet{% endblock %}
 {% block content %}
-    <!-- start copy block -->
-    <tr>
-        <td align="center" bgcolor="#e9ecef">
-            <!--[if (gte mso 9)|(IE)]>
-            <table align="center" border="0" cellpadding="0" cellspacing="0" width="600">
-                <tr>
-                    <td align="center" valign="top" width="600">
-            <![endif]-->
-            <table
-                border="0"
-                cellpadding="0"
-                cellspacing="0"
-                width="100%"
-                style="max-width: 600px"
-            >
-                <!-- start copy -->
-                <tr>
-                    <td
-                        align="left"
-                        bgcolor="#ffffff"
-                        style="
-                               padding: 24px;
-                               font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                               font-size: 16px;
-                               line-height: 24px;
-                              "
-                    >
-                        <p style="margin: 0">
-                            Alábbi üzenetedet megkaptuk, rövidesen igyekszünk rá válaszolni.
-                        </p>
-                    </td>
-                </tr>
-                <!-- end copy -->
+    <p style="margin: 0 0 16px">Kedves {{ name }}!</p>
+    <p style="margin: 0 0 24px">Alábbi üzenetedet megkaptuk, rövidesen igyekszünk rá válaszolni.</p>
 
-                <!-- start list -->
-                <tr>
-                    <td
-                        align="left"
-                        bgcolor="#ffffff"
-                        style="
-                               padding: 0px 24px;
-                               font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                               font-size: 16px;
-                               line-height: 24px;
-                              "
-                    >
-                        <table
-                            border="0"
-                            cellpadding="0"
-                            cellspacing="0"
-                            width="100%"
-                            bgcolor="#f0f0f0"
-                        >
-                            <tr>
-                                <td
-                                    align="left"
-                                    width="100%"
-                                    style="
-                                           padding: 6px 12px;
-                                           font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                                           font-size: 16px;
-                                           line-height: 24px;
-                                           white-space: pre-wrap;
-                                          "
-                                >{{ message }}</td>
-                            </tr>
-                        </table>
-                    </td>
-                </tr>
-                <!-- end list -->
-
-                <!-- start signature -->
-                <tr>
-                    <td
-                        align="left"
-                        bgcolor="#ffffff"
-                        style="
-                               padding: 24px;
-                               font-family: 'Source Sans Pro', Helvetica, Arial, sans-serif;
-                               font-size: 16px;
-                               line-height: 24px;
-                               border-bottom: 3px solid #014dff;
-                              "
-                    >
-                        <p style="margin: 0">
-                            Üdvözlettel:<br />
-                            a Budavári Schönherz Stúdió csapata
-                        </p>
-                    </td>
-                </tr>
-                <!-- end signature -->
-            </table>
-            <!--[if (gte mso 9)|(IE)]>
-                    </td>
-                </tr>
-            </table>
-            <![endif]-->
-        </td>
-    </tr>
-    <!-- end copy block -->
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="border-collapse: separate">
+        <tr>
+            <td bgcolor="#f1f5f9" style="padding: 16px 20px; border-left: 4px solid #c9d9ec; border-radius: 8px; font-size: 15px; line-height: 24px; color: #1e293b">{{ message|linebreaksbr }}</td>
+        </tr>
+    </table>
 {% endblock %}
