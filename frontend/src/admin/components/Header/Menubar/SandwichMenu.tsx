@@ -1,21 +1,19 @@
-import { useRef } from 'react';
+import type { RefObject } from 'react';
 
 import { StyleClass } from 'primereact/styleclass';
 
-const SandwichMenu = () => {
-  const btnRef = useRef(null);
-
+const SandwichMenu = ({ ref }: { ref: RefObject<null> }) => {
   return (
     <StyleClass
       enterFromClassName="hidden"
       hideOnOutsideClick
       leaveToClassName="hidden"
-      nodeRef={btnRef}
+      nodeRef={ref}
       selector="@next"
     >
       <a
         className="align-self-center block cursor-pointer lg:hidden p-ripple text-700"
-        ref={btnRef}
+        ref={ref}
       >
         <i className="pi pi-bars text-4xl"></i>
       </a>
