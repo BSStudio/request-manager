@@ -34,6 +34,7 @@ class RequestAdminViewSet(ModelViewSet):
     ordering_fields = [
         "created",
         "deadline",
+        "id",
         "responsible__first_name",
         "responsible__last_name",
         "start_datetime",

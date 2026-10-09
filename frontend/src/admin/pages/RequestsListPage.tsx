@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { useQuery } from '@tanstack/react-query';
+import { keepPreviousData, useQuery } from '@tanstack/react-query';
 import { Dropdown } from 'primereact/dropdown';
 import type { DropdownChangeEvent } from 'primereact/dropdown';
 
@@ -14,9 +14,29 @@ import {
 } from 'admin/helpers/SemesterHelper';
 import { queryClient } from 'api/queryClient';
 
+type Sort = { field: string; order: 1 | -1 };
+
+const firstPage = { first: 0, rows: 25 };
+const defaultSort: Sort = { field: 'start_datetime', order: -1 };
+
+// The table sorts the responsible column by full name, the API by its parts.
+// The id keeps rows with equal values in one place across pages.
+function toOrdering({ field, order }: Sort) {
+  const fields =
+    field === 'responsible.full_name'
+      ? ['responsible__last_name', 'responsible__first_name', 'id']
+      : [field, 'id'];
+  return fields.map((name) => (order === -1 ? `-${name}` : name)).join(',');
+}
+
 export async function loader() {
   return queryClient.query({
-    ...requestsListQuery(getLatestSemester()),
+    ...requestsListQuery(
+      getLatestSemester(),
+      1,
+      firstPage.rows,
+      toOrdering(defaultSort),
+    ),
     staleTime: 'static',
   });
 }
@@ -25,9 +45,18 @@ const RequestsListPage = () => {
   const [selectedSemester, setSelectedSemester] = useState<Semester | null>(
     getLatestSemester(),
   );
-  const { data, dataUpdatedAt, isLoading, refetch } = useQuery(
-    requestsListQuery(selectedSemester),
-  );
+  const [{ first, rows }, setPage] = useState(firstPage);
+  const [sort, setSort] = useState(defaultSort);
+  const { data, dataUpdatedAt, isLoading, isPlaceholderData, refetch } =
+    useQuery({
+      ...requestsListQuery(
+        selectedSemester,
+        first / rows + 1,
+        rows,
+        toOrdering(sort),
+      ),
+      placeholderData: keepPreviousData,
+    });
 
   return (
     <div className="p-3 sm:p-5 surface-ground">
@@ -36,7 +65,10 @@ const RequestsListPage = () => {
         <Dropdown
           className="ml-2"
           filter
-          onChange={(e: DropdownChangeEvent) => setSelectedSemester(e.value)}
+          onChange={(e: DropdownChangeEvent) => {
+            setSelectedSemester(e.value);
+            setPage({ first: 0, rows });
+          }}
           options={getSemesters()}
           optionLabel="name"
           placeholder="Félév választás"
@@ -45,12 +77,29 @@ const RequestsListPage = () => {
         />
       </div>
       <div className="border-round p-3 shadow-2 sm:p-4 surface-card">
-        <RequestsDataTable loading={isLoading} requests={data ?? []} />
+        <RequestsDataTable
+          first={first}
+          lazy
+          loading={isLoading || isPlaceholderData}
+          onPage={(e) => setPage({ first: e.first, rows: e.rows })}
+          onSort={(e) => {
+            setSort({ field: e.sortField, order: e.sortOrder === 1 ? 1 : -1 });
+            setPage({ first: 0, rows });
+          }}
+          requests={data?.results ?? []}
+          rows={rows}
+          sortField={sort.field}
+          sortOrder={sort.order}
+          totalRecords={data?.count ?? 0}
+        />
       </div>
-      <LastUpdatedAt
-        lastUpdatedAt={new Date(dataUpdatedAt)}
-        refetch={refetch}
-      />
+      {/* 0 while the previous page stands in for the next one. */}
+      {dataUpdatedAt > 0 && (
+        <LastUpdatedAt
+          lastUpdatedAt={new Date(dataUpdatedAt)}
+          refetch={refetch}
+        />
+      )}
     </div>
   );
 };

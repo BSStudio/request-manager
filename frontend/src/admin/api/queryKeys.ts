@@ -17,10 +17,13 @@ export const queryKeys = {
   requestTodos: (requestId: Id) => ['requests', Number(requestId), 'todos'],
   requestVideos: (requestId: Id) => ['requests', Number(requestId), 'videos'],
   requests: () => ['requests'],
-  requestsBySemester: (
-    afterDate: string | undefined,
-    beforeDate: string | undefined,
-  ) => ['requests', `${afterDate}/${beforeDate}`],
+  requestsList: (params: {
+    afterDate?: string;
+    beforeDate?: string;
+    ordering: string;
+    page: number;
+    pageSize: number;
+  }) => ['requests', 'list', params],
   todo: (todoId: Id) => ['todos', `id:${Number(todoId)}`],
   todos: () => ['todos'],
   user: (userId: Id) => ['users', Number(userId)],
