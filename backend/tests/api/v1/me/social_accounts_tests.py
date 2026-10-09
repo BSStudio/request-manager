@@ -12,7 +12,7 @@ from rest_framework.status import (
     HTTP_400_BAD_REQUEST,
     HTTP_401_UNAUTHORIZED,
 )
-from social_core.exceptions import NotAllowedToDisconnect
+from social_core.exceptions import AuthPolicyError
 from social_django.models import UserSocialAuth
 
 from tests.api.helpers import login
@@ -155,10 +155,10 @@ class TestDisconnect:
         assert response.status_code == HTTP_401_UNAUTHORIZED
 
     @pytest.mark.xfail(
-        raises=NotAllowedToDisconnect,
+        raises=AuthPolicyError,
         strict=True,
         reason=(
-            "Bug: delete() lets the pipeline's NotAllowedToDisconnect escape, so "
+            "Bug: delete() lets the pipeline's AuthPolicyError escape, so "
             "removing your only way of logging in answers 500 instead of a 400 "
             "carrying the reason. post() funnels the same exceptions through "
             "handle_exception."

@@ -2659,18 +2659,6 @@ cli = ["tokenize-rt"]
 dateutil = ["python-dateutil (>=2.8.2)"]
 
 [[package]]
-name = "typing-extensions"
-version = "4.16.0"
-description = "Backported and Experimental Type Hints for Python 3.9+"
-optional = false
-python-versions = ">=3.9"
-groups = ["test"]
-files = [
-    {file = "typing_extensions-4.16.0-py3-none-any.whl", hash = "sha256:481caa481374e813c1b176ada14e97f1f67a4539ce9cfeb3f350d78d6370c2e8"},
-    {file = "typing_extensions-4.16.0.tar.gz", hash = "sha256:dc983d19a509c94dba722ee6abd33940f7c05a89e243c47e907eb4db6f1a43e5"},
-]
-
-[[package]]
 name = "tzdata"
 version = "2026.3"
 description = "Provider of IANA time zone data"
@@ -2822,4 +2810,4 @@ brotli = ["brotli"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14,<4.0"
-content-hash = "8ca64c590732ad2b55a3060136748f915cd431814d16897ca44a2d31f9490f9a"
+content-hash = "4ef8bc67ef89c6864635a6ca12d9e37e543099b362426e989111d840af605a05"

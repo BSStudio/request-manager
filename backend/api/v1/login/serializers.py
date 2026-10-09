@@ -37,7 +37,7 @@ class SocialLoginSerializer(Serializer):
         self.context["request"].backend.STATE_PARAMETER = False
         self.context["request"].backend.browser_nonce = nonce
 
-        user = self.context["request"].backend.complete(request=self.context["request"])
+        user = self.context["request"].backend.complete()
         return user
 
     def validate(self, attrs):

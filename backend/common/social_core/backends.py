@@ -2,7 +2,7 @@ import hashlib
 
 from django.utils.crypto import constant_time_compare
 from social_core.backends.open_id_connect import OpenIdConnectAuth
-from social_core.exceptions import AuthTokenError
+from social_core.exceptions import AuthResponseError
 
 
 class BrowserNonceOpenIdConnectAuth(OpenIdConnectAuth):
@@ -25,7 +25,12 @@ class BrowserNonceOpenIdConnectAuth(OpenIdConnectAuth):
         self.validate_temporal_claims(id_token)
         nonce = hashlib.sha256(self.browser_nonce.encode()).hexdigest()
         if not constant_time_compare(nonce, id_token.get("nonce", "")):
-            raise AuthTokenError(self, "Incorrect id_token: nonce")
+            raise AuthResponseError(
+                self,
+                "Incorrect id_token: nonce",
+                code="nonce_mismatch",
+                stage="token_validation",
+            )
 
 
 class AuthSCHOAuth2(BrowserNonceOpenIdConnectAuth):

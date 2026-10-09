@@ -6,7 +6,7 @@ from django.conf import settings
 from django.contrib.auth.models import Group
 from libgravatar import Gravatar, sanitize_email
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
-from social_core.exceptions import AuthException, NotAllowedToDisconnect
+from social_core.exceptions import AuthAssociationError, AuthPolicyError
 from social_django.models import UserSocialAuth
 
 logger = logging.getLogger(__name__)
@@ -34,8 +34,11 @@ def associate_by_email(backend, details, user=None, *args, **kwargs):
     if len(users) == 0:
         return None
     if len(users) > 1:
-        raise AuthException(
-            backend, "The given email address is associated with another account"
+        raise AuthAssociationError(
+            backend,
+            "The given email address is associated with another account",
+            code="email_in_use",
+            stage="pipeline",
         )
     return {"user": users[0], "is_new": False}
 
@@ -258,7 +261,7 @@ def allowed_to_disconnect(
         UserSocialAuth.objects.filter(user=user).exclude(provider=name).exists()
         or user.is_staff
     ):
-        raise NotAllowedToDisconnect()
+        raise AuthPolicyError(code="disconnect_disallowed", stage="disconnect")
 
 
 def delete_avatar(
