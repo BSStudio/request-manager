@@ -16,7 +16,8 @@ from video_requests.emails import (
     email_crew_new_comment,
     email_crew_request_modified,
     email_production_manager_unfinished_requests,
-    email_responsible_overdue_request,
+    email_responsible_overdue_requests,
+    email_staff_overdue_requests,
     email_staff_todo_assigned,
     email_staff_weekly_tasks,
     email_user_new_comment,
@@ -210,13 +211,32 @@ class TestToStaff:
         assert message.subject == "Lezáratlan anyagok"
         assert message.to == [production_manager.email]
 
-    def test_overdue_request(self, editor_in_chief, production_manager, video_request):
-        email_responsible_overdue_request(video_request)
+    def test_overdue_requests_digest(
+        self, editor_in_chief, production_manager, video_request
+    ):
+        email_responsible_overdue_requests(video_request.responsible, [video_request])
 
         message = only_message()
-        assert message.subject == "Test Request | Lejárt határidejű felkérés"
+        assert message.subject == "Lejárt határidejű felkéréseid"
         assert message.to == [video_request.responsible.email]
-        assert set(message.cc) == {editor_in_chief.email, production_manager.email}
+        assert not message.cc
+
+    def test_overdue_requests_summary(
+        self, editor_in_chief, production_manager, video_request
+    ):
+        email_staff_overdue_requests([video_request])
+
+        message = only_message()
+        assert message.subject == "Lejárt határidejű felkérések"
+        assert set(message.to) == {editor_in_chief.email, production_manager.email}
+        assert not message.cc
+
+    def test_one_person_in_both_roles_is_listed_once(self, video_request):
+        both = make_user(is_staff=True, groups=("Főszerkesztő", "Gyártásvezető"))
+
+        email_staff_overdue_requests([video_request])
+
+        assert only_message().to == [both.email]
 
 
 @pytest.mark.parametrize(

@@ -1,10 +1,13 @@
-{% load i18n %}Szia!
+{% load i18n %}{% if summary %}Sziasztok!{% else %}Szia!{% endif %}
 
-A(z) {{ request.title }} felkérés határideje lejárt, de még nem készült el (minden) videó. A felkérés határideje {% language 'hu' %}{{ request.deadline|date:"Y. F j., l" }}{% endlanguage %} volt.
-
-Kérlek, nézz rá, és intézkedj, hogy minél hamarabb le lehessen zárni.
-
-A felkérést itt találod: {{ request.admin_url }}
+{% if summary %}Az alábbi felkérések{% else %}Az alábbi felkéréseid{% endif %} határideje lejárt, de még nem készült el minden videójuk:
+{% for req in requests %}
+- {{ req.title }} ({{ req.get_status_display }})
+  Határidő: {% language 'hu' %}{{ req.deadline|date:"Y. N j." }}{% endlanguage %} ({{ req.days_overdue }} napja lejárt)
+{% if summary %}  Felelős: {% if req.responsible %}{{ req.responsible.get_full_name_eastern_order }}{% else %}nincs{% endif %}
+{% endif %}  {{ req.admin_url }}
+{% endfor %}
+{% if summary %}A felelősök a saját felkéréseiket külön e-mailben is megkapták. Egy felkérés akkor kerül le erről a listáról, ha minden videója elkészült, vagy ha módosítják a határidejét.{% else %}Kérlek, nézz rájuk! Egy felkérés akkor kerül le erről a listáról, ha minden videója elkészült, vagy ha módosítod a határidejét.{% endif %}
 
 Üdv:
 Felkéréskezelő robotka

@@ -214,10 +214,10 @@ CELERY_BEAT_SCHEDULE = {
         "task": "core.tasks.scheduled_send_unfinished_requests_email",
         "schedule": crontab(minute=0, hour=20, day_of_week="sun"),
     },
-    # "overdue_requests_email": {
-    #     "task": "core.tasks.scheduled_send_overdue_requests_email",
-    #     "schedule": crontab(minute=30, hour=16, day_of_week="mon,wed,fri,sun"),
-    # }, # TODO: Re-enable this later
+    "overdue_requests_email": {
+        "task": "core.tasks.scheduled_send_overdue_requests_email",
+        "schedule": crontab(minute=30, hour=16, day_of_week="mon"),
+    },
     "cleaning": {
         "task": "core.tasks.scheduled_cleaning",
         "schedule": crontab(minute=30, hour=3),

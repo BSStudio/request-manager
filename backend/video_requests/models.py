@@ -5,6 +5,7 @@ from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models
 from django.db.models import Avg, JSONField
+from django.utils.timezone import localdate
 from django.utils.translation import gettext_lazy as _
 from jsonschema import FormatChecker
 from jsonschema import ValidationError as JsonValidationError
@@ -97,6 +98,10 @@ class Request(models.Model):
     @property
     def admin_url(self) -> str:
         return f"{settings.BASE_URL}/admin/requests/{self.id}"
+
+    @property
+    def days_overdue(self) -> int:
+        return (localdate() - self.deadline).days
 
     def clean(self):
         if self.start_datetime > self.end_datetime:

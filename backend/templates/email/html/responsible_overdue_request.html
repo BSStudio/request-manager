@@ -1,24 +1,78 @@
 {% extends 'email/html/email_base.html' %}
 {% load i18n %}
-{% block preheader %}Szia! A(z) {{ request.title }} felkérés határideje lejárt, de még nem készült el (minden) videó.{% endblock %}
-{% block heading %}Lejárt határidejű felkérés{% endblock %}
+{% block preheader %}
+    {% if summary %}
+        Sziasztok! Az alábbi felkérések határideje lejárt, de még nem készült el minden videójuk.
+    {% else %}
+        Szia! Az alábbi felkéréseid határideje lejárt, de még nem készült el minden videójuk.
+    {% endif %}
+{% endblock %}
+{% block heading %}
+    {% if summary %}
+        Lejárt határidejű felkérések
+    {% else %}
+        Lejárt határidejű felkéréseid
+    {% endif %}
+{% endblock %}
 {% block content %}
-    <p style="margin: 0 0 16px">Szia!</p>
+    <p style="margin: 0 0 16px">
+        {% if summary %}
+            Sziasztok!
+        {% else %}
+            Szia!
+        {% endif %}
+    </p>
     <p style="margin: 0 0 24px">
-        A(z) <strong style="color: #0f1b2d">{{ request.title }}</strong> felkérés határideje lejárt, de még nem készült el (minden) videó.
+        {% if summary %}
+            Az alábbi felkérések
+        {% else %}
+            Az alábbi felkéréseid
+        {% endif %}
+        határideje lejárt, de még nem készült el minden videójuk:
     </p>
 
-    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="margin: 0 0 24px; border-collapse: separate">
-        <tr>
-            <td bgcolor="#fdecec" style="padding: 16px 20px; border-left: 4px solid #d93a3f; border-radius: 8px; color: #7a1d21">
-                Határidő:
-                <strong>{% language 'hu' %}{{ request.deadline|date:"Y. F j., l" }}{% endlanguage %}</strong>
-            </td>
-        </tr>
+    <table
+        role="presentation"
+        width="100%"
+        cellpadding="0"
+        cellspacing="0"
+        border="0"
+        style="margin: 0 0 24px; border: 1px solid #dde4ed; border-radius: 12px; border-collapse: separate; font-size: 14px; line-height: 20px"
+    >
+        {% for req in requests %}
+            <tr>
+                <td width="58" valign="top" style="width: 58px; padding: 16px 0 16px 16px;{% if not forloop.first %} border-top: 1px solid #e8edf3;{% endif %}">
+                    {% include "email/html/partials/date_tile.html" with date=req.start_datetime %}
+                </td>
+                <td valign="top" style="padding: 14px 16px 16px 14px;{% if not forloop.first %} border-top: 1px solid #e8edf3;{% endif %}">
+                    <p style="margin: 0 0 4px; font-size: 16px; line-height: 24px; font-weight: 700">
+                        <a href="{{ req.admin_url }}" target="_blank" rel="noopener noreferrer" style="color: #005baa; text-decoration: none">{{ req.title }}</a>
+                        {% include "email/html/partials/pill.html" with label=req.get_status_display tone="gray" %}
+                    </p>
+                    <p style="margin: 0; color: #64748b">
+                        Határidő: {% language 'hu' %}{{ req.deadline|date:"Y. N j." }}{% endlanguage %}
+                        &middot; <span style="color: #a3262a; font-weight: 600; white-space: nowrap">{{ req.days_overdue }} napja lejárt</span>
+                    </p>
+                    {% if summary %}
+                        <p style="margin: 8px 0 0; color: #334155">
+                            {% if req.responsible %}
+                                <span style="color: #64748b">Felelős:</span> {{ req.responsible.get_full_name_eastern_order }}
+                            {% else %}
+                                {% include "email/html/partials/pill.html" with label="Nincs felelős" tone="amber" %}
+                            {% endif %}
+                        </p>
+                    {% endif %}
+                </td>
+            </tr>
+        {% endfor %}
     </table>
 
-    <p style="margin: 0 0 16px">Kérlek, nézz rá, és intézkedj, hogy minél hamarabb le lehessen zárni.</p>
-
-    {% include "email/html/partials/button.html" with url=request.admin_url label="Ugrás a felkéréshez" %}
+    <p style="margin: 0">
+        {% if summary %}
+            A felelősök a saját felkéréseiket külön e-mailben is megkapták. Egy felkérés akkor kerül le erről a listáról, ha minden videója elkészült, vagy ha módosítják a határidejét.
+        {% else %}
+            Kérlek, nézz rájuk! Egy felkérés akkor kerül le erről a listáról, ha minden videója elkészült, vagy ha módosítod a határidejét.
+        {% endif %}
+    </p>
 {% endblock %}
 {% block signature %}Üdv:<br />Felkéréskezelő robotka{% endblock %}

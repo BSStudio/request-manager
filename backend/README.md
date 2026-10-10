@@ -95,7 +95,7 @@ Run `poetry run python manage.py help` to list every available command. In addit
 | `google_calendar`           | `common`         | Synchronise requests with Google Calendar.               |
 | `update_request_status`     | `video_requests` | Recalculate the status of video requests.                |
 | `email_daily_reminders`     | `video_requests` | Send daily reminder e-mails.                             |
-| `email_overdue_requests`    | `video_requests` | Notify about overdue requests.                           |
+| `email_overdue_requests`    | `video_requests` | Send the weekly overdue request digests.                 |
 | `email_unfinished_requests` | `video_requests` | Notify about unfinished requests.                        |
 | `email_weekly_tasks`        | `video_requests` | Send the weekly task summary e-mail.                     |
 
