@@ -3,6 +3,8 @@ from importlib import import_module
 from django.conf import settings
 from django.contrib.auth import BACKEND_SESSION_KEY, HASH_SESSION_KEY, SESSION_KEY
 from django.core.management import BaseCommand, CommandError
+from django.middleware.csrf import CSRF_SECRET_LENGTH
+from django.utils.crypto import get_random_string
 
 from common.models import User
 
@@ -31,6 +33,8 @@ class Command(BaseCommand):
         session[BACKEND_SESSION_KEY] = "django.contrib.auth.backends.ModelBackend"
         session[HASH_SESSION_KEY] = user.get_session_auth_hash()
         session.create()
+        # Only login() sets the CSRF cookie, and every write needs it.
+        csrf_secret = get_random_string(CSRF_SECRET_LENGTH)
 
         self.stdout.write(
             "Paste this into the browser console on https://localhost:5173, logged "
@@ -41,6 +45,7 @@ class Command(BaseCommand):
         self.stdout.write(
             f"document.cookie = '{settings.SESSION_COOKIE_NAME}="
             f"{session.session_key}; path=/'; "
+            f"document.cookie = '{settings.CSRF_COOKIE_NAME}={csrf_secret}; path=/'; "
             f"localStorage.setItem('user_id', '{user.pk}'); location.reload();\n"
         )
         self.stdout.write(
