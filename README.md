@@ -49,7 +49,7 @@ The fastest way to get a complete toolchain is the **dev container**, which prov
 
 1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) and the [VS Code Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension.
 2. Open the repository in VS Code and run **Dev Containers: Reopen in Container**.
-3. Once the post-create step finishes, create the `.env` files (see each component's README) and run the apps.
+3. Once the post-create step finishes, the `.env` files exist and the database is migrated and filled with test data. Run the apps, then log in as the test admin with `poetry run python manage.py dev_session admin.aladar` in `backend/` (see [Test data](backend/README.md#test-data)).
 
 > **Windows + WSL:** if the container fails to start with a `distro-services/<distro>.sock: no such file` error, enable Docker Desktop → Settings → Resources → **WSL Integration** for your distro (e.g. `Debian`).
 
@@ -58,11 +58,13 @@ The fastest way to get a complete toolchain is the **dev container**, which prov
 Start the infrastructure, then follow each component's README:
 
 ```bash
-docker compose -f docker-compose.dev.yaml up -d   # PostgreSQL + Redis
+docker compose -f docker-compose.dev.yaml up -d --wait   # PostgreSQL + Redis
 ```
 
 - [Backend setup](backend/README.md)
 - [Frontend setup](frontend/README.md)
+
+The backend setup ends with `seed_dev_data`, which fills the database with test data.
 
 **Prerequisites for manual setup:** Python + [Poetry](https://python-poetry.org/) and Node.js — the exact versions are pinned in `backend/.python-version` and the `.nvmrc` files — plus Docker for PostgreSQL + Redis.
 
