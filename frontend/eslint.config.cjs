@@ -73,7 +73,6 @@ module.exports = tseslint.config(
         },
       ],
       'prettier/prettier': ['error', { endOfLine: 'auto' }],
-      'react-hooks/set-state-in-effect': 'off', // TODO: Check later
       'sort-keys': ['error', 'asc', { caseSensitive: true, natural: true }],
     },
     settings: {

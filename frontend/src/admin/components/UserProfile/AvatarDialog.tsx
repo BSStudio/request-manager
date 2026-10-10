@@ -1,4 +1,4 @@
-import { forwardRef, useEffect, useState } from 'react';
+import { forwardRef, useState } from 'react';
 
 import { Button } from 'primereact/button';
 import { Dialog } from 'primereact/dialog';
@@ -82,10 +82,13 @@ const AvatarDialog = forwardRef<React.Ref<HTMLDivElement>, AvatarDialogProps>(
     const [selectedProvider, setSelectedProvider] = useState<string>(
       userData.avatar['provider'],
     );
+    const [wasVisible, setWasVisible] = useState(visible);
 
-    useEffect(() => {
-      setSelectedProvider(userData.avatar['provider']);
-    }, [userData, visible]);
+    // Each opening starts from the saved avatar, not the last unsaved pick.
+    if (visible !== wasVisible) {
+      setWasVisible(visible);
+      if (visible) setSelectedProvider(userData.avatar['provider']);
+    }
 
     const renderFooter = () => {
       return (
