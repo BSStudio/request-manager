@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: BSS Request Manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-10 00:40+0200\n"
+"POT-Creation-Date: 2026-10-10 02:35+0200\n"
 "PO-Revision-Date: 2023-09-07 03:30+0200\n"
 "Last-Translator: Olivér Kecskeméty <kecskemety.oliver@simonyi.bme.hu>\n"
 "Language: Hungarian\n"
@@ -184,44 +184,44 @@ msgstr "Kijelentkezés"
 msgid "Log in"
 msgstr "Bejelentkezés"
 
-#: .\video_requests\admin.py:44
+#: .\video_requests\admin.py:66
 msgid "Number of videos"
 msgstr "Videók száma"
 
-#: .\video_requests\admin.py:48
+#: .\video_requests\admin.py:70
 msgid "Requester"
 msgstr "Felkérő"
 
-#: .\video_requests\admin.py:68 .\video_requests\admin.py:90
-#: .\video_requests\admin.py:114 .\video_requests\admin.py:168
+#: .\video_requests\admin.py:86 .\video_requests\admin.py:109
+#: .\video_requests\admin.py:135 .\video_requests\admin.py:193
 msgid "Request"
 msgstr "Felkérés"
 
-#: .\video_requests\admin.py:72
+#: .\video_requests\admin.py:90
 msgid "Crew member"
 msgstr "Stábtag"
 
-#: .\video_requests\admin.py:94
+#: .\video_requests\admin.py:113
 msgid "Average rating"
 msgstr "Átlagos értékelés"
 
-#: .\video_requests\admin.py:110
+#: .\video_requests\admin.py:131
 msgid "Comment"
 msgstr "Hozzászólás"
 
-#: .\video_requests\admin.py:118 .\video_requests\admin.py:144
+#: .\video_requests\admin.py:139 .\video_requests\admin.py:167
 msgid "Author"
 msgstr "Szerző"
 
-#: .\video_requests\admin.py:136
+#: .\video_requests\admin.py:159
 msgid "Review"
 msgstr "Szöveges értékelés"
 
-#: .\video_requests\admin.py:140 .\video_requests\admin.py:172
+#: .\video_requests\admin.py:163 .\video_requests\admin.py:197
 msgid "Video"
 msgstr "Videó"
 
-#: .\video_requests\admin.py:178
+#: .\video_requests\admin.py:203
 msgid "Assignees"
 msgstr "Felelősök"
 
