@@ -15,7 +15,7 @@ Vágandó anyagok:
 {% endfor %}{% for video in editing_unedited_vids %}
 - {{ video.title }} ({{ video.get_status_display }})
   Vágó: {% if video.editor %}{{ video.editor.get_full_name_eastern_order }}{% else %}még nincs{% endif %}
-  {{ video.request.admin_url }}
+  {{ video.admin_url }}
 {% endfor %}{% endif %}
 Üdv:
 Felkéréskezelő robotka
