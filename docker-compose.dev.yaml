@@ -14,7 +14,8 @@ services:
       - LC_COLLATE=hu_HU.utf8
       - LC_CTYPE=hu_HU.utf8
     healthcheck:
-      test: ['CMD-SHELL', 'pg_isready -U request_manager -d request_manager_db']
+      # Over TCP: while initdb runs, a temporary server answers on the socket only.
+      test: pg_isready -h 127.0.0.1 -U request_manager -d request_manager_db
       interval: 2s
       timeout: 5s
       retries: 30

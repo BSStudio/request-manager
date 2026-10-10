@@ -6,7 +6,7 @@ Django REST API, business logic, Django admin panel and Celery workers for the R
 
 ## Setup
 
-Requires Python (version pinned in [`.python-version`](.python-version)), [Poetry](https://python-poetry.org/) and a running PostgreSQL + Redis (start them from the repository root with `docker compose -f docker-compose.dev.yaml up -d`).
+Requires Python (version pinned in [`.python-version`](.python-version)), [Poetry](https://python-poetry.org/) and a running PostgreSQL + Redis (start them from the repository root with `docker compose -f docker-compose.dev.yaml up -d --wait`).
 
 ```bash
 cd backend
