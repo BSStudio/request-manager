@@ -26,13 +26,10 @@ from api.v1.admin.users.serializers import (
     UserNestedListSerializer,
 )
 from common.models import User
-from common.utilities import create_calendar_event, update_calendar_event
-from video_requests.emails import (
-    email_crew_request_modified,
-    email_user_new_request_confirmation,
-)
+from common.utilities import update_calendar_event
+from video_requests.emails import email_crew_request_modified
 from video_requests.models import Request, Video
-from video_requests.services import create_comment
+from video_requests.services import create_request
 from video_requests.utilities import recalculate_deadline, update_request_status
 
 
@@ -206,21 +203,18 @@ class RequestAdminCreateSerializer(RequestAdminUpdateSerializer):
         )
 
     def create(self, validated_data):
-        comment_text = validated_data.pop("comment", None)
-        send_notification = validated_data.pop("send_notification", None)
-        handle_additional_data(validated_data, self.context["request"].user)
+        user = self.context["request"].user
+        comment = validated_data.pop("comment", None)
+        send_notification = validated_data.pop("send_notification", False)
+        handle_additional_data(validated_data, user)
         if validated_data.get("requester_email"):
             # As validate() should have already run if any of requester attribute exists all should exist.
             get_or_create_requester_from_data(validated_data)
         if not validated_data.get("requester"):
-            validated_data["requester"] = self.context["request"].user
-        request = super().create(validated_data)
-        if comment_text:
-            create_comment(
-                author=self.context["request"].user, text=comment_text, request=request
-            )
-        if send_notification:
-            email_user_new_request_confirmation.delay(request.id)
-        update_request_status(request)
-        create_calendar_event.delay(request.id)
-        return request
+            validated_data["requester"] = user
+        return create_request(
+            comment=comment,
+            comment_author=user,
+            send_confirmation=send_notification,
+            **validated_data,
+        )

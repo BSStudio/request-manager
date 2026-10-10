@@ -1,7 +1,7 @@
 from common.models import User
 
 
-def create_user(validated_data: dict) -> tuple[User, dict | None]:
+def create_user(validated_data: dict) -> tuple[User, dict]:
     user = User()
     user.first_name = validated_data.pop("requester_first_name")
     user.last_name = validated_data.pop("requester_last_name")
@@ -25,4 +25,4 @@ def create_user(validated_data: dict) -> tuple[User, dict | None]:
     else:
         user.phone_number = phone_number
         user.save()
-        return user, None
+        return user, {}

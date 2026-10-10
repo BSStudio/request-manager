@@ -3,10 +3,8 @@ from rest_framework.fields import CharField, EmailField, URLField
 from rest_framework.serializers import ModelSerializer
 
 from api.v1.requests.utilities import create_user
-from common.utilities import create_calendar_event
-from video_requests.emails import email_user_new_request_confirmation
 from video_requests.models import Request
-from video_requests.services import create_comment
+from video_requests.services import create_request
 
 
 class RequestExternalSchEventsCreateSerializer(ModelSerializer):
@@ -38,20 +36,16 @@ class RequestExternalSchEventsCreateSerializer(ModelSerializer):
         )
 
     def create(self, validated_data):
-        comment_text = validated_data.pop(
+        comment = validated_data.pop(
             "comment", validated_data.pop("comment_text", None)
         )  # TODO: Backwards compatibility. Remove comment_text part later.
         callback_url = validated_data.pop("callback_url")
-        validated_data["requester"], additional_data = create_user(validated_data)
-        validated_data["requested_by"] = self.context["request"].user
-        request = super().create(validated_data)
-        if additional_data:
-            request.additional_data = additional_data
-        if comment_text:
-            create_comment(author=request.requester, text=comment_text, request=request)
-        request.additional_data["external"] = {}
-        request.additional_data["external"]["sch_events_callback_url"] = callback_url
-        request.save()
-        create_calendar_event.delay(request.id)
-        email_user_new_request_confirmation.delay(request.id)
-        return request
+        requester, additional_data = create_user(validated_data)
+        additional_data["external"] = {"sch_events_callback_url": callback_url}
+        return create_request(
+            additional_data=additional_data,
+            comment=comment,
+            requested_by=self.context["request"].user,
+            requester=requester,
+            **validated_data,
+        )
