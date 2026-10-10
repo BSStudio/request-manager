@@ -1,15 +1,21 @@
 #!/usr/bin/env bash
-# Runs once after the devcontainer is created. Installs all project deps.
+# Runs once after the devcontainer is created. Installs all project deps and
+# fills the database with test data.
 set -euo pipefail
 
 echo "==> Backend (Poetry)"
 cd backend
 poetry config virtualenvs.in-project true
 poetry install --with=dev,test,debug
+# The database and Redis defaults already point at the compose services.
+[ -f .env ] || echo "DJANGO_SETTINGS_MODULE = core.settings.debug" > .env
 cd ..
 
 echo "==> Frontend (pnpm)"
-cd frontend && pnpm install --frozen-lockfile && cd ..
+cd frontend
+[ -f .env ] || cp .env.sample .env
+pnpm install --frozen-lockfile
+cd ..
 
 echo "==> pre-commit"
 pipx install pre-commit >/dev/null 2>&1 || pip install --user pre-commit
@@ -17,4 +23,12 @@ pipx install pre-commit >/dev/null 2>&1 || pip install --user pre-commit
 rm -f .git/hooks/pre-commit 2>/dev/null || true
 pre-commit install || echo "    WARN: hook not installed; run 'pre-commit install' on the host."
 
-echo "==> Done. Reminder: create backend/.env (DATABASE_HOST=postgres, CELERY_BROKER=redis://redis:6379)."
+# Last, so that a database problem, such as a host .env pointing at localhost,
+# still leaves the tools installed.
+echo "==> Database"
+cd backend
+poetry run python manage.py migrate
+poetry run python manage.py seed_dev_data --no-input
+cd ..
+
+echo "==> Done. Log in as the test admin: cd backend && poetry run python manage.py dev_session admin.aladar"

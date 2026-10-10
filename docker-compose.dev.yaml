@@ -13,6 +13,12 @@ services:
       - POSTGRES_INITDB_ARGS=--locale-provider=icu --icu-locale=hu-HU
       - LC_COLLATE=hu_HU.utf8
       - LC_CTYPE=hu_HU.utf8
+    healthcheck:
+      # Over TCP: while initdb runs, a temporary server answers on the socket only.
+      test: pg_isready -h 127.0.0.1 -U request_manager -d request_manager_db
+      interval: 2s
+      timeout: 5s
+      retries: 30
 
   redis:
     restart: unless-stopped

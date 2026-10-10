@@ -6,13 +6,14 @@ Django REST API, business logic, Django admin panel and Celery workers for the R
 
 ## Setup
 
-Requires Python (version pinned in [`.python-version`](.python-version)), [Poetry](https://python-poetry.org/) and a running PostgreSQL + Redis (start them from the repository root with `docker compose -f docker-compose.dev.yaml up -d`).
+Requires Python (version pinned in [`.python-version`](.python-version)), [Poetry](https://python-poetry.org/) and a running PostgreSQL + Redis (start them from the repository root with `docker compose -f docker-compose.dev.yaml up -d --wait`).
 
 ```bash
 cd backend
 poetry install                 # install dependencies into .venv
 cp .env.sample .env            # then edit it (see below)
 poetry run python manage.py migrate
+poetry run python manage.py seed_dev_data   # test data, see below
 poetry run python manage.py runserver
 ```
 
@@ -58,6 +59,25 @@ Coverage must stay at or above 90% (`fail_under = 90`).
 
 > **PyCharm:** to use pytest instead of the Django test runner, enable _Settings → Python → Django → Do not use Django test runner_, and set the default test runner to pytest under _Settings → Python → Tools → Integrated Tools_.
 
+## Test data
+
+`seed_dev_data` fills the database with invented people and requests, for manual testing and for the frontend's end-to-end tests. It first deletes every request and every user with an `@example.com` address. Users who logged in through single sign-on stay, and so do their groups. It asks before deleting; `--no-input` skips the question.
+
+```bash
+poetry run python manage.py seed_dev_data
+poetry run python manage.py seed_dev_data --me <your username>   # your own account gets requests, crew spots, a video and todos too
+```
+
+The people include the admin `admin.aladar` and the requester `minta.anna`, who has most of the example requests. To use the app as one of them, create a session:
+
+```bash
+poetry run python manage.py dev_session admin.aladar
+```
+
+It prints a line to paste into the browser console on <https://localhost:5173>. Paste it logged out or in a private window, because the page cannot overwrite the cookie of an existing login. Run it with the same settings and `.env` as the server, so that both use the same session store and secret key.
+
+Both commands come only with the debug and test settings; production does not have them.
+
 ## Code style
 
 Formatting and linting are enforced by pre-commit (Black, isort, flake8, bandit, pyupgrade, django-upgrade). Install the hooks once from the repository root with `pre-commit install`.
@@ -98,8 +118,10 @@ Run `poetry run python manage.py help` to list every available command. In addit
 | `email_overdue_requests`    | `video_requests` | Send the weekly overdue request digests.                 |
 | `email_unfinished_requests` | `video_requests` | Notify about unfinished requests.                        |
 | `email_weekly_tasks`        | `video_requests` | Send the weekly task summary e-mail.                     |
+| `seed_dev_data`             | `devtools`       | Replace the requests and test users with test data.      |
+| `dev_session`               | `devtools`       | Print a browser login for any user.                      |
 
-The e-mail and status commands are normally invoked on a schedule by Celery beat; run them manually for testing or one-off operations.
+The e-mail and status commands are normally invoked on a schedule by Celery beat; run them manually for testing or one-off operations. The `devtools` commands exist only with the debug and test settings (see [Test data](#test-data)).
 
 ## Runbooks
 
