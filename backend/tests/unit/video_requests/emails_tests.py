@@ -167,12 +167,66 @@ class TestToTheCrew:
 
         assert only_message().cc == [editor_in_chief.email]
 
+    @pytest.mark.parametrize(
+        "send_email",
+        [
+            lambda video_request: email_crew_new_comment(
+                baker.make(
+                    "video_requests.Comment",
+                    request=video_request,
+                    author=make_user(is_staff=True),
+                ).id
+            ),
+            lambda video_request: email_crew_request_modified(
+                video_request.id, "Staff Test", "", []
+            ),
+        ],
+        ids=["new comment", "request modified"],
+    )
+    class TestEachAddressOnce:
+        def test_a_member_in_two_positions(self, crew, send_email, video_request):
+            baker.make(
+                "video_requests.CrewMember",
+                request=video_request,
+                member=crew[0].member,
+            )
+
+            send_email(video_request)
+
+            assert sorted(only_message().to) == sorted(staff_emails(crew))
+
+        def test_a_member_who_would_also_be_copied_in(
+            self, crew, editor_in_chief, send_email, video_request
+        ):
+            baker.make(
+                "video_requests.CrewMember",
+                request=video_request,
+                member=editor_in_chief,
+            )
+
+            send_email(video_request)
+
+            message = only_message()
+            assert editor_in_chief.email in message.to
+            assert message.cc == [video_request.responsible.email]
+
     def test_daily_reminder(self, crew, video_request):
         email_crew_daily_reminder(video_request, crew[:2])
 
         message = only_message()
         assert message.subject == "Emlékeztető | Test Request | Mai forgatás"
         assert set(message.to) == staff_emails(crew)
+
+    def test_daily_reminder_reaches_a_member_in_two_positions_once(
+        self, crew, video_request
+    ):
+        second_position = baker.make(
+            "video_requests.CrewMember", request=video_request, member=crew[0].member
+        )
+
+        email_crew_daily_reminder(video_request, [*crew[:2], second_position])
+
+        assert sorted(only_message().to) == sorted(staff_emails(crew))
 
 
 class TestToStaff:

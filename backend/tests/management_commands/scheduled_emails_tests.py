@@ -147,6 +147,16 @@ class TestWeeklyTasks:
         assert django_settings.WEEKLY_TASK_EMAIL in mail.outbox[0].to
         assert mail.outbox[0].subject == "E heti forgatások és vágandó anyagok"
 
+    def test_each_video_to_cut_links_to_the_video(self, editing):
+        _, _, unedited, _ = editing
+
+        run("email_weekly_tasks")
+
+        message = mail.outbox[0]
+        for video in unedited:
+            assert video.admin_url in message.body
+            assert f'href="{video.admin_url}"' in message.alternatives[0].content
+
     def test_a_quiet_week_is_reported_instead_of_mailed(
         self, editing, recording, time_machine
     ):

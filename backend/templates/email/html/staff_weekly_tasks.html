@@ -86,7 +86,7 @@
                     </td>
                     <td valign="top" style="padding: 14px 16px 16px 14px;{% if editing_no_vids or not forloop.first %} border-top: 1px solid #e8edf3;{% endif %}">
                         <p style="margin: 0 0 4px; font-size: 16px; line-height: 24px; font-weight: 700">
-                            <a href="{{ video.request.admin_url }}" target="_blank" rel="noopener noreferrer" style="color: #005baa; text-decoration: none">{{ video.title }}</a>
+                            <a href="{{ video.admin_url }}" target="_blank" rel="noopener noreferrer" style="color: #005baa; text-decoration: none">{{ video.title }}</a>
                             {% include "email/html/partials/pill.html" with label=video.get_status_display tone="gray" %}
                         </p>
                         <p style="margin: 0 0 8px; color: #64748b">{{ video.request.title }}</p>
