@@ -1,10 +1,11 @@
-from django.core.management import BaseCommand
+from django.core.management import BaseCommand, CommandError
 from django.db import connection, transaction
 from django.db.models import Q
 from django.db.models.signals import post_delete
 
 from common.models import User
 from devtools.bulk import create_bulk
+from devtools.me import attach_to
 from devtools.people import EMAIL_DOMAIN, PEOPLE, create_people
 from devtools.scenarios import create_scenarios
 from video_requests.models import Request, Video
@@ -19,6 +20,11 @@ class Command(BaseCommand):
 
     def add_arguments(self, parser):
         parser.add_argument(
+            "--me",
+            metavar="USERNAME",
+            help="Also give this user requests, crew spots, a video to edit and todos.",
+        )
+        parser.add_argument(
             "--noinput",
             "--no-input",
             action="store_false",
@@ -26,7 +32,7 @@ class Command(BaseCommand):
             help="Do not ask for confirmation.",
         )
 
-    def handle(self, *args, interactive=True, **options):
+    def handle(self, *args, me=None, interactive=True, **options):
         if interactive and not self.confirm():
             self.stdout.write("Nothing was changed.")
             return
@@ -34,8 +40,11 @@ class Command(BaseCommand):
         with transaction.atomic():
             delete_seed_data()
             people = create_people()
-            create_scenarios(people)
+            scenarios = create_scenarios(people)
             create_bulk(people)
+            if me:
+                # Looked up only now: --me may name one of the people just created.
+                attach_to(find_user(me), people, scenarios)
 
         self.stdout.write(
             self.style.SUCCESS(
@@ -56,6 +65,16 @@ class Command(BaseCommand):
             "Type 'yes' to continue, or anything else to cancel: "
         )
         return answer == "yes"
+
+
+def find_user(username: str) -> User:
+    try:
+        return User.objects.get(username=username)
+    except User.DoesNotExist:
+        raise CommandError(
+            f"There is no user {username}. "
+            "Log in with that account once, then run this again."
+        )
 
 
 def delete_seed_data() -> None:

@@ -4,12 +4,12 @@ from unittest.mock import patch
 
 import pytest
 from django.core import mail
-from django.core.management import call_command
+from django.core.management import CommandError, call_command
 from model_bakery import baker
 
 from common.models import Ban, User
 from tests.factories import make_user
-from video_requests.models import Comment, Request, Todo, Video
+from video_requests.models import Comment, CrewMember, Request, Todo, Video
 
 pytestmark = pytest.mark.django_db
 
@@ -146,3 +146,59 @@ def test_every_run_creates_the_same_data():
     seed()
 
     assert snapshot() == first
+
+
+def test_me_gets_requests_crew_spots_a_video_and_todos():
+    me = sso_user("me.sso")
+
+    seed(me="me.sso")
+
+    assert set(
+        Request.objects.filter(requester=me).values_list("status", flat=True)
+    ) == {Request.Statuses.REQUESTED, Request.Statuses.ACCEPTED, Request.Statuses.DONE}
+    assert Request.objects.filter(requester=me).count() == 3
+    assert CrewMember.objects.filter(member=me).count() == 2
+    assert Video.objects.filter(editor=me).count() == 1
+    assert Todo.objects.filter(assignees=me).count() == 2
+
+
+def test_me_leaves_the_other_requests_as_they_are():
+    def others():
+        return sorted(
+            Request.objects.exclude(requester__username="me.sso").values_list(
+                "title", "status", "requester__username"
+            )
+        )
+
+    sso_user("me.sso")
+    seed()
+    without_me = others()
+
+    seed(me="me.sso")
+
+    assert others() == without_me
+
+
+def test_me_can_be_a_seeded_user():
+    seed(me="minta.anna")
+
+    assert Todo.objects.filter(assignees__username="minta.anna").count() == 2
+
+
+def test_an_unknown_me_changes_nothing():
+    request = baker.make(Request, requester=sso_user("sso.user"))
+
+    with pytest.raises(CommandError, match="Log in with that account once"):
+        seed(me="nobody")
+
+    assert Request.objects.filter(pk=request.pk).exists()
+
+
+def test_me_sends_no_mail_and_queues_no_task():
+    sso_user("me.sso")
+
+    with patch("celery.app.task.Task.apply_async") as apply_async:
+        seed(me="me.sso")
+
+    apply_async.assert_not_called()
+    assert mail.outbox == []
