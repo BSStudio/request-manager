@@ -73,6 +73,13 @@ def test_the_thread_mixes_public_messages_and_internal_notes(scenarios):
     assert len({comment.created.date() for comment in comments}) > 1
 
 
+def test_no_two_messages_in_the_thread_share_a_time(scenarios):
+    # Messages with the same time show in id order, so a note could appear before
+    # the reply it follows.
+    created = [comment.created for comment in scenarios["accepted"].comments.all()]
+    assert len(set(created)) == len(created)
+
+
 def test_one_request_was_submitted_on_someone_elses_behalf(scenarios):
     request = scenarios["on_behalf"]
     assert request.requested_by != request.requester

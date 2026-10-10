@@ -67,7 +67,7 @@ def create_scenarios(people: dict[str, User]) -> dict[str, Request]:
         accepted,
         gabor,
         "Két kamera kell, a nagyobbat Karcsi hozza.",
-        created=at(-5, 9),
+        created=at(-5, 10),
         internal=True,
     )
     add_comment(accepted, anna, "Rendben, intézem. Köszönöm!", created=at(-4, 14))
