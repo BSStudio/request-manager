@@ -33,7 +33,7 @@ export interface User {
    * @type {string}
    * @memberof User
    */
-  avatar_url: string;
+  avatar_url: string | null;
   /**
    *
    * @type {string}

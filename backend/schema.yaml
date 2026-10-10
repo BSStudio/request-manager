@@ -3786,6 +3786,7 @@ components:
           readOnly: true
         avatar_url:
           type: string
+          nullable: true
           readOnly: true
         email:
           type: string
@@ -3865,6 +3866,7 @@ components:
           readOnly: true
         avatar_url:
           type: string
+          nullable: true
           readOnly: true
         ban:
           allOf:

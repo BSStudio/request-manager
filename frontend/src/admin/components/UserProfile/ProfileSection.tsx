@@ -286,7 +286,7 @@ const ProfileSection = ({ userData }: ProfileSectionProps) => {
           <span className="font-medium mb-2 text-900">Profilkép</span>
           <Avatar
             className="h-10rem w-10rem"
-            image={userData.avatar_url}
+            image={userData.avatar_url || undefined}
             label={getInitials(fullName)}
             pt={{ label: { className: 'font-medium select-none' } }}
             shape="circle"

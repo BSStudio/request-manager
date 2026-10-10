@@ -36,7 +36,7 @@ export interface UserAdminRetrieveUpdate {
    * @type {string}
    * @memberof UserAdminRetrieveUpdate
    */
-  avatar_url: string;
+  avatar_url: string | null;
   /**
    *
    * @type {BanUser}
