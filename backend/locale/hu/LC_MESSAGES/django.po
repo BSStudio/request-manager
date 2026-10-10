@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: BSS Request Manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-09-08 11:03+0200\n"
+"POT-Creation-Date: 2026-10-10 02:35+0200\n"
 "PO-Revision-Date: 2023-09-07 03:30+0200\n"
 "Last-Translator: Olivér Kecskeméty <kecskemety.oliver@simonyi.bme.hu>\n"
 "Language: Hungarian\n"
@@ -54,11 +54,11 @@ msgstr "Felelős"
 msgid "Editor"
 msgstr "Vágó"
 
-#: .\api\v1\login\serializers.py:70 .\api\v1\me\views.py:79
+#: .\api\v1\login\serializers.py:45 .\api\v1\me\views.py:79
 msgid "Invalid provider."
 msgstr "Érvénytelen szogláltató."
 
-#: .\api\v1\me\serializers.py:83 .\common\models.py:121
+#: .\api\v1\me\serializers.py:84 .\common\models.py:121
 msgid "E-mail address already in use."
 msgstr "Az e-mail cím már használatban van."
 
@@ -83,18 +83,18 @@ msgstr "Profil"
 msgid "Is admin"
 msgstr "Adminisztrátor státusz"
 
-#: .\common\admin.py:42
+#: .\common\admin.py:45
 msgid "Ban selected users"
 msgstr "Kiválasztott felhasználók kitiltása"
 
-#: .\common\admin.py:59
+#: .\common\admin.py:62
 #, python-format
 msgid "Banned %(count)d user, skipped %(skipped)d: %(usernames)s."
 msgid_plural "Banned %(count)d users, skipped %(skipped)d: %(usernames)s."
 msgstr[0] "%(count)d felhasználó kitiltva, %(skipped)d kihagyva: %(usernames)s."
 msgstr[1] "%(count)d felhasználó kitiltva, %(skipped)d kihagyva: %(usernames)s."
 
-#: .\common\admin.py:74
+#: .\common\admin.py:77
 #, python-format
 msgid "Successfully banned %(count)d user."
 msgid_plural "Successfully banned %(count)d users."
@@ -159,17 +159,71 @@ msgstr "Lapokra tördelt választ ad vissza."
 msgid "Error verifying captcha, please try again."
 msgstr "Hiba a captcha ellenőrzésekor, kérlek próbáld újra."
 
-#: .\core\settings\base.py:259
+#: .\core\settings\base.py:273
 msgid "English"
 msgstr "angol"
 
-#: .\core\settings\base.py:260
+#: .\core\settings\base.py:274
 msgid "Hungarian"
 msgstr "magyar"
 
-#: .\templates\admin\login.html:9
+#: .\templates\admin\login.html:8
+#, python-format
+msgid ""
+"You are authenticated as %(username)s, but are not authorized to access this "
+"page. Would you like to login to a different account?"
+msgstr ""
+"%(username)s néven vagy bejelentkezve, de ehhez az oldalhoz nincs "
+"hozzáférésed. Szeretnél másik fiókkal belépni?"
+
+#: .\templates\admin\login.html:18
+msgid "Log out"
+msgstr "Kijelentkezés"
+
+#: .\templates\admin\login.html:26
 msgid "Log in"
 msgstr "Bejelentkezés"
+
+#: .\video_requests\admin.py:66
+msgid "Number of videos"
+msgstr "Videók száma"
+
+#: .\video_requests\admin.py:70
+msgid "Requester"
+msgstr "Felkérő"
+
+#: .\video_requests\admin.py:86 .\video_requests\admin.py:109
+#: .\video_requests\admin.py:135 .\video_requests\admin.py:193
+msgid "Request"
+msgstr "Felkérés"
+
+#: .\video_requests\admin.py:90
+msgid "Crew member"
+msgstr "Stábtag"
+
+#: .\video_requests\admin.py:113
+msgid "Average rating"
+msgstr "Átlagos értékelés"
+
+#: .\video_requests\admin.py:131
+msgid "Comment"
+msgstr "Hozzászólás"
+
+#: .\video_requests\admin.py:139 .\video_requests\admin.py:167
+msgid "Author"
+msgstr "Szerző"
+
+#: .\video_requests\admin.py:159
+msgid "Review"
+msgstr "Szöveges értékelés"
+
+#: .\video_requests\admin.py:163 .\video_requests\admin.py:197
+msgid "Video"
+msgstr "Videó"
+
+#: .\video_requests\admin.py:203
+msgid "Assignees"
+msgstr "Felelősök"
 
 #: .\video_requests\models.py:47
 msgid "Elutasítva"
@@ -200,7 +254,7 @@ msgid "Archiválva"
 msgstr ""
 
 #: .\video_requests\models.py:54 .\video_requests\models.py:140
-#: .\video_requests\models.py:209
+#: .\video_requests\models.py:213
 msgid "Lezárva"
 msgstr ""
 
@@ -236,10 +290,14 @@ msgstr ""
 msgid "Közzétéve"
 msgstr ""
 
-#: .\video_requests\models.py:208
+#: .\video_requests\models.py:212
 msgid "Nyitva"
 msgstr ""
 
-#: .\video_requests\models.py:210
+#: .\video_requests\models.py:214
 msgid "Elvetve"
 msgstr ""
+
+#: .\video_requests\models.py:231
+msgid "The video must belong to this request."
+msgstr "A videónak ehhez a felkéréshez kell tartoznia."

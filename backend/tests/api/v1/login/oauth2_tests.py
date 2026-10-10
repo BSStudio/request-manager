@@ -41,9 +41,12 @@ def log_in(api_client, mocked, nonce=None):
     )
 
 
-def log_in_to_django_admin(client, mocked, nonce=None):
+def log_in_to_django_admin(client, mocked, nonce=None, next_url=None):
     # Here social_django builds the authorization URL, not the frontend.
-    start = client.post(reverse("social:begin", args=[mocked.name]))
+    start = client.post(
+        reverse("social:begin", args=[mocked.name]),
+        {} if next_url is None else {"next": next_url},
+    )
     query = parse_qs(urlparse(start.url).query)
     mocked.nonce = query["nonce"][0] if nonce is None else nonce
     return client.get(
@@ -96,6 +99,26 @@ def test_django_admin_login_checks_the_nonce_social_core_stored(
     client, mock_provider, provider
 ):
     response = log_in_to_django_admin(client, mock_provider(provider))
+
+    assert response.status_code == HTTP_302_FOUND
+    assert response.url == settings.SOCIAL_AUTH_LOGIN_REDIRECT_URL
+
+
+def test_django_admin_login_returns_to_the_page_it_started_from(client, mock_provider):
+    next_url = reverse("admin:video_requests_request_changelist")
+
+    response = log_in_to_django_admin(
+        client, mock_provider(BSS_LOGIN), next_url=next_url
+    )
+
+    assert response.status_code == HTTP_302_FOUND
+    assert response.url == next_url
+
+
+def test_django_admin_login_does_not_return_to_another_site(client, mock_provider):
+    response = log_in_to_django_admin(
+        client, mock_provider(BSS_LOGIN), next_url="https://evil.example/"
+    )
 
     assert response.status_code == HTTP_302_FOUND
     assert response.url == settings.SOCIAL_AUTH_LOGIN_REDIRECT_URL

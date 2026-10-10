@@ -172,6 +172,10 @@ class Video(models.Model):
         return self.request.requester
 
     @property
+    def admin_url(self) -> str:
+        return f"{self.request.admin_url}/videos/{self.id}"
+
+    @property
     def published_url(self) -> str:
         published_url = self.additional_data.get("publishing", {}).get("website")
         return published_url
@@ -221,6 +225,16 @@ class Todo(AbstractTodo):
     status = models.PositiveSmallIntegerField(
         choices=Statuses, default=Statuses.OPEN, db_index=True
     )
+
+    def clean(self):
+        if (
+            self.video_id is not None
+            and self.request_id is not None
+            and self.video.request_id != self.request_id
+        ):
+            raise ValidationError(
+                {"video": [_("The video must belong to this request.")]}
+            )
 
     def __str__(self):
         return f"Todo || {self.request.title} - {self.description[0:25]}[...]"

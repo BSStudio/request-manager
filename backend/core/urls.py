@@ -16,6 +16,7 @@ Including another URLconf
 
 from django.conf import settings
 from django.contrib import admin
+from django.contrib.auth.views import LogoutView
 from django.http import HttpResponse
 from django.urls import include, path, re_path
 from django.views.generic import TemplateView
@@ -51,10 +52,20 @@ urlpatterns.insert(
 
 # Enable Django Admin when requested
 if settings.DJANGO_ADMIN and "django.contrib.admin" in settings.INSTALLED_APPS:
+    admin.site.site_header = admin.site.site_title = "Felkéréskezelő"
     urlpatterns.insert(0, path("django-admin/", admin.site.urls))
     urlpatterns.insert(
         0,
         path("django-admin/", include("social_django.urls", namespace="social")),
+    )
+    # admin:logout only logs out users who may use the admin.
+    urlpatterns.insert(
+        0,
+        path(
+            "django-admin/switch-account/",
+            LogoutView.as_view(next_page="admin:login"),
+            name="admin_switch_account",
+        ),
     )
 
 # Enable Django Debug Toolbar

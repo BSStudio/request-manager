@@ -224,7 +224,7 @@ class Ban(models.Model):
     created = models.DateTimeField(auto_now_add=True)
 
     def clean(self):
-        if self.receiver == self.creator:
+        if self.receiver_id is not None and self.receiver_id == self.creator_id:
             raise ValidationError({"receiver": [_("Users cannot ban themselves.")]})
 
     def save(self, *args, **kwargs):

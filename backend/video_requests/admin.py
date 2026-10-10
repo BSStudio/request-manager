@@ -1,30 +1,51 @@
-from functools import cache
-
 from django.contrib import admin
-from django.contrib.admin import ModelAdmin
-from django.contrib.auth import get_user_model
-from django.db.models import Avg, Count
+from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html, format_html_join
-from django.utils.safestring import mark_safe
+from django.utils.translation import gettext_lazy as _
 from simple_history.admin import SimpleHistoryAdmin
 
 from video_requests.models import Comment, CrewMember, Rating, Request, Todo, Video
 
 
-@cache
-def user_change_url_name():
-    # Built from the model so that swapping AUTH_USER_MODEL cannot break the link.
-    options = get_user_model()._meta
-    return f"admin:{options.app_label}_{options.model_name}_change"
+def change_link(obj, text):
+    options = obj._meta
+    url = reverse(
+        f"admin:{options.app_label}_{options.model_name}_change", args=(obj.pk,)
+    )
+    return format_html('<a href="{}">{}</a>', url, text)
 
 
-def user_change_url(user_id):
-    return reverse(user_change_url_name(), args=(user_id,))
+def user_link(user):
+    return change_link(user, user.get_full_name_eastern_order())
+
+
+class AddedByMixin:
+    added_by_field = None
+
+    def get_readonly_fields(self, request, obj=None):
+        return [*super().get_readonly_fields(request, obj), self.added_by_field]
+
+    def save_model(self, request, obj, form, change):
+        if not change:
+            setattr(obj, self.added_by_field, request.user)
+        super().save_model(request, obj, form, change)
+
+
+class KeepParentMixin:
+    parent_fields = []
+
+    def get_readonly_fields(self, request, obj=None):
+        readonly_fields = list(super().get_readonly_fields(request, obj))
+        if obj is None:
+            return readonly_fields
+        return [*readonly_fields, *self.parent_fields]
 
 
 @admin.register(Request)
-class RequestHistoryAdmin(SimpleHistoryAdmin):
+class RequestHistoryAdmin(AddedByMixin, SimpleHistoryAdmin):
+    added_by_field = "requested_by"
+    autocomplete_fields = ["requester", "responsible"]
     list_display = [
         "id",
         "title",
@@ -34,84 +55,96 @@ class RequestHistoryAdmin(SimpleHistoryAdmin):
         "num_of_videos",
         "requester_link",
     ]
-    exclude = ["requested_by"]
-    readonly_fields = ["requested_by"]
+    list_filter = ["status"]
+    list_select_related = ["requester"]
+    ordering = ["-id"]
     search_fields = ["title"]
 
     def get_queryset(self, request):
         return super().get_queryset(request).annotate(num_of_videos=Count("videos"))
 
-    @admin.display(description="Number of Videos")
+    @admin.display(description=_("Number of videos"), ordering="num_of_videos")
     def num_of_videos(self, obj):
         return obj.num_of_videos
 
-    @admin.display(description="Requester")
+    @admin.display(description=_("Requester"))
     def requester_link(self, obj):
-        url = user_change_url(obj.requester.id)
-        return format_html('<a href="{}">{}</a>', url, obj.requester.get_full_name())
+        return user_link(obj.requester)
 
-    def save_model(self, request, obj, form, change):
-        if not change:
-            obj.requested_by = request.user
-        super().save_model(request, obj, form, change)
+    def view_on_site(self, obj):
+        return obj.admin_url
 
 
 @admin.register(CrewMember)
-class CrewMemberHistoryAdmin(SimpleHistoryAdmin):
+class CrewMemberHistoryAdmin(KeepParentMixin, SimpleHistoryAdmin):
+    autocomplete_fields = ["request", "member"]
     list_display = ["id", "request_link", "position", "member_link"]
+    list_select_related = ["request", "member"]
+    parent_fields = ["request"]
     search_fields = ["request__title"]
 
-    @admin.display(description="Request")
+    @admin.display(description=_("Request"))
     def request_link(self, obj):
-        url = reverse("admin:video_requests_request_change", args=(obj.request.id,))
-        return format_html('<a href="{}">{}</a>', url, obj.request.title)
+        return change_link(obj.request, obj.request.title)
 
-    @admin.display(description="Crew Member")
+    @admin.display(description=_("Crew member"))
     def member_link(self, obj):
-        url = user_change_url(obj.member.id)
-        return format_html('<a href="{}">{}</a>', url, obj.member.get_full_name())
+        return user_link(obj.member)
 
 
 @admin.register(Video)
-class VideoHistoryAdmin(SimpleHistoryAdmin):
+class VideoHistoryAdmin(KeepParentMixin, SimpleHistoryAdmin):
+    autocomplete_fields = ["request", "editor"]
     list_display = ["id", "title", "status", "request_link", "avg_rating"]
+    list_filter = ["status"]
+    ordering = ["-id"]
+    parent_fields = ["request"]
     search_fields = ["title"]
 
     def get_queryset(self, request):
-        return super().get_queryset(request).annotate(avg_rating=Avg("ratings__rating"))
+        # Here rather than list_select_related: the video autocompletes run this
+        # queryset too, and label each video with the title of its request.
+        return super().get_queryset(request).select_related("request")
 
-    @admin.display(description="Request")
+    @admin.display(description=_("Request"))
     def request_link(self, obj):
-        url = reverse("admin:video_requests_request_change", args=(obj.request.id,))
-        return format_html('<a href="{}">{}</a>', url, obj.request.title)
+        return change_link(obj.request, obj.request.title)
 
-    @admin.display(description="Average Rating")
+    @admin.display(description=_("Average rating"), ordering="avg_rating")
     def avg_rating(self, obj):
-        return obj.avg_rating
+        return obj.avg_rating  # Annotated by Video.objects.
+
+    def view_on_site(self, obj):
+        return obj.admin_url
 
 
 @admin.register(Comment)
-class CommentHistoryAdmin(SimpleHistoryAdmin):
-    list_display = ["id", "request_link", "part_of_comment", "author_link"]
+class CommentHistoryAdmin(AddedByMixin, KeepParentMixin, SimpleHistoryAdmin):
+    added_by_field = "author"
+    autocomplete_fields = ["request"]
+    list_display = ["id", "request_link", "part_of_comment", "internal", "author_link"]
+    list_filter = ["internal"]
+    list_select_related = ["request", "author"]
+    parent_fields = ["request"]
     search_fields = ["request__title"]
 
-    @admin.display(description="Comment")
+    @admin.display(description=_("Comment"))
     def part_of_comment(self, obj):
         return obj.text[:100]
 
-    @admin.display(description="Request")
+    @admin.display(description=_("Request"))
     def request_link(self, obj):
-        url = reverse("admin:video_requests_request_change", args=(obj.request.id,))
-        return format_html('<a href="{}">{}</a>', url, obj.request.title)
+        return change_link(obj.request, obj.request.title)
 
-    @admin.display(description="Author")
+    @admin.display(description=_("Author"))
     def author_link(self, obj):
-        url = user_change_url(obj.author.id)
-        return format_html('<a href="{}">{}</a>', url, obj.author.get_full_name())
+        return user_link(obj.author)
 
 
 @admin.register(Rating)
-class RatingHistoryAdmin(SimpleHistoryAdmin):
+class RatingHistoryAdmin(AddedByMixin, KeepParentMixin, SimpleHistoryAdmin):
+    added_by_field = "author"
+    autocomplete_fields = ["video"]
     list_display = [
         "id",
         "video_link",
@@ -119,57 +152,56 @@ class RatingHistoryAdmin(SimpleHistoryAdmin):
         "part_of_review",
         "author_link",
     ]
-    search_fields = ["request__title"]
+    list_select_related = ["video", "author"]
+    parent_fields = ["video"]
+    search_fields = ["video__title", "video__request__title"]
 
-    @admin.display(description="Review")
+    @admin.display(description=_("Review"))
     def part_of_review(self, obj):
         return obj.review[:100]
 
-    @admin.display(description="Video")
+    @admin.display(description=_("Video"))
     def video_link(self, obj):
-        url = reverse("admin:video_requests_video_change", args=(obj.video.id,))
-        return format_html('<a href="{}">{}</a>', url, obj.video.title)
+        return change_link(obj.video, obj.video.title)
 
-    @admin.display(description="Author")
+    @admin.display(description=_("Author"))
     def author_link(self, obj):
-        url = user_change_url(obj.author.id)
-        return format_html('<a href="{}">{}</a>', url, obj.author.get_full_name())
+        return user_link(obj.author)
 
 
 @admin.register(Todo)
-class TodoAdmin(ModelAdmin):
+class TodoAdmin(AddedByMixin, KeepParentMixin, admin.ModelAdmin):
+    added_by_field = "creator"
+    autocomplete_fields = ["request", "video", "assignees"]
     list_display = [
         "id",
         "created",
         "request_link",
         "video_link",
         "description",
+        "status",
         "assignee_names",
     ]
+    list_filter = ["status"]
+    list_select_related = ["request", "video"]
+    parent_fields = ["request", "video"]
     search_fields = ["request__title", "video__title"]
 
-    @admin.display(description="Request")
-    def request_link(self, obj):
-        url = reverse("admin:video_requests_request_change", args=(obj.request.id,))
-        return format_html('<a href="{}">{}</a>', url, obj.request.title)
+    def get_queryset(self, request):
+        return super().get_queryset(request).prefetch_related("assignees")
 
-    @admin.display(description="Video")
+    @admin.display(description=_("Request"))
+    def request_link(self, obj):
+        return change_link(obj.request, obj.request.title)
+
+    @admin.display(description=_("Video"))
     def video_link(self, obj):
         if obj.video:
-            url = reverse("admin:video_requests_video_change", args=(obj.video.id,))
-            return format_html('<a href="{}">{}</a>', url, obj.video.title)
+            return change_link(obj.video, obj.video.title)
         return None
 
-    @admin.display(description="Assignees")
+    @admin.display(description=_("Assignees"))
     def assignee_names(self, obj):
         return format_html_join(
-            mark_safe("&comma;&nbsp;"),  # nosec B308
-            '<a href="{}">{}</a>',
-            (
-                (
-                    user_change_url(assignee.id),
-                    assignee.get_full_name_eastern_order(),
-                )
-                for assignee in obj.assignees.all()
-            ),
+            ", ", "{}", ((user_link(assignee),) for assignee in obj.assignees.all())
         )

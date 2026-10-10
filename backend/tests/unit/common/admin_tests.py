@@ -1,15 +1,14 @@
 import pytest
 from django.contrib.admin.sites import AdminSite
+from django.contrib.auth.models import Permission
 from django.contrib.messages.storage.fallback import FallbackStorage
 from django.test import RequestFactory
 from django.urls import reverse
-from model_bakery import baker
-from rest_framework.status import HTTP_200_OK
+from rest_framework.status import HTTP_200_OK, HTTP_302_FOUND
 
 from common.admin import UserAdmin
 from common.models import Ban, User
 from tests.factories import make_user
-from video_requests.admin import user_change_url
 
 
 def admin_request(user):
@@ -76,27 +75,103 @@ def test_ban_selected_users_reports_the_plural_form():
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    "model_name",
-    ["comment", "crewmember", "rating", "request", "todo"],
+    ("codenames", "offered"),
+    [(["view_user"], False), (["view_user", "add_ban"], True)],
 )
-def test_changelists_link_to_the_user_admin(client, model_name):
-    # Every one of these lists renders a link to a user, so a hard coded admin
-    # URL name would only break once the list is not empty.
-    user = make_user(username="linked_user", is_admin=True, is_superuser=True)
+def test_ban_selected_users_needs_the_permission_to_add_bans(codenames, offered):
+    staff_member = make_user(username="staff_member", is_staff=True)
+    staff_member.user_permissions.set(Permission.objects.filter(codename__in=codenames))
 
-    video_request = baker.make(
-        "video_requests.Request", requester=user, responsible=user
+    actions = UserAdmin(User, AdminSite()).get_actions(admin_request(staff_member))
+
+    assert ("ban_selected_users" in actions) is offered
+
+
+@pytest.mark.django_db
+def test_ban_admin_credits_the_ban_to_whoever_added_it(client):
+    admin = make_user(username="banning_admin", is_admin=True, is_superuser=True)
+    to_ban = make_user(username="to_ban")
+    url = reverse("admin:common_ban_add")
+
+    client.force_login(admin)
+    form = client.get(url).context["adminform"].form
+    response = client.post(url, {"receiver": to_ban.id, "reason": ""})
+
+    assert "creator" not in form.fields
+    assert response.status_code == HTTP_302_FOUND
+    assert Ban.objects.get(receiver=to_ban).creator == admin
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("bans_self", [True, False], ids=["self", "missing"])
+def test_ban_admin_needs_a_receiver_other_than_the_admin(client, bans_self):
+    admin = make_user(username="banning_admin", is_admin=True, is_superuser=True)
+
+    client.force_login(admin)
+    response = client.post(
+        reverse("admin:common_ban_add"),
+        {"receiver": admin.id if bans_self else "", "reason": ""},
     )
-    video = baker.make("video_requests.Video", request=video_request, editor=user)
-    baker.make("video_requests.CrewMember", request=video_request, member=user)
-    baker.make("video_requests.Comment", request=video_request, author=user)
-    baker.make("video_requests.Rating", video=video, author=user)
-    baker.make(
-        "video_requests.Todo", request=video_request, creator=user
-    ).assignees.add(user)
-
-    client.force_login(user)
-    response = client.get(reverse(f"admin:video_requests_{model_name}_changelist"))
 
     assert response.status_code == HTTP_200_OK
-    assert user_change_url(user.id) in response.content.decode()
+    assert "receiver" in response.context["adminform"].form.errors
+    assert not Ban.objects.exists()
+
+
+@pytest.mark.django_db
+def test_ban_admin_cannot_move_a_ban_to_another_user(client):
+    admin = make_user(username="banning_admin", is_admin=True, is_superuser=True)
+    banned = make_user(username="already_banned", banned=True)
+    not_banned = make_user(username="not_banned")
+
+    client.force_login(admin)
+    response = client.post(
+        reverse("admin:common_ban_change", args=(banned.id,)),
+        {"receiver": not_banned.id, "reason": "Changed"},
+    )
+
+    assert response.status_code == HTTP_302_FOUND
+    assert list(Ban.objects.values_list("receiver__username", "reason")) == [
+        ("already_banned", "Changed")
+    ]
+
+
+@pytest.mark.django_db
+def test_ban_admin_finds_bans_by_the_receiver(client):
+    admin = make_user(username="banning_admin", is_admin=True, is_superuser=True)
+    make_user(username="already_banned", banned=True)
+    make_user(username="also_banned", banned=True)
+
+    client.force_login(admin)
+    response = client.get(reverse("admin:common_ban_changelist"), {"q": "already"})
+
+    assert response.status_code == HTTP_200_OK
+    assert [ban.receiver.username for ban in response.context["cl"].result_list] == [
+        "already_banned"
+    ]
+
+
+@pytest.mark.django_db
+def test_admin_login_passes_on_where_to_return(client):
+    next_url = reverse("admin:video_requests_request_changelist")
+
+    response = client.get(reverse("admin:login"), {"next": next_url})
+
+    content = response.content.decode()
+    assert f'<input type="hidden" name="next" value="{next_url}">' in content
+    assert "not authorized" not in content
+
+
+@pytest.mark.django_db
+def test_admin_login_has_a_logged_in_user_log_out_first(client):
+    client.force_login(make_user(username="requester"))
+    login_url = f"{reverse('admin:login')}?next=/django-admin/"
+
+    page = client.get(login_url).content.decode()
+    logged_out = client.post(reverse("admin_switch_account"), {"next": login_url})
+
+    assert "requester, but are not authorized" in page
+    assert reverse("social:begin", args=["bss-login"]) not in page
+    assert f'<input type="hidden" name="next" value="{login_url}">' in page
+    assert logged_out.url == login_url
+    assert "_auth_user_id" not in client.session

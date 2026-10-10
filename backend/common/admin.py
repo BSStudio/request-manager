@@ -39,7 +39,10 @@ class UserAdmin(BaseUserAdmin):
     def is_admin(self, obj):
         return obj.is_admin
 
-    @admin.action(description=_("Ban selected users"))
+    def has_ban_permission(self, request):
+        return request.user.has_perm("common.add_ban")
+
+    @admin.action(description=_("Ban selected users"), permissions=["ban"])
     def ban_selected_users(self, request, queryset):
         banned = 0
         skipped = []
@@ -81,4 +84,28 @@ class UserAdmin(BaseUserAdmin):
 
 @admin.register(Ban)
 class BanAdmin(admin.ModelAdmin):
+    autocomplete_fields = ["receiver"]
     list_display = ("receiver", "created", "reason", "creator")
+    search_fields = [
+        "receiver__username",
+        "receiver__first_name",
+        "receiver__last_name",
+        "receiver__email",
+    ]
+
+    def get_readonly_fields(self, request, obj=None):
+        # The receiver is the primary key: changing it would save a second ban
+        # and leave the first one in place.
+        return ["creator"] if obj is None else ["receiver", "creator"]
+
+    def formfield_for_foreignkey(self, db_field, request, **kwargs):
+        if db_field.name == "receiver":
+            # save_model() sets the creator, too late for Ban.clean() to turn a
+            # self-ban into a form error.
+            kwargs["queryset"] = User.objects.exclude(pk=request.user.pk)
+        return super().formfield_for_foreignkey(db_field, request, **kwargs)
+
+    def save_model(self, request, obj, form, change):
+        if not change:
+            obj.creator = request.user
+        super().save_model(request, obj, form, change)

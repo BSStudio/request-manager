@@ -76,6 +76,13 @@ class TestRequestUrls:
         )
 
 
+class TestVideoAdminUrl:
+    def test_points_at_the_dashboard(self, video, video_request):
+        assert video.admin_url == (
+            f"{settings.BASE_URL}/admin/requests/{video_request.id}/videos/{video.id}"
+        )
+
+
 class TestVideoPublishedUrl:
     def test_is_none_until_the_video_is_published(self, video):
         assert video.published_url is None
@@ -138,6 +145,32 @@ class TestVideoAiredDates:
             "2019-11-25",
             "2018-05-19",
         ]
+
+
+class TestTodoValidation:
+    @pytest.mark.parametrize("with_video", [True, False])
+    def test_a_todo_of_the_request_is_valid(self, video, video_request, with_video):
+        todo = baker.make(
+            "video_requests.Todo",
+            request=video_request,
+            video=video if with_video else None,
+        )
+
+        todo.full_clean()  # Should not raise
+
+    def test_the_video_must_belong_to_the_request(self, video_request):
+        todo = baker.make(
+            "video_requests.Todo",
+            request=video_request,
+            video=baker.make("video_requests.Video"),
+        )
+
+        with pytest.raises(ValidationError) as error:
+            todo.full_clean()
+
+        assert error.value.message_dict == {
+            "video": ["The video must belong to this request."]
+        }
 
 
 class TestVideoValidation:
