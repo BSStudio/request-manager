@@ -17,9 +17,6 @@
 import { BanUser } from './ban-user';
 // May contain unused imports in some cases
 // @ts-ignore
-import { UserProfile } from './user-profile';
-// May contain unused imports in some cases
-// @ts-ignore
 import { UserSocialAuth } from './user-social-auth';
 
 /**
@@ -28,6 +25,18 @@ import { UserSocialAuth } from './user-social-auth';
  * @interface UserAdminRetrieveUpdate
  */
 export interface UserAdminRetrieveUpdate {
+  /**
+   *
+   * @type {any}
+   * @memberof UserAdminRetrieveUpdate
+   */
+  avatar: any;
+  /**
+   *
+   * @type {string}
+   * @memberof UserAdminRetrieveUpdate
+   */
+  avatar_url: string | null;
   /**
    *
    * @type {BanUser}
@@ -66,10 +75,10 @@ export interface UserAdminRetrieveUpdate {
   last_name?: string;
   /**
    *
-   * @type {UserProfile}
+   * @type {string}
    * @memberof UserAdminRetrieveUpdate
    */
-  profile: UserProfile;
+  phone_number?: string;
   /**
    *
    * @type {string}

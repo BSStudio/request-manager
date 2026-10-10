@@ -35,7 +35,7 @@ function ProfilePage() {
             <UserAvatar
               className="size-20 shrink-0 ring-4 ring-white/10 sm:size-32"
               user={{
-                avatar: user.profile.avatar_url,
+                avatar: user.avatar_url,
                 name: name || user.username,
               }}
             />

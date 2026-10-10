@@ -12,10 +12,8 @@ from api.v1.admin.users.serializers import (
 from api.v1.requests.utilities import create_user
 from common.models import get_anonymous_user
 from common.rest_framework.turnstile import TurnstileField
-from common.utilities import create_calendar_event
-from video_requests.emails import email_user_new_request_confirmation
 from video_requests.models import Request
-from video_requests.services import create_comment
+from video_requests.services import create_request
 
 
 class RequestListSerializer(Serializer):
@@ -51,16 +49,10 @@ class RequestCreateSerializer(ModelSerializer):
 
     def create(self, validated_data):
         user = self.context["request"].user
-        if not user.is_anonymous:
-            validated_data["requester"] = user
-            validated_data["requested_by"] = user
-        comment_text = validated_data.pop("comment", None)
-        request = super().create(validated_data)
-        if comment_text:
-            create_comment(author=request.requester, text=comment_text, request=request)
-        create_calendar_event.delay(request.id)
-        email_user_new_request_confirmation.delay(request.id)
-        return request
+        comment = validated_data.pop("comment", None)
+        return create_request(
+            comment=comment, requested_by=user, requester=user, **validated_data
+        )
 
     def validate(self, attrs):
         if attrs.get("start_datetime") < localtime():
@@ -107,13 +99,15 @@ class RequestAnonymousCreateSerializer(RequestCreateSerializer):
         )
 
     def create(self, validated_data):
-        validated_data["requester"], additional_data = create_user(validated_data)
-        validated_data["requested_by"] = get_anonymous_user()
-        request = super().create(validated_data)
-        if additional_data:
-            request.additional_data = additional_data
-        request.save()
-        return request
+        comment = validated_data.pop("comment", None)
+        requester, additional_data = create_user(validated_data)
+        return create_request(
+            additional_data=additional_data,
+            comment=comment,
+            requested_by=get_anonymous_user(),
+            requester=requester,
+            **validated_data,
+        )
 
     def validate(self, attrs):
         attrs.pop("captcha", None)

@@ -189,6 +189,20 @@ def test_login_without_any_photo_leaves_the_avatar_provider_unset(
     assert user.avatar_url is None
 
 
+@pytest.mark.parametrize(
+    "provider",
+    [AUTHSCH, BSS_LOGIN, GOOGLE, MICROSOFT],
+    ids=lambda provider: provider.name,
+)
+def test_login_saves_the_phone_number_from_the_provider(
+    api_client, mock_provider, provider
+):
+    assert log_in(api_client, mock_provider(provider)).status_code == HTTP_200_OK
+
+    user = UserSocialAuth.objects.get(provider=provider.name).user
+    assert user.phone_number == "+36509999999"
+
+
 def test_a_banned_account_cannot_log_in(api_client, mock_provider):
     # The provider still authenticates them; the pipeline is what turns them
     # away, by e-mail, before a session starts.

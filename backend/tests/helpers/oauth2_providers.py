@@ -67,12 +67,15 @@ GOOGLE = Provider(
         "name": "Foo Bar",
         "picture": "https://lh5.googleusercontent.com/-ui-GqpNh5Ms/"
         "AAAAAAAAAAI/AAAAAAAAAZw/a7puhHMO_fg/photo.jpg",
-        "scope": [  # TODO: Check if it's really returned in real call
-            "https://www.googleapis.com/auth/userinfo.profile",
-            "https://www.googleapis.com/auth/userinfo.email",
-            "https://www.googleapis.com/auth/user.phonenumbers.read",
-        ],
         "sub": "101010101010101010101",
+    },
+    access_token_body={
+        "access_token": "foobar",
+        "expires_in": 3599,
+        "scope": "https://www.googleapis.com/auth/userinfo.profile "
+        "https://www.googleapis.com/auth/userinfo.email "
+        "https://www.googleapis.com/auth/user.phonenumbers.read",
+        "token_type": "Bearer",
     },
     extra_json={
         "https://people.googleapis.com/v1/people/me": {

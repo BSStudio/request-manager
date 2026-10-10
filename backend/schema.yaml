@@ -1545,7 +1545,6 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/UserAdminRetrieveUpdateRequest'
-        required: true
       security:
         - tokenAuth: []
         - cookieAuth: []
@@ -1912,7 +1911,6 @@ paths:
           multipart/form-data:
             schema:
               $ref: '#/components/schemas/UserRequest'
-        required: true
       security:
         - tokenAuth: []
         - cookieAuth: []
@@ -3042,6 +3040,10 @@ components:
     PatchedUserAdminRetrieveUpdateRequest:
       type: object
       properties:
+        avatar_provider:
+          allOf:
+            - $ref: '#/components/schemas/AvatarProviderEnum'
+          writeOnly: true
         email:
           type: string
           format: email
@@ -3054,11 +3056,16 @@ components:
           type: string
           minLength: 1
           maxLength: 150
-        profile:
-          $ref: '#/components/schemas/UserProfileRequest'
+        phone_number:
+          type: string
+          minLength: 1
     PatchedUserRequest:
       type: object
       properties:
+        avatar_provider:
+          allOf:
+            - $ref: '#/components/schemas/AvatarProviderEnum'
+          writeOnly: true
         email:
           type: string
           format: email
@@ -3071,8 +3078,9 @@ components:
           type: string
           minLength: 1
           maxLength: 150
-        profile:
-          $ref: '#/components/schemas/UserProfileRequest'
+        phone_number:
+          type: string
+          minLength: 1
     PatchedVideoAdminCreateUpdateRequest:
       type: object
       properties:
@@ -3774,6 +3782,12 @@ components:
     User:
       type: object
       properties:
+        avatar:
+          readOnly: true
+        avatar_url:
+          type: string
+          nullable: true
+          readOnly: true
         email:
           type: string
           format: email
@@ -3791,8 +3805,8 @@ components:
         last_name:
           type: string
           maxLength: 150
-        profile:
-          $ref: '#/components/schemas/UserProfile'
+        phone_number:
+          type: string
         role:
           type: string
           readOnly: true
@@ -3808,9 +3822,10 @@ components:
             Required. 150 characters or fewer. Letters, digits and @/./+/-/_
             only.
       required:
+        - avatar
+        - avatar_url
         - groups
         - id
-        - profile
         - role
         - social_accounts
         - username
@@ -3847,6 +3862,12 @@ components:
     UserAdminRetrieveUpdate:
       type: object
       properties:
+        avatar:
+          readOnly: true
+        avatar_url:
+          type: string
+          nullable: true
+          readOnly: true
         ban:
           allOf:
             - $ref: '#/components/schemas/BanUser'
@@ -3869,8 +3890,8 @@ components:
         last_name:
           type: string
           maxLength: 150
-        profile:
-          $ref: '#/components/schemas/UserProfile'
+        phone_number:
+          type: string
         role:
           type: string
           readOnly: true
@@ -3886,16 +3907,21 @@ components:
             Required. 150 characters or fewer. Letters, digits and @/./+/-/_
             only.
       required:
+        - avatar
+        - avatar_url
         - ban
         - groups
         - id
-        - profile
         - role
         - social_accounts
         - username
     UserAdminRetrieveUpdateRequest:
       type: object
       properties:
+        avatar_provider:
+          allOf:
+            - $ref: '#/components/schemas/AvatarProviderEnum'
+          writeOnly: true
         email:
           type: string
           format: email
@@ -3908,10 +3934,9 @@ components:
           type: string
           minLength: 1
           maxLength: 150
-        profile:
-          $ref: '#/components/schemas/UserProfileRequest'
-      required:
-        - profile
+        phone_number:
+          type: string
+          minLength: 1
     UserAdminWorkedOn:
       type: object
       properties:
@@ -3980,32 +4005,13 @@ components:
         - avatar_url
         - full_name
         - id
-    UserProfile:
-      type: object
-      properties:
-        avatar:
-          readOnly: true
-        avatar_url:
-          type: string
-          readOnly: true
-        phone_number:
-          type: string
-      required:
-        - avatar
-        - avatar_url
-    UserProfileRequest:
+    UserRequest:
       type: object
       properties:
         avatar_provider:
           allOf:
             - $ref: '#/components/schemas/AvatarProviderEnum'
           writeOnly: true
-        phone_number:
-          type: string
-          minLength: 1
-    UserRequest:
-      type: object
-      properties:
         email:
           type: string
           format: email
@@ -4018,10 +4024,9 @@ components:
           type: string
           minLength: 1
           maxLength: 150
-        profile:
-          $ref: '#/components/schemas/UserProfileRequest'
-      required:
-        - profile
+        phone_number:
+          type: string
+          minLength: 1
     UserSocialAuth:
       type: object
       properties:

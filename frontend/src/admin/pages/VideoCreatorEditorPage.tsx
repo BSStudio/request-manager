@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo } from 'react';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
@@ -109,9 +109,8 @@ const VideoCreatorEditorPage = () => {
     ? query
     : { data: undefined, dataUpdatedAt: new Date(), error: null };
 
-  const [isDataChanged, setIsDataChanged] = useState<boolean>(false);
-
   const loaderData = useLoaderData() as VideoAdminRetrieve;
+  const isDataChanged = !!requestId && !!videoId && loaderData !== queryData;
   const navigate = useNavigate();
   const revalidator = useRevalidator();
 
@@ -127,7 +126,6 @@ const VideoCreatorEditorPage = () => {
 
   useEffect(() => {
     if (loaderData) {
-      setIsDataChanged(false);
       reset({
         ...defaultValues,
         ...loaderData,
@@ -142,12 +140,6 @@ const VideoCreatorEditorPage = () => {
       });
     }
   }, [defaultValues, loaderData, reset]);
-
-  useEffect(() => {
-    if (requestId && videoId && loaderData !== queryData) {
-      setIsDataChanged(true);
-    }
-  }, [loaderData, queryData, requestId, videoId]);
 
   const onReload = () => {
     void revalidator.revalidate();

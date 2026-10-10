@@ -22,8 +22,10 @@ interface IWorkedOnForm {
   start_datetime_before: Date | null;
 }
 
-interface UserAdminWorkedOnDate // TODO: Rename?
-  extends Omit<UserAdminWorkedOn, 'start_datetime'> {
+interface UserAdminWorkedOnDates extends Omit<
+  UserAdminWorkedOn,
+  'start_datetime'
+> {
   start_datetime: Date;
 }
 
@@ -35,7 +37,7 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
   const dataTableRef = useRef<DataTable<DataTableValueArray>>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [workedOnResults, setWorkedOnResults] = useState<
-    UserAdminWorkedOnDate[]
+    UserAdminWorkedOnDates[]
   >([]);
 
   const defaultValues = {
@@ -59,7 +61,7 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
     },
   ];
 
-  const actionBodyTemplate = ({ id }: UserAdminWorkedOnDate) => {
+  const actionBodyTemplate = ({ id }: UserAdminWorkedOnDates) => {
     return (
       <LinkButton
         buttonProps={{
@@ -74,7 +76,7 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
     );
   };
 
-  const dateBodyTemplate = ({ start_datetime }: UserAdminWorkedOnDate) => {
+  const dateBodyTemplate = ({ start_datetime }: UserAdminWorkedOnDates) => {
     return dateTimeToLocaleString(start_datetime, true);
   };
 

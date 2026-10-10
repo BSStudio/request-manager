@@ -180,7 +180,7 @@ function NewRequestPage() {
       ? {
           email: me.data.email ?? '',
           name: formatName(me.data.last_name, me.data.first_name),
-          phone: formatPhone(me.data.profile.phone_number ?? ''),
+          phone: formatPhone(me.data.phone_number ?? ''),
         }
       : null;
 

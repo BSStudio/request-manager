@@ -1,4 +1,4 @@
-import { Suspense, lazy, useEffect, useMemo, useState } from 'react';
+import { Suspense, lazy, useEffect, useMemo } from 'react';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
@@ -126,10 +126,9 @@ const RequestCreatorEditorPage = () => {
     ? query
     : { data: undefined, dataUpdatedAt: new Date(), error: null };
 
-  const [isDataChanged, setIsDataChanged] = useState<boolean>(false);
-
   const isMobile = useMobile();
   const loaderData = useLoaderData() as RequestAdminRetrieve;
+  const isDataChanged = !!requestId && loaderData !== queryData;
   const navigate = useNavigate();
   const revalidator = useRevalidator();
 
@@ -138,7 +137,6 @@ const RequestCreatorEditorPage = () => {
 
   useEffect(() => {
     if (loaderData) {
-      setIsDataChanged(false);
       reset({
         ...defaultValues,
         ...loaderData,
@@ -148,12 +146,6 @@ const RequestCreatorEditorPage = () => {
       });
     }
   }, [defaultValues, loaderData, reset]);
-
-  useEffect(() => {
-    if (requestId && loaderData !== queryData) {
-      setIsDataChanged(true);
-    }
-  }, [loaderData, queryData, requestId]);
 
   const buttonOptions = [
     {

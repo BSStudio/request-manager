@@ -16,8 +16,10 @@ import { RatingAdminListRetrieve } from 'api/models';
 import { getUserId, isAdmin } from 'helpers/LocalStorageHelper';
 import { VideoStatus } from 'helpers/statuses';
 
-interface RatingAdminListDates // TODO: Rename?
-  extends Omit<RatingAdminListRetrieve, 'created'> {
+interface RatingAdminListDates extends Omit<
+  RatingAdminListRetrieve,
+  'created'
+> {
   created: Date;
 }
 

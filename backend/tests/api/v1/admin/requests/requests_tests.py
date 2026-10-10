@@ -20,7 +20,7 @@ from common.models import User
 from tests.api.asserts import assert_exact_fields
 from tests.api.helpers import do_login, get_response, login
 from tests.api.matrix import admin_only, staff_only
-from video_requests.models import Comment, Video
+from video_requests.models import Comment, Request, Video
 
 pytestmark = pytest.mark.django_db
 
@@ -292,6 +292,16 @@ class TestTheRestOfTheForm:
         comment = Comment.objects.get(request=response.data["id"])
         assert comment.author == staff_user
         assert comment.text == "Lorem ipsum dolor sit amet."
+
+
+@ALL_METHODS
+def test_accepting_sets_the_status(admin_user, api_client, method, write_request):
+    login(api_client, admin_user)
+
+    response = write_request(method, additional_data={"accepted": True})
+
+    assert is_success(response.status_code), response.data
+    assert response.data["status"] == Request.Statuses.ACCEPTED
 
 
 @staff_only(HTTP_400_BAD_REQUEST)

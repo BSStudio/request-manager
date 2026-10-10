@@ -47,18 +47,23 @@ class UserAdminRetrieveUpdateSerializer(UserSerializer):
     class Meta:
         model = User
         fields = (
+            "avatar",
+            "avatar_provider",
+            "avatar_url",
             "ban",
             "email",
             "first_name",
             "groups",
             "id",
             "last_name",
-            "profile",
+            "phone_number",
             "role",
             "social_accounts",
             "username",
         )
         read_only_fields = (
+            "avatar",
+            "avatar_url",
             "ban",
             "groups",
             "id",

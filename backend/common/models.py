@@ -162,7 +162,7 @@ class User(AbstractUser):
         return result
 
     @property
-    def avatar_url(self) -> str:
+    def avatar_url(self) -> str | None:
         return self.avatar.get(self.avatar.get("provider", None), None)
 
     @cached_property

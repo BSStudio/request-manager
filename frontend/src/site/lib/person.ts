@@ -10,7 +10,7 @@ export function getMissingProfileFields(user: User) {
     !user.last_name && 'vezetéknév',
     !user.first_name && 'keresztnév',
     !user.email && 'e-mail-cím',
-    !user.profile.phone_number && 'telefonszám',
+    !user.phone_number && 'telefonszám',
   ].filter((field) => field !== false);
 }
 

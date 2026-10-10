@@ -141,11 +141,7 @@ def add_phone_number_to_profile(backend, details, response, user, *args, **kwarg
 
     phone_number = None
 
-    # AuthSCH
-    if details.get("mobile"):
-        phone_number = details.get("mobile")
-
-    # BSS Login
+    # AuthSCH and BSS Login
     if details.get("mobile"):
         phone_number = details.get("mobile")
 

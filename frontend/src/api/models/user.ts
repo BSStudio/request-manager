@@ -14,9 +14,6 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { UserProfile } from './user-profile';
-// May contain unused imports in some cases
-// @ts-ignore
 import { UserSocialAuth } from './user-social-auth';
 
 /**
@@ -25,6 +22,18 @@ import { UserSocialAuth } from './user-social-auth';
  * @interface User
  */
 export interface User {
+  /**
+   *
+   * @type {any}
+   * @memberof User
+   */
+  avatar: any;
+  /**
+   *
+   * @type {string}
+   * @memberof User
+   */
+  avatar_url: string | null;
   /**
    *
    * @type {string}
@@ -57,10 +66,10 @@ export interface User {
   last_name?: string;
   /**
    *
-   * @type {UserProfile}
+   * @type {string}
    * @memberof User
    */
-  profile: UserProfile;
+  phone_number?: string;
   /**
    *
    * @type {string}

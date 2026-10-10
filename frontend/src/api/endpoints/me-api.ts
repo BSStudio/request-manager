@@ -281,16 +281,14 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {UserRequest} userRequest
+     * @param {UserRequest} [userRequest]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     meUpdate: async (
-      userRequest: UserRequest,
+      userRequest?: UserRequest,
       options: AxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
-      // verify required parameter 'userRequest' is not null or undefined
-      assertParamExists('meUpdate', 'userRequest', userRequest);
       const localVarPath = `/api/v1/me`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -511,12 +509,12 @@ export const MeApiFp = function (configuration?: Configuration) {
     },
     /**
      *
-     * @param {UserRequest} userRequest
+     * @param {UserRequest} [userRequest]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async meUpdate(
-      userRequest: UserRequest,
+      userRequest?: UserRequest,
       options?: AxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>
@@ -631,11 +629,11 @@ export const MeApiFactory = function (
     },
     /**
      *
-     * @param {UserRequest} userRequest
+     * @param {UserRequest} [userRequest]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    meUpdate(userRequest: UserRequest, options?: any): AxiosPromise<User> {
+    meUpdate(userRequest?: UserRequest, options?: any): AxiosPromise<User> {
       return localVarFp
         .meUpdate(userRequest, options)
         .then((request) => request(axios, basePath));
@@ -734,12 +732,12 @@ export class MeApi extends BaseAPI {
 
   /**
    *
-   * @param {UserRequest} userRequest
+   * @param {UserRequest} [userRequest]
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof MeApi
    */
-  public meUpdate(userRequest: UserRequest, options?: AxiosRequestConfig) {
+  public meUpdate(userRequest?: UserRequest, options?: AxiosRequestConfig) {
     return MeApiFp(this.configuration)
       .meUpdate(userRequest, options)
       .then((request) => request(this.axios, this.basePath));
