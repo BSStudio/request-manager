@@ -12,7 +12,7 @@ import { cacheUser } from 'helpers/session';
 export default function AvatarPicker({ user }: { user: User }) {
   // { provider: <selected>, <provider>: <url or null>, ... }
   const avatars = Object.entries(
-    user.profile.avatar as Record<string, string | null>,
+    user.avatar as Record<string, string | null>,
   ).filter(
     (entry): entry is [AvatarProvider, string] =>
       entry[0] in avatarProviderLabels && !!entry[1],
@@ -20,8 +20,7 @@ export default function AvatarPicker({ user }: { user: User }) {
 
   const select = useMutation({
     mutationFn: async (provider: AvatarProvider) =>
-      (await meApi.mePartialUpdate({ profile: { avatar_provider: provider } }))
-        .data,
+      (await meApi.mePartialUpdate({ avatar_provider: provider })).data,
     onError: (error) =>
       toast.error('Nem sikerült beállítani a profilképet.', {
         description: getApiErrorMessage(error),
@@ -50,7 +49,7 @@ export default function AvatarPicker({ user }: { user: User }) {
   return (
     <div className="grid grid-cols-2 gap-3">
       {avatars.map(([provider, url]) => {
-        const selected = url === user.profile.avatar_url;
+        const selected = url === user.avatar_url;
         const pending = select.isPending && select.variables === provider;
 
         return (

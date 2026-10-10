@@ -68,7 +68,7 @@ export function useSessionUser() {
 export function cacheUser(data: User) {
   queryClient.setQueryData(meQuery().queryKey, data);
   setSession({
-    avatar_url: data.profile.avatar_url,
+    avatar_url: data.avatar_url,
     groups: data.groups,
     id: data.id,
     name: formatName(data.last_name, data.first_name),

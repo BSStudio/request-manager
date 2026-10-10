@@ -59,8 +59,6 @@ export * from './user-admin-retrieve-update-request';
 export * from './user-admin-worked-on';
 export * from './user-nested-detail';
 export * from './user-nested-list';
-export * from './user-profile';
-export * from './user-profile-request';
 export * from './user-request';
 export * from './user-social-auth';
 export * from './video-admin-create-update-request';

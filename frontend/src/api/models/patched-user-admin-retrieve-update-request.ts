@@ -14,7 +14,7 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { UserProfileRequest } from './user-profile-request';
+import { AvatarProviderEnum } from './avatar-provider-enum';
 
 /**
  *
@@ -22,6 +22,12 @@ import { UserProfileRequest } from './user-profile-request';
  * @interface PatchedUserAdminRetrieveUpdateRequest
  */
 export interface PatchedUserAdminRetrieveUpdateRequest {
+  /**
+   *
+   * @type {AvatarProviderEnum}
+   * @memberof PatchedUserAdminRetrieveUpdateRequest
+   */
+  avatar_provider?: AvatarProviderEnum;
   /**
    *
    * @type {string}
@@ -42,8 +48,8 @@ export interface PatchedUserAdminRetrieveUpdateRequest {
   last_name?: string;
   /**
    *
-   * @type {UserProfileRequest}
+   * @type {string}
    * @memberof PatchedUserAdminRetrieveUpdateRequest
    */
-  profile?: UserProfileRequest;
+  phone_number?: string;
 }

@@ -25,24 +25,17 @@ def assert_response_keys(user):
     assert_exact_fields(
         user,
         [
+            "avatar",
+            "avatar_url",
             "email",
             "first_name",
             "groups",
             "id",
             "last_name",
-            "profile",
+            "phone_number",
             "role",
             "social_accounts",
             "username",
-        ],
-    )
-
-    assert_exact_fields(
-        user["profile"],
-        [
-            "avatar",
-            "avatar_url",
-            "phone_number",
         ],
     )
 
@@ -57,7 +50,7 @@ def user_data():
         "email": "changed@example.com",
         "first_name": "Changed",
         "last_name": "Test",
-        "profile": {"phone_number": "+36701111111"},
+        "phone_number": "+36701111111",
     }
 
 
@@ -118,10 +111,7 @@ def test_update_me(api_client, expected, method, request, user, user_data):
         assert response.data["email"] == user_data["email"]
         assert response.data["first_name"] == user_data["first_name"]
         assert response.data["last_name"] == user_data["last_name"]
-        assert (
-            response.data["profile"]["phone_number"]
-            == user_data["profile"]["phone_number"]
-        )
+        assert response.data["phone_number"] == user_data["phone_number"]
 
 
 # Who may reach this endpoint at all is settled by test_update_me above.
@@ -193,22 +183,20 @@ def test_update_me_avatar(api_client, method, user, request):
 
     assert response.status_code == HTTP_200_OK
 
-    assert response.data["profile"]["avatar"]["provider"] == "microsoft-graph"
-    assert response.data["profile"]["avatar_url"] == avatar_data["microsoft-graph"]
+    assert response.data["avatar"]["provider"] == "microsoft-graph"
+    assert response.data["avatar_url"] == avatar_data["microsoft-graph"]
 
     # Modify avatar provider
-    response = get_response(
-        api_client, method, url, {"profile": {"avatar_provider": "gravatar"}}
-    )
+    response = get_response(api_client, method, url, {"avatar_provider": "gravatar"})
 
     assert response.status_code == HTTP_200_OK
 
-    assert response.data["profile"]["avatar"]["provider"] == "gravatar"
-    assert response.data["profile"]["avatar_url"] == avatar_data["gravatar"]
+    assert response.data["avatar"]["provider"] == "gravatar"
+    assert response.data["avatar_url"] == avatar_data["gravatar"]
 
     # Error: Avatar does not exist for this provider
     response = get_response(
-        api_client, method, url, {"profile": {"avatar_provider": "google-oauth2"}}
+        api_client, method, url, {"avatar_provider": "google-oauth2"}
     )
 
     assert response.status_code == HTTP_400_BAD_REQUEST
@@ -218,11 +206,11 @@ def test_update_me_avatar(api_client, method, user, request):
 
     # Error: Provider is not supported
     response = get_response(
-        api_client, method, url, {"profile": {"avatar_provider": "random-provider"}}
+        api_client, method, url, {"avatar_provider": "random-provider"}
     )
 
     assert response.status_code == HTTP_400_BAD_REQUEST
-    assert response.data["profile"]["avatar_provider"][0] == ErrorDetail(
+    assert response.data["avatar_provider"][0] == ErrorDetail(
         '"random-provider" is not a valid choice.', code="invalid_choice"
     )
 

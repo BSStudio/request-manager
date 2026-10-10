@@ -80,11 +80,11 @@ const AvatarOption = ({
 const AvatarDialog = forwardRef<React.Ref<HTMLDivElement>, AvatarDialogProps>(
   ({ loading, onHide, onSave, userData, visible, ...props }, ref) => {
     const [selectedProvider, setSelectedProvider] = useState<string>(
-      userData.profile.avatar['provider'],
+      userData.avatar['provider'],
     );
 
     useEffect(() => {
-      setSelectedProvider(userData.profile.avatar['provider']);
+      setSelectedProvider(userData.avatar['provider']);
     }, [userData, visible]);
 
     const renderFooter = () => {
@@ -127,7 +127,7 @@ const AvatarDialog = forwardRef<React.Ref<HTMLDivElement>, AvatarDialogProps>(
             (provider) => (
               <AvatarOption
                 key={provider}
-                image={userData.profile.avatar[provider]}
+                image={userData.avatar[provider]}
                 onClick={() => {
                   setSelectedProvider(provider);
                 }}

@@ -3376,23 +3376,17 @@ export const AdminApiAxiosParamCreator = function (
     /**
      *
      * @param {number} id A unique integer value identifying this user.
-     * @param {UserAdminRetrieveUpdateRequest} userAdminRetrieveUpdateRequest
+     * @param {UserAdminRetrieveUpdateRequest} [userAdminRetrieveUpdateRequest]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminUsersUpdate: async (
       id: number,
-      userAdminRetrieveUpdateRequest: UserAdminRetrieveUpdateRequest,
+      userAdminRetrieveUpdateRequest?: UserAdminRetrieveUpdateRequest,
       options: AxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminUsersUpdate', 'id', id);
-      // verify required parameter 'userAdminRetrieveUpdateRequest' is not null or undefined
-      assertParamExists(
-        'adminUsersUpdate',
-        'userAdminRetrieveUpdateRequest',
-        userAdminRetrieveUpdateRequest,
-      );
       const localVarPath = `/api/v1/admin/users/{id}`.replace(
         `{${'id'}}`,
         encodeURIComponent(String(id)),
@@ -5144,13 +5138,13 @@ export const AdminApiFp = function (configuration?: Configuration) {
     /**
      *
      * @param {number} id A unique integer value identifying this user.
-     * @param {UserAdminRetrieveUpdateRequest} userAdminRetrieveUpdateRequest
+     * @param {UserAdminRetrieveUpdateRequest} [userAdminRetrieveUpdateRequest]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async adminUsersUpdate(
       id: number,
-      userAdminRetrieveUpdateRequest: UserAdminRetrieveUpdateRequest,
+      userAdminRetrieveUpdateRequest?: UserAdminRetrieveUpdateRequest,
       options?: AxiosRequestConfig,
     ): Promise<
       (
@@ -6216,13 +6210,13 @@ export const AdminApiFactory = function (
     /**
      *
      * @param {number} id A unique integer value identifying this user.
-     * @param {UserAdminRetrieveUpdateRequest} userAdminRetrieveUpdateRequest
+     * @param {UserAdminRetrieveUpdateRequest} [userAdminRetrieveUpdateRequest]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminUsersUpdate(
       id: number,
-      userAdminRetrieveUpdateRequest: UserAdminRetrieveUpdateRequest,
+      userAdminRetrieveUpdateRequest?: UserAdminRetrieveUpdateRequest,
       options?: any,
     ): AxiosPromise<UserAdminRetrieveUpdate> {
       return localVarFp
@@ -7329,14 +7323,14 @@ export class AdminApi extends BaseAPI {
   /**
    *
    * @param {number} id A unique integer value identifying this user.
-   * @param {UserAdminRetrieveUpdateRequest} userAdminRetrieveUpdateRequest
+   * @param {UserAdminRetrieveUpdateRequest} [userAdminRetrieveUpdateRequest]
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminUsersUpdate(
     id: number,
-    userAdminRetrieveUpdateRequest: UserAdminRetrieveUpdateRequest,
+    userAdminRetrieveUpdateRequest?: UserAdminRetrieveUpdateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)

@@ -53,10 +53,10 @@ const socialAccounts: Record<string, { icon: string; label: string }> = {
 };
 
 function toFormValues(user: UserAdminRetrieveUpdate) {
-  const phone = user.profile.phone_number;
+  const phone = user.phone_number;
   return {
     ...user,
-    profile: { ...user.profile, phone_number: phone && formatPhone(phone) },
+    phone_number: phone && formatPhone(phone),
   };
 }
 
@@ -104,11 +104,7 @@ const ProfileSection = ({ userData }: ProfileSectionProps) => {
   }, [reset, userData]);
 
   const onAvatarSave = async (provider: string) => {
-    await mutateAsync({
-      profile: {
-        avatar_provider: provider as AvatarProviderEnum,
-      },
-    })
+    await mutateAsync({ avatar_provider: provider as AvatarProviderEnum })
       .then(async (response) => {
         showToast({
           detail: 'Profilkép módosítva',
@@ -129,11 +125,8 @@ const ProfileSection = ({ userData }: ProfileSectionProps) => {
   };
 
   const onSubmit: SubmitHandler<UserAdminRetrieveUpdate> = async (data) => {
-    const phone = data.profile.phone_number;
-    await mutateAsync({
-      ...data,
-      profile: { ...data.profile, phone_number: phone && toE164(phone) },
-    })
+    const phone = data.phone_number;
+    await mutateAsync({ ...data, phone_number: phone && toE164(phone) })
       .then(async (response) => {
         showToast({
           detail: 'Felhasználó módosítva',
@@ -206,7 +199,7 @@ const ProfileSection = ({ userData }: ProfileSectionProps) => {
             disabled={disabled}
             icon="pi-phone"
             label="Telefonszám"
-            name="profile.phone_number"
+            name="phone_number"
           >
             <InputText type="tel" />
           </FormField>
@@ -293,7 +286,7 @@ const ProfileSection = ({ userData }: ProfileSectionProps) => {
           <span className="font-medium mb-2 text-900">Profilkép</span>
           <Avatar
             className="h-10rem w-10rem"
-            image={userData.profile.avatar_url}
+            image={userData.avatar_url}
             label={getInitials(fullName)}
             pt={{ label: { className: 'font-medium select-none' } }}
             shape="circle"

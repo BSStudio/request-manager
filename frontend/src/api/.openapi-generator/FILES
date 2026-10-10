@@ -74,8 +74,6 @@ models/user-admin-retrieve-update.ts
 models/user-admin-worked-on.ts
 models/user-nested-detail.ts
 models/user-nested-list.ts
-models/user-profile-request.ts
-models/user-profile.ts
 models/user-request.ts
 models/user-social-auth.ts
 models/user.ts

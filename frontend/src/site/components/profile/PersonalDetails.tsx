@@ -43,9 +43,7 @@ function toValues(user: User): ProfileValues {
     email: user.email ?? '',
     first_name: user.first_name ?? '',
     last_name: user.last_name ?? '',
-    phone_number: user.profile.phone_number
-      ? formatPhone(user.profile.phone_number)
-      : '',
+    phone_number: user.phone_number ? formatPhone(user.phone_number) : '',
   };
 }
 
@@ -101,9 +99,7 @@ export default function PersonalDetails({ user }: { user: User }) {
         email: values.email,
         first_name: values.first_name,
         last_name: values.last_name,
-        profile: {
-          phone_number: toE164(values.phone_number),
-        },
+        phone_number: toE164(values.phone_number),
       });
       cacheUser(data);
       reset(toValues(data));
@@ -121,16 +117,13 @@ export default function PersonalDetails({ user }: { user: User }) {
     } catch (error) {
       const fields = isAxiosError(error)
         ? (error.response?.data as
-            | (Partial<Record<keyof ProfileValues, string[]>> & {
-                profile?: { phone_number?: string[] };
-              })
-            | undefined)
+            Partial<Record<keyof ProfileValues, string[]>> | undefined)
         : undefined;
       const fieldErrors = {
         email: fields?.email?.[0],
         first_name: fields?.first_name?.[0],
         last_name: fields?.last_name?.[0],
-        phone_number: fields?.profile?.phone_number?.[0],
+        phone_number: fields?.phone_number?.[0],
       };
       const entries = Object.entries(fieldErrors).filter(
         (entry): entry is [keyof ProfileValues, string] => !!entry[1],

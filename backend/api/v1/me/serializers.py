@@ -14,7 +14,14 @@ class OAuth2ConnectSerializer(Serializer):
     nonce = CharField()
 
 
-class UserProfileSerializer(ModelSerializer):
+class UserSocialAuthSerializer(ModelSerializer):
+    class Meta:
+        model = UserSocialAuth
+        fields = ("provider", "uid")
+        read_only_fields = ("provider", "uid")
+
+
+class UserSerializer(ModelSerializer):
     AVATAR_PROVIDER_CHOICES = (
         ("google-oauth2", "Google"),
         ("gravatar", "Gravatar"),
@@ -26,33 +33,11 @@ class UserProfileSerializer(ModelSerializer):
         required=False,
         write_only=True,
     )
-    phone_number = PhoneNumberField(required=False)
-
-    class Meta:
-        model = User
-        fields = (
-            "avatar",
-            "avatar_provider",
-            "avatar_url",
-            "phone_number",
-        )
-        read_only_fields = ("avatar", "avatar_url")
-        write_only_fields = ("avatar_provider",)
-
-
-class UserSocialAuthSerializer(ModelSerializer):
-    class Meta:
-        model = UserSocialAuth
-        fields = ("provider", "uid")
-        read_only_fields = ("provider", "uid")
-
-
-class UserSerializer(ModelSerializer):
     email = EmailField(required=False)
     first_name = CharField(max_length=150, required=False)
     groups = SlugRelatedField(many=True, read_only=True, slug_field="name")
     last_name = CharField(max_length=150, required=False)
-    profile = UserProfileSerializer(source="*")
+    phone_number = PhoneNumberField(required=False)
     role = CharField(read_only=True)
     social_accounts = UserSocialAuthSerializer(
         many=True, read_only=True, source="social_auth"
@@ -61,17 +46,28 @@ class UserSerializer(ModelSerializer):
     class Meta:
         model = User
         fields = (
+            "avatar",
+            "avatar_provider",
+            "avatar_url",
             "email",
             "first_name",
             "groups",
             "id",
             "last_name",
-            "profile",
+            "phone_number",
             "role",
             "social_accounts",
             "username",
         )
-        read_only_fields = ("groups", "id", "role", "social_accounts", "username")
+        read_only_fields = (
+            "avatar",
+            "avatar_url",
+            "groups",
+            "id",
+            "role",
+            "social_accounts",
+            "username",
+        )
 
     def update(self, instance, validated_data):
         email = validated_data.get("email")
