@@ -5,6 +5,7 @@ from django.db.models.signals import post_delete
 
 from common.models import User
 from devtools.people import EMAIL_DOMAIN, PEOPLE, create_people
+from devtools.scenarios import create_scenarios
 from video_requests.models import Request, Video
 from video_requests.signals import update_request_status_after_video_delete
 
@@ -31,7 +32,8 @@ class Command(BaseCommand):
 
         with transaction.atomic():
             delete_seed_data()
-            create_people()
+            people = create_people()
+            create_scenarios(people)
 
         self.stdout.write(
             self.style.SUCCESS(

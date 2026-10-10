@@ -1,7 +1,9 @@
 from datetime import timedelta
 from io import StringIO
+from unittest.mock import patch
 
 import pytest
+from django.core import mail
 from django.core.management import call_command
 from model_bakery import baker
 
@@ -120,3 +122,11 @@ def test_answering_yes_seeds(monkeypatch):
     call_command("seed_dev_data", stdout=StringIO())
 
     assert User.objects.filter(username="admin.aladar").exists()
+
+
+def test_seeding_sends_no_mail_and_queues_no_task():
+    with patch("celery.app.task.Task.apply_async") as apply_async:
+        seed()
+
+    apply_async.assert_not_called()
+    assert mail.outbox == []
