@@ -130,3 +130,19 @@ def test_seeding_sends_no_mail_and_queues_no_task():
 
     apply_async.assert_not_called()
     assert mail.outbox == []
+
+
+def test_every_run_creates_the_same_data():
+    def snapshot():
+        return sorted(
+            Request.objects.values_list(
+                "title", "status", "start_datetime", "requester__username"
+            )
+        )
+
+    seed()
+    first = snapshot()
+
+    seed()
+
+    assert snapshot() == first

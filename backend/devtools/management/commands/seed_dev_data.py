@@ -4,6 +4,7 @@ from django.db.models import Q
 from django.db.models.signals import post_delete
 
 from common.models import User
+from devtools.bulk import create_bulk
 from devtools.people import EMAIL_DOMAIN, PEOPLE, create_people
 from devtools.scenarios import create_scenarios
 from video_requests.models import Request, Video
@@ -34,6 +35,7 @@ class Command(BaseCommand):
             delete_seed_data()
             people = create_people()
             create_scenarios(people)
+            create_bulk(people)
 
         self.stdout.write(
             self.style.SUCCESS(
