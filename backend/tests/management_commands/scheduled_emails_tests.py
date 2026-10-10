@@ -20,7 +20,6 @@ from tests.factories import make_user
 from video_requests.emails import (
     email_crew_daily_reminder,
     email_production_manager_unfinished_requests,
-    email_responsible_overdue_request,
     email_staff_weekly_tasks,
 )
 from video_requests.models import Request, Video
@@ -268,80 +267,150 @@ class TestUnfinishedRequests:
         assert not mail.outbox
 
 
+def mentioned(message, requests):
+    """Titles of ``requests`` found in the plain-text body, in the order they appear."""
+    found = [
+        video_request
+        for video_request in requests
+        if video_request.title in message.body
+    ]
+    return [
+        video_request.title
+        for video_request in sorted(found, key=lambda r: message.body.index(r.title))
+    ]
+
+
+def sent_with(subject):
+    return [message for message in mail.outbox if message.subject == subject]
+
+
 class TestOverdueRequests:
+    """A weekly digest of shot requests whose videos missed the deadline."""
 
     @pytest.fixture(autouse=True)
     def today(self, time_machine):
         time_machine.move_to(TODAY)
 
     @pytest.fixture
-    def requests(self, requester, staff_user):
-        other_staff_member = make_user(is_staff=True)
-        overdue = [
+    def responsibles(self, staff_user):
+        return staff_user, make_user(is_staff=True)
+
+    @pytest.fixture
+    def overdue(self, requester, responsibles):
+        """In deadline order; the deadline is three weeks after the event ends."""
+        first, second = responsibles
+        return [
+            make_request(
+                "2020-09-29T15:30:00+01:00",
+                Request.Statuses.UPLOADED,
+                requester=requester,
+                responsible=first,
+            ),
             make_request(
                 "2020-10-05T18:00:00+01:00",
+                Request.Statuses.RECORDED,
+                requester=requester,
+                responsible=second,
+            ),
+            make_request(
+                "2020-10-12T18:00:00+01:00",
+                Request.Statuses.RECORDED,
+                requester=requester,
+                responsible=first,
+            ),
+            make_request(
+                "2020-10-14T18:00:00+01:00",
+                Request.Statuses.UPLOADED,
+                requester=requester,
+            ),
+        ]
+
+    @pytest.fixture
+    def not_overdue(self, requester, staff_user):
+        return [
+            # Never shot, so not a video that is late.
+            make_request(
+                "2020-09-29T15:30:00+01:00",
+                Request.Statuses.REQUESTED,
                 requester=requester,
                 responsible=staff_user,
             ),
             make_request(
                 "2020-09-29T15:30:00+01:00",
+                Request.Statuses.ACCEPTED,
+                requester=requester,
+                responsible=staff_user,
+            ),
+            # Already cut.
+            make_request(
+                "2020-09-29T15:30:00+01:00",
+                Request.Statuses.EDITED,
+                requester=requester,
+                responsible=staff_user,
+            ),
+            # Still within its deadline.
+            make_request(
+                "2020-11-05T21:00:00+01:00",
                 Request.Statuses.UPLOADED,
                 requester=requester,
-                responsible=other_staff_member,
+                responsible=staff_user,
             ),
         ]
-        # Already archived, and not late yet.
-        make_request(
-            "2020-09-29T15:30:00+01:00",
-            Request.Statuses.ARCHIVED,
-            requester=requester,
-        )
-        make_request(
-            "2020-11-05T21:00:00+01:00",
-            Request.Statuses.UPLOADED,
-            requester=requester,
-        )
-        return overdue, [staff_user, other_staff_member]
 
-    def test_each_one_is_chased_with_the_chain_of_command_copied_in(
-        self, editor_in_chief, production_manager, requests
+    def test_each_responsible_gets_one_digest_of_their_own_requests(
+        self, overdue, not_overdue, responsibles
     ):
-        overdue, responsibles = requests
+        assert run("email_overdue_requests") == (
+            "Overdue requests emails were sent: 4 requests, 2 responsibles.\n"
+        )
 
-        with patch(
-            "video_requests.emails.email_responsible_overdue_request",
-            wraps=email_responsible_overdue_request,
-        ) as send:
-            assert run("email_overdue_requests") == (
-                f"Overdue request email was sent successfully. ({overdue[0].title})\n"
-                f"Overdue request email was sent successfully. ({overdue[1].title})\n"
-            )
+        first, second = responsibles
+        digests = {
+            tuple(message.to): message
+            for message in sent_with("Lejárt határidejű felkéréseid")
+        }
+        assert digests.keys() == {(first.email,), (second.email,)}
+        assert not any(message.cc for message in digests.values())
+        everything = overdue + not_overdue
+        assert mentioned(digests[(first.email,)], everything) == [
+            overdue[0].title,
+            overdue[2].title,
+        ]
+        assert mentioned(digests[(second.email,)], everything) == [overdue[1].title]
+        assert "Határidő: 2020. okt. 21. (29 napja lejárt)" in (
+            digests[(first.email,)].body
+        )
 
-        assert send.call_count == 2
-        assert len(mail.outbox) == 2
+    def test_the_editor_in_chief_and_production_managers_get_one_summary(
+        self, editor_in_chief, production_manager, overdue, not_overdue
+    ):
+        run("email_overdue_requests")
 
-        for message, video_request, responsible in zip(
-            mail.outbox, overdue, responsibles
-        ):
-            assert responsible.email in message.to
-            assert production_manager.email in message.cc
-            assert editor_in_chief.email in message.cc
-            assert (
-                message.subject == f"{video_request.title} | Lejárt határidejű felkérés"
-            )
+        (summary,) = sent_with("Lejárt határidejű felkérések")
+        assert set(summary.to) == {editor_in_chief.email, production_manager.email}
+        assert not summary.cc
+        assert mentioned(summary, overdue + not_overdue) == [
+            video_request.title for video_request in overdue
+        ]
+        assert "Felelős: nincs" in summary.body
 
-    def test_nothing_overdue_is_reported_instead_of_mailed(self, requests):
-        overdue, _ = requests
-        overdue[0].status = Request.Statuses.EDITED
-        overdue[0].save()
-        overdue[1].status = Request.Statuses.DONE
-        overdue[1].save()
+    def test_a_responsible_outside_the_studio_gets_no_digest(
+        self, editor_in_chief, requester
+    ):
+        outsider = make_user()
+        make_request(
+            "2020-10-05T18:00:00+01:00",
+            Request.Statuses.RECORDED,
+            requester=requester,
+            responsible=outsider,
+        )
 
-        with patch(
-            "video_requests.emails.email_responsible_overdue_request",
-            wraps=email_responsible_overdue_request,
-        ) as send:
-            assert run("email_overdue_requests") == "No overdue request was found.\n"
+        run("email_overdue_requests")
 
-        send.assert_not_called()
+        assert not sent_with("Lejárt határidejű felkéréseid")
+        assert len(sent_with("Lejárt határidejű felkérések")) == 1
+
+    def test_nothing_overdue_is_reported_instead_of_mailed(self, not_overdue):
+        assert run("email_overdue_requests") == "No overdue request was found.\n"
+
         assert not mail.outbox

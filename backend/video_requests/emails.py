@@ -272,28 +272,39 @@ def email_production_manager_unfinished_requests(requests):
     msg.send()
 
 
-def email_responsible_overdue_request(request):
-    context = {"request": request}
+def email_responsible_overdue_requests(responsible, requests):
+    context = {"requests": requests, "summary": False}
 
     msg_plain = render_to_string("email/txt/responsible_overdue_request.txt", context)
     msg_html = render_to_string("email/html/responsible_overdue_request.html", context)
 
-    subject = f"{request.title} | Lejárt határidejű felkérés"
-    responsible_email_address = (
-        [request.responsible.email]
-        if request.responsible and request.responsible.is_staff
-        else []
-    )
-    editor_in_chief_email_address = [user.email for user in get_editor_in_chief()]
-    production_manager_email_address = [user.email for user in get_production_manager()]
+    subject = "Lejárt határidejű felkéréseid"
 
     msg = EmailMultiAlternatives(
         subject=subject,
         body=msg_plain,
-        to=responsible_email_address,
-        cc=list(
-            set().union(editor_in_chief_email_address, production_manager_email_address)
-        ),
+        to=[responsible.email],
+    )
+
+    msg.attach_alternative(msg_html, TEXT_HTML)
+    msg.send()
+
+
+def email_staff_overdue_requests(requests):
+    context = {"requests": requests, "summary": True}
+
+    msg_plain = render_to_string("email/txt/responsible_overdue_request.txt", context)
+    msg_html = render_to_string("email/html/responsible_overdue_request.html", context)
+
+    subject = "Lejárt határidejű felkérések"
+    recipients = {user.email for user in get_editor_in_chief()} | {
+        user.email for user in get_production_manager()
+    }
+
+    msg = EmailMultiAlternatives(
+        subject=subject,
+        body=msg_plain,
+        to=sorted(recipients),
     )
 
     msg.attach_alternative(msg_html, TEXT_HTML)
