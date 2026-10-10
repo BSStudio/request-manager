@@ -4,6 +4,10 @@ from core.settings._auth_social import *
 DEBUG = True
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 
+# Fixed, unlike base.py's random key per process: sessions survive a restart, and
+# the ones dev_session creates in its own process verify on the server.
+SECRET_KEY = config("APP_SECRET_KEY", default="django-insecure-request-manager-dev")
+
 # Enable local Django user based login
 AUTHENTICATION_BACKENDS += ("django.contrib.auth.backends.ModelBackend",)
 
