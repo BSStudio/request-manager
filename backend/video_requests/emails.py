@@ -10,6 +10,18 @@ from video_requests.models import Comment, Request, Todo, Video
 TEXT_HTML = "text/html"
 
 
+def get_crew_recipients(request):
+    """The staff crew in To, the editor in chief and a staff responsible in Cc, each once."""
+    to = {
+        crew_member.member.email
+        for crew_member in request.crew.filter(member__is_staff=True)
+    }
+    cc = {user.email for user in get_editor_in_chief()}
+    if request.responsible and request.responsible.is_staff:
+        cc.add(request.responsible.email)
+    return sorted(to), sorted(cc - to)
+
+
 def get_email_avatar_url(user):
     # Microsoft avatars are stored as data: URIs, which Gmail and Outlook do not show.
     url = user.avatar_url
@@ -135,7 +147,7 @@ def email_crew_daily_reminder(request, crew_members):
     msg = EmailMultiAlternatives(
         subject=subject,
         body=msg_plain,
-        to=[user.member.email for user in crew_members],
+        to=sorted({user.member.email for user in crew_members}),
     )
 
     msg.attach_alternative(msg_html, TEXT_HTML)
@@ -160,26 +172,18 @@ def email_crew_new_comment(comment_id):
         subject = f"{comment.request.title} | Új üzenet a felkérőtől"
     else:
         subject = f"{comment.request.title} | Új üzenet a felkérőnek"
-    editor_in_chief_email_address = [user.email for user in get_editor_in_chief()]
-    responsible_email_address = (
-        [comment.request.responsible.email]
-        if comment.request.responsible and comment.request.responsible.is_staff
-        else []
-    )
-    crew_members_email_addresses = [
-        user.member.email for user in comment.request.crew.filter(member__is_staff=True)
-    ]
+    to, cc = get_crew_recipients(comment.request)
 
     msg = EmailMultiAlternatives(
         subject=subject,
         body=msg_plain,
-        to=crew_members_email_addresses,
-        cc=list(set().union(editor_in_chief_email_address, responsible_email_address)),
+        to=to,
+        cc=cc,
     )
 
     msg.attach_alternative(msg_html, TEXT_HTML)
     msg.send()
-    return f"New comment e-mail was sent to {[crew_members_email_addresses, editor_in_chief_email_address, responsible_email_address]} successfully."
+    return f"New comment e-mail was sent to {to + cc} successfully."
 
 
 @shared_task
@@ -198,26 +202,18 @@ def email_crew_request_modified(
     msg_html = render_to_string("email/html/crew_request_modified.html", context)
 
     subject = f"{request.title} | Felkérés módosítva"
-    editor_in_chief_email_address = [user.email for user in get_editor_in_chief()]
-    responsible_email_address = (
-        [request.responsible.email]
-        if request.responsible and request.responsible.is_staff
-        else []
-    )
-    crew_members_email_addresses = [
-        user.member.email for user in request.crew.filter(member__is_staff=True)
-    ]
+    to, cc = get_crew_recipients(request)
 
     msg = EmailMultiAlternatives(
         subject=subject,
         body=msg_plain,
-        to=crew_members_email_addresses,
-        cc=list(set().union(editor_in_chief_email_address, responsible_email_address)),
+        to=to,
+        cc=cc,
     )
 
     msg.attach_alternative(msg_html, TEXT_HTML)
     msg.send()
-    return f"Request modified notification e-mail was sent to {[crew_members_email_addresses, editor_in_chief_email_address, responsible_email_address]} successfully."
+    return f"Request modified notification e-mail was sent to {to + cc} successfully."
 
 
 @shared_task
