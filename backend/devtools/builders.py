@@ -25,8 +25,10 @@ def create_request(
     responsible: User | None = None,
     requested_by: User | None = None,
     additional_data: dict | None = None,
+    created: datetime | None = None,
 ) -> Request:
-    return Request.objects.create(
+    """Without ``created``, submitted three weeks before the event, or now."""
+    request = Request.objects.create(
         title=title,
         start_datetime=start,
         end_datetime=start + timedelta(hours=hours),
@@ -37,6 +39,15 @@ def create_request(
         responsible=responsible,
         additional_data=additional_data or {},
     )
+    _backdate(request, created or min(timezone.now(), start - timedelta(weeks=3)))
+    return request
+
+
+def _backdate(instance: Request | Comment, created: datetime) -> None:
+    # auto_now_add ignores a value passed to create(), and a later save() writes
+    # back whatever the instance holds.
+    instance.created = created
+    type(instance).objects.filter(pk=instance.pk).update(created=created)
 
 
 def add_video(
@@ -87,8 +98,7 @@ def add_comment(
     comment = Comment.objects.create(
         request=request, author=author, text=text, internal=internal
     )
-    # auto_now_add ignores a value passed to create().
-    Comment.objects.filter(pk=comment.pk).update(created=created)
+    _backdate(comment, created)
     return comment
 
 

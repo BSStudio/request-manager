@@ -5,6 +5,8 @@ from unittest.mock import patch
 import pytest
 from django.core import mail
 from django.core.management import CommandError, call_command
+from django.db.models import F
+from django.utils import timezone
 from model_bakery import baker
 
 from common.models import Ban, User
@@ -202,3 +204,12 @@ def test_me_sends_no_mail_and_queues_no_task():
 
     apply_async.assert_not_called()
     assert mail.outbox == []
+
+
+def test_requests_were_submitted_before_their_events_and_messages():
+    seed(me="minta.anna")
+
+    assert not Request.objects.filter(
+        start_datetime__lt=timezone.now(), created__gte=F("start_datetime")
+    ).exists()
+    assert not Comment.objects.filter(created__lt=F("request__created")).exists()

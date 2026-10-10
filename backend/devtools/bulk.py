@@ -163,9 +163,7 @@ def _create_past_request(rng: random.Random, requester: User, crew) -> Request:
         place=rng.choice(PLACES),
         responsible=responsible,
         additional_data=_outcome_data(outcome, title),
-    )
-    Request.objects.filter(pk=request.pk).update(
-        created=start - timedelta(days=rng.randint(7, 40))
+        created=start - timedelta(days=rng.randint(7, 40)),
     )
 
     if rng.random() < 0.4:
