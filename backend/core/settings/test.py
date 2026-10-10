@@ -8,6 +8,8 @@ CELERY_BROKER_URL = config("CELERY_BROKER", default="redis://localhost:6379/1")
 # Use the default Django authentication backend
 AUTHENTICATION_BACKENDS += ["django.contrib.auth.backends.ModelBackend"]
 
+INSTALLED_APPS += ["devtools"]
+
 # Test environment is not HTTPS
 SOCIAL_AUTH_REDIRECT_IS_HTTPS = False
 

@@ -7,6 +7,9 @@ ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 # Enable local Django user based login
 AUTHENTICATION_BACKENDS += ("django.contrib.auth.backends.ModelBackend",)
 
+# Test data commands; production settings never install them.
+INSTALLED_APPS += ["devtools"]
+
 # Enable Browsable API
 REST_FRAMEWORK.setdefault("DEFAULT_RENDERER_CLASSES", []).append(
     "rest_framework.renderers.BrowsableAPIRenderer"
