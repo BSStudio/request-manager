@@ -8,8 +8,7 @@ import { dateTimeToLocaleString } from 'admin/helpers/DateToLocaleStringCoverter
 import TimeAgo from 'admin/helpers/TimeAgo';
 import { History } from 'api/models/history';
 
-export interface HistoryDates // TODO: Rename?
-  extends Omit<History, 'date'> {
+export interface HistoryDates extends Omit<History, 'date'> {
   date: Date;
 }
 

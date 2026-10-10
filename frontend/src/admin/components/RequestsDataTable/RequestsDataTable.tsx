@@ -26,8 +26,10 @@ const VideosDataTable = lazy(
   () => import('admin/components/VideosDataTable/VideosDataTable'),
 );
 
-interface RequestAdminListDates // TODO: Rename?
-  extends Omit<RequestAdminList, 'created' | 'start_datetime'> {
+interface RequestAdminListDates extends Omit<
+  RequestAdminList,
+  'created' | 'start_datetime'
+> {
   created: Date;
   start_datetime: Date;
 }

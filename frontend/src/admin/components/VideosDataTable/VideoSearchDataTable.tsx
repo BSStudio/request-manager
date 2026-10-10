@@ -13,8 +13,10 @@ import { dateToLocaleString } from 'admin/helpers/DateToLocaleStringCoverters';
 import useMobile from 'admin/hooks/useMobile';
 import { VideoAdminSearch } from 'api/models';
 
-interface VideoAdminSearchDates // TODO: Rename?
-  extends Omit<VideoAdminSearch, 'last_aired' | 'request_start_datetime'> {
+interface VideoAdminSearchDates extends Omit<
+  VideoAdminSearch,
+  'last_aired' | 'request_start_datetime'
+> {
   last_aired: Date | null;
   request_start_datetime: Date;
 }

@@ -73,11 +73,10 @@ const VideosDataTable = lazy(
   () => import('admin/components/VideosDataTable/VideosDataTable'),
 );
 
-interface RequestAdminRetrieveDates // TODO: Rename?
-  extends Omit<
-    RequestAdminRetrieve,
-    'created' | 'deadline' | 'end_datetime' | 'start_datetime'
-  > {
+interface RequestAdminRetrieveDates extends Omit<
+  RequestAdminRetrieve,
+  'created' | 'deadline' | 'end_datetime' | 'start_datetime'
+> {
   created: Date;
   deadline: Date;
   end_datetime: Date;
