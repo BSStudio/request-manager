@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { useState } from 'react';
 
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { Button } from 'primereact/button';
@@ -27,6 +27,7 @@ import { showErrorToast } from 'admin/helpers/showErrorToast';
 import TimeAgo from 'admin/helpers/TimeAgo';
 import { useTheme } from 'admin/hooks/useTheme';
 import { isNotFound } from 'api/errors';
+import type { CommentAdminListRetrieve } from 'api/models';
 import {
   getAvatar,
   getName,
@@ -34,26 +35,28 @@ import {
   isAdmin,
 } from 'helpers/LocalStorageHelper';
 
-// TODO: Review props
-type CommentCardProps = CommentCardCreateProps & {
-  commentId: number;
-  isInternal?: boolean;
-  setEditing: Dispatch<SetStateAction<number>>;
-  showButtons?: boolean;
-  text: string;
-};
+interface CommentAdminListRetrieveDates extends Omit<
+  CommentAdminListRetrieve,
+  'created'
+> {
+  created: Date;
+}
 
-type CommentCardCreateProps = CommentCardHeaderProps & {
+type CommentProps = {
+  comment: CommentAdminListRetrieveDates;
+  isRequester: boolean;
   requestId: number;
 };
 
+type CommentCardProps = CommentProps & { onEdit: () => void };
+
+type CommentCardEditProps = CommentProps & { onClose: () => void };
+
 type CommentCardHeaderProps = {
-  authorName: string;
-  avatarUrl?: string;
+  comment: CommentAdminListRetrieveDates;
+  // Given while editing, for the internal toggle.
   control?: Control<IComment>;
-  creationDate?: Date;
-  isEditing?: boolean;
-  isRequester?: boolean;
+  isRequester: boolean;
 };
 
 type CommentCardWrapperProps = {
@@ -88,13 +91,12 @@ const internalTemplate = (option: InternalOption) => {
 };
 
 const CommentCardHeader = ({
-  authorName,
-  avatarUrl,
+  comment,
   control,
-  creationDate,
-  isEditing,
   isRequester,
 }: CommentCardHeaderProps) => {
+  const isEditing = !!control;
+
   return (
     <div className="grid pb-2">
       <div className="align-items-center col-12 flex justify-content-between md:col-6 md:justify-content-start">
@@ -102,20 +104,20 @@ const CommentCardHeader = ({
         <div className="align-items-center flex">
           <Avatar
             className="flex-shrink-0 h-2rem mr-2 w-2rem"
-            image={avatarUrl || undefined}
-            name={authorName}
+            image={comment.author.avatar_url || undefined}
+            name={comment.author.full_name}
           />
-          <span className="font-medium mr-3 text-900">{authorName}</span>
-        </div>
-        {creationDate && (
-          <span
-            className="created-date-text font-medium text-500 text-sm"
-            data-pr-position="bottom"
-            data-pr-tooltip={dateTimeToLocaleString(creationDate)}
-          >
-            <TimeAgo datetime={creationDate} locale="hu_HU" />
+          <span className="font-medium mr-3 text-900">
+            {comment.author.full_name}
           </span>
-        )}
+        </div>
+        <span
+          className="created-date-text font-medium text-500 text-sm"
+          data-pr-position="bottom"
+          data-pr-tooltip={dateTimeToLocaleString(comment.created)}
+        >
+          <TimeAgo datetime={comment.created} locale="hu_HU" />
+        </span>
       </div>
 
       <div
@@ -179,21 +181,16 @@ const CommentCardWrapper = ({
 };
 
 const CommentCard = ({
-  authorName,
-  avatarUrl,
-  commentId,
-  creationDate,
-  isInternal,
+  comment,
   isRequester,
+  onEdit,
   requestId,
-  setEditing,
-  showButtons,
-  text,
 }: CommentCardProps) => {
   const queryClient = useQueryClient();
   const { mutateAsync: deleteComment, isPending } = useMutation(
-    requestCommentDeleteMutation(requestId, commentId),
+    requestCommentDeleteMutation(requestId, comment.id),
   );
+  const showButtons = comment.author.id === getUserId() || isAdmin();
 
   const handleDelete = async () => {
     await deleteComment()
@@ -222,20 +219,17 @@ const CommentCard = ({
       icon: 'pi pi-exclamation-triangle',
       message:
         'Az alábbi hozzászólás visszavonhatatlanul törlés fog kerülni:\n\n' +
-        text,
+        comment.text,
       style: { whiteSpace: 'pre-wrap', width: '50vw' },
     });
   };
 
   return (
-    <CommentCardWrapper isInternal={isInternal}>
-      <CommentCardHeader
-        authorName={authorName}
-        avatarUrl={avatarUrl}
-        creationDate={creationDate}
-        isRequester={isRequester}
-      />
-      <p className="comment-text line-height-3 m-0 p-0 text-600">{text}</p>
+    <CommentCardWrapper isInternal={comment.internal}>
+      <CommentCardHeader comment={comment} isRequester={isRequester} />
+      <p className="comment-text line-height-3 m-0 p-0 text-600">
+        {comment.text}
+      </p>
       {showButtons ? (
         <div className="flex flex-wrap justify-content-end">
           <Button
@@ -255,9 +249,7 @@ const CommentCard = ({
             disabled={isPending}
             icon="pi pi-pencil"
             label="Szerkesztés"
-            onClick={() => {
-              setEditing(commentId);
-            }}
+            onClick={onEdit}
             size="small"
             text
           />
@@ -270,24 +262,19 @@ const CommentCard = ({
 };
 
 const CommentCardEdit = ({
-  authorName,
-  avatarUrl,
-  commentId,
-  creationDate,
-  isInternal,
+  comment,
   isRequester,
+  onClose,
   requestId,
-  setEditing,
-  text,
-}: CommentCardProps) => {
+}: CommentCardEditProps) => {
   const [loading, setLoading] = useState<boolean>(false);
   const { control, handleSubmit, setError } = useForm<IComment>({
-    defaultValues: { internal: !!isInternal, text: text },
+    defaultValues: { internal: comment.internal, text: comment.text },
     shouldFocusError: false,
   });
   const isInternalWatched = useWatch({ control, name: 'internal' });
   const { mutateAsync } = useMutation(
-    requestCommentUpdateMutation(requestId, commentId),
+    requestCommentUpdateMutation(requestId, comment.id),
   );
   const queryClient = useQueryClient();
 
@@ -299,14 +286,14 @@ const CommentCardEdit = ({
         await queryClient.invalidateQueries({
           queryKey: queryKeys.requestComments(requestId),
         });
-        setEditing(0);
+        onClose();
       })
       .catch(async (error) => {
         if (isNotFound(error)) {
           await queryClient.invalidateQueries({
             queryKey: queryKeys.requestComments(requestId),
           });
-          setEditing(0);
+          onClose();
         } else {
           setError('text', {
             message: getErrorMessage(error),
@@ -322,11 +309,8 @@ const CommentCardEdit = ({
   return (
     <CommentCardWrapper isInternal={isInternalWatched}>
       <CommentCardHeader
-        authorName={authorName}
-        avatarUrl={avatarUrl}
+        comment={comment}
         control={control}
-        creationDate={creationDate}
-        isEditing
         isRequester={isRequester}
       />
       <form
@@ -369,9 +353,7 @@ const CommentCardEdit = ({
             disabled={loading}
             icon="pi pi-times"
             label="Mégsem"
-            onClick={() => {
-              setEditing(0);
-            }}
+            onClick={onClose}
             severity="secondary"
             size="small"
             text
@@ -391,11 +373,8 @@ const CommentCardEdit = ({
     </CommentCardWrapper>
   );
 };
-const CommentCardNew = ({
-  authorName,
-  avatarUrl,
-  requestId,
-}: CommentCardCreateProps) => {
+const CommentCardNew = ({ requestId }: { requestId: number }) => {
+  const authorName = getName();
   const [loading, setLoading] = useState<boolean>(false);
   const { control, handleSubmit, reset, setError } = useForm<IComment>({
     defaultValues: { internal: false, text: '' },
@@ -438,7 +417,7 @@ const CommentCardNew = ({
         <div className="align-items-center col-6 flex">
           <Avatar
             className="flex-shrink-0 h-2rem mr-2 w-2rem"
-            image={avatarUrl || undefined}
+            image={getAvatar()}
             name={authorName}
           />
           <span className="font-medium mr-3 text-900">{authorName}</span>
@@ -522,38 +501,23 @@ const CommentCards = ({ requestId, requesterId }: CommentCardsProps) => {
       {data.map((comment) =>
         editingId === comment.id ? (
           <CommentCardEdit
-            authorName={comment.author.full_name}
-            avatarUrl={comment.author.avatar_url}
-            commentId={comment.id}
-            creationDate={comment.created}
-            isInternal={comment.internal}
+            comment={comment}
             isRequester={requesterId === comment.author.id}
             key={comment.id}
+            onClose={() => setEditingId(0)}
             requestId={requestId}
-            setEditing={setEditingId}
-            text={comment.text}
           />
         ) : (
           <CommentCard
-            authorName={comment.author.full_name}
-            avatarUrl={comment.author.avatar_url}
-            commentId={comment.id}
-            creationDate={comment.created}
-            isInternal={comment.internal}
+            comment={comment}
             isRequester={requesterId === comment.author.id}
             key={comment.id}
+            onEdit={() => setEditingId(comment.id)}
             requestId={requestId}
-            setEditing={setEditingId}
-            showButtons={comment.author.id === getUserId() || isAdmin()}
-            text={comment.text}
           />
         ),
       )}
-      <CommentCardNew
-        authorName={getName()}
-        avatarUrl={getAvatar()}
-        requestId={requestId}
-      />
+      <CommentCardNew requestId={requestId} />
     </>
   );
 };
