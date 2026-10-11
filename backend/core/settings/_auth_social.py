@@ -24,6 +24,11 @@ SOCIAL_AUTH_IMMUTABLE_USER_FIELDS = ["first_name", "last_name"]
 # Available OAuth2 providers
 SOCIAL_AUTH_PROVIDERS = ["authsch", "bss-login", "google-oauth2", "microsoft-graph"]
 
+# social_django's 0020 migration labels older associations with the key their uid
+# came from. It only knows built-in backends, and an unlabelled association
+# without the uid in extra_data can no longer log in.
+SOCIAL_AUTH_OLD_ID_KEYS = {"authsch": "sub", "bss-login": "sub"}
+
 # AuthSCH OAuth2 settings:
 SOCIAL_AUTH_AUTHSCH_KEY = config("AUTH_SCH_CLIENT_ID", default=None)
 SOCIAL_AUTH_AUTHSCH_SECRET = config("AUTH_SCH_CLIENT_SECRET", default=None)
