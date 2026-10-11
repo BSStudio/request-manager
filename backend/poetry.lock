@@ -1084,14 +1084,14 @@ Django = ">=4.2,<6.2"
 
 [[package]]
 name = "djangorestframework"
-version = "3.18.1"
+version = "3.18.3"
 description = "Web APIs for Django, made easy."
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "djangorestframework-3.18.1-py3-none-any.whl", hash = "sha256:f1409d698967aaf82d5d98d76b549c8fba8bd92ebd0d83d24454508f72168dc2"},
-    {file = "djangorestframework-3.18.1.tar.gz", hash = "sha256:605d79fa2ec2f02905492e5ea13d903c2d842d0b4c915a57f7bf02ab9f3c91dd"},
+    {file = "djangorestframework-3.18.3-py3-none-any.whl", hash = "sha256:8544bb674846731b1e3c9b309236ee1dc412905a0aa725be2ec193ca950a7d12"},
+    {file = "djangorestframework-3.18.3.tar.gz", hash = "sha256:446a9b352e7eff630421ab3f2328bd2401b109a9470afa4a31189994911ed030"},
 ]
 
 [package.dependencies]
@@ -1529,14 +1529,14 @@ files = [
 
 [[package]]
 name = "model-bakery"
-version = "1.24.1"
+version = "1.24.2"
 description = "Smart object creation facility for Django."
 optional = false
 python-versions = ">=3.10"
 groups = ["test"]
 files = [
-    {file = "model_bakery-1.24.1-py3-none-any.whl", hash = "sha256:58eae4ab3ed3504bbac965daf89626a034021233ad7bc81482aef75228cafb5c"},
-    {file = "model_bakery-1.24.1.tar.gz", hash = "sha256:36e448446794b1a29f2bd247d76c1af990e38cb38e9e39870580f4d79899e6a7"},
+    {file = "model_bakery-1.24.2-py3-none-any.whl", hash = "sha256:1823831965ad99edc83ff0dd009fe15a88e91f0ed8573cadb5a52d77b30b2a60"},
+    {file = "model_bakery-1.24.2.tar.gz", hash = "sha256:de9ffb98acaaf558aa5522425db7f2a714358ef3d98d318b3a37c837a61932e3"},
 ]
 
 [package.dependencies]
@@ -2516,34 +2516,34 @@ files = [
 
 [[package]]
 name = "social-auth-app-django"
-version = "7.0.0"
+version = "7.1.0"
 description = "Python Social Authentication, Django integration."
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "social_auth_app_django-7.0.0-py3-none-any.whl", hash = "sha256:2aab94273d5877e0192acc637bc1bff952897029a74ebdb4d3b9084852baa796"},
-    {file = "social_auth_app_django-7.0.0.tar.gz", hash = "sha256:29502f0ca9a71df66e6335fcbf35cd617ed8304dd1a7694bc636c9fe0d0bd91b"},
+    {file = "social_auth_app_django-7.1.0-py3-none-any.whl", hash = "sha256:a6e51eb905c81da15548b156315690f608867d68552daadcdb5aa180500f8ff4"},
+    {file = "social_auth_app_django-7.1.0.tar.gz", hash = "sha256:77058a2717d537899d9fe92039e06f9567d9cf5574f6bcb1345649d2fd670b09"},
 ]
 
 [package.dependencies]
 asgiref = ">=3.8.1"
 Django = ">=5.2"
-social-auth-core = ">=6.0.0,<7.0.0"
+social-auth-core = ">=6.1.0,<7.0.0"
 
 [package.extras]
 dev = ["coverage (>=3.6)", "django-stubs (==6.0.9)", "django-stubs-ext (==6.0.9)", "mypy (==2.4.0)", "pre-commit", "pyright (==1.1.414)", "tox"]
 
 [[package]]
 name = "social-auth-core"
-version = "6.0.0"
+version = "6.1.1"
 description = "Python social authentication made simple."
 optional = false
 python-versions = ">=3.10"
 groups = ["main"]
 files = [
-    {file = "social_auth_core-6.0.0-py3-none-any.whl", hash = "sha256:375b4f65a979d21edf4a342d43dde61f851af6290041afbedc36bc8d19665bc8"},
-    {file = "social_auth_core-6.0.0.tar.gz", hash = "sha256:571c154bd60fea88d0b8e1912ecf5cf3ea48cde9e92ad0f7fbec4001bff09c98"},
+    {file = "social_auth_core-6.1.1-py3-none-any.whl", hash = "sha256:f5ab36e843c7ea20bce96ecab95e716ab1c8afe85d3d3c322446246aaffadd13"},
+    {file = "social_auth_core-6.1.1.tar.gz", hash = "sha256:674c285e75b04aaaf438fbbb6b2376b343f7b932d5dce1726e61cd23b17b6cff"},
 ]
 
 [package.dependencies]
@@ -2558,8 +2558,8 @@ requests-oauthlib = ">=2.0.0"
 [package.extras]
 all = ["social-auth-core[azuread]", "social-auth-core[google-onetap]", "social-auth-core[saml]", "social-auth-core[shopify]"]
 allpy3 = ["social-auth-core[all]"]
-dev = ["coverage (==7.16.2)", "flake8 (==7.4.1)", "mypy (==2.4.0)", "pyright (==1.1.414)", "pytest (==9.1.1)", "pytest-cov (==7.1.0)", "pytest-github-actions-annotate-failures (==0.4.2)", "pytest-profiling (==1.8.1)", "pytest-xdist (==3.8.0)", "responses (==0.26.3)", "ty (==0.0.84)", "types-defusedxml (==0.7.0.20260504)", "types-lxml (==2026.2.16)", "types-oauthlib (==3.3.0.20260724)", "types-requests (==2.33.0.20261006)", "types-requests-oauthlib (==2.0.0.20261006)"]
-google-onetap = ["google-auth (>=2.40.0,<2.61)"]
+dev = ["coverage (==7.16.2)", "flake8 (==7.4.1)", "mypy (==2.4.0)", "pyright (==1.1.414)", "pytest (==9.1.1)", "pytest-cov (==7.1.0)", "pytest-github-actions-annotate-failures (==0.4.2)", "pytest-profiling (==1.8.1)", "pytest-xdist (==3.8.0)", "responses (==0.26.3)", "ty (==0.0.86)", "types-defusedxml (==0.7.0.20260504)", "types-lxml (==2026.2.16)", "types-oauthlib (==3.3.0.20260724)", "types-requests (==2.33.0.20261006)", "types-requests-oauthlib (==2.0.0.20261006)"]
+google-onetap = ["google-auth (>=2.40.0,<2.62)"]
 saml = ["python3-saml (>=1.16.0)"]
 shopify = ["ShopifyAPI"]
 
@@ -2810,4 +2810,4 @@ brotli = ["brotli"]
 [metadata]
 lock-version = "2.1"
 python-versions = ">=3.14,<4.0"
-content-hash = "4ef8bc67ef89c6864635a6ca12d9e37e543099b362426e989111d840af605a05"
+content-hash = "9c3a452592cb67c23582a46be7de96a56a590639a0c79ed50962853ba35cd9be"
