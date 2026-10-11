@@ -45,8 +45,8 @@ class Provider:
 
 def reset_social_core_caches():
     # Kept for a day, so the first test's mocked answers would reach all later ones.
-    OpenIdConnectAuth.oidc_config.invalidate()
-    OpenIdConnectAuth.get_jwks_keys.invalidate()
+    OpenIdConnectAuth.get_openid_configuration.invalidate()
+    OpenIdConnectAuth.get_jwks_keys_for_uri.invalidate()
 
 
 @functools.cache

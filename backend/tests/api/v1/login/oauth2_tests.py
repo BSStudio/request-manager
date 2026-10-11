@@ -3,12 +3,15 @@
 The provider endpoints are mocked in tests/helpers/oauth2_providers.py.
 """
 
+from importlib import import_module
 from urllib.parse import parse_qs, urlparse
 
 import pytest
 import responses
+from django.apps import apps
 from django.conf import settings
 from django.contrib.auth import get_user_model
+from django.db import connection
 from rest_framework.reverse import reverse
 from rest_framework.status import HTTP_200_OK, HTTP_302_FOUND, HTTP_400_BAD_REQUEST
 from social_core.exceptions import AuthResponseError
@@ -172,6 +175,25 @@ def test_a_google_account_connected_by_e_mail_still_logs_in(api_client, mock_pro
         .objects.filter(email__iexact=GOOGLE.user_data_body["email"])
         .exists()
     )
+
+
+@OPENID_PROVIDERS
+def test_an_account_connected_before_id_keys_still_logs_in(
+    api_client, mock_provider, provider
+):
+    social = UserSocialAuth.objects.create(
+        user=make_user(email="changed@example.com"),
+        provider=provider.name,
+        uid=provider.user_data_body["sub"],
+    )
+    migration = import_module("social_django.migrations.0020_backfill_id_keys")
+    with connection.schema_editor() as schema_editor:
+        migration.backfill_id_keys(apps, schema_editor)
+
+    assert log_in(api_client, mock_provider(provider)).status_code == HTTP_200_OK
+
+    social.refresh_from_db()
+    assert social.id_key == "sub"
 
 
 def test_login_without_any_photo_leaves_the_avatar_provider_unset(

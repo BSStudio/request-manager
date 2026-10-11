@@ -128,6 +128,12 @@
       "matchManagers": ["npm"],
       "matchPackageNames": ["primeicons"],
       "allowedVersions": "<8"
+    },
+    {
+      "description": "django-celery-beat 2.9.0 requires Django<6.1. Remove once a django-celery-beat release supports Django 6.1.",
+      "matchManagers": ["pep621", "poetry"],
+      "matchPackageNames": ["django"],
+      "allowedVersions": "<6.1"
     }
   ],
   "rebaseWhen": "conflicted",
