@@ -1,29 +1,9 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
   "extends": [
-    ":automergeDisabled",
-    ":dependencyDashboard",
-    ":disableRateLimiting",
-    ":enableVulnerabilityAlertsWithLabel(security)",
-    ":ignoreModulesAndTests",
-    ":ignoreUnstable",
-    ":label(dependencies)",
-    ":maintainLockFilesMonthly",
-    ":pinAllExceptPeerDependencies",
-    ":separateMajorReleases",
-    ":timezone(Europe/Budapest)",
-    "group:monorepos",
-    "group:recommended",
-    "replacements:all",
-    "schedule:weekends",
-    "workarounds:all"
-  ],
-  "configMigration": true,
-  "minimumReleaseAge": "3 days",
-  "osvVulnerabilityAlerts": true,
-  "gitIgnoredAuthors": [
-    "41898282+github-actions[bot]@users.noreply.github.com",
-    "66853113+pre-commit-ci[bot]@users.noreply.github.com"
+    "github>BSStudio/renovate-config",
+    "github>BSStudio/renovate-config:weekly",
+    "github>BSStudio/renovate-config:approve-merges"
   ],
   "customManagers": [
     {
@@ -57,26 +37,7 @@
   ],
   "packageRules": [
     {
-      "description": "Add `docker` label for Dockerfile or docker-compose related updates.",
-      "matchManagers": ["docker-compose", "dockerfile"],
-      "addLabels": ["docker"]
-    },
-    {
-      "description": "Add `github_actions` label for GitHub Actions related updates.",
-      "matchManagers": ["github-actions"],
-      "addLabels": ["github_actions"]
-    },
-    {
-      "description": "Group all minor and patch updates together for GitHub Actions.",
-      "addLabels": ["github_actions"],
-      "groupName": "all non-major GitHub Actions dependencies",
-      "groupSlug": "all-minor-patch-github-actions",
-      "matchManagers": ["github-actions"],
-      "matchUpdateTypes": ["minor", "patch"]
-    },
-    {
       "description": "Group all minor and patch updates together for Poetry in /backend.",
-      "addLabels": ["python"],
       "groupName": "all non-major backend dependencies",
       "groupSlug": "all-minor-patch-backend",
       "matchManagers": ["pep621", "poetry"],
@@ -85,7 +46,6 @@
     },
     {
       "description": "Group all minor and patch updates together for pnpm in /frontend.",
-      "addLabels": ["javascript"],
       "groupName": "all non-major frontend dependencies",
       "groupSlug": "all-minor-patch-frontend",
       "matchManagers": ["npm"],
@@ -94,29 +54,10 @@
       "postUpdateOptions": ["pnpmDedupe"]
     },
     {
-      "description": "Disable patch and pin updates for actions/python-versions; only meaningful minor/major bumps are wanted.",
-      "matchManagers": ["github-actions"],
-      "matchPackageNames": ["actions/python-versions"],
-      "matchUpdateTypes": ["patch", "pin"],
-      "enabled": false
-    },
-    {
-      "description": "Keep Node.js at major version only across .nvmrc, the dev container, and Docker images.",
-      "matchDepNames": ["node"],
-      "matchUpdateTypes": ["minor", "patch", "pin", "pinDigest"],
-      "enabled": false
-    },
-    {
       "description": "Group every Python runtime version bump (.python-version, dev container, Dockerfiles) into one PR.",
       "groupName": "Python runtime version",
       "matchDepNames": ["python"],
       "matchManagers": ["custom.regex", "dockerfile"]
-    },
-    {
-      "description": "Group every Node.js runtime version bump (.nvmrc, dev container, Dockerfiles) into one PR.",
-      "groupName": "Node.js runtime version",
-      "matchDepNames": ["node"],
-      "matchManagers": ["custom.regex", "dockerfile", "nvm"]
     },
     {
       "description": "PrimeReact/PrimeIcons majors past these are proprietary under the PrimeUI license and incompatible with our GPL-3.0 licensing. Stay on the MIT-licensed releases.",
@@ -129,10 +70,5 @@
       "matchPackageNames": ["primeicons"],
       "allowedVersions": "<8"
     }
-  ],
-  "rebaseWhen": "conflicted",
-  "vulnerabilityAlerts": {
-    "schedule": ["at any time"],
-    "minimumReleaseAge": null
-  }
+  ]
 }

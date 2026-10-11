@@ -25,7 +25,7 @@ permissions:
 
 jobs:
   run-tests:
-    name: Run tests
+    name: Backend tests
     runs-on: ubuntu-latest
     defaults:
       run:
