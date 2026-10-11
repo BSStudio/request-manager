@@ -64,10 +64,15 @@ pnpm generate-client
 | `pnpm preview`             | Serve the production build locally.                           |
 | `pnpm lint`                | Run ESLint.                                                   |
 | `pnpm lint:fix`            | Run ESLint with autofix.                                      |
+| `pnpm test`                | Run the unit tests with Vitest, rerunning them on changes.    |
 | `pnpm format`              | Format sources with Prettier.                                 |
 | `pnpm generate-client`     | Regenerate the API client from the backend schema.            |
 | `pnpm generate-pwa-assets` | Regenerate the app icons in `public/` from `public/icon.svg`. |
 | `pnpm analyze`             | Inspect the bundle with source-map-explorer.                  |
+
+## Tests
+
+Unit tests sit next to the code they test as `*.test.ts` and run in jsdom. `pnpm test run` runs them once; `pnpm test run --coverage` also writes a coverage report to `coverage/`.
 
 ## Code style
 
