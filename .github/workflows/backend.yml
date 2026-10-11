@@ -78,12 +78,23 @@ jobs:
           poetry run python manage.py collectstatic --no-input --clear --link
       - name: Run tests
         if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.run-tests == 'true' }}
-        run: poetry run pytest
+        run: poetry run pytest --junitxml=junit.xml -o junit_family=legacy
       - name: Upload coverage to Codecov
         if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.run-tests == 'true' }}
         uses: codecov/codecov-action@v7.1.1
         with:
           directory: backend/
+          flags: backend
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: Upload test results to Codecov
+        # Failed runs too: their results are what test analytics is for.
+        if: ${{ !cancelled() && (github.event_name != 'workflow_dispatch' || github.event.inputs.run-tests == 'true') }}
+        uses: codecov/codecov-action@v7.1.1
+        with:
+          files: backend/junit.xml
+          flags: backend
+          report_type: test_results
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Archive code coverage results
