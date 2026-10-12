@@ -56,7 +56,7 @@ BSS_LOGIN = Provider(
 
 GOOGLE = Provider(
     name="google-oauth2",
-    backend_path="social_core.backends.google.GoogleOAuth2",
+    backend_path="common.social_core.backends.GoogleOAuth2",
     user_data_url="https://www.googleapis.com/oauth2/v3/userinfo",
     user_data_body={
         "email": "foo@bar.com",

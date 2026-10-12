@@ -29,7 +29,7 @@ from tests.helpers.oauth2_providers import (
 pytestmark = pytest.mark.django_db
 
 OPENID_PROVIDERS = pytest.mark.parametrize(
-    "provider", [AUTHSCH, BSS_LOGIN], ids=lambda provider: provider.name
+    "provider", [AUTHSCH, BSS_LOGIN, GOOGLE], ids=lambda provider: provider.name
 )
 
 
@@ -97,6 +97,34 @@ def test_openid_login_allows_the_provider_clock_to_run_ahead(
     assert log_in(api_client, mocked).status_code == HTTP_200_OK
 
 
+@pytest.mark.parametrize(
+    ("issuer", "status_code"),
+    [
+        ("https://accounts.google.com", HTTP_200_OK),
+        ("accounts.google.com", HTTP_200_OK),
+        ("https://evil.example", HTTP_400_BAD_REQUEST),
+    ],
+)
+def test_google_login_accepts_both_issuer_forms_google_uses(
+    api_client, mock_provider, issuer, status_code
+):
+    mocked = mock_provider(GOOGLE)
+    mocked.issuer = issuer
+
+    assert log_in(api_client, mocked).status_code == status_code
+
+
+def test_google_login_rejects_the_profile_of_another_account(api_client, mock_provider):
+    mocked = mock_provider(GOOGLE)
+    responses.replace(
+        responses.GET,
+        GOOGLE.user_data_url,
+        json={**GOOGLE.user_data_body, "sub": "someone-else"},
+    )
+
+    assert log_in(api_client, mocked).status_code == HTTP_400_BAD_REQUEST
+
+
 @OPENID_PROVIDERS
 def test_django_admin_login_checks_the_nonce_social_core_stored(
     client, mock_provider, provider
@@ -158,12 +186,18 @@ def test_login_matches_an_inactive_placeholder_account(api_client, mock_provider
     assert placeholder.social_auth.filter(provider="microsoft-graph").exists()
 
 
-def test_a_google_account_connected_by_e_mail_still_logs_in(api_client, mock_provider):
+@pytest.mark.parametrize("id_key", ["", "email"], ids=["unlabelled", "backfilled"])
+def test_a_google_account_connected_by_e_mail_still_logs_in(
+    api_client, mock_provider, id_key
+):
     # social-auth-core 6 identifies Google accounts by sub, not e-mail. The user's
     # e-mail differs here, so only the old association can find them.
     user = make_user(email="changed@example.com")
     social = UserSocialAuth.objects.create(
-        user=user, provider=GOOGLE.name, uid=GOOGLE.user_data_body["email"]
+        user=user,
+        provider=GOOGLE.name,
+        uid=GOOGLE.user_data_body["email"],
+        id_key=id_key,
     )
 
     assert log_in(api_client, mock_provider(GOOGLE)).status_code == HTTP_200_OK
@@ -177,7 +211,9 @@ def test_a_google_account_connected_by_e_mail_still_logs_in(api_client, mock_pro
     )
 
 
-@OPENID_PROVIDERS
+@pytest.mark.parametrize(
+    "provider", [AUTHSCH, BSS_LOGIN], ids=lambda provider: provider.name
+)
 def test_an_account_connected_before_id_keys_still_logs_in(
     api_client, mock_provider, provider
 ):

@@ -54,6 +54,9 @@ SOCIAL_AUTH_GOOGLE_OAUTH2_EXTRA_DATA = [
     ("name", "name"),
     ("email", "email"),
 ]
+# social-auth-core moves accounts connected by e-mail over to sub without proof
+# only for its own Google backend, not for ours.
+SOCIAL_AUTH_GOOGLE_OAUTH2_ALLOW_UNVERIFIED_LEGACY_UID_MIGRATION = True
 
 # Microsoft OAuth2 settings:
 SOCIAL_AUTH_MICROSOFT_GRAPH_KEY = config("AUTH_MICROSOFT_CLIENT_ID", default=None)
@@ -138,7 +141,7 @@ SOCIAL_AUTH_DISCONNECT_PIPELINE = (
 AUTHENTICATION_BACKENDS += [
     "common.social_core.backends.AuthSCHOAuth2",
     "common.social_core.backends.BSSLoginOAuth2",
-    "social_core.backends.google.GoogleOAuth2",
+    "common.social_core.backends.GoogleOAuth2",
     "social_core.backends.microsoft.MicrosoftOAuth2",
 ]
 

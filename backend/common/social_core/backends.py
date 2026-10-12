@@ -1,6 +1,8 @@
 import hashlib
 
 from django.utils.crypto import constant_time_compare
+from social_core.backends.google import BaseGoogleOAuth2API
+from social_core.backends.google_openidconnect import GoogleOpenIdConnect
 from social_core.backends.open_id_connect import OpenIdConnectAuth
 from social_core.exceptions import AuthResponseError
 
@@ -90,3 +92,21 @@ class BSSLoginOAuth2(BrowserNonceOpenIdConnectAuth):
             "last_name": response.get("family_name"),
             "mobile": response.get("mobile"),
         }
+
+
+class GoogleOAuth2(BrowserNonceOpenIdConnectAuth, GoogleOpenIdConnect):
+    """Google OpenID Connect authentication backend"""
+
+    # Stored associations, settings and the frontend use the OAuth2 backend's name.
+    name = "google-oauth2"
+
+    def id_token_issuer(self):
+        # Google's ID tokens name either issuer; social_core only accepts the second.
+        return ("https://accounts.google.com", "accounts.google.com")
+
+    def user_data(self, access_token, *args, **kwargs):
+        # social_core's Google OpenID Connect backend sends the access token in
+        # the query string, which Sentry would keep in its breadcrumbs.
+        return self.validate_userinfo_sub(
+            BaseGoogleOAuth2API.user_data(self, access_token, *args, **kwargs)
+        )
