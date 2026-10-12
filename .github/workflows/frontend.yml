@@ -38,6 +38,25 @@ jobs:
         run: |
           pnpm run check-eslint-config
           pnpm run lint
+      - name: Run tests
+        run: pnpm test run --coverage --reporter=default --reporter=junit --outputFile.junit=junit.xml
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v7.1.1
+        with:
+          disable_search: true
+          files: frontend/coverage/coverage-final.json
+          flags: frontend
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@v7.1.1
+        with:
+          files: frontend/junit.xml
+          flags: frontend
+          report_type: test_results
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Build
         run: pnpm run build
         env:

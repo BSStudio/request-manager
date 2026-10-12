@@ -1,0 +1,22 @@
+coverage:
+  status:
+    project:
+      backend:
+        flags: [backend]
+      frontend:
+        flags: [frontend]
+        # Unit tests cover only the helpers and leave the rest to end-to-end
+        # tests, so a low number is expected.
+        informational: true
+    patch:
+      backend:
+        flags: [backend]
+      frontend:
+        flags: [frontend]
+        informational: true
+
+flag_management:
+  default_rules:
+    # A push to main runs only the workflow of the side it changes, so the
+    # other side keeps the coverage of the commit before.
+    carryforward: true

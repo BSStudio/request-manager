@@ -10,7 +10,7 @@ Setup and commands live in the READMEs: [root](README.md), [backend](backend/REA
 - The maintainer reviews and commits every step. Never commit, push or stage files yourself.
 - Keep each PR to one kind of change. Renames and deletions go in their own PR, apart from behavior changes, so the diff stays readable. PR titles are short plain sentences; the description is written for reviewers.
 - For review comments (people or bots), check each one against the current code, fix the ones that still hold and say briefly why you skipped the rest.
-- Before handing work over, run what applies: `pnpm lint` and `pnpm build` in `frontend/`, `poetry run pytest` in `backend/`, and `pre-commit run --files <changed files>`. Check UI changes in a browser.
+- Before handing work over, run what applies: `pnpm lint`, `pnpm test run` and `pnpm build` in `frontend/`, `poetry run pytest` in `backend/`, and `pre-commit run --files <changed files>`. Check UI changes in a browser.
 - Start your own dev servers on free ports. Never stop or reuse the ones the maintainer is running.
 - Ask before changing anything global on the machine: installed tools, PATH, global config.
 
