@@ -6,9 +6,6 @@ E2E = True
 DEBUG = False
 ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
 
-# Fixed, so the sessions e2e_server writes in its own process verify on the server.
-SECRET_KEY = "django-insecure-request-manager-e2e"  # nosec
-
 # Its own test database, so pytest's test_… database and the dev database are
 # never touched.
 DATABASES["default"].update(
@@ -28,3 +25,4 @@ WHITENOISE_USE_FINDERS = True
 # E-mail tasks run in the request, so a broken template fails the test, and
 # neither Redis nor a worker is needed.
 CELERY_TASK_ALWAYS_EAGER = True
+CELERY_TASK_EAGER_PROPAGATES = True

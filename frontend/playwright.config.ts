@@ -5,6 +5,10 @@ import { defineConfig, devices } from '@playwright/test';
 const port = 8010;
 const authDir = path.join(import.meta.dirname, 'e2e', '.auth');
 
+// Tests compute dates the browser shows, so the workers, which inherit this,
+// must agree with timezoneId below.
+process.env.TZ = 'Europe/Budapest';
+
 export default defineConfig({
   forbidOnly: !!process.env.CI,
   fullyParallel: false,

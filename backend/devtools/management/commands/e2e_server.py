@@ -30,9 +30,7 @@ class Command(BaseCommand):
                 "DJANGO_SETTINGS_MODULE=core.settings.e2e."
             )
 
-        connection.creation.create_test_db(
-            verbosity=1, autoclobber=True, serialize=False, keepdb=False
-        )
+        connection.creation.create_test_db(verbosity=1, autoclobber=True, keepdb=False)
         call_command("seed_dev_data", interactive=False, stdout=self.stdout)
 
         if storage_state_dir:

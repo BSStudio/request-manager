@@ -6,14 +6,17 @@ import { test as base, expect } from '@playwright/test';
 const allowedHosts = ['localhost', 'challenges.cloudflare.com'];
 
 export const test = base.extend({
-  page: async ({ page }, use) => {
-    const errors: Error[] = [];
-    page.on('pageerror', (error) => errors.push(error));
-    await page.route(
+  context: async ({ context }, use) => {
+    await context.route(
       (url) =>
         url.protocol.startsWith('http') && !allowedHosts.includes(url.hostname),
       (route) => route.abort(),
     );
+    await use(context);
+  },
+  page: async ({ page }, use) => {
+    const errors: Error[] = [];
+    page.on('pageerror', (error) => errors.push(error));
     await use(page);
     expect(errors, 'uncaught errors on the page').toEqual([]);
   },

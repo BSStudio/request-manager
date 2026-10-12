@@ -80,7 +80,7 @@ Unit tests sit next to the code they test as `*.test.ts` and run in jsdom. `pnpm
 
 End-to-end tests in `e2e/` run the app in Chromium with Playwright. `pnpm e2e` builds the app with `.env.e2e`, then starts Django with `core.settings.e2e`, which recreates the `request_manager_e2e` database with the test data, writes a login for every test user and serves the build on port 8010. Postgres has to run, as for development; Redis is not needed.
 
-Download Chromium once with `pnpm exec playwright install chromium`. Tests log in by loading a login file, `test.use({ storageState: loginAs('minta.anna') })`, and can only reach localhost and Cloudflare's Turnstile. Only one run can go at a time, because the port and the database are fixed.
+Download Chromium once with `pnpm exec playwright install chromium`. Tests log in by loading a login file, `test.use({ storageState: loginAs('minta.anna') })`, and can only reach localhost and Cloudflare's Turnstile. Only one run can go at a time, because the port and the database are fixed. A run leaves its own build in `build/`, so run `pnpm build` again before `pnpm preview` or before Django serves the build.
 
 ## Code style
 
