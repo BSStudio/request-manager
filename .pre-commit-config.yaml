@@ -115,6 +115,7 @@ repos:
           ]
         additional_dependencies:
           - '@eslint/js@10.0.1'
+          - '@playwright/test@1.64.0'
           - '@sentry/vite-plugin@5.4.1'
           - '@tanstack/eslint-plugin-query@5.104.1'
           - '@vitest/coverage-v8@5.0.3'

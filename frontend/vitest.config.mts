@@ -17,5 +17,6 @@ export default defineConfig({
     environment: 'jsdom',
     // CI runs in UTC, the app formats dates for Hungary.
     env: { TZ: 'Europe/Budapest' },
+    include: ['src/**/*.test.{ts,tsx}'],
   },
 });

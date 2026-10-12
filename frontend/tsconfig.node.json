@@ -6,5 +6,10 @@
     "moduleResolution": "Bundler",
     "skipLibCheck": true
   },
-  "include": ["pwa-assets.config.ts", "vite.config.mts", "vitest.config.mts"]
+  "include": [
+    "playwright.config.ts",
+    "pwa-assets.config.ts",
+    "vite.config.mts",
+    "vitest.config.mts"
+  ]
 }

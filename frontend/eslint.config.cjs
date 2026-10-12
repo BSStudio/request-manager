@@ -103,6 +103,13 @@ module.exports = tseslint.config(
     },
   },
   {
+    // Playwright fixtures hand over their value with a function named use().
+    files: ['**/e2e/**'],
+    rules: {
+      'react-hooks/rules-of-hooks': 'off',
+    },
+  },
+  {
     settings: {
       react: {
         version: '19.0.0',
