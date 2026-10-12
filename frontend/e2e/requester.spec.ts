@@ -1,14 +1,15 @@
 import { randomUUID } from 'crypto';
 
 import type { Page } from '@playwright/test';
-import { addDays, format, isSameMonth } from 'date-fns';
+import { addDays, differenceInCalendarMonths, format } from 'date-fns';
 import { hu } from 'date-fns/locale';
 
 import { expect, loginAs, test } from './fixtures';
 
 async function pickDay(page: Page, label: string, day: Date) {
   await page.getByRole('button', { name: new RegExp(`^${label}`) }).click();
-  if (!isSameMonth(day, new Date())) {
+  const months = differenceInCalendarMonths(day, new Date());
+  for (let month = 0; month < months; month++) {
     await page
       .getByRole('button', { name: 'Ugrás a következő hónapra' })
       .click();
