@@ -101,7 +101,7 @@ class GoogleOAuth2(BrowserNonceOpenIdConnectAuth, GoogleOpenIdConnect):
     name = "google-oauth2"
 
     def id_token_issuer(self):
-        # Google signs with either; social_core only accepts the second.
+        # Google's ID tokens name either issuer; social_core only accepts the second.
         return ("https://accounts.google.com", "accounts.google.com")
 
     def user_data(self, access_token, *args, **kwargs):

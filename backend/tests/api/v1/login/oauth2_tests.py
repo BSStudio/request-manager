@@ -105,7 +105,7 @@ def test_openid_login_allows_the_provider_clock_to_run_ahead(
         ("https://evil.example", HTTP_400_BAD_REQUEST),
     ],
 )
-def test_google_login_accepts_both_issuers_google_signs_with(
+def test_google_login_accepts_both_issuer_forms_google_uses(
     api_client, mock_provider, issuer, status_code
 ):
     mocked = mock_provider(GOOGLE)

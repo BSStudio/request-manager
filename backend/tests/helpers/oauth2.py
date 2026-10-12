@@ -142,6 +142,10 @@ class MockedProvider:
             "iss": self.issuer or self.backend.OIDC_ENDPOINT,
             "sub": self.provider.user_data_body["sub"],
             "aud": client_id,
+            "azp": client_id,
+            "at_hash": OpenIdConnectAuth.calc_at_hash(
+                self.provider.access_token_body["access_token"], "RS256"
+            ),
             "iat": now,
             "nbf": now,
             "exp": now + 300,
