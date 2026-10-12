@@ -60,25 +60,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7.0.1
-      - name: Install Poetry
-        run: pipx install poetry
-      - name: Set up Python
-        uses: actions/setup-python@v7.0.0
-        with:
-          python-version-file: 'backend/.python-version'
-          cache: 'poetry'
-          cache-dependency-path: backend/poetry.lock
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.3.0
       - name: Install dependencies
-        run: poetry install --with ci
+        run: uv sync --locked --group ci
       - name: Check for model changes without migration
-        run: poetry run python manage.py makemigrations --check
+        run: uv run python manage.py makemigrations --check
       - name: Synchronize database state and collect static files
         run: |
-          poetry run python manage.py migrate --no-input
-          poetry run python manage.py collectstatic --no-input --clear --link
+          uv run python manage.py migrate --no-input
+          uv run python manage.py collectstatic --no-input --clear --link
       - name: Run tests
         if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.run-tests == 'true' }}
-        run: poetry run pytest --junitxml=junit.xml -o junit_family=legacy
+        run: uv run pytest --junitxml=junit.xml -o junit_family=legacy
       - name: Upload coverage to Codecov
         if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.run-tests == 'true' }}
         uses: codecov/codecov-action@v7.1.1
@@ -107,7 +101,7 @@ jobs:
         if: ${{ github.event.inputs.generate-emails == 'true' }}
         env:
           BASE_URL_DOMAIN: felkeres.bsstudio.hu
-        run: poetry run pytest -m emails --save-emails --no-cov
+        run: uv run pytest -m emails --save-emails --no-cov
       - name: Archive sent e-mails
         if: ${{ github.event.inputs.generate-emails == 'true' }}
         uses: actions/upload-artifact@v7.0.2

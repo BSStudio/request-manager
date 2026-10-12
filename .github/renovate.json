@@ -37,10 +37,10 @@
   ],
   "packageRules": [
     {
-      "description": "Group all minor and patch updates together for Poetry in /backend.",
+      "description": "Group all minor and patch updates together for uv in /backend.",
       "groupName": "all non-major backend dependencies",
       "groupSlug": "all-minor-patch-backend",
-      "matchManagers": ["pep621", "poetry"],
+      "matchManagers": ["pep621"],
       "matchFileNames": ["backend/**"],
       "matchUpdateTypes": ["minor", "patch"]
     },
@@ -60,6 +60,12 @@
       "matchManagers": ["custom.regex", "dockerfile"]
     },
     {
+      "description": "Group every uv version bump (Dockerfiles, pre-commit hook) into one PR.",
+      "groupName": "uv",
+      "groupSlug": "uv",
+      "matchDepNames": ["ghcr.io/astral-sh/uv", "astral-sh/uv-pre-commit"]
+    },
+    {
       "description": "PrimeReact/PrimeIcons majors past these are proprietary under the PrimeUI license and incompatible with our GPL-3.0 licensing. Stay on the MIT-licensed releases.",
       "matchManagers": ["npm"],
       "matchPackageNames": ["primereact"],
@@ -72,7 +78,7 @@
     },
     {
       "description": "django-celery-beat 2.9.0 requires Django<6.1. Remove once a django-celery-beat release supports Django 6.1.",
-      "matchManagers": ["pep621", "poetry"],
+      "matchManagers": ["pep621"],
       "matchPackageNames": ["django"],
       "allowedVersions": "<6.1"
     }

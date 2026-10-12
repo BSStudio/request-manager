@@ -43,19 +43,14 @@ FROM python:3.14-alpine AS backend-base
 ENV PYTHONUNBUFFERED=1 \
     PYTHONDONTWRITEBYTECODE=1 \
     \
-    PIP_DISABLE_PIP_VERSION_CHECK=on \
-    PIP_DEFAULT_TIMEOUT=100 \
-    \
-    POETRY_VERSION=2.1.1 \
-    POETRY_HOME="/opt/poetry" \
-    POETRY_VIRTUALENVS_IN_PROJECT=true \
-    POETRY_NO_INTERACTION=1 \
+    UV_LINK_MODE=copy \
+    UV_PYTHON_DOWNLOADS=0 \
     \
     PYSETUP_PATH="/opt/pysetup" \
     VIRTUAL_ENV="/opt/pysetup/.venv"
 
-# Add Poetry and Venv to Path
-ENV PATH="$POETRY_HOME/bin:$VIRTUAL_ENV/bin:$PATH"
+# Add Venv to Path
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
 
 ##################################################
 
@@ -65,24 +60,23 @@ ENV PATH="$POETRY_HOME/bin:$VIRTUAL_ENV/bin:$PATH"
 FROM backend-base AS backend-builder
 
 # Install build dependencies
-RUN apk update && apk add curl postgresql-dev gcc musl-dev python3-dev
+RUN apk update && apk add postgresql-dev gcc musl-dev python3-dev
 
-# Install Poetry - respects $POETRY_VERSION & $POETRY_HOME
-# The --mount will mount the buildx cache directory to where
-# Poetry and Pip store their cache so that they can re-use it
-RUN --mount=type=cache,target=/root/.cache \
-    curl -sSL https://install.python-poetry.org | python3 -
+# Install uv
+COPY --from=ghcr.io/astral-sh/uv:0.13.0 /uv /bin/uv
 
 # Set work directory
 WORKDIR $PYSETUP_PATH
 
 # Copy project requirement files here to ensure they will be cached
-COPY backend/poetry.lock $PYSETUP_PATH
+COPY backend/uv.lock $PYSETUP_PATH
 COPY backend/pyproject.toml $PYSETUP_PATH
 
 # Install runtime dependencies
+# The --mount will mount the buildx cache directory to where
+# uv stores its cache so that it can re-use it
 RUN --mount=type=cache,target=/root/.cache \
-    poetry install --without=debug,dev,test --with=prod
+    uv sync --locked --no-default-groups --group prod
 
 ##################################################
 

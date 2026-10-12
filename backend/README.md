@@ -6,15 +6,15 @@ Django REST API, business logic, Django admin panel and Celery workers for the R
 
 ## Setup
 
-Requires Python (version pinned in [`.python-version`](.python-version)), [Poetry](https://python-poetry.org/) and a running PostgreSQL + Redis (start them from the repository root with `docker compose -f docker-compose.dev.yaml up -d --wait`).
+Requires [uv](https://docs.astral.sh/uv/), which installs the Python version pinned in [`.python-version`](.python-version), and a running PostgreSQL + Redis (start them from the repository root with `docker compose -f docker-compose.dev.yaml up -d --wait`).
 
 ```bash
 cd backend
-poetry install                 # install dependencies into .venv
+uv sync                        # install dependencies into .venv
 cp .env.sample .env            # then edit it (see below)
-poetry run python manage.py migrate
-poetry run python manage.py seed_dev_data   # test data, see below
-poetry run python manage.py runserver
+uv run python manage.py migrate
+uv run python manage.py seed_dev_data   # test data, see below
+uv run python manage.py runserver
 ```
 
 The API is now available at <http://localhost:8000>.
@@ -43,8 +43,8 @@ DJANGO_SETTINGS_MODULE = core.settings.debug
 Celery is used for asynchronous tasks and scheduled jobs:
 
 ```bash
-poetry run celery -A core worker    # task worker
-poetry run celery -A core beat      # scheduler
+uv run celery -A core worker    # task worker
+uv run celery -A core beat      # scheduler
 ```
 
 ## Testing
@@ -52,7 +52,7 @@ poetry run celery -A core beat      # scheduler
 Tests run with [pytest](https://docs.pytest.org/):
 
 ```bash
-poetry run pytest
+uv run pytest
 ```
 
 Coverage must stay at or above 90% (`fail_under = 90`).
@@ -64,14 +64,14 @@ Coverage must stay at or above 90% (`fail_under = 90`).
 `seed_dev_data` fills the database with invented people and requests, for manual testing and for the frontend's end-to-end tests. It first deletes every request and every user with an `@example.com` address. Users who logged in through single sign-on stay, and so do their groups. It asks before deleting; `--no-input` skips the question.
 
 ```bash
-poetry run python manage.py seed_dev_data
-poetry run python manage.py seed_dev_data --me <your username>   # your own account gets requests, crew spots, a video and todos too
+uv run python manage.py seed_dev_data
+uv run python manage.py seed_dev_data --me <your username>   # your own account gets requests, crew spots, a video and todos too
 ```
 
 The people include the admin `admin.aladar` and the requester `minta.anna`, who has most of the example requests. To use the app as one of them, create a session:
 
 ```bash
-poetry run python manage.py dev_session admin.aladar
+uv run python manage.py dev_session admin.aladar
 ```
 
 It prints a line to paste into the browser console on <https://localhost:5173>. Paste it logged out or in a private window, because the page cannot overwrite the cookie of an existing login. Run it with the same settings and `.env` as the server, so that both use the same session store and secret key.
@@ -98,7 +98,7 @@ The runtime versions themselves live in [`.python-version`](.python-version) (Py
 The REST API is documented with an OpenAPI schema (`backend/schema.yaml`), which is also the source for the frontend's generated API client. Regenerate it after changing serializers, views or endpoints:
 
 ```bash
-poetry run python manage.py spectacular \
+uv run python manage.py spectacular \
   --file schema.yaml --validate --fail-on-warn \
   --settings core.settings.ci
 ```
@@ -107,7 +107,7 @@ CI fails if the committed schema differs from the generated one.
 
 ## Management commands
 
-Run `poetry run python manage.py help` to list every available command. In addition to Django's built-ins, the project ships these commands:
+Run `uv run python manage.py help` to list every available command. In addition to Django's built-ins, the project ships these commands:
 
 | Command                     | App              | Purpose                                                  |
 | --------------------------- | ---------------- | -------------------------------------------------------- |
@@ -132,7 +132,7 @@ When a person ends up with two accounts, reassign their related objects to the a
 The Django admin **delete** page lists every related object for a user; if there are only a few, edit them by hand. For bulk reassignment use the shell — example moving the `Video` objects edited by user `123` to user `234`:
 
 ```bash
-poetry run python manage.py shell
+uv run python manage.py shell
 ```
 
 ```python

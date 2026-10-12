@@ -1,9 +1,6 @@
-[build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
-
 [project]
 name = "request-manager-backend"
+version = "0.0.0"
 authors = [
     {name = "Olivér Kecskeméty", email = "kecskemety.oliver@simonyi.bme.hu"}
 ]
@@ -32,6 +29,27 @@ dependencies = [
     "sentry-sdk==2.71.0",
     "social-auth-app-django==7.1.0",
     "whitenoise[brotli]==6.12.0"
+]
+
+[dependency-groups]
+ci = ["pytest-github-actions-annotate-failures==0.4.2"]
+debug = ["django-debug-toolbar==8.0.0"]
+dev = [
+    "pre-commit==4.6.2",
+    "psycopg[binary]==3.3.6"
+]
+prod = [
+    "gunicorn==26.2.0",
+    "psycopg[c]==3.3.6"
+]
+test = [
+    "model_bakery==1.24.2",
+    "pytest==9.1.1",
+    "pytest-cov==7.1.0",
+    "pytest-django==4.14.0",
+    "pytest-xdist[psutil]==3.8.0",
+    "responses==0.26.3",
+    "time-machine==3.5.1"
 ]
 
 [tool.coverage.report]
@@ -73,37 +91,8 @@ per-file-ignores = [
 [tool.isort]
 profile = "black"
 
-[tool.poetry]
-package-mode = false
-
-[tool.poetry.group.ci]
-optional = true
-
-[tool.poetry.group.ci.dependencies]
-pytest-github-actions-annotate-failures = "0.4.2"
-
-[tool.poetry.group.debug.dependencies]
-django-debug-toolbar = "8.0.0"
-
-[tool.poetry.group.dev.dependencies]
-pre-commit = "4.6.2"
-psycopg = {extras = ["binary"], version = "3.3.6"}
-
-[tool.poetry.group.prod]
-optional = true
-
-[tool.poetry.group.prod.dependencies]
-gunicorn = "26.2.0"
-psycopg = {extras = ["c"], version = "3.3.6"}
-
-[tool.poetry.group.test.dependencies]
-model_bakery = "1.24.2"
-pytest = "9.1.1"
-pytest-cov = "7.1.0"
-pytest-django = "4.14.0"
-pytest-xdist = {extras = ["psutil"], version = "3.8.0"}
-responses = "0.26.3"
-time-machine = "3.5.1"
+[tool.uv]
+default-groups = ["debug", "dev", "test"]
 
 [tool.pytest]
 addopts = ["--cov", "--cov-report=html", "--cov-report=term", "--cov-report=xml", "-n=auto"]

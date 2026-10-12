@@ -23,19 +23,13 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7.0.1
-      - name: Install Poetry
-        run: pipx install poetry
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.3.0
       - name: Install dyff
         run: curl --silent --location https://git.io/JYfAY | sudo bash
-      - name: Set up Python
-        uses: actions/setup-python@v7.0.0
-        with:
-          python-version-file: 'backend/.python-version'
-          cache: 'poetry'
-          cache-dependency-path: backend/poetry.lock
       - name: Install dependencies
-        run: poetry install --without=debug,test
+        run: uv sync --locked --no-group debug --no-group test
       - name: Generate schema from code
-        run: poetry run python manage.py spectacular --file schema.new.yaml --validate --fail-on-warn
+        run: uv run --no-sync python manage.py spectacular --file schema.new.yaml --validate --fail-on-warn
       - name: Compare version controlled schema file with newly generated one
         run: dyff between schema.yaml schema.new.yaml --set-exit-code
