@@ -41,6 +41,7 @@ const providers: Record<
       include_granted_scopes: 'true',
       redirect_uri: redirectUri,
       scope: [
+        'openid',
         'https://www.googleapis.com/auth/userinfo.email',
         'https://www.googleapis.com/auth/userinfo.profile',
         'https://www.googleapis.com/auth/user.phonenumbers.read',
