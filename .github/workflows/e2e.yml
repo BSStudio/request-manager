@@ -1,0 +1,73 @@
+name: E2E CI
+
+on:
+  workflow_dispatch:
+  pull_request:
+  push:
+    branches: [main]
+    paths:
+      - 'backend/**'
+      - 'frontend/**'
+      - '.github/workflows/e2e.yml'
+
+permissions:
+  contents: read
+
+jobs:
+  run-tests:
+    name: E2E tests
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: frontend
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_USER: request_manager
+          POSTGRES_PASSWORD: change_me
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v7.0.1
+      - name: Set up pnpm, Node.js and dependencies
+        uses: pnpm/setup@v3.0.0
+        with:
+          working-directory: frontend
+          node-version-file: .nvmrc
+          cache: true
+          require-lockfile: true
+      - name: Install uv
+        uses: astral-sh/setup-uv@v10.3.0
+      - name: Install backend dependencies
+        working-directory: backend
+        run: uv sync --locked
+      - name: Install Chromium
+        run: pnpm exec playwright install --with-deps chromium
+      - name: Run E2E tests
+        run: pnpm e2e --reporter=list,junit
+        env:
+          PLAYWRIGHT_JUNIT_OUTPUT_NAME: junit.xml
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/codecov-action@v7.1.1
+        with:
+          files: frontend/junit.xml
+          flags: e2e
+          report_type: test_results
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+      - name: Archive traces of failed tests
+        if: ${{ failure() }}
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: playwright-traces
+          path: frontend/test-results/
