@@ -36,20 +36,20 @@ flowchart TD
 .
 ├── backend/         Django REST API, Celery workers, admin panel
 ├── frontend/        Public site and admin dashboard (Vite, TypeScript)
-├── .devcontainer/   VS Code dev container (Python + Node + Poetry)
+├── .devcontainer/   VS Code dev container (Python + Node + uv)
 ├── docker-compose.dev.yaml   PostgreSQL + Redis for local development
 └── docker-compose.yaml       Full production-like stack
 ```
 
 ## Getting started
 
-The fastest way to get a complete toolchain is the **dev container**, which provisions Python, Node and Poetry and starts PostgreSQL + Redis automatically.
+The fastest way to get a complete toolchain is the **dev container**, which provisions Python, Node and uv and starts PostgreSQL + Redis automatically.
 
 ### Option A — Dev Container (recommended)
 
 1. Install [Docker Desktop](https://www.docker.com/products/docker-desktop/) and the [VS Code Dev Containers](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) extension.
 2. Open the repository in VS Code and run **Dev Containers: Reopen in Container**.
-3. Once the post-create step finishes, the `.env` files exist and the database is migrated and filled with test data. Run the apps, then log in as the test admin with `poetry run python manage.py dev_session admin.aladar` in `backend/` (see [Test data](backend/README.md#test-data)).
+3. Once the post-create step finishes, the `.env` files exist and the database is migrated and filled with test data. Run the apps, then log in as the test admin with `uv run python manage.py dev_session admin.aladar` in `backend/` (see [Test data](backend/README.md#test-data)).
 
 > **Windows + WSL:** if the container fails to start with a `distro-services/<distro>.sock: no such file` error, enable Docker Desktop → Settings → Resources → **WSL Integration** for your distro (e.g. `Debian`).
 
@@ -66,14 +66,14 @@ docker compose -f docker-compose.dev.yaml up -d --wait   # PostgreSQL + Redis
 
 The backend setup ends with `seed_dev_data`, which fills the database with test data.
 
-**Prerequisites for manual setup:** Python + [Poetry](https://python-poetry.org/) and Node.js — the exact versions are pinned in `backend/.python-version` and the `.nvmrc` files — plus Docker for PostgreSQL + Redis.
+**Prerequisites for manual setup:** [uv](https://docs.astral.sh/uv/) and Node.js, plus Docker for PostgreSQL + Redis. uv installs the Python version pinned in `backend/.python-version`; the Node.js version is pinned in `frontend/.nvmrc`.
 
 ## Development
 
 This repository uses [pre-commit](https://pre-commit.com/) for formatting and linting (Black, isort, flake8, Prettier, ESLint and more). Install the hooks at once from the repository root:
 
 ```bash
-pipx install pre-commit   # or: pip install pre-commit
+uv tool install pre-commit
 pre-commit install
 ```
 
