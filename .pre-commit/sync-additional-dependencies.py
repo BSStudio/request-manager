@@ -1,121 +1,73 @@
 import json
+import re
+import sys
 
 import yaml
-from yaml.dumper import SafeDumper
-from yaml.loader import SafeLoader
-from yaml.nodes import ScalarNode
 
-DEPENDENCIES_TO_IGNORE = [
-    "@openapitools/openapi-generator-cli",
-    "@tailwindcss/vite",
-    "@tanstack/react-query-devtools",
-    "@types/node",
-    "@types/react",
-    "@types/react-dom",
-    "@vite-pwa/assets-generator",
-    "@vitejs/plugin-basic-ssl",
-    "@vitejs/plugin-react",
-    "autoprefixer",
-    "cssnano",
-    "source-map-explorer",
-    "postcss",
-    "tailwindcss",
-    "vite",
-    "vite-plugin-pwa",
-    "workbox-window",
+CONFIG = ".pre-commit-config.yaml"
+ESLINT_REPO = "https://github.com/pre-commit/mirrors-eslint"
+# What eslint.config.cjs loads. The hook's isolated environment cannot give
+# ESLint the app's types anyway, so other packages would only slow it down.
+DEPENDENCIES_TO_SYNC = [
+    "@eslint/js",
+    "@tanstack/eslint-plugin-query",
+    "eslint",
+    "eslint-config-prettier",
+    "eslint-import-resolver-typescript",
+    "eslint-plugin-import-x",
+    "eslint-plugin-prettier",
+    "eslint-plugin-react",
+    "eslint-plugin-react-hooks",
+    "globals",
+    "prettier",
+    "typescript",
+    "typescript-eslint",
 ]
-REPOS_TO_CHECK = ["eslint"]
-
-
-class Dumper(SafeDumper):
-    def increase_indent(self, flow=False, *args, **kwargs):
-        # Have indentation just like the existing
-        return super().increase_indent(flow=flow, indentless=False)
-
-    def serialize_node(self, node, parent, index):
-        # Have the args as json like formatted array and string between ' symbols
-        if isinstance(index, ScalarNode) and index.value in [
-            "args",
-            "autoupdate_branch",
-            "name",
-        ]:
-            node.style = "'"
-            node.flow_style = True
-        return super().serialize_node(node=node, parent=parent, index=index)
 
 
 def main():
-    data_changed = False
+    with open(CONFIG, encoding="utf-8", newline="") as f:
+        text = f.read()
 
-    with open(".pre-commit-config.yaml") as f:
-        data = yaml.load(f, Loader=SafeLoader)
+    repo = next(r for r in yaml.safe_load(text)["repos"] if r["repo"] == ESLINT_REPO)
+    hook = repo["hooks"][0]
+    folder = hook["files"].strip("^/")
+    with open(f"{folder}/package.json", encoding="utf-8") as f:
+        dev_dependencies = json.load(f)["devDependencies"]
 
-        for repo_name in REPOS_TO_CHECK:
-            repo = next(
-                (
-                    item
-                    for item in data.get("repos", [])
-                    if item.get("repo", "").endswith(repo_name)
-                ),
-                {},
-            )
+    expected = sorted(
+        f"{name}@{dev_dependencies[name]}"
+        for name in DEPENDENCIES_TO_SYNC
+        if name in dev_dependencies
+    )
+    current = sorted(hook.get("additional_dependencies", []))
+    if current == expected:
+        return 0
 
-            for hook in repo.get("hooks", []):
-                files = hook.get("files", "")
-                folder = files[1 : files.index("/")]
-                additional_dependencies_list = hook.get("additional_dependencies", [])
+    # Only the list is rewritten, so the rest of the file keeps its comments.
+    newline = "\r\n" if "\r\n" in text else "\n"
+    match = re.compile(
+        r"^( *)additional_dependencies:\r?\n((?:\1  - .*\r?\n)+)", re.MULTILINE
+    ).search(text, text.index(ESLINT_REPO))
+    indent = match.group(1) + "  "
+    items = "".join(
+        (
+            f"{indent}- '{dependency}'{newline}"
+            if dependency.startswith("@")
+            else f"{indent}- {dependency}{newline}"
+        )
+        for dependency in expected
+    )
+    with open(CONFIG, "w", encoding="utf-8", newline="") as f:
+        f.write(text[: match.start(2)] + items + text[match.end(2) :])
 
-                with open(f"{folder}/package.json") as package_json:
-                    package_json_data = json.load(package_json)
-                    dev_dependencies = package_json_data.get("devDependencies", {})
-
-                    for dependency in DEPENDENCIES_TO_IGNORE:
-                        dev_dependencies.pop(dependency, None)
-
-                    dev_dependencies_list = [
-                        f"{key}@{value}" for key, value in dev_dependencies.items()
-                    ]
-
-                    additional_dependencies_list.sort()
-                    dev_dependencies_list.sort()
-
-                    if additional_dependencies_list != dev_dependencies_list:
-                        hook["additional_dependencies"] = dev_dependencies_list
-                        repo["hooks"] = [
-                            hook if item.get("files", "") == files else item
-                            for item in repo["hooks"]
-                        ]
-                        data["repos"] = [
-                            repo if item.get("repo", "") == repo["repo"] else item
-                            for item in data["repos"]
-                        ]
-
-                        print(
-                            f"Additional dependencies are out of sync with package.json in /{folder}"
-                        )
-                        print(".pre-commit-config.yaml:")
-                        print(
-                            set(additional_dependencies_list)
-                            - set(dev_dependencies_list)
-                        )
-                        print("package.json:")
-                        print(
-                            set(dev_dependencies_list)
-                            - set(additional_dependencies_list),
-                            end="\n\n",
-                        )
-
-                        data_changed = True
-
-    if data_changed:
-        with open(".pre-commit-config.yaml", "w") as f:
-            yaml.dump(data, f, Dumper=Dumper, sort_keys=False)
-
-        print("Pre-commit config has been updated.")
-        return 1
-
-    return 0
+    print(
+        f"Synced the ESLint hook's additional_dependencies with {folder}/package.json"
+    )
+    print("Removed:", set(current) - set(expected))
+    print("Added:", set(expected) - set(current))
+    return 1
 
 
 if __name__ == "__main__":
-    main()
+    sys.exit(main())
