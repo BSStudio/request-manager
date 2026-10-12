@@ -62,6 +62,7 @@
     {
       "description": "Group every uv version bump (Dockerfiles, pre-commit hook) into one PR.",
       "groupName": "uv",
+      "groupSlug": "uv",
       "matchDepNames": ["ghcr.io/astral-sh/uv", "astral-sh/uv-pre-commit"]
     },
     {
