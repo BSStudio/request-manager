@@ -106,7 +106,7 @@ const AddCrewDialog = forwardRef<React.Ref<HTMLDivElement>, AddCrewDialogProps>(
           <div className="field col-12">
             <label
               className="align-items-center flex font-medium text-900 text-sm"
-              htmlFor="rating"
+              htmlFor="member"
             >
               Stábtag
             </label>
@@ -119,7 +119,7 @@ const AddCrewDialog = forwardRef<React.Ref<HTMLDivElement>, AddCrewDialogProps>(
                   <AutoCompleteStaff
                     {...field}
                     className="w-full"
-                    id={field.name}
+                    inputId={field.name}
                   />
                   {fieldState.error ? (
                     <small className="p-error">
@@ -137,7 +137,7 @@ const AddCrewDialog = forwardRef<React.Ref<HTMLDivElement>, AddCrewDialogProps>(
             />
           </div>
           <div className="field col-12">
-            <label className="font-medium text-900 text-sm" htmlFor="rating">
+            <label className="font-medium text-900 text-sm" htmlFor="position">
               Pozíció
             </label>
             <Controller
@@ -149,7 +149,7 @@ const AddCrewDialog = forwardRef<React.Ref<HTMLDivElement>, AddCrewDialogProps>(
                   <AutoCompleteCrewPosition
                     {...field}
                     className="w-full"
-                    id={field.name}
+                    inputId={field.name}
                   />
                   {fieldState.error ? (
                     <small className="p-error">

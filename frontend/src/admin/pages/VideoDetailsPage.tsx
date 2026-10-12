@@ -281,12 +281,14 @@ const VideoDetailsPage = () => {
               selector="#videoStatusHelper"
             >
               <Button
+                aria-label="Súgó az állapotokhoz"
                 className="mr-2 p-button-rounded p-button-help"
                 icon="pi pi-question"
                 ref={statusHelperSlideoverOpenBtnRef}
               />
             </StyleClass>
             <Button
+              aria-label="További adatok szerkesztése"
               className="mr-2 p-button-rounded p-button-secondary"
               icon="pi pi-sliders-h"
               onClick={() => {
@@ -295,6 +297,7 @@ const VideoDetailsPage = () => {
             />
             <LinkButton
               buttonProps={{
+                'aria-label': 'Videó szerkesztése',
                 className: 'mr-2 p-button p-button-rounded',
                 icon: 'pi pi-pencil',
               }}
@@ -306,6 +309,7 @@ const VideoDetailsPage = () => {
               }}
             />
             <Button
+              aria-label="Videó törlése"
               className="p-button-danger p-button-rounded"
               icon="pi pi-trash"
               onClick={onDelete}

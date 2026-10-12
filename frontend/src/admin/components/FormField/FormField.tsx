@@ -42,7 +42,12 @@ const FormField = <
       {...controllerProps}
       render={({ field, fieldState }) => (
         <div className={classNames('field', className)}>
-          <label className="font-medium text-900" htmlFor={field.name}>
+          {/* PrimeReact's Calendar, Dropdown and AutoComplete put id on a
+              wrapper and take their input's id as inputId. */}
+          <label
+            className="font-medium text-900"
+            htmlFor={children.props.inputId ?? field.name}
+          >
             {label}
           </label>
           <ConditionalWrapper
@@ -58,7 +63,7 @@ const FormField = <
           >
             {cloneElement(children, {
               className: fieldState.error && 'p-invalid',
-              id: field.name,
+              id: children.props.inputId ? undefined : field.name,
               ...field,
             })}
           </ConditionalWrapper>

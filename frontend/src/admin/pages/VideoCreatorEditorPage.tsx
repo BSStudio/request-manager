@@ -165,7 +165,7 @@ const VideoCreatorEditorPage = () => {
     })
       .then(async (response) => {
         showToast({
-          detail: `Videó ${requestId ? 'módosítva' : 'létrehozva'}`,
+          detail: `Videó ${videoId ? 'módosítva' : 'létrehozva'}`,
           life: 3000,
           severity: 'success',
           summary: 'Siker',
@@ -260,7 +260,7 @@ const VideoCreatorEditorPage = () => {
             label="Vágó"
             name="editor"
           >
-            <AutoCompleteStaff />
+            <AutoCompleteStaff inputId="editor" />
           </FormField>
           <FormField
             className="col-12 mb-4 md:col-6"
@@ -294,6 +294,7 @@ const VideoCreatorEditorPage = () => {
               <div className="col-12 mb-3 md:col-4 md:mb-0">
                 <ToggleButton
                   {...field}
+                  aria-label="Megvágva"
                   checked={field.value || false}
                   id={field.name}
                   offIcon="bi bi-scissors"
@@ -319,6 +320,7 @@ const VideoCreatorEditorPage = () => {
               <div className="col-12 mb-3 md:col-4 md:mb-0">
                 <ToggleButton
                   {...field}
+                  aria-label="Kikódolva"
                   checked={field.value || false}
                   id={field.name}
                   offIcon="bi bi-file-earmark-play"
@@ -344,6 +346,7 @@ const VideoCreatorEditorPage = () => {
               <div className="col-12 md:col-4">
                 <ToggleButton
                   {...field}
+                  aria-label="Archiválva"
                   checked={field.value || false}
                   id={field.name}
                   offIcon="bi bi-archive"

@@ -346,6 +346,7 @@ const RequestCreatorEditorPage = () => {
           >
             <Calendar
               dateFormat="yy.mm.dd"
+              inputId="start_datetime"
               mask="9999.99.99 99:99"
               showButtonBar
               showIcon
@@ -363,6 +364,7 @@ const RequestCreatorEditorPage = () => {
           >
             <Calendar
               dateFormat="yy.mm.dd"
+              inputId="end_datetime"
               mask="9999.99.99 99:99"
               showButtonBar
               showIcon
@@ -401,7 +403,7 @@ const RequestCreatorEditorPage = () => {
               },
             }}
           >
-            <Dropdown editable options={typeOptions} />
+            <Dropdown editable inputId="type" options={typeOptions} />
           </FormField>
           <Divider align="center" type="dashed">
             <b>Opcionális mezők</b>
@@ -427,7 +429,7 @@ const RequestCreatorEditorPage = () => {
             label="Felelős"
             name="responsible"
           >
-            <AutoCompleteStaff />
+            <AutoCompleteStaff inputId="responsible" />
           </FormField>
           <FormField
             className="col-12 mb-0 md:col-6"
@@ -438,6 +440,7 @@ const RequestCreatorEditorPage = () => {
           >
             <Calendar
               dateFormat="yy.mm.dd"
+              inputId="deadline"
               mask="9999.99.99"
               placeholder={
                 requestId ? 'Nincs változás' : 'Az esemény vége után 3 hét'
