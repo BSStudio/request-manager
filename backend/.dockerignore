@@ -12,6 +12,9 @@ htmlcov
 **/*.pyc
 **/__pycache__
 
+# virtual environment
+.venv
+
 # static
 staticfiles
 

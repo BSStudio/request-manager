@@ -3,10 +3,9 @@
 # fills the database with test data.
 set -euo pipefail
 
-echo "==> Backend (Poetry)"
+echo "==> Backend (uv)"
 cd backend
-poetry config virtualenvs.in-project true
-poetry install --with=dev,test,debug
+uv sync
 # The database and Redis defaults already point at the compose services.
 [ -f .env ] || echo "DJANGO_SETTINGS_MODULE = core.settings.debug" > .env
 cd ..
@@ -27,8 +26,8 @@ pre-commit install || echo "    WARN: hook not installed; run 'pre-commit instal
 # still leaves the tools installed.
 echo "==> Database"
 cd backend
-poetry run python manage.py migrate
-poetry run python manage.py seed_dev_data --no-input
+uv run python manage.py migrate
+uv run python manage.py seed_dev_data --no-input
 cd ..
 
-echo "==> Done. Log in as the test admin: cd backend && poetry run python manage.py dev_session admin.aladar"
+echo "==> Done. Log in as the test admin: cd backend && uv run python manage.py dev_session admin.aladar"

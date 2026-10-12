@@ -30,6 +30,7 @@ backend/**/*.pyc
 backend/**/__pycache__
 backend/.coverage
 backend/.pytest_cache
+backend/.venv
 backend/health_check_storage_test
 backend/htmlcov
 backend/staticfiles
