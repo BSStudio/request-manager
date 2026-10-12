@@ -171,15 +171,11 @@ const VideoCreatorEditorPage = () => {
           summary: 'Siker',
         });
 
-        if (videoId) {
-          await queryClient.invalidateQueries({
-            queryKey: queryKeys.video(requestId, videoId),
-          });
-        } else {
-          await queryClient.invalidateQueries({
-            queryKey: queryKeys.requestVideos(requestId),
-          });
-        }
+        // The request's status follows its videos. Its key also covers the
+        // video list and the video itself.
+        await queryClient.invalidateQueries({
+          queryKey: queryKeys.request(requestId),
+        });
 
         void navigate(`/requests/${requestId}/videos/${response.data.id}`);
       })

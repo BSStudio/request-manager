@@ -79,10 +79,7 @@ const VideoDetailsPage = () => {
       .then(() => {
         void navigate(`/requests/${requestId}/videos`, { replace: true });
         void queryClient.invalidateQueries({
-          queryKey: queryKeys.requestVideos(requestId),
-        });
-        void queryClient.invalidateQueries({
-          queryKey: queryKeys.video(requestId, videoId),
+          queryKey: queryKeys.request(requestId),
         });
       })
       .catch((error) => {
@@ -119,7 +116,7 @@ const VideoDetailsPage = () => {
     await mutateAsync({ additional_data: additional_data })
       .then(async () => {
         await queryClient.invalidateQueries({
-          queryKey: queryKeys.video(requestId, videoId),
+          queryKey: queryKeys.request(requestId),
         });
         setAdditionalDataDialogOpen(false);
       })
