@@ -3,4 +3,4 @@
 # No owner: Renovate merges these once required checks pass.
 .github/workflows/
 pnpm-lock.yaml
-poetry.lock
+uv.lock

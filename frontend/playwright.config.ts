@@ -25,7 +25,7 @@ export default defineConfig({
   },
   webServer: {
     // e2e_server recreates and seeds the database, so every run starts fresh.
-    command: `pnpm --dir ../frontend exec vite build --mode e2e && poetry run python manage.py e2e_server localhost:${port} --storage-state-dir "${authDir}"`,
+    command: `pnpm --dir ../frontend exec vite build --mode e2e && uv run python manage.py e2e_server localhost:${port} --storage-state-dir "${authDir}"`,
     cwd: path.join(import.meta.dirname, '..', 'backend'),
     env: {
       DJANGO_SETTINGS_MODULE: 'core.settings.e2e',
