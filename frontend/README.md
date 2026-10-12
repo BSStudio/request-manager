@@ -62,9 +62,11 @@ pnpm generate-client
 | `pnpm start:network`       | Same, exposed on the local network (`--host`).                |
 | `pnpm build`               | Type-check (`tsc --noEmit`) and build into `build/`.          |
 | `pnpm preview`             | Serve the production build locally.                           |
-| `pnpm lint`                | Run ESLint.                                                   |
+| `pnpm lint`                | Run ESLint and type-check the end-to-end tests.               |
 | `pnpm lint:fix`            | Run ESLint with autofix.                                      |
 | `pnpm test`                | Run the unit tests with Vitest, rerunning them on changes.    |
+| `pnpm e2e`                 | Run the end-to-end tests with Playwright (see below).         |
+| `pnpm e2e:ui`              | Same, in Playwright's UI mode.                                |
 | `pnpm format`              | Format sources with Prettier.                                 |
 | `pnpm generate-client`     | Regenerate the API client from the backend schema.            |
 | `pnpm generate-pwa-assets` | Regenerate the app icons in `public/` from `public/icon.svg`. |
@@ -73,6 +75,12 @@ pnpm generate-client
 ## Tests
 
 Unit tests sit next to the code they test as `*.test.ts` and run in jsdom. `pnpm test run` runs them once; `pnpm test run --coverage` also writes a coverage report to `coverage/`.
+
+## End-to-end tests
+
+End-to-end tests in `e2e/` run the app in Chromium with Playwright. `pnpm e2e` builds the app with `.env.e2e`, then starts Django with `core.settings.e2e`, which recreates the `request_manager_e2e` database with the test data, writes a login for every test user and serves the build on port 8010. Postgres has to run, as for development; Redis is not needed.
+
+Download Chromium once with `pnpm exec playwright install chromium`. Tests log in by loading a login file, `test.use({ storageState: loginAs('minta.anna') })`, and can only reach localhost and Cloudflare's Turnstile. Only one run can go at a time, because the port and the database are fixed. A run leaves its own build in `build/`, so run `pnpm build` again before `pnpm preview` or before Django serves the build.
 
 ## Code style
 

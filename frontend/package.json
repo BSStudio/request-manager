@@ -42,9 +42,11 @@
     "preview": "vite preview",
     "analyze": "source-map-explorer 'build/static/frontend/*.js' --no-border-checks",
     "format": "prettier --write src/**/*.{js,jsx,ts,tsx,json,css}",
-    "lint": "eslint src/",
-    "lint:fix": "eslint --fix src/",
+    "lint": "eslint src/ e2e/ playwright.config.ts && tsc --noEmit -p e2e",
+    "lint:fix": "eslint --fix src/ e2e/ playwright.config.ts",
     "test": "vitest",
+    "e2e": "playwright test",
+    "e2e:ui": "playwright test --ui",
     "check-eslint-config": "eslint-config-prettier src/main.tsx",
     "generate-client": "openapi-generator-cli generate && prettier --write src/api/**/*.ts",
     "generate-pwa-assets": "pwa-assets-generator"
@@ -64,6 +66,7 @@
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@openapitools/openapi-generator-cli": "2.41.0",
+    "@playwright/test": "1.64.0",
     "@sentry/vite-plugin": "5.4.1",
     "@tailwindcss/vite": "4.3.3",
     "@tanstack/eslint-plugin-query": "5.104.1",
