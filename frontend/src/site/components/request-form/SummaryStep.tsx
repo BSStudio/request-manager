@@ -48,16 +48,11 @@ function EditButton({ onClick }: { onClick: () => void }) {
 }
 
 type SummaryStepProps = {
-  children: ReactNode;
   onEdit: (step: 'event' | 'notes' | 'personal') => void;
   requester: Requester | null;
 };
 
-export default function SummaryStep({
-  children,
-  onEdit,
-  requester,
-}: SummaryStepProps) {
+export default function SummaryStep({ onEdit, requester }: SummaryStepProps) {
   const { getValues } = useFormContext<RequestFormValues>();
   const values = getValues();
   const start = toDateTime(values.startDate, values.startTime);
@@ -113,7 +108,6 @@ export default function SummaryStep({
           <p className="text-sm whitespace-pre-wrap">{values.comment}</p>
         </SummaryCard>
       )}
-      {children}
     </div>
   );
 }

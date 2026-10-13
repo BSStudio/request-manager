@@ -1,7 +1,6 @@
 import { useRef, useState } from 'react';
 
 import { zodResolver } from '@hookform/resolvers/zod';
-import type { TurnstileInstance } from '@marsidev/react-turnstile';
 import { Loader2Icon, MailIcon, SendIcon } from 'lucide-react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
@@ -10,7 +9,10 @@ import { z } from 'zod';
 import { getApiErrorMessage, isRateLimited } from 'api/errors';
 import { miscApi } from 'api/http';
 import SectionHeading from 'site/components/home/SectionHeading';
-import Turnstile, { CAPTCHA_FAILED } from 'site/components/Turnstile';
+import Turnstile, {
+  CAPTCHA_FAILED,
+  type TurnstileHandle,
+} from 'site/components/Turnstile';
 import { Button } from 'site/components/ui/button';
 import {
   Field,
@@ -31,7 +33,7 @@ const contactSchema = z.object({
 type ContactValues = z.infer<typeof contactSchema>;
 
 function ContactForm() {
-  const turnstile = useRef<TurnstileInstance>(null);
+  const turnstile = useRef<TurnstileHandle>(null);
   const [started, setStarted] = useState(false);
   const {
     formState: { errors, isSubmitting },

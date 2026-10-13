@@ -1,6 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 
-import type { TurnstileInstance } from '@marsidev/react-turnstile';
 import { useQuery } from '@tanstack/react-query';
 import {
   ArrowLeftIcon,
@@ -51,7 +50,10 @@ import SuccessView from 'site/components/request-form/SuccessView';
 import SummaryStep, {
   type Requester,
 } from 'site/components/request-form/SummaryStep';
-import Turnstile, { CAPTCHA_FAILED } from 'site/components/Turnstile';
+import Turnstile, {
+  CAPTCHA_FAILED,
+  type TurnstileHandle,
+} from 'site/components/Turnstile';
 import { Button } from 'site/components/ui/button';
 import { getMissingProfileFields } from 'site/lib/person';
 
@@ -143,7 +145,7 @@ function NewRequestPage() {
   const [attemptedStep, setAttemptedStep] = useState<StepKey | null>(null);
   const answers = useWatch({ control: form.control });
   const hasAnswers = Object.values(answers).some(Boolean);
-  const turnstile = useRef<TurnstileInstance>(null);
+  const turnstile = useRef<TurnstileHandle>(null);
   const [submitting, setSubmitting] = useState(false);
   const [createdId, setCreatedId] = useState<number | null>(null);
   const card = useRef<HTMLDivElement>(null);
@@ -237,10 +239,10 @@ function NewRequestPage() {
           ? 'Túl sok felkérést küldtél. Próbáld újra később!'
           : getApiErrorMessage(error),
       });
-    } finally {
-      setSubmitting(false);
       // A Turnstile token is only valid for one request.
       turnstile.current?.reset();
+    } finally {
+      setSubmitting(false);
     }
   };
 
@@ -359,11 +361,18 @@ function NewRequestPage() {
                     <SummaryStep
                       onEdit={(target) => goTo(steps.indexOf(target))}
                       requester={requester}
-                    >
-                      {!user && <Turnstile ref={turnstile} />}
-                    </SummaryStep>
+                    />
                   )}
                 </div>
+                {/* Started with the form, so the check is usually done by the
+                    summary. A click it asks for waits there, hidden until then. */}
+                {!user && (
+                  <Turnstile
+                    className="mt-4"
+                    ref={turnstile}
+                    show={isSummary}
+                  />
+                )}
                 <div className="sticky bottom-0 z-10 -mx-6 mt-8 flex gap-3 border-t bg-card/95 px-6 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
                   {current > 0 && (
                     <Button

@@ -29,7 +29,7 @@ test('submits a request without logging in', async ({ page }) => {
   await page.getByRole('button', { name: 'Tovább' }).click();
   await page.getByRole('button', { exact: true, name: 'Beküldés' }).click();
 
-  // The summary step only now mounts Turnstile, and sending waits for its token.
+  // A test gets here faster than a person, often before Turnstile has finished.
   await expect(
     page.getByRole('heading', { name: 'Megkaptuk a felkérésed!' }),
   ).toBeVisible({ timeout: 15_000 });
