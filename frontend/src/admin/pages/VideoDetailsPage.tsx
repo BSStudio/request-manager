@@ -2,6 +2,7 @@ import { Suspense, lazy, useRef, useState } from 'react';
 
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
+import { format } from 'date-fns';
 import { Button } from 'primereact/button';
 import { Chip } from 'primereact/chip';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
@@ -141,12 +142,8 @@ const VideoDetailsPage = () => {
       (element: string) => element !== airedDate,
     );
 
-    mutateAsync({
-      additional_data: {
-        ...queryResult.additional_data,
-        aired: aired,
-      },
-    })
+    // The backend merges additional_data, so only the changed list is sent.
+    mutateAsync({ additional_data: { aired } })
       .then(async () => {
         await queryClient.invalidateQueries({
           queryKey: queryKeys.video(requestId, videoId),
@@ -164,25 +161,22 @@ const VideoDetailsPage = () => {
         setLoading(false);
       });
 
-    return true;
+    // Keeps the chip, which would hide itself; the refetch removes it once the
+    // save has gone through.
+    return false;
   };
 
   const onAiredDateSave = async (data: { airedDate: Date }) => {
     setLoading(true);
 
-    const aired = queryResult.additional_data.aired || [];
-    const offset = data.airedDate.getTimezoneOffset();
-    const newAiredDate = new Date(
-      data.airedDate.getTime() - offset * 60 * 1000,
-    );
-    aired.push(newAiredDate.toISOString().split('T')[0]);
+    const aired = [
+      ...new Set([
+        ...(queryResult.additional_data.aired || []),
+        format(data.airedDate, 'yyyy-MM-dd'),
+      ]),
+    ];
 
-    await mutateAsync({
-      additional_data: {
-        ...queryResult.additional_data,
-        aired: aired,
-      },
-    })
+    await mutateAsync({ additional_data: { aired } })
       .then(async () => {
         await queryClient.invalidateQueries({
           queryKey: queryKeys.video(requestId, videoId),
@@ -414,6 +408,7 @@ const VideoDetailsPage = () => {
               button={
                 <Button
                   className="p-button-sm p-button-text px-1 py-0"
+                  disabled={loading}
                   icon="pi pi-plus"
                   label="Hozzáadás"
                   onClick={() => {
@@ -423,14 +418,21 @@ const VideoDetailsPage = () => {
               }
               content={
                 <div className="flex flex-wrap gap-2">
-                  {queryResult.additional_data.aired ? (
+                  {queryResult.additional_data.aired?.length ? (
                     queryResult.additional_data.aired.map((value: string) => (
                       <Chip
                         key={value}
                         label={value}
                         icon={classNames({ 'pi pi-calendar': !isMobile })}
                         onRemove={() => onAiredDateRemove(value)}
-                        removable
+                        pt={{
+                          removeIcon: {
+                            'aria-label': `${value} törlése`,
+                            role: 'button',
+                          },
+                        }}
+                        // Every change sends the whole list, so one at a time.
+                        removable={!loading}
                       />
                     ))
                   ) : (
