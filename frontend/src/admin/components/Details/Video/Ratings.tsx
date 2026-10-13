@@ -252,6 +252,7 @@ const Ratings = ({
             }}
           />
           <Dropdown
+            aria-label="Rendezés"
             onChange={(e) => {
               setOrdering(e.value);
             }}

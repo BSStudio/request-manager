@@ -61,6 +61,8 @@ const FormField = <
             )}
           >
             {cloneElement(children, {
+              'aria-describedby': fieldState.error && `${field.name}-help`,
+              'aria-invalid': fieldState.invalid || undefined,
               className: fieldState.error && 'p-invalid',
               [inputId ? 'inputId' : 'id']: field.name,
               ...field,

@@ -50,6 +50,7 @@ const RecordingContentEditing = ({
           render={({ field }) => (
             <Dropdown
               {...field}
+              aria-label="Elérési út"
               className="flex-grow-1"
               editable
               onChange={(e) => {
