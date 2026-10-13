@@ -229,7 +229,7 @@ const ProfileSection = ({ userData }: ProfileSectionProps) => {
             >
               <label className="font-medium text-900">Csoportok</label>
               <div className="card flex flex-wrap gap-2">
-                {userData.groups
+                {[...userData.groups]
                   .sort((a, b) => a.localeCompare(b))
                   .map((group, index) => {
                     return <Chip key={index} label={group} />;
@@ -248,7 +248,7 @@ const ProfileSection = ({ userData }: ProfileSectionProps) => {
                 Összekapcsolt profilok
               </label>
               <div className="card flex flex-wrap gap-2">
-                {userData.social_accounts
+                {[...userData.social_accounts]
                   .sort((a, b) => a.provider.localeCompare(b.provider))
                   .map((account) => {
                     const provider = account.provider;

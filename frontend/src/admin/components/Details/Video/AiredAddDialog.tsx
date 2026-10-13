@@ -4,7 +4,7 @@ import { Button } from 'primereact/button';
 import { Calendar } from 'primereact/calendar';
 import { Dialog } from 'primereact/dialog';
 import type { DialogProps } from 'primereact/dialog';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 
 interface AcceptRejectDialogProps extends DialogProps {
   loading: boolean;
@@ -18,6 +18,7 @@ const AiredAddDialog = forwardRef<
   const { control, handleSubmit, reset } = useForm<{
     airedDate: Date;
   }>();
+  const airedDate = useWatch({ control, name: 'airedDate' });
 
   useEffect(() => {
     reset();
@@ -35,6 +36,7 @@ const AiredAddDialog = forwardRef<
         />
         <Button
           autoFocus
+          disabled={!airedDate}
           icon="pi pi-check"
           label="Mentés"
           loading={loading}

@@ -38,7 +38,7 @@ const TodosPage = () => {
     todosListQuery(
       selectedAssignees.map((assignee) => assignee.id).sort(),
       ordering,
-      selectedStatuses.sort(),
+      [...selectedStatuses].sort(),
     ),
   );
 
