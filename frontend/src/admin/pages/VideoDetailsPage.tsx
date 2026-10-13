@@ -161,7 +161,9 @@ const VideoDetailsPage = () => {
         setLoading(false);
       });
 
-    return true;
+    // Keeps the chip, which would hide itself; the refetch removes it once the
+    // save has gone through.
+    return false;
   };
 
   const onAiredDateSave = async (data: { airedDate: Date }) => {

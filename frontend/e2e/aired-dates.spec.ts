@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test';
+import type { Page, Route } from '@playwright/test';
 import { format, setDate, subDays } from 'date-fns';
 
 import { expect, loginAs, test } from './fixtures';
@@ -6,6 +6,12 @@ import { expect, loginAs, test } from './fixtures';
 test.use({ storageState: loginAs('admin.aladar') });
 
 const videoSave = /\/api\/v1\/admin\/requests\/\d+\/videos\/\d+$/;
+
+function failSaves(route: Route) {
+  return route.request().method() === 'PATCH'
+    ? route.fulfill({ body: 'Server Error', status: 500 })
+    : route.continue();
+}
 
 // The seeded 'Állásbörze promóvideó', which only this spec changes. Found
 // through the API: the request list only shows the current semester.
@@ -47,11 +53,7 @@ test('adds and removes the days a video aired', async ({ page }) => {
 
   for (const day of seeded) await expect(aired).toContainText(day);
 
-  await page.route(videoSave, (route) =>
-    route.request().method() === 'PATCH'
-      ? route.fulfill({ body: 'Server Error', status: 500 })
-      : route.continue(),
-  );
+  await page.route(videoSave, failSaves);
   await addDay();
   await expect(page.getByText('Hiba').first()).toBeVisible();
   await dialog.getByRole('button', { name: 'Mégsem' }).click();
@@ -64,6 +66,12 @@ test('adds and removes the days a video aired', async ({ page }) => {
   await expect(dialog).toBeHidden();
   await page.reload();
   await expect(aired.getByText(added, { exact: true })).toHaveCount(1);
+
+  await page.route(videoSave, failSaves);
+  await aired.getByRole('button', { name: `${added} törlése` }).click();
+  await expect(page.getByText('Hiba').first()).toBeVisible();
+  await expect(aired.getByText(added, { exact: true })).toBeVisible();
+  await page.unroute(videoSave);
 
   for (const day of [...seeded, added]) {
     await aired.getByRole('button', { name: `${day} törlése` }).click();
