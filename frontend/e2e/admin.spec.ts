@@ -1,16 +1,16 @@
-import type { Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 import { format, subDays } from 'date-fns';
 
 import { expect, loginAs, test } from './fixtures';
 import { requestLink } from './helpers';
 
-// One request taken from submitted to closed; every step builds on the last.
+// The seeded 'Kari gólyabál', which only this spec touches, taken from
+// submitted to closed; every step builds on the last.
 test.describe.configure({ mode: 'serial' });
 
 const videoUrl = 'https://example.com/videok/kari-golyabal-aftermovie';
 let requestPath: string;
 
-// The hidden status help also has list items with these words.
 function detailsRow(page: Page, label: string) {
   return page
     .getByRole('listitem')
@@ -25,17 +25,10 @@ function recording(page: Page) {
   return detailsRow(page, 'Nyersek');
 }
 
-async function pickStaff(page: Page, label: string, name: string) {
-  const field = page.getByLabel(label, { exact: true });
-  const option = page.getByRole('option').filter({ hasText: name });
-  // The AutoComplete only searches while typed into, and finds nobody until
-  // the staff list has loaded in the background.
-  await expect(async () => {
-    await field.clear();
-    await field.pressSequentially(name.split(' ')[0]);
-    await expect(option).toBeVisible({ timeout: 1000 });
-  }).toPass();
-  await option.click();
+// The options open at the end of the page, outside any dialog.
+async function pick(page: Page, field: Locator, option: string) {
+  await field.fill(option.split(' ')[0]);
+  await page.getByRole('option').filter({ hasText: option }).click();
 }
 
 async function editVideo(page: Page, change: () => Promise<void>) {
@@ -77,7 +70,11 @@ test.describe('as a crew member', () => {
 
     await page.goto(requestPath);
     await page.getByRole('link', { name: 'Felkérés szerkesztése' }).click();
-    await pickStaff(page, 'Felelős', 'Gyártó Gábor');
+    await pick(
+      page,
+      page.getByLabel('Felelős', { exact: true }),
+      'Gyártó Gábor',
+    );
     await page.getByLabel('Kezdés időpontja').fill(`${day} 18:00`);
     await page.getByLabel('Kezdés időpontja').press('Tab');
     await page.getByLabel('Befejezés időpontja').fill(`${day} 22:00`);
@@ -89,8 +86,12 @@ test.describe('as a crew member', () => {
     await page.getByRole('tab', { name: 'Stáb' }).click();
     await page.getByRole('button', { name: 'Új stábtag' }).click();
     const crew = page.getByRole('dialog', { name: 'Új stábtag hozzáadása' });
-    await pickStaff(page, 'Stábtag', 'Kamera Károly');
-    await crew.getByLabel('Pozíció', { exact: true }).fill('Operatőr');
+    await pick(
+      page,
+      crew.getByLabel('Stábtag', { exact: true }),
+      'Kamera Károly',
+    );
+    await pick(page, crew.getByLabel('Pozíció', { exact: true }), 'Operatőr');
     await crew.getByRole('button', { exact: true, name: 'Mentés' }).click();
     await expect(
       page.getByRole('row').filter({ hasText: 'Kamera Károly' }),
@@ -109,9 +110,10 @@ test.describe('as a crew member', () => {
     await page.getByRole('tab', { name: 'Videók' }).click();
     await page.getByRole('link', { name: 'Új videó' }).click();
     await page.getByLabel('Videó címe', { exact: true }).fill('Aftermovie');
-    await pickStaff(page, 'Vágó', 'Vágó Vilma');
+    await pick(page, page.getByLabel('Vágó', { exact: true }), 'Vágó Vilma');
     await page.getByRole('button', { exact: true, name: 'Mentés' }).click();
     await expect(page.getByText('Videó létrehozva')).toBeVisible();
+    // The video's page, so the video's status from here on.
     await expect(status(page)).toContainText('Vágás alatt');
 
     await editVideo(page, () =>
@@ -160,7 +162,9 @@ test.describe('as the requester', () => {
     await page.goto('/my-requests');
     await requestLink(page, 'Kari gólyabál').click();
 
-    await expect(page.getByText('Elkészült').first()).toBeVisible();
+    await expect(
+      page.getByText('Elkészültek a videók. Amelyiket már közzétettük'),
+    ).toBeVisible();
     const video = page.getByRole('listitem').filter({ hasText: 'Aftermovie' });
     await expect(video).toContainText('Közzétéve');
     await expect(video.getByRole('link', { name: 'Megnézem' })).toHaveAttribute(
