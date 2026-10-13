@@ -86,10 +86,7 @@ const VideoDetailsPage = () => {
         if (isNotFound(error)) {
           void navigate(`/requests/${requestId}/videos`, { replace: true });
           void queryClient.invalidateQueries({
-            queryKey: queryKeys.requestVideos(requestId),
-          });
-          void queryClient.invalidateQueries({
-            queryKey: queryKeys.video(requestId, videoId),
+            queryKey: queryKeys.request(requestId),
           });
         }
         showErrorToast(error);
@@ -127,7 +124,7 @@ const VideoDetailsPage = () => {
         }
         if (isNotFound(error)) {
           await queryClient.invalidateQueries({
-            queryKey: queryKeys.video(requestId, videoId),
+            queryKey: queryKeys.request(requestId),
           });
         }
         showErrorToast(error);

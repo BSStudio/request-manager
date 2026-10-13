@@ -299,7 +299,7 @@ const RequestCreatorEditorPage = () => {
   return (
     <div className="p-3 sm:p-5 surface-ground">
       <div className="font-medium mb-3 text-900 text-xl">
-        Felkérés létrehozása
+        {requestId ? 'Felkérés szerkesztése' : 'Felkérés létrehozása'}
       </div>
       <form className="border-round p-3 p-fluid shadow-2 sm:p-4 surface-card">
         <div className="formgrid grid p-fluid">
@@ -340,13 +340,13 @@ const RequestCreatorEditorPage = () => {
             className="col-12 mb-4 md:col-6"
             control={control}
             disabled={isPending}
+            inputId
             label="Kezdés időpontja"
             name="start_datetime"
             rules={{ required: true }}
           >
             <Calendar
               dateFormat="yy.mm.dd"
-              inputId="start_datetime"
               mask="9999.99.99 99:99"
               showButtonBar
               showIcon
@@ -358,13 +358,13 @@ const RequestCreatorEditorPage = () => {
             className="col-12 mb-4 md:col-6"
             control={control}
             disabled={isPending}
+            inputId
             label="Befejezés időpontja"
             name="end_datetime"
             rules={{ required: true }}
           >
             <Calendar
               dateFormat="yy.mm.dd"
-              inputId="end_datetime"
               mask="9999.99.99 99:99"
               showButtonBar
               showIcon
@@ -393,6 +393,7 @@ const RequestCreatorEditorPage = () => {
             className="col-12 mb-0 md:col-6"
             control={control}
             disabled={isPending}
+            inputId
             label="Típus"
             name="type"
             rules={{
@@ -403,7 +404,7 @@ const RequestCreatorEditorPage = () => {
               },
             }}
           >
-            <Dropdown editable inputId="type" options={typeOptions} />
+            <Dropdown aria-label="Típus" editable options={typeOptions} />
           </FormField>
           <Divider align="center" type="dashed">
             <b>Opcionális mezők</b>
@@ -426,21 +427,22 @@ const RequestCreatorEditorPage = () => {
             className="col-12 mb-4 md:col-6 md:mb-0"
             control={control}
             disabled={isPending}
+            inputId
             label="Felelős"
             name="responsible"
           >
-            <AutoCompleteStaff inputId="responsible" />
+            <AutoCompleteStaff />
           </FormField>
           <FormField
             className="col-12 mb-0 md:col-6"
             control={control}
             disabled={isPending}
+            inputId
             label="Határidő"
             name="deadline"
           >
             <Calendar
               dateFormat="yy.mm.dd"
-              inputId="deadline"
               mask="9999.99.99"
               placeholder={
                 requestId ? 'Nincs változás' : 'Az esemény vége után 3 hét'

@@ -431,7 +431,7 @@ const RequestDetailsPage = () => {
               }}
             />
             <Button
-              aria-label="Felkérés elfogadása"
+              aria-label="Felkérés elbírálása"
               className="mr-2 p-button-warning p-button-rounded"
               icon="pi pi-external-link"
               onClick={() => {

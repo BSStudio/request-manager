@@ -183,7 +183,7 @@ const VideoCreatorEditorPage = () => {
         if (setFieldErrors(error, setError)) return;
         if (isNotFound(error)) {
           await queryClient.invalidateQueries({
-            queryKey: queryKeys.requestVideos(requestId),
+            queryKey: queryKeys.request(requestId),
           });
         }
         showErrorToast(error);
@@ -206,7 +206,9 @@ const VideoCreatorEditorPage = () => {
 
   return (
     <div className="p-3 sm:p-5 surface-ground">
-      <div className="font-medium mb-3 text-900 text-xl">Videó létrehozása</div>
+      <div className="font-medium mb-3 text-900 text-xl">
+        {videoId ? 'Videó szerkesztése' : 'Videó létrehozása'}
+      </div>
       <form className="border-round p-3 p-fluid shadow-2 sm:p-4 surface-card">
         <div className="formgrid grid p-fluid">
           {isDataChanged && (
@@ -253,10 +255,11 @@ const VideoCreatorEditorPage = () => {
             className="col-12 mb-4 md:col-6"
             control={control}
             disabled={isPending}
+            inputId
             label="Vágó"
             name="editor"
           >
-            <AutoCompleteStaff inputId="editor" />
+            <AutoCompleteStaff />
           </FormField>
           <FormField
             className="col-12 mb-4 md:col-6"
@@ -290,7 +293,6 @@ const VideoCreatorEditorPage = () => {
               <div className="col-12 mb-3 md:col-4 md:mb-0">
                 <ToggleButton
                   {...field}
-                  aria-label="Megvágva"
                   checked={field.value || false}
                   id={field.name}
                   offIcon="bi bi-scissors"
@@ -299,6 +301,7 @@ const VideoCreatorEditorPage = () => {
                   onIcon="bi bi-scissors"
                   onLabel="Megvágva"
                   pt={{
+                    input: { 'aria-label': 'Megvágva' },
                     root: {
                       className: 'w-full',
                     },
@@ -316,7 +319,6 @@ const VideoCreatorEditorPage = () => {
               <div className="col-12 mb-3 md:col-4 md:mb-0">
                 <ToggleButton
                   {...field}
-                  aria-label="Kikódolva"
                   checked={field.value || false}
                   id={field.name}
                   offIcon="bi bi-file-earmark-play"
@@ -325,6 +327,7 @@ const VideoCreatorEditorPage = () => {
                   onIcon="bi bi-file-earmark-play"
                   onLabel="Kikódolva"
                   pt={{
+                    input: { 'aria-label': 'Kikódolva' },
                     root: {
                       className: 'w-full',
                     },
@@ -342,7 +345,6 @@ const VideoCreatorEditorPage = () => {
               <div className="col-12 md:col-4">
                 <ToggleButton
                   {...field}
-                  aria-label="Archiválva"
                   checked={field.value || false}
                   id={field.name}
                   offIcon="bi bi-archive"
@@ -351,6 +353,7 @@ const VideoCreatorEditorPage = () => {
                   onIcon="bi bi-archive"
                   onLabel="Archiválva"
                   pt={{
+                    input: { 'aria-label': 'Archiválva' },
                     root: {
                       className: 'w-full',
                     },
