@@ -11,7 +11,15 @@ export const CAPTCHA_FAILED =
 
 // Most visitors pass unnoticed, the widget only shows up when Cloudflare wants
 // a click. Read the token with getResponsePromise(), it waits for the check.
-export default function Turnstile({ ref }: { ref?: Ref<TurnstileInstance> }) {
+export default function Turnstile({
+  className,
+  ref,
+  show = true,
+}: {
+  className?: string;
+  ref?: Ref<TurnstileInstance>;
+  show?: boolean;
+}) {
   const [status, setStatus] = useState<'error' | 'hidden' | 'interactive'>(
     'hidden',
   );
@@ -21,7 +29,8 @@ export default function Turnstile({ ref }: { ref?: Ref<TurnstileInstance> }) {
       className={cn(
         'flex flex-col gap-2',
         // Out of the flow, so it leaves no gap in the form.
-        status === 'hidden' && 'absolute size-0 overflow-hidden',
+        (status === 'hidden' || !show) && 'absolute size-0 overflow-hidden',
+        className,
       )}
     >
       {status === 'interactive' && (

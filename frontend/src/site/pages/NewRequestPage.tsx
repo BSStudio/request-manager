@@ -359,11 +359,18 @@ function NewRequestPage() {
                     <SummaryStep
                       onEdit={(target) => goTo(steps.indexOf(target))}
                       requester={requester}
-                    >
-                      {!user && <Turnstile ref={turnstile} />}
-                    </SummaryStep>
+                    />
                   )}
                 </div>
+                {/* Started with the form, so the check is usually done by the
+                    summary, the only step where its click can be asked for. */}
+                {!user && (
+                  <Turnstile
+                    className="mt-4"
+                    ref={turnstile}
+                    show={isSummary}
+                  />
+                )}
                 <div className="sticky bottom-0 z-10 -mx-6 mt-8 flex gap-3 border-t bg-card/95 px-6 pt-4 pb-[calc(1rem+env(safe-area-inset-bottom))] backdrop-blur sm:static sm:mx-0 sm:border-0 sm:bg-transparent sm:p-0 sm:backdrop-blur-none">
                   {current > 0 && (
                     <Button
