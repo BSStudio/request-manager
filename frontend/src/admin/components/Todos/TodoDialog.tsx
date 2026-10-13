@@ -216,7 +216,7 @@ const TodoDialog = forwardRef<
               <>
                 <Dropdown
                   {...field}
-                  id={field.name}
+                  inputId={field.name}
                   itemTemplate={statusTemplate}
                   options={Object.values(StatusEnum)}
                   valueTemplate={statusTemplate}
@@ -263,7 +263,7 @@ const TodoDialog = forwardRef<
                 <AutoCompleteStaffMultiple
                   {...field}
                   className="w-full"
-                  id={field.name}
+                  inputId={field.name}
                 />
                 {fieldState.error && (
                   <small className="block p-error" id={field.name + '-help'}>

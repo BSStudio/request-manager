@@ -165,21 +165,17 @@ const VideoCreatorEditorPage = () => {
     })
       .then(async (response) => {
         showToast({
-          detail: `Videó ${requestId ? 'módosítva' : 'létrehozva'}`,
+          detail: `Videó ${videoId ? 'módosítva' : 'létrehozva'}`,
           life: 3000,
           severity: 'success',
           summary: 'Siker',
         });
 
-        if (videoId) {
-          await queryClient.invalidateQueries({
-            queryKey: queryKeys.video(requestId, videoId),
-          });
-        } else {
-          await queryClient.invalidateQueries({
-            queryKey: queryKeys.requestVideos(requestId),
-          });
-        }
+        // The request's status follows its videos. Its key also covers the
+        // video list and the video itself.
+        await queryClient.invalidateQueries({
+          queryKey: queryKeys.request(requestId),
+        });
 
         void navigate(`/requests/${requestId}/videos/${response.data.id}`);
       })
@@ -187,7 +183,7 @@ const VideoCreatorEditorPage = () => {
         if (setFieldErrors(error, setError)) return;
         if (isNotFound(error)) {
           await queryClient.invalidateQueries({
-            queryKey: queryKeys.requestVideos(requestId),
+            queryKey: queryKeys.request(requestId),
           });
         }
         showErrorToast(error);
@@ -210,7 +206,9 @@ const VideoCreatorEditorPage = () => {
 
   return (
     <div className="p-3 sm:p-5 surface-ground">
-      <div className="font-medium mb-3 text-900 text-xl">Videó létrehozása</div>
+      <div className="font-medium mb-3 text-900 text-xl">
+        {videoId ? 'Videó szerkesztése' : 'Videó létrehozása'}
+      </div>
       <form className="border-round p-3 p-fluid shadow-2 sm:p-4 surface-card">
         <div className="formgrid grid p-fluid">
           {isDataChanged && (
@@ -257,6 +255,7 @@ const VideoCreatorEditorPage = () => {
             className="col-12 mb-4 md:col-6"
             control={control}
             disabled={isPending}
+            inputId
             label="Vágó"
             name="editor"
           >
@@ -302,6 +301,7 @@ const VideoCreatorEditorPage = () => {
                   onIcon="bi bi-scissors"
                   onLabel="Megvágva"
                   pt={{
+                    input: { 'aria-label': 'Megvágva' },
                     root: {
                       className: 'w-full',
                     },
@@ -327,6 +327,7 @@ const VideoCreatorEditorPage = () => {
                   onIcon="bi bi-file-earmark-play"
                   onLabel="Kikódolva"
                   pt={{
+                    input: { 'aria-label': 'Kikódolva' },
                     root: {
                       className: 'w-full',
                     },
@@ -352,6 +353,7 @@ const VideoCreatorEditorPage = () => {
                   onIcon="bi bi-archive"
                   onLabel="Archiválva"
                   pt={{
+                    input: { 'aria-label': 'Archiválva' },
                     root: {
                       className: 'w-full',
                     },

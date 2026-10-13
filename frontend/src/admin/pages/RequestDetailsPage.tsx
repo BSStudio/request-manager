@@ -416,12 +416,14 @@ const RequestDetailsPage = () => {
               selector="#requestStatusHelper"
             >
               <Button
+                aria-label="Súgó az állapotokhoz"
                 className="mr-2 p-button-rounded p-button-help"
                 icon="pi pi-question"
                 ref={statusHelperSlideoverOpenBtnRef}
               />
             </StyleClass>
             <Button
+              aria-label="További adatok szerkesztése"
               className="mr-2 p-button-rounded p-button-secondary"
               icon="pi pi-sliders-h"
               onClick={() => {
@@ -429,6 +431,7 @@ const RequestDetailsPage = () => {
               }}
             />
             <Button
+              aria-label="Felkérés elbírálása"
               className="mr-2 p-button-warning p-button-rounded"
               icon="pi pi-external-link"
               onClick={() => {
@@ -437,6 +440,7 @@ const RequestDetailsPage = () => {
             />
             <LinkButton
               buttonProps={{
+                'aria-label': 'Felkérés szerkesztése',
                 className: 'mr-2 p-button p-button-rounded',
                 icon: 'pi pi-pencil',
               }}
@@ -447,6 +451,7 @@ const RequestDetailsPage = () => {
               }}
             />
             <Button
+              aria-label="Felkérés törlése"
               className="p-button-danger p-button-rounded"
               disabled={!isAdmin() && data.requested_by.id !== getUserId()}
               icon="pi pi-trash"

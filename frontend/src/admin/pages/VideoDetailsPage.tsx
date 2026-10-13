@@ -79,20 +79,14 @@ const VideoDetailsPage = () => {
       .then(() => {
         void navigate(`/requests/${requestId}/videos`, { replace: true });
         void queryClient.invalidateQueries({
-          queryKey: queryKeys.requestVideos(requestId),
-        });
-        void queryClient.invalidateQueries({
-          queryKey: queryKeys.video(requestId, videoId),
+          queryKey: queryKeys.request(requestId),
         });
       })
       .catch((error) => {
         if (isNotFound(error)) {
           void navigate(`/requests/${requestId}/videos`, { replace: true });
           void queryClient.invalidateQueries({
-            queryKey: queryKeys.requestVideos(requestId),
-          });
-          void queryClient.invalidateQueries({
-            queryKey: queryKeys.video(requestId, videoId),
+            queryKey: queryKeys.request(requestId),
           });
         }
         showErrorToast(error);
@@ -119,7 +113,7 @@ const VideoDetailsPage = () => {
     await mutateAsync({ additional_data: additional_data })
       .then(async () => {
         await queryClient.invalidateQueries({
-          queryKey: queryKeys.video(requestId, videoId),
+          queryKey: queryKeys.request(requestId),
         });
         setAdditionalDataDialogOpen(false);
       })
@@ -130,7 +124,7 @@ const VideoDetailsPage = () => {
         }
         if (isNotFound(error)) {
           await queryClient.invalidateQueries({
-            queryKey: queryKeys.video(requestId, videoId),
+            queryKey: queryKeys.request(requestId),
           });
         }
         showErrorToast(error);
@@ -281,12 +275,14 @@ const VideoDetailsPage = () => {
               selector="#videoStatusHelper"
             >
               <Button
+                aria-label="Súgó az állapotokhoz"
                 className="mr-2 p-button-rounded p-button-help"
                 icon="pi pi-question"
                 ref={statusHelperSlideoverOpenBtnRef}
               />
             </StyleClass>
             <Button
+              aria-label="További adatok szerkesztése"
               className="mr-2 p-button-rounded p-button-secondary"
               icon="pi pi-sliders-h"
               onClick={() => {
@@ -295,6 +291,7 @@ const VideoDetailsPage = () => {
             />
             <LinkButton
               buttonProps={{
+                'aria-label': 'Videó szerkesztése',
                 className: 'mr-2 p-button p-button-rounded',
                 icon: 'pi pi-pencil',
               }}
@@ -306,6 +303,7 @@ const VideoDetailsPage = () => {
               }}
             />
             <Button
+              aria-label="Videó törlése"
               className="p-button-danger p-button-rounded"
               icon="pi pi-trash"
               onClick={onDelete}

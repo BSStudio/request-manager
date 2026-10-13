@@ -18,6 +18,9 @@ interface FormFieldProps<
   children: React.JSX.Element;
   className: string;
   icon?: IconType<FormFieldProps<T, TName>>;
+  // PrimeReact's Calendar, Dropdown and AutoComplete put id on a wrapper and
+  // take their input's id as inputId.
+  inputId?: boolean;
   label: string;
 }
 
@@ -34,6 +37,7 @@ const FormField = <
   className,
   children,
   icon,
+  inputId,
   label,
   ...controllerProps
 }: FormFieldProps<T, TName>) => {
@@ -58,7 +62,7 @@ const FormField = <
           >
             {cloneElement(children, {
               className: fieldState.error && 'p-invalid',
-              id: field.name,
+              [inputId ? 'inputId' : 'id']: field.name,
               ...field,
             })}
           </ConditionalWrapper>

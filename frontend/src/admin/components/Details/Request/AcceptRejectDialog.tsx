@@ -161,6 +161,7 @@ const AcceptRejectDialog = forwardRef<
               onChange={field.onChange}
               onIcon="bi bi-person-fill-x"
               onLabel="Szervezők által lemondva"
+              pt={{ input: { 'aria-label': 'Szervezők által lemondva' } }}
               value={undefined}
             />
           )}
@@ -180,6 +181,7 @@ const AcceptRejectDialog = forwardRef<
               onChange={field.onChange}
               onIcon="bi bi-fire"
               onLabel="Meghiúsult"
+              pt={{ input: { 'aria-label': 'Meghiúsult' } }}
               value={undefined}
             />
           )}
