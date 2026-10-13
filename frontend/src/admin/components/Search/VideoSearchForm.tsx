@@ -126,7 +126,7 @@ const VideoSearchForm = ({ setVideoSearchResults }: VideoSearchFormProps) => {
             <label className="font-medium text-900" htmlFor={field.name}>
               Videó címe
             </label>
-            <InputText {...field} type="text" />
+            <InputText {...field} id={field.name} type="text" />
           </div>
         )}
       />
@@ -162,6 +162,7 @@ const VideoSearchForm = ({ setVideoSearchResults }: VideoSearchFormProps) => {
             </label>
             <InputMask
               {...field}
+              id={field.name}
               mask="99:99:99"
               placeholder="hh:mm:ss"
               type="text"
@@ -179,6 +180,7 @@ const VideoSearchForm = ({ setVideoSearchResults }: VideoSearchFormProps) => {
             </label>
             <InputMask
               {...field}
+              id={field.name}
               mask="99:99:99"
               placeholder="hh:mm:ss"
               type="text"

@@ -477,6 +477,7 @@ const RequestCreatorEditorPage = () => {
                   <SelectButton
                     {...field}
                     allowEmpty={false}
+                    aria-label="Felkérő"
                     id={field.name}
                     itemTemplate={requesterTypeOptionTemplate}
                     optionLabel="text"

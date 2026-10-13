@@ -1,5 +1,6 @@
 import React, { cloneElement } from 'react';
 
+import { Calendar } from 'primereact/calendar';
 import { classNames } from 'primereact/utils';
 import type { IconType } from 'primereact/utils';
 import { Controller } from 'react-hook-form';
@@ -44,37 +45,47 @@ const FormField = <
   return (
     <Controller
       {...controllerProps}
-      render={({ field, fieldState }) => (
-        <div className={classNames('field', className)}>
-          <label className="font-medium text-900" htmlFor={field.name}>
-            {label}
-          </label>
-          <ConditionalWrapper
-            condition={!!icon}
-            wrapper={(children) => (
-              <div className="p-inputgroup">
-                <span className="p-inputgroup-addon">
-                  <i className={`pi ${icon}`} />
-                </span>
-                {children}
-              </div>
+      render={({ field, fieldState }) => {
+        const aria = {
+          'aria-describedby': fieldState.error && `${field.name}-help`,
+          'aria-invalid': fieldState.invalid || undefined,
+        };
+        return (
+          <div className={classNames('field', className)}>
+            <label className="font-medium text-900" htmlFor={field.name}>
+              {label}
+            </label>
+            <ConditionalWrapper
+              condition={!!icon}
+              wrapper={(children) => (
+                <div className="p-inputgroup">
+                  <span className="p-inputgroup-addon">
+                    <i className={`pi ${icon}`} />
+                  </span>
+                  {children}
+                </div>
+              )}
+            >
+              {cloneElement(children, {
+                // Calendar keeps ARIA props on its wrapper; its input takes them
+                // through pt.
+                ...(children.type === Calendar
+                  ? { pt: { input: { root: aria } } }
+                  : aria),
+                className: fieldState.error && 'p-invalid',
+                [inputId ? 'inputId' : 'id']: field.name,
+                ...field,
+              })}
+            </ConditionalWrapper>
+            {fieldState.error && (
+              <small className="block p-error" id={field.name + '-help'}>
+                {fieldState.error.message ||
+                  errorMessages[fieldState.error.type]}
+              </small>
             )}
-          >
-            {cloneElement(children, {
-              'aria-describedby': fieldState.error && `${field.name}-help`,
-              'aria-invalid': fieldState.invalid || undefined,
-              className: fieldState.error && 'p-invalid',
-              [inputId ? 'inputId' : 'id']: field.name,
-              ...field,
-            })}
-          </ConditionalWrapper>
-          {fieldState.error && (
-            <small className="block p-error" id={field.name + '-help'}>
-              {fieldState.error.message || errorMessages[fieldState.error.type]}
-            </small>
-          )}
-        </div>
-      )}
+          </div>
+        );
+      }}
     />
   );
 };

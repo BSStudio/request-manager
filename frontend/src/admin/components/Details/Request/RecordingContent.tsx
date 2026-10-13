@@ -67,36 +67,42 @@ const RecordingContentEditing = ({
           control={control}
           name="copied_to_gdrive"
           render={({ field }) => (
-            <Tag
-              {...field}
-              className="cursor-pointer mr-2 mt-2"
-              icon="pi pi-cloud-upload"
-              onClick={() => {
-                if (!loading) field.onChange(!field.value);
-              }}
-              severity={field.value ? 'success' : 'warning'}
-              value={
-                field.value
-                  ? 'Felmásolva Google Driveba'
-                  : 'Nincsenek felmásolva Google Driveba'
-              }
-            />
+            <button
+              className="bg-transparent border-none cursor-pointer p-0 mr-2 mt-2"
+              disabled={loading}
+              onClick={() => field.onChange(!field.value)}
+              type="button"
+            >
+              <Tag
+                icon="pi pi-cloud-upload"
+                pt={{ icon: { 'aria-hidden': true } }}
+                severity={field.value ? 'success' : 'warning'}
+                value={
+                  field.value
+                    ? 'Felmásolva Google Driveba'
+                    : 'Nincsenek felmásolva Google Driveba'
+                }
+              />
+            </button>
           )}
         />
         <Controller
           control={control}
           name="removed"
           render={({ field }) => (
-            <Tag
-              {...field}
-              className="cursor-pointer mt-2"
-              icon="pi pi-trash"
-              onClick={() => {
-                if (!loading) field.onChange(!field.value);
-              }}
-              severity={field.value ? 'success' : 'warning'}
-              value={field.value ? 'Törölve' : 'Nincsenek törölve'}
-            />
+            <button
+              className="bg-transparent border-none cursor-pointer p-0 mt-2"
+              disabled={loading}
+              onClick={() => field.onChange(!field.value)}
+              type="button"
+            >
+              <Tag
+                icon="pi pi-trash"
+                pt={{ icon: { 'aria-hidden': true } }}
+                severity={field.value ? 'success' : 'warning'}
+                value={field.value ? 'Törölve' : 'Nincsenek törölve'}
+              />
+            </button>
           )}
         />
       </div>

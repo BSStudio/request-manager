@@ -234,12 +234,9 @@ const Ratings = ({
               ></i>
             ))}
           </span>
-          <a
-            tabIndex={0}
-            className="cursor-pointer font-medium hover:text-blue-600 text-blue-500 transition-colors transition-duration-300"
-          >
+          <span className="font-medium text-blue-500">
             {`${data.length} Értékelés`}
-          </a>
+          </span>
         </div>
       </div>
       <div className="border-top-1 mt-5 pt-5 surface-border">

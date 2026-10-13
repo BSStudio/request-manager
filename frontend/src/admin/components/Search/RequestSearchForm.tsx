@@ -108,7 +108,7 @@ const RequestSearchForm = ({
             <label className="font-medium text-900" htmlFor={field.name}>
               Esemény neve
             </label>
-            <InputText {...field} type="text" />
+            <InputText {...field} id={field.name} type="text" />
           </div>
         )}
       />

@@ -1,4 +1,5 @@
 import type { ButtonProps } from 'primereact/button';
+import { Ripple } from 'primereact/ripple';
 import { classNames } from 'primereact/utils';
 import { Link } from 'react-router';
 import type { LinkProps } from 'react-router';
@@ -10,8 +11,7 @@ interface LinkButtonProps {
   linkProps: LinkProps;
 }
 
-// A link styled as PrimeReact's button rather than a button inside a link,
-// which would be two tab stops for one control.
+// One tab stop per control, so a link dressed as PrimeReact's button markup.
 export default function LinkButton({
   buttonProps: { 'aria-label': ariaLabel, className, icon, label },
   linkProps: { className: linkClassName, ...linkProps },
@@ -20,7 +20,7 @@ export default function LinkButton({
     <Link
       aria-label={ariaLabel}
       className={classNames(
-        'no-underline p-button p-component',
+        'no-underline p-button p-component p-ripple',
         !label && 'p-button-icon-only',
         className,
         linkClassName,
@@ -36,7 +36,9 @@ export default function LinkButton({
           )}
         />
       )}
-      {label && <span className="p-button-label p-c">{label}</span>}
+      {/* An icon-only button keeps an empty label for its line height. */}
+      <span className="p-button-label p-c">{label || ' '}</span>
+      <Ripple />
     </Link>
   );
 }

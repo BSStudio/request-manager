@@ -62,6 +62,7 @@ const TodosPage = () => {
           <div className="align-items-center flex flex-wrap font-medium gap-1 text-900 text-xl">
             <div>Feladatok</div>
             <MultiSelect
+              aria-label="Státusz"
               display="chip"
               itemTemplate={statusTemplate}
               onChange={(e: MultiSelectChangeEvent) =>
@@ -83,6 +84,7 @@ const TodosPage = () => {
             />
           </div>
           <Dropdown
+            aria-label="Rendezés"
             onChange={(e) => {
               setOrdering(e.value);
             }}
