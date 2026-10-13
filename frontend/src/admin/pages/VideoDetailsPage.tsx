@@ -170,12 +170,15 @@ const VideoDetailsPage = () => {
   const onAiredDateSave = async (data: { airedDate: Date }) => {
     setLoading(true);
 
-    const aired = queryResult.additional_data.aired || [];
     const offset = data.airedDate.getTimezoneOffset();
     const newAiredDate = new Date(
       data.airedDate.getTime() - offset * 60 * 1000,
     );
-    aired.push(newAiredDate.toISOString().split('T')[0]);
+    // A new list, so a failed save leaves the cached video unchanged.
+    const aired = [
+      ...(queryResult.additional_data.aired || []),
+      newAiredDate.toISOString().split('T')[0],
+    ];
 
     await mutateAsync({
       additional_data: {
