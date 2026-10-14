@@ -11,6 +11,7 @@ import { Controller, useForm } from 'react-hook-form';
 
 import { VideoStatusTag } from 'admin/components/StatusTag/StatusTag';
 import { VIDEO_STATUSES } from 'admin/components/StatusTag/statusTagConsts';
+import { showErrorToast } from 'admin/helpers/showErrorToast';
 import { SearchStatusDropdownType } from 'admin/pages/SearchPage';
 import { AdminVideosListStatusEnum } from 'api/endpoints/admin-api';
 import { adminApi } from 'api/http';
@@ -112,6 +113,7 @@ const VideoSearchForm = ({ setVideoSearchResults }: VideoSearchFormProps) => {
       .then((response) => {
         setVideoSearchResults(response.data.results || []);
       })
+      .catch(showErrorToast)
       .finally(() => {
         setIsLoading(false);
       });
@@ -200,7 +202,6 @@ const VideoSearchForm = ({ setVideoSearchResults }: VideoSearchFormProps) => {
             <Calendar
               {...field}
               inputId={field.name}
-              dateFormat="yy.mm.dd"
               mask="9999.99.99"
               showButtonBar
               showIcon
@@ -219,7 +220,6 @@ const VideoSearchForm = ({ setVideoSearchResults }: VideoSearchFormProps) => {
             <Calendar
               {...field}
               inputId={field.name}
-              dateFormat="yy.mm.dd"
               mask="9999.99.99"
               showButtonBar
               showIcon
@@ -238,7 +238,6 @@ const VideoSearchForm = ({ setVideoSearchResults }: VideoSearchFormProps) => {
             <Calendar
               {...field}
               inputId={field.name}
-              dateFormat="yy.mm.dd"
               mask="9999.99.99"
               showButtonBar
               showIcon

@@ -127,9 +127,10 @@ const RequestDetailsPage = () => {
     return `N://${format(data.start_datetime, 'yyyyMMdd')}_${data.title
       .normalize('NFD')
       .replace(/([\u0300-\u036f]|[^0-9a-zA-Z\s])/g, '')
+      .trim()
       .toLowerCase()
       .split(' ')
-      .join('_')}`.replace(/_{2,}/, '_');
+      .join('_')}`.replace(/_{2,}/g, '_');
   };
 
   const getCalendarUrl = () => {

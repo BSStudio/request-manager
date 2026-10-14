@@ -10,6 +10,7 @@ import { Controller, useForm } from 'react-hook-form';
 
 import { RequestStatusTag } from 'admin/components/StatusTag/StatusTag';
 import { REQUEST_STATUSES } from 'admin/components/StatusTag/statusTagConsts';
+import { showErrorToast } from 'admin/helpers/showErrorToast';
 import { SearchStatusDropdownType } from 'admin/pages/SearchPage';
 import { AdminRequestsListStatusEnum } from 'api/endpoints/admin-api';
 import { adminApi } from 'api/http';
@@ -94,6 +95,7 @@ const RequestSearchForm = ({
       .then((response) => {
         setRequestSearchResults(response.data.results || []);
       })
+      .catch(showErrorToast)
       .finally(() => {
         setIsLoading(false);
       });
@@ -146,7 +148,6 @@ const RequestSearchForm = ({
             <Calendar
               {...field}
               inputId={field.name}
-              dateFormat="yy.mm.dd"
               mask="9999.99.99"
               showButtonBar
               showIcon
@@ -165,7 +166,6 @@ const RequestSearchForm = ({
             <Calendar
               {...field}
               inputId={field.name}
-              dateFormat="yy.mm.dd"
               mask="9999.99.99"
               showButtonBar
               showIcon

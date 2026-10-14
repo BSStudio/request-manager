@@ -14,6 +14,7 @@ import { href } from 'react-router';
 
 import LinkButton from 'admin/components/LinkButton/LinkButton';
 import { dateTimeToLocaleString } from 'admin/helpers/DateToLocaleStringCoverters';
+import { showErrorToast } from 'admin/helpers/showErrorToast';
 import { adminApi } from 'api/http';
 import { UserAdminWorkedOn } from 'api/models/user-admin-worked-on';
 
@@ -125,6 +126,7 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
         });
         setWorkedOnResults(data || []);
       })
+      .catch(showErrorToast)
       .finally(() => {
         setIsLoading(false);
       });
@@ -148,7 +150,6 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
               <Calendar
                 {...field}
                 inputId={field.name}
-                dateFormat="yy.mm.dd"
                 mask="9999.99.99"
                 placeholder="20 héttel ezelőtt"
                 showButtonBar
@@ -168,7 +169,6 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
               <Calendar
                 {...field}
                 inputId={field.name}
-                dateFormat="yy.mm.dd"
                 mask="9999.99.99"
                 placeholder="Ma"
                 showButtonBar
