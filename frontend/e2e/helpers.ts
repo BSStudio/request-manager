@@ -2,6 +2,8 @@ import type { Page } from '@playwright/test';
 import { differenceInCalendarMonths, format } from 'date-fns';
 import { hu } from 'date-fns/locale';
 
+import { expect } from './fixtures';
+
 export async function pickDay(page: Page, label: string, day: Date) {
   await page.getByRole('button', { name: new RegExp(`^${label}`) }).click();
   const months = differenceInCalendarMonths(day, new Date());
@@ -21,6 +23,7 @@ export async function adminRequestPath(page: Page, title: string) {
   const response = await page.request.get('/api/v1/admin/requests', {
     params: { search: title },
   });
+  await expect(response).toBeOK();
   const { results } = (await response.json()) as {
     results: { id: number; title: string }[];
   };

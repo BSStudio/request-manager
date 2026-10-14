@@ -22,8 +22,9 @@ test('every page opens from the menu', async ({ page }) => {
   await menu.getByText('Felkérések', { exact: true }).click();
   await menu.getByRole('link', { name: 'Lista' }).click();
   await expect(page).toHaveTitle(crumbs('Felkérések'));
+  // The list shows the current half-year, which no seeded request is always in.
   await expect(
-    page.getByRole('row').filter({ hasText: 'Szakkollégiumi nyílt nap' }),
+    page.getByRole('link', { name: 'Ugrás a felkéréshez' }).first(),
   ).toBeVisible();
 
   await menu.getByText('Felkérések', { exact: true }).click();

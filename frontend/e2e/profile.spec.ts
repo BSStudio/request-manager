@@ -44,7 +44,9 @@ test.describe('as a requester', () => {
     await expect(phone).not.toHaveValue('123');
   });
 
-  test('"Összekapcsolás" sends you to the provider', async ({ page }) => {
+  test('"Összekapcsolás" sends you to the provider and back when cancelled', async ({
+    page,
+  }) => {
     await page.goto('/profile');
     await expect(page.getByText('Nincs összekapcsolva')).toHaveCount(3);
     // The fixture blocks the provider, so the request is only observed.
@@ -58,8 +60,16 @@ test.describe('as a requester', () => {
       .getByRole('button', { name: 'Összekapcsolás' })
       .click();
 
-    const params = new URL((await request).url()).searchParams;
-    expect(params.get('state')).toBeTruthy();
+    const state = new URL((await request).url()).searchParams.get('state');
+    expect(state).toBeTruthy();
+
+    await page.goto(
+      `/redirect?${new URLSearchParams({ error: 'access_denied', state: state ?? '' })}`,
+    );
+    await expect(page).toHaveURL(/\/profile$/);
+    await expect(
+      page.getByText('A fiók összekapcsolása megszakadt.'),
+    ).toBeVisible();
   });
 });
 
