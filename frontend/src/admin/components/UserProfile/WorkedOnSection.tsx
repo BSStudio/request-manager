@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 
+import { format } from 'date-fns';
 import { Button } from 'primereact/button';
 import { Calendar } from 'primereact/calendar';
 import { Column } from 'primereact/column';
@@ -13,6 +14,7 @@ import { href } from 'react-router';
 
 import LinkButton from 'admin/components/LinkButton/LinkButton';
 import { dateTimeToLocaleString } from 'admin/helpers/DateToLocaleStringCoverters';
+import { showErrorToast } from 'admin/helpers/showErrorToast';
 import { adminApi } from 'api/http';
 import { UserAdminWorkedOn } from 'api/models/user-admin-worked-on';
 
@@ -102,10 +104,10 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
   const onSubmit = async (data: IWorkedOnForm) => {
     setIsLoading(true);
     const start_datetime_after = data.start_datetime_after
-      ? data.start_datetime_after.toISOString().split('T')[0]
+      ? format(data.start_datetime_after, 'yyyy-MM-dd')
       : undefined;
     const start_datetime_before = data.start_datetime_before
-      ? data.start_datetime_before.toISOString().split('T')[0]
+      ? format(data.start_datetime_before, 'yyyy-MM-dd')
       : undefined;
 
     await adminApi
@@ -124,6 +126,7 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
         });
         setWorkedOnResults(data || []);
       })
+      .catch(showErrorToast)
       .finally(() => {
         setIsLoading(false);
       });

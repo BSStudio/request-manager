@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 
+import { format } from 'date-fns';
 import { Calendar } from 'primereact/calendar';
 import { Divider } from 'primereact/divider';
 import { InputText } from 'primereact/inputtext';
@@ -9,6 +10,7 @@ import { Controller, useForm } from 'react-hook-form';
 
 import { RequestStatusTag } from 'admin/components/StatusTag/StatusTag';
 import { REQUEST_STATUSES } from 'admin/components/StatusTag/statusTagConsts';
+import { showErrorToast } from 'admin/helpers/showErrorToast';
 import { SearchStatusDropdownType } from 'admin/pages/SearchPage';
 import { AdminRequestsListStatusEnum } from 'api/endpoints/admin-api';
 import { adminApi } from 'api/http';
@@ -68,10 +70,10 @@ const RequestSearchForm = ({
     setIsLoading(true);
     const title = data.title || undefined;
     const start_datetime_after = data.start_datetime_after
-      ? data.start_datetime_after.toISOString().split('T')[0]
+      ? format(data.start_datetime_after, 'yyyy-MM-dd')
       : undefined;
     const start_datetime_before = data.start_datetime_before
-      ? data.start_datetime_before.toISOString().split('T')[0]
+      ? format(data.start_datetime_before, 'yyyy-MM-dd')
       : undefined;
     const status = data.status
       ? data.status.map(({ status }) => status)
@@ -93,6 +95,7 @@ const RequestSearchForm = ({
       .then((response) => {
         setRequestSearchResults(response.data.results || []);
       })
+      .catch(showErrorToast)
       .finally(() => {
         setIsLoading(false);
       });

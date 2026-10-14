@@ -26,7 +26,9 @@ initSentry('admin');
 
 void revalidateSession();
 
-addLocale('hu', locales['hu']);
+// The admin's date masks type 2026.10.14, which the locale's own 'yy. mm. dd.'
+// would not parse.
+addLocale('hu', { ...locales['hu'], dateFormat: 'yy.mm.dd' });
 
 register('hu_HU', huLocal);
 

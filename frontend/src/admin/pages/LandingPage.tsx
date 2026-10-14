@@ -1,6 +1,7 @@
 import { lazy, Suspense, useState } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
+import { addWeeks, format } from 'date-fns';
 import { Column } from 'primereact/column';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { DataTable } from 'primereact/datatable';
@@ -29,11 +30,11 @@ const AvatarGroupCrew = lazy(
 
 const LandingPage = () => {
   const [dates] = useState(() => {
-    const now = Date.now();
+    const now = new Date();
     return {
-      currentDate: new Date(now).toISOString().split('T')[0],
-      oneWeekLaterDate: new Date(now + 6048e5).toISOString().split('T')[0],
-      twoWeeksLaterDate: new Date(now + 12096e5).toISOString().split('T')[0],
+      currentDate: format(now, 'yyyy-MM-dd'),
+      oneWeekLaterDate: format(addWeeks(now, 1), 'yyyy-MM-dd'),
+      twoWeeksLaterDate: format(addWeeks(now, 2), 'yyyy-MM-dd'),
     };
   });
 

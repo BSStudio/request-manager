@@ -2,6 +2,7 @@ import { Suspense, lazy, useEffect, useMemo } from 'react';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
+import { format } from 'date-fns';
 import { Calendar } from 'primereact/calendar';
 import { Checkbox } from 'primereact/checkbox';
 import { Divider } from 'primereact/divider';
@@ -225,12 +226,9 @@ const RequestCreatorEditorPage = () => {
       };
     }
 
-    let deadline = undefined;
-    if (data.deadline) {
-      const offset = data.deadline.getTimezoneOffset();
-      deadline = new Date(data.deadline.getTime() - offset * 60 * 1000);
-      deadline = deadline.toISOString().split('T')[0];
-    }
+    const deadline = data.deadline
+      ? format(data.deadline, 'yyyy-MM-dd')
+      : undefined;
 
     await mutateAsync({
       ...requester,
@@ -346,7 +344,6 @@ const RequestCreatorEditorPage = () => {
             rules={{ required: true }}
           >
             <Calendar
-              dateFormat="yy.mm.dd"
               mask="9999.99.99 99:99"
               showButtonBar
               showIcon
@@ -364,7 +361,6 @@ const RequestCreatorEditorPage = () => {
             rules={{ required: true }}
           >
             <Calendar
-              dateFormat="yy.mm.dd"
               mask="9999.99.99 99:99"
               showButtonBar
               showIcon
@@ -442,7 +438,6 @@ const RequestCreatorEditorPage = () => {
             name="deadline"
           >
             <Calendar
-              dateFormat="yy.mm.dd"
               mask="9999.99.99"
               placeholder={
                 requestId ? 'Nincs változás' : 'Az esemény vége után 3 hét'
