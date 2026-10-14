@@ -134,8 +134,16 @@ const RequestDetailsPage = () => {
   };
 
   const getCalendarUrl = () => {
-    const endDate = format(data.end_datetime, 'yyyyMMdd');
-    const startDate = format(data.start_datetime, 'yyyyMMdd');
+    // Budapest days, as the link's ctz, whatever the browser's timezone;
+    // en-CA writes them as YYYY-MM-DD.
+    const budapestDay = new Intl.DateTimeFormat('en-CA', {
+      day: '2-digit',
+      month: '2-digit',
+      timeZone: 'Europe/Budapest',
+      year: 'numeric',
+    });
+    const endDate = budapestDay.format(data.end_datetime).replace(/-/g, '');
+    const startDate = budapestDay.format(data.start_datetime).replace(/-/g, '');
     return `https://calendar.google.com/calendar/embed?src=8kvtmormo2672mftkmmhc8qvk4@group.calendar.google.com&ctz=Europe/Budapest&mode=week&dates=${startDate}/${endDate}`;
   };
 
