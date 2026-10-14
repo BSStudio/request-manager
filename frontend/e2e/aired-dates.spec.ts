@@ -2,6 +2,7 @@ import type { Page, Route } from '@playwright/test';
 import { format, setDate, subDays } from 'date-fns';
 
 import { expect, loginAs, test } from './fixtures';
+import { adminRequestPath } from './helpers';
 
 test.use({ storageState: loginAs('admin.aladar') });
 
@@ -13,18 +14,9 @@ function failSaves(route: Route) {
     : route.continue();
 }
 
-// The seeded 'Állásbörze promóvideó', which only this spec changes. Found
-// through the API: the request list only shows the current semester.
+// The seeded 'Állásbörze promóvideó', which only this spec changes.
 async function openVideo(page: Page) {
-  const response = await page.request.get(
-    '/api/v1/admin/requests?search=Állásbörze',
-  );
-  const { results } = (await response.json()) as {
-    results: { id: number; title: string }[];
-  };
-  const request = results.find(({ title }) => title === 'Állásbörze');
-  if (!request) throw new Error('The seed has no request called Állásbörze.');
-  await page.goto(`/admin/requests/${request.id}`);
+  await page.goto(await adminRequestPath(page, 'Állásbörze'));
   await page.getByRole('tab', { name: 'Videók' }).click();
   await page.getByRole('link', { name: 'Ugrás a videóhoz' }).click();
 }
