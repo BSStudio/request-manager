@@ -63,6 +63,7 @@ const RequestsListPage = () => {
       <div className="align-items-center flex font-medium mb-3 text-900 text-xl">
         <div>Felkérések</div>
         <Dropdown
+          aria-label="Félév"
           className="ml-2"
           filter
           onChange={(e: DropdownChangeEvent) => {

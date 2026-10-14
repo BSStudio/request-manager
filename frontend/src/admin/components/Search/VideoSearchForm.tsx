@@ -126,7 +126,7 @@ const VideoSearchForm = ({ setVideoSearchResults }: VideoSearchFormProps) => {
             <label className="font-medium text-900" htmlFor={field.name}>
               Videó címe
             </label>
-            <InputText {...field} type="text" />
+            <InputText {...field} id={field.name} type="text" />
           </div>
         )}
       />
@@ -141,7 +141,7 @@ const VideoSearchForm = ({ setVideoSearchResults }: VideoSearchFormProps) => {
             <MultiSelect
               {...field}
               display="chip"
-              id={field.name}
+              inputId={field.name}
               itemTemplate={statusTemplate}
               name="status"
               onChange={(e) => field.onChange(e.value)}
@@ -162,6 +162,7 @@ const VideoSearchForm = ({ setVideoSearchResults }: VideoSearchFormProps) => {
             </label>
             <InputMask
               {...field}
+              id={field.name}
               mask="99:99:99"
               placeholder="hh:mm:ss"
               type="text"
@@ -179,6 +180,7 @@ const VideoSearchForm = ({ setVideoSearchResults }: VideoSearchFormProps) => {
             </label>
             <InputMask
               {...field}
+              id={field.name}
               mask="99:99:99"
               placeholder="hh:mm:ss"
               type="text"
@@ -194,7 +196,13 @@ const VideoSearchForm = ({ setVideoSearchResults }: VideoSearchFormProps) => {
             <label className="font-medium text-900" htmlFor={field.name}>
               Utoljára adásba került
             </label>
-            <Calendar {...field} mask="9999.99.99" showButtonBar showIcon />
+            <Calendar
+              {...field}
+              inputId={field.name}
+              mask="9999.99.99"
+              showButtonBar
+              showIcon
+            />
           </div>
         )}
       />
@@ -206,7 +214,13 @@ const VideoSearchForm = ({ setVideoSearchResults }: VideoSearchFormProps) => {
             <label className="font-medium text-900" htmlFor={field.name}>
               Felkérés kezdő időpontja későbbi mint
             </label>
-            <Calendar {...field} mask="9999.99.99" showButtonBar showIcon />
+            <Calendar
+              {...field}
+              inputId={field.name}
+              mask="9999.99.99"
+              showButtonBar
+              showIcon
+            />
           </div>
         )}
       />
@@ -218,7 +232,13 @@ const VideoSearchForm = ({ setVideoSearchResults }: VideoSearchFormProps) => {
             <label className="font-medium text-900" htmlFor={field.name}>
               Felkérés kezdő időpontja korábbi mint
             </label>
-            <Calendar {...field} mask="9999.99.99" showButtonBar showIcon />
+            <Calendar
+              {...field}
+              inputId={field.name}
+              mask="9999.99.99"
+              showButtonBar
+              showIcon
+            />
           </div>
         )}
       />

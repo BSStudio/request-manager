@@ -146,6 +146,7 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
               </label>
               <Calendar
                 {...field}
+                inputId={field.name}
                 mask="9999.99.99"
                 placeholder="20 héttel ezelőtt"
                 showButtonBar
@@ -164,6 +165,7 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
               </label>
               <Calendar
                 {...field}
+                inputId={field.name}
                 mask="9999.99.99"
                 placeholder="Ma"
                 showButtonBar

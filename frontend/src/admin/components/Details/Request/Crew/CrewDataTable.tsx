@@ -110,6 +110,7 @@ const CrewDataTable = ({ requestId }: CrewDataTableProps) => {
   const memberEditor = (options: ColumnEditorOptions) => {
     return (
       <AutoCompleteStaff
+        aria-label="Stábtag"
         className="w-full"
         disabled={isMutating}
         onChange={(e: AutoCompleteChangeEvent) =>
@@ -180,6 +181,7 @@ const CrewDataTable = ({ requestId }: CrewDataTableProps) => {
   const positionEditor = (options: ColumnEditorOptions) => {
     return (
       <AutoCompleteCrewPosition
+        aria-label="Pozíció"
         className="w-full"
         disabled={isMutating}
         onChange={(e: AutoCompleteChangeEvent) =>

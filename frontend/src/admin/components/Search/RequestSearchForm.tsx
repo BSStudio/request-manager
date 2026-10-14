@@ -108,7 +108,7 @@ const RequestSearchForm = ({
             <label className="font-medium text-900" htmlFor={field.name}>
               Esemény neve
             </label>
-            <InputText {...field} type="text" />
+            <InputText {...field} id={field.name} type="text" />
           </div>
         )}
       />
@@ -123,7 +123,7 @@ const RequestSearchForm = ({
             <MultiSelect
               {...field}
               display="chip"
-              id={field.name}
+              inputId={field.name}
               itemTemplate={statusTemplate}
               name="status"
               onChange={(e) => field.onChange(e.value)}
@@ -142,7 +142,13 @@ const RequestSearchForm = ({
             <label className="font-medium text-900" htmlFor={field.name}>
               Kezdés időpontja későbbi mint
             </label>
-            <Calendar {...field} mask="9999.99.99" showButtonBar showIcon />
+            <Calendar
+              {...field}
+              inputId={field.name}
+              mask="9999.99.99"
+              showButtonBar
+              showIcon
+            />
           </div>
         )}
       />
@@ -154,7 +160,13 @@ const RequestSearchForm = ({
             <label className="font-medium text-900" htmlFor={field.name}>
               Kezdés időpontja korábbi mint
             </label>
-            <Calendar {...field} mask="9999.99.99" showButtonBar showIcon />
+            <Calendar
+              {...field}
+              inputId={field.name}
+              mask="9999.99.99"
+              showButtonBar
+              showIcon
+            />
           </div>
         )}
       />

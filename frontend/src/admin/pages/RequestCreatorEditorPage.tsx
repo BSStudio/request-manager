@@ -463,6 +463,7 @@ const RequestCreatorEditorPage = () => {
                 <div className="col-12 mb-0">
                   <Dropdown
                     {...field}
+                    aria-label="Felkérő"
                     id={field.name}
                     itemTemplate={requesterTypeOptionTemplate}
                     optionLabel="text"
@@ -476,6 +477,7 @@ const RequestCreatorEditorPage = () => {
                   <SelectButton
                     {...field}
                     allowEmpty={false}
+                    aria-label="Felkérő"
                     id={field.name}
                     itemTemplate={requesterTypeOptionTemplate}
                     optionLabel="text"
