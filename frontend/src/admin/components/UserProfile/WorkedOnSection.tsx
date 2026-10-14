@@ -1,5 +1,6 @@
 import { useRef, useState } from 'react';
 
+import { format } from 'date-fns';
 import { Button } from 'primereact/button';
 import { Calendar } from 'primereact/calendar';
 import { Column } from 'primereact/column';
@@ -102,10 +103,10 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
   const onSubmit = async (data: IWorkedOnForm) => {
     setIsLoading(true);
     const start_datetime_after = data.start_datetime_after
-      ? data.start_datetime_after.toISOString().split('T')[0]
+      ? format(data.start_datetime_after, 'yyyy-MM-dd')
       : undefined;
     const start_datetime_before = data.start_datetime_before
-      ? data.start_datetime_before.toISOString().split('T')[0]
+      ? format(data.start_datetime_before, 'yyyy-MM-dd')
       : undefined;
 
     await adminApi
@@ -147,6 +148,7 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
               <Calendar
                 {...field}
                 inputId={field.name}
+                dateFormat="yy.mm.dd"
                 mask="9999.99.99"
                 placeholder="20 héttel ezelőtt"
                 showButtonBar
@@ -166,6 +168,7 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
               <Calendar
                 {...field}
                 inputId={field.name}
+                dateFormat="yy.mm.dd"
                 mask="9999.99.99"
                 placeholder="Ma"
                 showButtonBar

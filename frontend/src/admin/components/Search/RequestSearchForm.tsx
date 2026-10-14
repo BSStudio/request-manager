@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 
+import { format } from 'date-fns';
 import { Calendar } from 'primereact/calendar';
 import { Divider } from 'primereact/divider';
 import { InputText } from 'primereact/inputtext';
@@ -68,10 +69,10 @@ const RequestSearchForm = ({
     setIsLoading(true);
     const title = data.title || undefined;
     const start_datetime_after = data.start_datetime_after
-      ? data.start_datetime_after.toISOString().split('T')[0]
+      ? format(data.start_datetime_after, 'yyyy-MM-dd')
       : undefined;
     const start_datetime_before = data.start_datetime_before
-      ? data.start_datetime_before.toISOString().split('T')[0]
+      ? format(data.start_datetime_before, 'yyyy-MM-dd')
       : undefined;
     const status = data.status
       ? data.status.map(({ status }) => status)
@@ -145,6 +146,7 @@ const RequestSearchForm = ({
             <Calendar
               {...field}
               inputId={field.name}
+              dateFormat="yy.mm.dd"
               mask="9999.99.99"
               showButtonBar
               showIcon
@@ -163,6 +165,7 @@ const RequestSearchForm = ({
             <Calendar
               {...field}
               inputId={field.name}
+              dateFormat="yy.mm.dd"
               mask="9999.99.99"
               showButtonBar
               showIcon

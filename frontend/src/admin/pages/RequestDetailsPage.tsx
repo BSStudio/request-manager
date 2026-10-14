@@ -2,6 +2,7 @@ import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
+import { format } from 'date-fns';
 import { Badge } from 'primereact/badge';
 import { Button } from 'primereact/button';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
@@ -123,10 +124,7 @@ const RequestDetailsPage = () => {
   const statusHelperSlideoverOpenBtnRef = useRef(null);
 
   const generateRecordingPath = () => {
-    return `N://${data.start_datetime
-      .toISOString()
-      .slice(0, 10)
-      .replace(/-/g, '')}_${data.title
+    return `N://${format(data.start_datetime, 'yyyyMMdd')}_${data.title
       .normalize('NFD')
       .replace(/([\u0300-\u036f]|[^0-9a-zA-Z\s])/g, '')
       .toLowerCase()
@@ -135,14 +133,8 @@ const RequestDetailsPage = () => {
   };
 
   const getCalendarUrl = () => {
-    const endDate = data.end_datetime
-      .toISOString()
-      .slice(0, 10)
-      .replace(/-/g, '');
-    const startDate = data.start_datetime
-      .toISOString()
-      .slice(0, 10)
-      .replace(/-/g, '');
+    const endDate = format(data.end_datetime, 'yyyyMMdd');
+    const startDate = format(data.start_datetime, 'yyyyMMdd');
     return `https://calendar.google.com/calendar/embed?src=8kvtmormo2672mftkmmhc8qvk4@group.calendar.google.com&ctz=Europe/Budapest&mode=week&dates=${startDate}/${endDate}`;
   };
 

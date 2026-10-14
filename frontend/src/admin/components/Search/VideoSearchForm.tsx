@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction, useState } from 'react';
 
+import { format } from 'date-fns';
 import { Calendar } from 'primereact/calendar';
 import { Divider } from 'primereact/divider';
 import { InputMask } from 'primereact/inputmask';
@@ -75,7 +76,7 @@ const VideoSearchForm = ({ setVideoSearchResults }: VideoSearchFormProps) => {
   const onSubmit = async (data: IVideoSearchForm) => {
     setIsLoading(true);
     const last_aired = data.last_aired
-      ? data.last_aired.toISOString().split('T')[0]
+      ? format(data.last_aired, 'yyyy-MM-dd')
       : undefined;
     const length_max = data.length_max
       ? lengthFromString(data.length_max)
@@ -85,10 +86,10 @@ const VideoSearchForm = ({ setVideoSearchResults }: VideoSearchFormProps) => {
       : undefined;
     const title = data.title || undefined;
     const start_datetime_after = data.request_start_datetime_after
-      ? data.request_start_datetime_after.toISOString().split('T')[0]
+      ? format(data.request_start_datetime_after, 'yyyy-MM-dd')
       : undefined;
     const start_datetime_before = data.request_start_datetime_before
-      ? data.request_start_datetime_before.toISOString().split('T')[0]
+      ? format(data.request_start_datetime_before, 'yyyy-MM-dd')
       : undefined;
     const status = data.status
       ? data.status.map(({ status }) => status)
@@ -199,6 +200,7 @@ const VideoSearchForm = ({ setVideoSearchResults }: VideoSearchFormProps) => {
             <Calendar
               {...field}
               inputId={field.name}
+              dateFormat="yy.mm.dd"
               mask="9999.99.99"
               showButtonBar
               showIcon
@@ -217,6 +219,7 @@ const VideoSearchForm = ({ setVideoSearchResults }: VideoSearchFormProps) => {
             <Calendar
               {...field}
               inputId={field.name}
+              dateFormat="yy.mm.dd"
               mask="9999.99.99"
               showButtonBar
               showIcon
@@ -235,6 +238,7 @@ const VideoSearchForm = ({ setVideoSearchResults }: VideoSearchFormProps) => {
             <Calendar
               {...field}
               inputId={field.name}
+              dateFormat="yy.mm.dd"
               mask="9999.99.99"
               showButtonBar
               showIcon
