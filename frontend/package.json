@@ -51,18 +51,6 @@
     "generate-client": "openapi-generator-cli generate && prettier --write src/api/**/*.ts",
     "generate-pwa-assets": "pwa-assets-generator"
   },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
   "devDependencies": {
     "@eslint/js": "10.0.1",
     "@openapitools/openapi-generator-cli": "2.41.0",
