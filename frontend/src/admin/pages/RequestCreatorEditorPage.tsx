@@ -254,6 +254,7 @@ const RequestCreatorEditorPage = () => {
           await queryClient.invalidateQueries({
             queryKey: queryKeys.request(requestId),
           });
+          await revalidator.revalidate();
         } else {
           await queryClient.invalidateQueries({
             queryKey: queryKeys.requests(),

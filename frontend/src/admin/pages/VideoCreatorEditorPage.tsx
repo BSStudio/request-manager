@@ -176,6 +176,7 @@ const VideoCreatorEditorPage = () => {
         await queryClient.invalidateQueries({
           queryKey: queryKeys.request(requestId),
         });
+        if (videoId) await revalidator.revalidate();
 
         void navigate(`/requests/${requestId}/videos/${response.data.id}`);
       })
