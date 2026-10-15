@@ -1,24 +1,16 @@
 {
   "compilerOptions": {
-    "allowImportingTsExtensions": true,
-    "allowJs": false,
-    "allowSyntheticDefaultImports": true,
-    "esModuleInterop": true,
-    "forceConsistentCasingInFileNames": true,
-    "paths": { "*": ["./src/*"] },
     "isolatedModules": true,
     "jsx": "react-jsx",
-    "lib": ["DOM", "DOM.Iterable", "ESNext"],
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
     "noEmit": true,
     "noFallthroughCasesInSwitch": true,
-    "useDefineForClassFields": true,
-    "resolveJsonModule": true,
+    "paths": { "*": ["./src/*"] },
     "skipLibCheck": true,
-    "sourceMap": true,
     "strict": true,
-    "target": "ESNext"
+    // JavaScript built-ins must exist in Vite's default build targets (Chrome
+    // and Edge 111, Firefox 114, Safari 16.4), because the build adds no
+    // polyfills. DOM APIs are not limited by this.
+    "target": "ES2022"
   },
   "exclude": ["build", "node_modules"],
   "include": ["src"],

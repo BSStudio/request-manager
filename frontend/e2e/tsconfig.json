@@ -1,5 +1,6 @@
 {
   "extends": "../tsconfig.json",
-  "compilerOptions": { "types": ["node"] },
+  // Node 24 runs the tests, not the browsers the app supports.
+  "compilerOptions": { "target": "ES2025", "types": ["node"] },
   "include": ["."]
 }
