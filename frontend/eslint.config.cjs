@@ -103,6 +103,13 @@ module.exports = tseslint.config(
     },
   },
   {
+    // Routes read in URL order: the path first, the child routes last.
+    files: ['**/src/*/router.tsx'],
+    rules: {
+      'sort-keys': 'off',
+    },
+  },
+  {
     // Playwright fixtures hand over their value with a function named use().
     files: ['**/e2e/**'],
     rules: {

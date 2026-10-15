@@ -39,7 +39,7 @@ import useMobile from 'admin/hooks/useMobile';
 import type { LoadErrorState } from 'admin/pages/ErrorPage';
 import { useToast } from 'admin/providers/ToastProvider';
 import { isNotFound, setFieldErrors } from 'api/errors';
-import { RequestAdminRetrieve, UserNestedDetail } from 'api/models';
+import { UserNestedDetail } from 'api/models';
 import { queryClient } from 'api/queryClient';
 import { getName } from 'helpers/LocalStorageHelper';
 import { toE164 } from 'helpers/phone';
@@ -128,7 +128,7 @@ const RequestCreatorEditorPage = () => {
     : { data: undefined, dataUpdatedAt: new Date(), error: null };
 
   const isMobile = useMobile();
-  const loaderData = useLoaderData() as RequestAdminRetrieve;
+  const loaderData = useLoaderData<typeof loader>();
   const isDataChanged = !!requestId && loaderData !== queryData;
   const navigate = useNavigate();
   const revalidator = useRevalidator();
@@ -254,6 +254,7 @@ const RequestCreatorEditorPage = () => {
           await queryClient.invalidateQueries({
             queryKey: queryKeys.request(requestId),
           });
+          await revalidator.revalidate();
         } else {
           await queryClient.invalidateQueries({
             queryKey: queryKeys.requests(),

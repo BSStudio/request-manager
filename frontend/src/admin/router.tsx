@@ -1,13 +1,7 @@
 import { wrapCreateBrowserRouter } from '@sentry/react';
 import { BlockUI } from 'primereact/blockui';
 import { ProgressSpinner } from 'primereact/progressspinner';
-import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  type LoaderFunctionArgs,
-  Outlet,
-  Route,
-} from 'react-router';
+import { createBrowserRouter, type LoaderFunctionArgs } from 'react-router';
 
 import {
   requestRetrieveQuery,
@@ -18,7 +12,9 @@ import ErrorPage from 'admin/pages/ErrorPage';
 import type { loaderData as userProfileLoaderData } from 'admin/pages/UserProfilePage';
 import { queryClient } from 'api/queryClient';
 
-export async function requestLoader({ params }: LoaderFunctionArgs) {
+// These read the titles the breadcrumbs show. React Router reruns a loader only
+// when its route's params change, so the editors revalidate after a save.
+async function requestLoader({ params }: LoaderFunctionArgs) {
   if (!params.requestId) {
     throw new Error('No request ID provided');
   }
@@ -29,7 +25,7 @@ export async function requestLoader({ params }: LoaderFunctionArgs) {
   return { requestId: params.requestId, requestTitle: request.title };
 }
 
-export async function videoLoader({ params }: LoaderFunctionArgs) {
+async function videoLoader({ params }: LoaderFunctionArgs) {
   if (!params.requestId) {
     throw new Error('No request ID provided');
   }
@@ -47,124 +43,125 @@ export async function videoLoader({ params }: LoaderFunctionArgs) {
   };
 }
 
-export type requestLoaderData = Awaited<ReturnType<typeof requestLoader>>;
-export type videoLoaderData = Awaited<ReturnType<typeof videoLoader>>;
+type requestLoaderData = Awaited<ReturnType<typeof requestLoader>>;
+type videoLoaderData = Awaited<ReturnType<typeof videoLoader>>;
+
+function LayoutErrorBoundary() {
+  return (
+    <Layout>
+      <ErrorPage />
+    </Layout>
+  );
+}
+
+function HydrateFallback() {
+  return <BlockUI blocked={true} fullScreen template={<ProgressSpinner />} />;
+}
 
 const sentryCreateBrowserRouter = wrapCreateBrowserRouter(createBrowserRouter);
 
 const router = sentryCreateBrowserRouter(
-  createRoutesFromElements(
-    <Route
-      path="/"
-      element={<Layout />}
-      hydrateFallbackElement={
-        <BlockUI blocked={true} fullScreen template={<ProgressSpinner />} />
-      }
-      errorElement={
-        <Layout>
-          <ErrorPage />
-        </Layout>
-      }
-    >
-      <Route index lazy={() => import('admin/pages/LandingPage')} />
-      <Route
-        path="requests"
-        element={<Outlet />}
-        handle={{
-          crumb: () => 'Felkérések',
-        }}
-      >
-        <Route index lazy={() => import('admin/pages/RequestsListPage')} />
-        <Route
-          path="new"
-          lazy={() => import('admin/pages/RequestCreatorEditorPage')}
-          handle={{
-            crumb: () => 'Új',
-          }}
-        />
-        <Route
-          path=":requestId"
-          loader={requestLoader}
-          handle={{
-            crumb: ({ requestTitle }: requestLoaderData) => requestTitle,
-          }}
-        >
-          <Route index lazy={() => import('admin/pages/RequestDetailsPage')} />
-          <Route
-            path="edit"
-            lazy={() => import('admin/pages/RequestCreatorEditorPage')}
-            handle={{
-              crumb: () => 'Szerkesztés',
-            }}
-          />
-          <Route
-            path="videos"
-            handle={{
-              crumb: () => 'Videók',
-            }}
-          >
-            <Route index lazy={() => import('admin/pages/VideosListPage')} />
-            <Route
-              path="new"
-              lazy={() => import('admin/pages/VideoCreatorEditorPage')}
-              handle={{
-                crumb: () => 'Új videó',
-              }}
-            />
-            <Route
-              path=":videoId"
-              loader={videoLoader}
-              handle={{
-                crumb: ({ videoTitle }: videoLoaderData) => videoTitle,
-              }}
-            >
-              <Route
-                index
-                lazy={() => import('admin/pages/VideoDetailsPage')}
-              />
-              <Route
-                path="edit"
-                lazy={() => import('admin/pages/VideoCreatorEditorPage')}
-                handle={{
-                  crumb: () => 'Szerkesztés',
-                }}
-              />
-            </Route>
-          </Route>
-        </Route>
-      </Route>
-      <Route
-        path="search"
-        lazy={() => import('admin/pages/SearchPage')}
-        handle={{
-          crumb: () => 'Keresés',
-        }}
-      />
-      <Route
-        path="todos"
-        lazy={() => import('admin/pages/TodosPage')}
-        handle={{
-          crumb: () => 'Feladatok',
-        }}
-      />
-      <Route
-        path="users"
-        handle={{
-          crumb: () => 'Felhasználók',
-        }}
-      >
-        <Route index lazy={() => import('admin/pages/UsersListPage')} />
-        <Route
-          path=":userId"
-          lazy={() => import('admin/pages/UserProfilePage')}
-          handle={{
-            crumb: ({ userFullName }: userProfileLoaderData) => userFullName,
-          }}
-        />
-      </Route>
-      <Route path="error" element={<ErrorPage />} />
-    </Route>,
-  ),
+  [
+    {
+      path: '/',
+      Component: Layout,
+      ErrorBoundary: LayoutErrorBoundary,
+      HydrateFallback,
+      children: [
+        { index: true, lazy: () => import('admin/pages/LandingPage') },
+        {
+          path: 'requests',
+          handle: { crumb: () => 'Felkérések' },
+          children: [
+            { index: true, lazy: () => import('admin/pages/RequestsListPage') },
+            {
+              path: 'new',
+              handle: { crumb: () => 'Új' },
+              lazy: () => import('admin/pages/RequestCreatorEditorPage'),
+            },
+            {
+              path: ':requestId',
+              handle: {
+                crumb: ({ requestTitle }: requestLoaderData) => requestTitle,
+              },
+              loader: requestLoader,
+              children: [
+                {
+                  index: true,
+                  lazy: () => import('admin/pages/RequestDetailsPage'),
+                },
+                {
+                  path: 'edit',
+                  handle: { crumb: () => 'Szerkesztés' },
+                  lazy: () => import('admin/pages/RequestCreatorEditorPage'),
+                },
+                {
+                  path: 'videos',
+                  handle: { crumb: () => 'Videók' },
+                  children: [
+                    {
+                      index: true,
+                      lazy: () => import('admin/pages/VideosListPage'),
+                    },
+                    {
+                      path: 'new',
+                      handle: { crumb: () => 'Új videó' },
+                      lazy: () => import('admin/pages/VideoCreatorEditorPage'),
+                    },
+                    {
+                      path: ':videoId',
+                      handle: {
+                        crumb: ({ videoTitle }: videoLoaderData) => videoTitle,
+                      },
+                      loader: videoLoader,
+                      children: [
+                        {
+                          index: true,
+                          lazy: () => import('admin/pages/VideoDetailsPage'),
+                        },
+                        {
+                          path: 'edit',
+                          handle: { crumb: () => 'Szerkesztés' },
+                          lazy: () =>
+                            import('admin/pages/VideoCreatorEditorPage'),
+                        },
+                      ],
+                    },
+                  ],
+                },
+              ],
+            },
+          ],
+        },
+        {
+          path: 'search',
+          handle: { crumb: () => 'Keresés' },
+          lazy: () => import('admin/pages/SearchPage'),
+        },
+        {
+          path: 'todos',
+          handle: { crumb: () => 'Feladatok' },
+          lazy: () => import('admin/pages/TodosPage'),
+        },
+        {
+          path: 'users',
+          handle: { crumb: () => 'Felhasználók' },
+          children: [
+            { index: true, lazy: () => import('admin/pages/UsersListPage') },
+            {
+              path: ':userId',
+              handle: {
+                crumb: ({ userFullName }: userProfileLoaderData) =>
+                  userFullName,
+              },
+              lazy: () => import('admin/pages/UserProfilePage'),
+            },
+          ],
+        },
+        { path: 'error', Component: ErrorPage },
+      ],
+    },
+  ],
   {
     basename: '/admin',
   },

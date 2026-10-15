@@ -82,6 +82,35 @@ test('the breadcrumbs lead back from a video', async ({ page }) => {
   await expect(page).toHaveTitle(crumbs('Felkérések'));
 });
 
+// The seeded 'Diákköri konferencia' and its video, which only this test uses.
+test('the breadcrumbs follow a renamed request and video', async ({ page }) => {
+  await page.goto(await adminRequestPath(page, 'Diákköri konferencia'));
+  await page.getByRole('link', { name: 'Felkérés szerkesztése' }).click();
+  await page.getByLabel('Esemény neve').fill('Tavaszi diákköri konferencia');
+  await page.getByRole('button', { exact: true, name: 'Mentés' }).click();
+  await expect(page).toHaveTitle(
+    crumbs('Tavaszi diákköri konferencia', 'Felkérések'),
+  );
+
+  await page.getByRole('tab', { name: 'Videók' }).click();
+  await page
+    .getByRole('row')
+    .filter({ hasText: 'Díjátadó' })
+    .getByRole('link', { name: 'Ugrás a videóhoz' })
+    .click();
+  await page.getByRole('link', { name: 'Videó szerkesztése' }).click();
+  await page.getByLabel('Videó címe', { exact: true }).fill('Díjátadó gála');
+  await page.getByRole('button', { exact: true, name: 'Mentés' }).click();
+  await expect(page).toHaveTitle(
+    crumbs(
+      'Díjátadó gála',
+      'Videók',
+      'Tavaszi diákköri konferencia',
+      'Felkérések',
+    ),
+  );
+});
+
 test("a user's open section is kept in the address", async ({ page }) => {
   await page.goto('/admin/users');
   await page.getByRole('textbox', { name: 'Keresés' }).fill('Tiltott');
