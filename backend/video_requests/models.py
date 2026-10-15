@@ -3,7 +3,7 @@ from datetime import datetime, timedelta
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
-from django.db import models
+from django.db import models, transaction
 from django.db.models import Avg, JSONField
 from django.utils.timezone import localdate
 from django.utils.translation import gettext_lazy as _
@@ -179,6 +179,18 @@ class Video(models.Model):
     def published_url(self) -> str:
         published_url = self.additional_data.get("publishing", {}).get("website")
         return published_url
+
+    def set_publishing_flag(self, key: str) -> None:
+        """Set one publishing flag under a row lock, so tasks writing the same video at once keep each other's changes."""
+        with transaction.atomic():
+            # The default manager's rating average needs GROUP BY, which FOR UPDATE does not allow.
+            self.additional_data = (
+                Video._base_manager.select_for_update()
+                .values_list("additional_data", flat=True)
+                .get(pk=self.pk)
+            )
+            self.additional_data["publishing"][key] = True
+            self.save(update_fields=["additional_data"])
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)

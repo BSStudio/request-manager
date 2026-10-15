@@ -80,9 +80,7 @@ def email_user_video_published(video_id):
 
     msg.attach_alternative(msg_html, TEXT_HTML)
     msg.send()
-    video.refresh_from_db()
-    video.additional_data["publishing"]["email_sent_to_user"] = True
-    video.save()
+    video.set_publishing_flag("email_sent_to_user")
     return f"Video published e-mail was sent to {video.request.requester.email} successfully."
 
 

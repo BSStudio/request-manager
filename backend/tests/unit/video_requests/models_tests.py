@@ -5,6 +5,8 @@ from django.conf import settings
 from django.core.exceptions import ValidationError
 from model_bakery import baker
 
+from video_requests.models import Video
+
 pytestmark = pytest.mark.django_db
 
 
@@ -92,6 +94,28 @@ class TestVideoPublishedUrl:
         video.save()
 
         assert video.published_url == "https://example.com"
+
+
+class TestVideoPublishingFlag:
+    def test_keeps_what_others_saved_since_the_video_was_loaded(self, video):
+        video.additional_data["publishing"] = {"website": "https://example.com"}
+        video.save()
+        stale = Video.objects.get(pk=video.pk)
+        video.additional_data["aired"] = ["2026-10-16"]
+        video.status = Video.Statuses.PUBLISHED
+        video.save()
+
+        stale.set_publishing_flag("email_sent_to_user")
+
+        video.refresh_from_db()
+        assert video.status == Video.Statuses.PUBLISHED
+        assert video.additional_data == {
+            "aired": ["2026-10-16"],
+            "publishing": {
+                "website": "https://example.com",
+                "email_sent_to_user": True,
+            },
+        }
 
 
 class TestRequestValidation:
