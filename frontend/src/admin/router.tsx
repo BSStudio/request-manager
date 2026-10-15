@@ -12,6 +12,8 @@ import ErrorPage from 'admin/pages/ErrorPage';
 import type { loaderData as userProfileLoaderData } from 'admin/pages/UserProfilePage';
 import { queryClient } from 'api/queryClient';
 
+// These read the titles the breadcrumbs show. React Router reruns a loader only
+// when its route's params change, so the editors revalidate after a save.
 async function requestLoader({ params }: LoaderFunctionArgs) {
   if (!params.requestId) {
     throw new Error('No request ID provided');
