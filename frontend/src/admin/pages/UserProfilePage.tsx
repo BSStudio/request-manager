@@ -48,7 +48,7 @@ const UserProfilePage = () => {
   const section = param && sections.includes(param) ? param : 'profile';
   const setSection = (value: string) =>
     setSearchParams({ section: value }, { replace: true });
-  const { userId } = useLoaderData() as loaderData;
+  const { userId } = useLoaderData<typeof loader>();
 
   const { data, dataUpdatedAt, refetch } = useSuspenseQuery(
     usersRetrieveQuery(userId),

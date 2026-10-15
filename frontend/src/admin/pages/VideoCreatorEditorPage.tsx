@@ -32,7 +32,7 @@ import { showErrorToast } from 'admin/helpers/showErrorToast';
 import type { LoadErrorState } from 'admin/pages/ErrorPage';
 import { useToast } from 'admin/providers/ToastProvider';
 import { isNotFound, setFieldErrors } from 'api/errors';
-import { UserNestedList, VideoAdminRetrieve } from 'api/models';
+import { UserNestedList } from 'api/models';
 import { queryClient } from 'api/queryClient';
 
 export interface IVideoCreator {
@@ -109,7 +109,7 @@ const VideoCreatorEditorPage = () => {
     ? query
     : { data: undefined, dataUpdatedAt: new Date(), error: null };
 
-  const loaderData = useLoaderData() as VideoAdminRetrieve;
+  const loaderData = useLoaderData<typeof loader>();
   const isDataChanged = !!requestId && !!videoId && loaderData !== queryData;
   const navigate = useNavigate();
   const revalidator = useRevalidator();
@@ -146,7 +146,7 @@ const VideoCreatorEditorPage = () => {
   };
 
   const onSubmit: SubmitHandler<IVideoCreator> = async (data) => {
-    const prevAdditionalData = videoId ? loaderData.additional_data : {};
+    const prevAdditionalData = loaderData?.additional_data ?? {};
 
     let length = null;
     if (data.additional_data.length) {
