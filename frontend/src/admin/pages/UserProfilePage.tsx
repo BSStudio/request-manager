@@ -43,11 +43,9 @@ export async function loader({ params }: LoaderFunctionArgs) {
 }
 
 const UserProfilePage = () => {
-  const [searchParams, setSearchParams] = useSearchParams();
+  const [searchParams] = useSearchParams();
   const param = searchParams.get('section');
   const section = param && sections.includes(param) ? param : 'profile';
-  const setSection = (value: string) =>
-    setSearchParams({ section: value }, { replace: true });
   const { userId } = useLoaderData<typeof loader>();
 
   const { data, dataUpdatedAt, refetch } = useSuspenseQuery(
@@ -61,19 +59,19 @@ const UserProfilePage = () => {
           <NavigationButton
             active={section === 'profile'}
             icon="pi pi-user"
-            onClick={() => setSection('profile')}
+            section="profile"
             text="Profil"
           />
           <NavigationButton
             active={section === 'ban'}
             icon="pi pi-ban"
-            onClick={() => setSection('ban')}
+            section="ban"
             text="Kitiltás"
           />
           <NavigationButton
             active={section === 'workedOn'}
             icon="pi pi-list"
-            onClick={() => setSection('workedOn')}
+            section="workedOn"
             text="Anyagok"
           />
         </ul>
