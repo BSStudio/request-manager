@@ -121,7 +121,7 @@ test("a user's open section is kept in the address", async ({ page }) => {
     .click();
   await expect(page).toHaveTitle(crumbs('Tiltott Tamás', 'Felhasználók'));
 
-  await page.getByText('Kitiltás', { exact: true }).click();
+  await page.getByRole('link', { name: 'Kitiltás' }).click();
   await expect(page).toHaveURL(/\?section=ban$/);
   await page.reload();
   await expect(page.getByLabel('Indoklás')).toHaveValue(
