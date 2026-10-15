@@ -24,7 +24,11 @@ const WorkedOnSection = lazy(
   () => import('admin/components/UserProfile/WorkedOnSection'),
 );
 
-const sections = ['ban', 'profile', 'workedOn'];
+const sections = [
+  { icon: 'pi pi-user', name: 'profile', text: 'Profil' },
+  { icon: 'pi pi-ban', name: 'ban', text: 'Kitiltás' },
+  { icon: 'pi pi-list', name: 'workedOn', text: 'Anyagok' },
+] as const;
 
 export type loaderData = Awaited<ReturnType<typeof loader>>;
 
@@ -44,8 +48,9 @@ export async function loader({ params }: LoaderFunctionArgs) {
 
 const UserProfilePage = () => {
   const [searchParams] = useSearchParams();
-  const param = searchParams.get('section');
-  const section = param && sections.includes(param) ? param : 'profile';
+  const section =
+    sections.find(({ name }) => name === searchParams.get('section'))?.name ??
+    'profile';
   const { userId } = useLoaderData<typeof loader>();
 
   const { data, dataUpdatedAt, refetch } = useSuspenseQuery(
@@ -56,24 +61,15 @@ const UserProfilePage = () => {
     <div className="lg:px-8 md:px-6 px-4 py-5 surface-ground">
       <div className="flex flex-column lg:flex-row p-fluid">
         <ul className="border-round flex flex-row h-full justify-content-evenly lg:flex-column lg:justify-content-start lg:mb-0 lg:mr-5 list-none m-0 mb-5 md:justify-content-between shadow-2 surface-card p-0">
-          <NavigationButton
-            active={section === 'profile'}
-            icon="pi pi-user"
-            section="profile"
-            text="Profil"
-          />
-          <NavigationButton
-            active={section === 'ban'}
-            icon="pi pi-ban"
-            section="ban"
-            text="Kitiltás"
-          />
-          <NavigationButton
-            active={section === 'workedOn'}
-            icon="pi pi-list"
-            section="workedOn"
-            text="Anyagok"
-          />
+          {sections.map(({ icon, name, text }) => (
+            <NavigationButton
+              active={section === name}
+              icon={icon}
+              key={name}
+              section={name}
+              text={text}
+            />
+          ))}
         </ul>
         <div className="flex-auto">
           <div className="border-round shadow-2 surface-card p-5">
