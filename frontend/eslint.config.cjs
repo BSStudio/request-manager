@@ -51,6 +51,29 @@ module.exports = tseslint.config(
         { allowInterfaces: 'with-single-extends' },
       ],
       '@typescript-eslint/no-floating-promises': 'error',
+      'import-x/no-restricted-paths': [
+        'error',
+        {
+          basePath: currentDir,
+          zones: [
+            {
+              from: './src/site',
+              message: 'Share code through src/api, helpers or hooks.',
+              target: './src/admin',
+            },
+            {
+              from: './src/admin',
+              message: 'Share code through src/api, helpers or hooks.',
+              target: './src/site',
+            },
+            {
+              from: ['./src/admin', './src/site'],
+              message: 'Shared code must work in both apps.',
+              target: ['./src/api', './src/helpers', './src/hooks'],
+            },
+          ],
+        },
+      ],
       // Modules that plugins add at build time, e.g. virtual:pwa-register.
       'import-x/no-unresolved': ['error', { ignore: ['^virtual:'] }],
       'import-x/order': [
