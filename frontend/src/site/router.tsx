@@ -74,7 +74,7 @@ const router = sentryCreateBrowserRouter([
               },
             ],
           },
-          { path: '*', Component: NotFoundPage, handle: overlayHeader },
+          { path: '*', handle: overlayHeader, Component: NotFoundPage },
         ],
       },
     ],

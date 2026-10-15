@@ -12,7 +12,7 @@ import ErrorPage from 'admin/pages/ErrorPage';
 import type { loaderData as userProfileLoaderData } from 'admin/pages/UserProfilePage';
 import { queryClient } from 'api/queryClient';
 
-export async function requestLoader({ params }: LoaderFunctionArgs) {
+async function requestLoader({ params }: LoaderFunctionArgs) {
   if (!params.requestId) {
     throw new Error('No request ID provided');
   }
@@ -23,7 +23,7 @@ export async function requestLoader({ params }: LoaderFunctionArgs) {
   return { requestId: params.requestId, requestTitle: request.title };
 }
 
-export async function videoLoader({ params }: LoaderFunctionArgs) {
+async function videoLoader({ params }: LoaderFunctionArgs) {
   if (!params.requestId) {
     throw new Error('No request ID provided');
   }
@@ -41,8 +41,8 @@ export async function videoLoader({ params }: LoaderFunctionArgs) {
   };
 }
 
-export type requestLoaderData = Awaited<ReturnType<typeof requestLoader>>;
-export type videoLoaderData = Awaited<ReturnType<typeof videoLoader>>;
+type requestLoaderData = Awaited<ReturnType<typeof requestLoader>>;
+type videoLoaderData = Awaited<ReturnType<typeof videoLoader>>;
 
 function LayoutErrorBoundary() {
   return (
