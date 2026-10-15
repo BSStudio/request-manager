@@ -24,7 +24,6 @@ module.exports = tseslint.config(
   {
     ignores: [
       '**/eslint.config.cjs',
-      '**/postcss.config.cjs',
       // Served as is to unregister the worker of the very first frontend.
       '**/public/service-worker.js',
     ],
@@ -68,8 +67,13 @@ module.exports = tseslint.config(
             },
             {
               from: ['./src/admin', './src/site'],
-              message: 'Shared code must work in both apps.',
-              target: ['./src/api', './src/helpers', './src/hooks'],
+              message: 'Code outside the two apps must not depend on them.',
+              target: [
+                './src/api',
+                './src/helpers',
+                './src/hooks',
+                './src/sw.ts',
+              ],
             },
           ],
         },

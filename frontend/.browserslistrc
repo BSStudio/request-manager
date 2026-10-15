@@ -1,4 +1,0 @@
-# Vite's default build target, so the CSS that Autoprefixer writes supports the
-# same browsers as the JavaScript. Keep the date in step with the one Vite's
-# build.target documentation names.
-baseline widely available on 2026-01-01
