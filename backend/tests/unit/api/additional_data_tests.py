@@ -74,8 +74,8 @@ class TestFieldsNobodyMayWrite:
         assert "requester" not in cleaned
 
     @pytest.mark.parametrize("is_admin", [True, False])
-    def test_the_publishing_notification_flag_is_always_dropped(self, is_admin):
-        # Only update_video_status may claim the requester has been e-mailed.
+    def test_the_publishing_notification_flags_are_always_dropped(self, is_admin):
+        # Only the notification tasks may claim they have gone out.
         user = make_user(is_admin=is_admin, is_staff=not is_admin)
 
         cleaned = check_and_remove_unauthorized_additional_data(
@@ -83,6 +83,7 @@ class TestFieldsNobodyMayWrite:
                 "publishing": {
                     "website": "https://example.com",
                     "email_sent_to_user": False,
+                    "posted_on_mattermost": False,
                 }
             },
             user,

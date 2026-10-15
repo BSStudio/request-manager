@@ -37,6 +37,7 @@ export type VideoAdditionalDataType = {
   length?: number | null;
   publishing?: {
     email_sent_to_user?: boolean;
+    posted_on_mattermost?: boolean;
     website?: string;
   };
   status_by_admin?: {

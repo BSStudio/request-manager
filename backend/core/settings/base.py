@@ -385,6 +385,12 @@ HEALTH_CHECK_READINESS_CHECKS = [
 
 TURNSTILE_SECRET_KEY = config("TURNSTILE_SECRET_KEY", default=None)
 
+# Mattermost
+# https://developers.mattermost.com/integrate/webhooks/incoming/
+
+# Published videos are posted here; without it, nothing is posted.
+MATTERMOST_WEBHOOK_URL = config("MATTERMOST_WEBHOOK_URL", default=None)
+
 # Sentry
 # https://docs.sentry.io/platforms/python/configuration/options/#data_collection
 

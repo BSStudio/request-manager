@@ -79,6 +79,7 @@ def _video_data(request: Request, title: str, status: int, aired) -> dict:
         data["publishing"] = {
             "website": f"https://example.com/videok/{slugify(f'{request.title} {title}')}",
             "email_sent_to_user": True,
+            "posted_on_mattermost": True,
         }
     if status >= Video.Statuses.DONE:
         data["archiving"] = {"hq_archive": True}

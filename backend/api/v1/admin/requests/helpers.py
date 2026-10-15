@@ -12,6 +12,7 @@ def check_and_remove_unauthorized_additional_data(
     additional_data.pop("requester", None)
     if "publishing" in additional_data:
         additional_data["publishing"].pop("email_sent_to_user", None)
+        additional_data["publishing"].pop("posted_on_mattermost", None)
     if not user.is_admin:
         additional_data.pop("status_by_admin", None)
         additional_data.pop("accepted", None)

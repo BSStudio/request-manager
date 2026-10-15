@@ -10,6 +10,7 @@ from requests import RequestException
 from common.models import get_system_user
 from common.utilities import get_pr_responsible
 from video_requests.emails import email_user_video_published
+from video_requests.mattermost import post_video_published_to_mattermost
 from video_requests.models import Request, Todo, Video
 
 
@@ -204,6 +205,10 @@ def update_video_status(
                     and not video.request.requester.is_staff
                 ):
                     email_user_video_published.delay(video.id)
+                if settings.MATTERMOST_WEBHOOK_URL and not video.additional_data[
+                    "publishing"
+                ].get("posted_on_mattermost", False):
+                    post_video_published_to_mattermost.delay(video.id)
 
         # Check if the HQ export has been moved to its place
         if (

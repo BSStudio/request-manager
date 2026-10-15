@@ -1,7 +1,7 @@
 """``update_video_status`` rule by rule.
 
-Reaching PUBLISHED has side effects: a social media to-do and an e-mail to the
-requester.
+Reaching PUBLISHED has side effects: a social media to-do, an e-mail to the
+requester and a Mattermost post.
 """
 
 from datetime import timedelta
@@ -23,6 +23,14 @@ pytestmark = pytest.mark.django_db
 def published_email():
     """Every PUBLISHED transition tries to send this; tests opt in to asserting."""
     with patch("video_requests.utilities.email_user_video_published.delay") as delay:
+        yield delay
+
+
+@pytest.fixture(autouse=True)
+def mattermost_post():
+    with patch(
+        "video_requests.utilities.post_video_published_to_mattermost.delay"
+    ) as delay:
         yield delay
 
 
@@ -221,6 +229,43 @@ class TestPublishingSideEffects:
         update_video_status(video)
 
         published_email.assert_not_called()
+
+    @pytest.mark.parametrize("staff_requester", [False, True])
+    def test_publishing_posts_the_video_on_mattermost(
+        self, mattermost_post, settings, staff_requester
+    ):
+        settings.MATTERMOST_WEBHOOK_URL = "https://mattermost.example.com/hooks/test"
+        video = make_video(additional_data=PUBLISHED_DATA)
+        video.request.requester.is_staff = staff_requester
+        video.request.requester.save()
+
+        update_video_status(video)
+
+        mattermost_post.assert_called_once_with(video.id)
+
+    def test_the_video_is_not_posted_twice(self, mattermost_post, settings):
+        settings.MATTERMOST_WEBHOOK_URL = "https://mattermost.example.com/hooks/test"
+        video = make_video(
+            additional_data=CODED_DATA
+            | {
+                "publishing": {
+                    "website": "https://example.com",
+                    "posted_on_mattermost": True,
+                }
+            }
+        )
+
+        update_video_status(video)
+
+        mattermost_post.assert_not_called()
+
+    def test_nothing_is_posted_without_a_webhook(self, mattermost_post, settings):
+        settings.MATTERMOST_WEBHOOK_URL = None
+        video = make_video(additional_data=PUBLISHED_DATA)
+
+        update_video_status(video)
+
+        mattermost_post.assert_not_called()
 
 
 class TestCascadeToTheRequest:
