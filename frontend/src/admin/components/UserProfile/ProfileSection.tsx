@@ -12,6 +12,7 @@ import { Tag } from 'primereact/tag';
 import { classNames } from 'primereact/utils';
 import { useForm } from 'react-hook-form';
 import type { SubmitHandler } from 'react-hook-form';
+import { useRevalidator } from 'react-router';
 
 import { userUpdateMutation } from 'admin/api/mutations';
 import { queryKeys } from 'admin/api/queryKeys';
@@ -84,6 +85,7 @@ const ProfileSection = ({ userData }: ProfileSectionProps) => {
   );
   const { showToast } = useToast();
   const queryClient = useQueryClient();
+  const revalidator = useRevalidator();
   const userIsStaff = ['admin', 'staff'].includes(userData.role);
   const disabled = isPending || userIsStaff || !isAdmin();
   const fullName =
@@ -138,6 +140,7 @@ const ProfileSection = ({ userData }: ProfileSectionProps) => {
         await queryClient.invalidateQueries({
           queryKey: queryKeys.user(response.data.id),
         });
+        await revalidator.revalidate();
       })
       .catch(async (error) => {
         if (setFieldErrors(error, setError)) return;

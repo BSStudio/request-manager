@@ -4,6 +4,7 @@ import { useSuspenseQuery } from '@tanstack/react-query';
 import { ProgressBar } from 'primereact/progressbar';
 import {
   type LoaderFunctionArgs,
+  type ShouldRevalidateFunctionArgs,
   useLoaderData,
   useSearchParams,
 } from 'react-router';
@@ -44,6 +45,21 @@ export async function loader({ params }: LoaderFunctionArgs) {
     userFullName: formatName(user.last_name, user.first_name),
     userId: params.userId,
   };
+}
+
+// The loader does not read the search, which only picks the section.
+export function shouldRevalidate({
+  currentUrl,
+  defaultShouldRevalidate,
+  nextUrl,
+}: ShouldRevalidateFunctionArgs) {
+  if (
+    currentUrl.pathname === nextUrl.pathname &&
+    currentUrl.search !== nextUrl.search
+  ) {
+    return false;
+  }
+  return defaultShouldRevalidate;
 }
 
 const UserProfilePage = () => {
