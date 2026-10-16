@@ -111,6 +111,20 @@ test('the breadcrumbs follow a renamed request and video', async ({ page }) => {
   );
 });
 
+// The seeded Nagy Lili, whom only this test uses.
+test('the breadcrumbs follow a renamed user', async ({ page }) => {
+  await page.goto('/admin/users');
+  await page.getByRole('textbox', { name: 'Keresés' }).fill('Nagy Lili');
+  await page
+    .getByRole('row')
+    .filter({ hasText: 'Nagy Lili' })
+    .getByRole('link', { name: 'Ugrás a profilra' })
+    .click();
+  await page.getByLabel('Keresztnév').fill('Lilla');
+  await page.getByRole('button', { exact: true, name: 'Mentés' }).click();
+  await expect(page).toHaveTitle(crumbs('Nagy Lilla', 'Felhasználók'));
+});
+
 test("a user's open section is kept in the address", async ({ page }) => {
   await page.goto('/admin/users');
   await page.getByRole('textbox', { name: 'Keresés' }).fill('Tiltott');
