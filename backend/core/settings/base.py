@@ -182,6 +182,7 @@ CELERY_IMPORTS = [
     "common.utilities",
     "core.tasks",
     "video_requests.emails",
+    "video_requests.mattermost",
     "video_requests.utilities",
 ]
 CELERY_TIMEZONE = config("TIME_ZONE", default="Europe/Budapest")
@@ -384,6 +385,12 @@ HEALTH_CHECK_READINESS_CHECKS = [
 # https://developers.cloudflare.com/turnstile/
 
 TURNSTILE_SECRET_KEY = config("TURNSTILE_SECRET_KEY", default=None)
+
+# Mattermost
+# https://developers.mattermost.com/integrate/webhooks/incoming/
+
+# Published videos are posted here; without it, nothing is posted.
+MATTERMOST_WEBHOOK_URL = config("MATTERMOST_WEBHOOK_URL", default=None)
 
 # Sentry
 # https://docs.sentry.io/platforms/python/configuration/options/#data_collection

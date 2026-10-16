@@ -87,6 +87,9 @@ GOOGLE_SERVICE_ACCOUNT_KEY_FILE_PATH = None
 # Random external token
 SCH_EVENTS_TOKEN = "123456789abcdef"  # nosec
 
+# Do not post to a real channel
+MATTERMOST_WEBHOOK_URL = None
+
 # Remove celery and update Redis health check to use the local REDIS_URL
 try:
     REDIS_URL = match(r"^rediss?://[\w.-]+:\d+", CACHEOPS_REDIS).group(0)
