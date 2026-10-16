@@ -59,9 +59,9 @@ jobs:
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Install uv
-        uses: astral-sh/setup-uv@v10.3.0
+        uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
       - name: Install dependencies
         run: uv sync --locked --group ci
       - name: Check for model changes without migration
@@ -75,7 +75,7 @@ jobs:
         run: uv run pytest --junitxml=junit.xml -o junit_family=legacy
       - name: Upload coverage to Codecov
         if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.run-tests == 'true' }}
-        uses: codecov/codecov-action@v7.1.1
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           directory: backend/
           flags: backend
@@ -84,7 +84,7 @@ jobs:
       - name: Upload test results to Codecov
         # Failed runs too: their results are what test analytics is for.
         if: ${{ !cancelled() && (github.event_name != 'workflow_dispatch' || github.event.inputs.run-tests == 'true') }}
-        uses: codecov/codecov-action@v7.1.1
+        uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           files: backend/junit.xml
           flags: backend
@@ -93,7 +93,7 @@ jobs:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
       - name: Archive code coverage results
         if: ${{ github.event_name != 'workflow_dispatch' || github.event.inputs.run-tests == 'true' }}
-        uses: actions/upload-artifact@v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: code-coverage-report
           path: backend/htmlcov/
@@ -104,7 +104,7 @@ jobs:
         run: uv run pytest -m emails --save-emails --no-cov
       - name: Archive sent e-mails
         if: ${{ github.event.inputs.generate-emails == 'true' }}
-        uses: actions/upload-artifact@v7.0.2
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: emails
           path: backend/logs/emails/

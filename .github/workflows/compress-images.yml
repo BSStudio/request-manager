@@ -27,9 +27,9 @@ jobs:
 
     steps:
       - name: Checkout Branch
-        uses: actions/checkout@v7.0.1
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - name: Compress Images
-        uses: calibreapp/image-actions@main
+        uses: calibreapp/image-actions@ff27d81cd56064db7beb7fa56946c0c3b3d15fbf # main
         with:
           githubToken: ${{ secrets.GITHUB_TOKEN }}
           # For non-Pull Requests, run in compressOnly mode and we'll create a PR after.
@@ -39,7 +39,7 @@ jobs:
         if: |
           github.event_name != 'pull_request' &&
           steps.calibre.outputs.markdown != ''
-        uses: peter-evans/create-pull-request@v8.1.1
+        uses: peter-evans/create-pull-request@5f6978faf089d4d20b00c7766989d076bb2fc7f1 # v8.1.1
         with:
           title: Auto Compress Images
           branch-suffix: timestamp
