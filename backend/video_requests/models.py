@@ -184,11 +184,7 @@ class Video(models.Model):
         """Set one publishing flag under a row lock, so tasks writing the same video at once keep each other's changes."""
         with transaction.atomic():
             # The default manager's rating average needs GROUP BY, which FOR UPDATE does not allow.
-            self.additional_data = (
-                Video._base_manager.select_for_update()
-                .values_list("additional_data", flat=True)
-                .get(pk=self.pk)
-            )
+            self.refresh_from_db(from_queryset=Video._base_manager.select_for_update())
             self.additional_data["publishing"][key] = True
             self.save(update_fields=["additional_data"])
 

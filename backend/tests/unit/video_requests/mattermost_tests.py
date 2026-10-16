@@ -1,8 +1,10 @@
 import json
+from unittest.mock import patch
 
 import pytest
 import requests
 import responses
+from celery.exceptions import Retry
 from model_bakery import baker
 
 from tests.factories import make_user
@@ -38,18 +40,21 @@ class TestMessage:
     def test_credits_the_editor_then_the_crew_by_position(self, video):
         video.editor = make_user(first_name="Benedek", last_name="Dobronyi")
         video.save()
-        add_crew_member(video, "Riporter", "Kiss", "Péter")
+        add_crew_member(video, "Riporter", "Kiss", "Andrea")
         add_crew_member(video, "Operatőr", "Zsoldos", "Zoé")
-        add_crew_member(video, "Operatőr", "Kiss", "Péter")
+        add_crew_member(video, "Operatőr", "Kiss", "Andrea")
+        add_crew_member(video, "Operatőr", "Kiss", "Ádám")
         add_crew_member(video, "Operatőr", "Ábrahám", "Anna")
+        add_crew_member(video, "hangtechnikus", "Nagy", "Ede")
 
         assert get_video_published_message(video) == (
             "#### :clapper: Egyetemi Napok – Riportok\n"
             f"[Videó](https://example.com/video) | [Értékelés a felkéréskezelőben]({video.admin_url})\n"
             "\n"
             "**Vágó:** Dobronyi Benedek\n"
-            "**Operatőr:** Ábrahám Anna, Kiss Péter, Zsoldos Zoé\n"
-            "**Riporter:** Kiss Péter"
+            "**hangtechnikus:** Nagy Ede\n"
+            "**Operatőr:** Ábrahám Anna, Kiss Ádám, Kiss Andrea, Zsoldos Zoé\n"
+            "**Riporter:** Kiss Andrea"
         )
 
     def test_leaves_out_the_credits_when_there_are_none(self, video):
@@ -85,3 +90,26 @@ class TestPost:
 
         video.refresh_from_db()
         assert "posted_on_mattermost" not in video.additional_data["publishing"]
+
+    @pytest.mark.parametrize(
+        ("reply", "retried"),
+        [
+            ({"body": requests.ConnectionError()}, True),
+            ({"body": requests.ReadTimeout()}, False),
+            ({"status": 502}, False),
+        ],
+    )
+    def test_retries_only_a_post_that_never_arrived(
+        self, mattermost, video, reply, retried
+    ):
+        mattermost.post(WEBHOOK_URL, **reply)
+
+        with (
+            patch.object(
+                post_video_published_to_mattermost, "retry", side_effect=Retry
+            ) as retry,
+            pytest.raises((Retry, requests.RequestException)),
+        ):
+            post_video_published_to_mattermost(video.id)
+
+        assert retry.called is retried

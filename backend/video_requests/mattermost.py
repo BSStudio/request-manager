@@ -4,14 +4,18 @@ from collections import defaultdict
 import requests
 from celery import shared_task
 from django.conf import settings
-from requests import RequestException
 
 from video_requests.models import Video
 
 
 def hungarian_sort_key(text: str) -> str:
-    # Decomposed, an accented letter sorts next to its base letter, not after Z.
-    return unicodedata.normalize("NFD", text)
+    # Close to Hungarian order: case and accents are ignored, but cs, sz and the
+    # other double letters do not sort as letters of their own.
+    return "".join(
+        char
+        for char in unicodedata.normalize("NFD", text.casefold())
+        if not unicodedata.combining(char)
+    )
 
 
 def get_video_published_message(video: Video) -> str:
@@ -37,8 +41,10 @@ def get_video_published_message(video: Video) -> str:
     return "\n".join(lines)
 
 
+# Only a post that never reached Mattermost is retried: after a timeout or an
+# error reply it may have gone through, and a retry would post it twice.
 @shared_task(
-    autoretry_for=(RequestException,),
+    autoretry_for=(requests.ConnectionError,),
     retry_backoff=True,
     retry_kwargs={"max_retries": 10},
 )

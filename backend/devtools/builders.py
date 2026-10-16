@@ -58,8 +58,9 @@ def add_video(
     editor: User | None = None,
     aired: tuple[date, ...] = (),
 ) -> Video:
-    # Created at its final status: update_video_status opens a sharing todo and
-    # e-mails the requester only for a video that moves up to published.
+    # Created at its final status: update_video_status opens a sharing todo,
+    # e-mails the requester and posts on Mattermost only for a video that moves
+    # up to published.
     return Video.objects.create(
         request=request,
         title=title,

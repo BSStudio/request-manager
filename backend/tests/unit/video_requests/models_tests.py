@@ -109,6 +109,7 @@ class TestVideoPublishingFlag:
 
         video.refresh_from_db()
         assert video.status == Video.Statuses.PUBLISHED
+        assert video.history.first().status == Video.Statuses.PUBLISHED
         assert video.additional_data == {
             "aired": ["2026-10-16"],
             "publishing": {
