@@ -6,7 +6,7 @@
   "service": "app",
   "workspaceFolder": "/workspaces/request-manager",
   "features": {
-    "ghcr.io/devcontainers/features/python:1": { "version": "3.14" },
+    "ghcr.io/devcontainers/features/python:1": { "version": "3.15" },
     "ghcr.io/devcontainers/features/node:2": {
       "version": "24",
       "pnpmVersion": "latest"

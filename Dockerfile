@@ -37,7 +37,7 @@ RUN --mount=type=secret,id=SENTRY_AUTH_TOKEN,env=SENTRY_AUTH_TOKEN \
 # Stage 2 - Backend base
 
 # Pull base image
-FROM python:3.14-alpine AS backend-base
+FROM python:3.15-alpine AS backend-base
 
 # Set environment variables
 ENV PYTHONUNBUFFERED=1 \
