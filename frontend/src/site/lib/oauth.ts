@@ -31,7 +31,7 @@ const providers: Record<
     params: {
       client_id: import.meta.env.VITE_BSS_CLIENT_ID,
       redirect_uri: redirectUri,
-      scope: 'email mobile openid profile',
+      scope: 'email openid phone profile',
     },
     url: 'https://login.bsstudio.hu/application/o/authorize/',
   },

@@ -72,15 +72,15 @@ class BSSLoginOAuth2(BrowserNonceOpenIdConnectAuth):
     OIDC_ENDPOINT = "https://login.bsstudio.hu/application/o/request-manager"
     DEFAULT_SCOPE = [
         "email",
-        "mobile",
         "openid",
+        "phone",
         "profile",
     ]
     EXTRA_DATA = [
         ("expires_in", "expires"),
         ("name", "name"),
         ("email", "email"),
-        ("mobile", "mobile"),
+        ("phone_number", "mobile"),
     ]
 
     def get_user_details(self, response):
@@ -90,7 +90,7 @@ class BSSLoginOAuth2(BrowserNonceOpenIdConnectAuth):
             "email": response.get("email"),
             "first_name": response.get("given_name"),
             "last_name": response.get("family_name"),
-            "mobile": response.get("mobile"),
+            "mobile": response.get("phone_number"),
         }
 
 
