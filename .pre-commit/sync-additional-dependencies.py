@@ -26,13 +26,13 @@ DEPENDENCIES_TO_SYNC = [
 
 
 def main():
-    with open(CONFIG, encoding="utf-8", newline="") as f:
+    with open(CONFIG, newline="") as f:
         text = f.read()
 
     repo = next(r for r in yaml.safe_load(text)["repos"] if r["repo"] == ESLINT_REPO)
     hook = repo["hooks"][0]
     folder = hook["files"].strip("^/")
-    with open(f"{folder}/package.json", encoding="utf-8") as f:
+    with open(f"{folder}/package.json") as f:
         dev_dependencies = json.load(f)["devDependencies"]
 
     expected = sorted(
@@ -58,7 +58,7 @@ def main():
         )
         for dependency in expected
     )
-    with open(CONFIG, "w", encoding="utf-8", newline="") as f:
+    with open(CONFIG, "w", newline="") as f:
         f.write(text[: match.start(2)] + items + text[match.end(2) :])
 
     print(
