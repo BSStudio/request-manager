@@ -23,6 +23,7 @@ class UserSocialAuthSerializer(ModelSerializer):
 
 class UserSerializer(ModelSerializer):
     AVATAR_PROVIDER_CHOICES = (
+        ("bss-login", "BSS"),
         ("google-oauth2", "Google"),
         ("gravatar", "Gravatar"),
         ("microsoft-graph", "Microsoft"),

@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react';
 import type { AvatarProviderEnum } from 'api/models';
 
 export const avatarProviderLabels: Record<AvatarProviderEnum, string> = {
+  'bss-login': 'BSS',
   'google-oauth2': 'Google',
   gravatar: 'Gravatar',
   'microsoft-graph': 'Microsoft',

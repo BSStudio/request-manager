@@ -9,7 +9,10 @@ from django.db.models import Q
 
 from common.models import User
 from common.social_core.backends import BSSLoginOAuth2
-from common.social_core.pipeline import set_groups_and_permissions_for_staff
+from common.social_core.pipeline import (
+    set_groups_and_permissions_for_staff,
+    update_bss_login_avatar,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -95,6 +98,8 @@ class Command(BaseCommand):
             user.email = result["email"]
             user.phone_number = result["attributes"].get("mobile")
 
+            update_bss_login_avatar(user, result["attributes"].get("avatar_url"))
+
             avatar_url_hostname = urlparse(result.get("avatar", "")).hostname
             if avatar_url_hostname and (
                 avatar_url_hostname == "gravatar.com"
@@ -125,6 +130,7 @@ class Command(BaseCommand):
             user.is_superuser = False
             user.is_staff = False
             user.groups.clear()
+            update_bss_login_avatar(user, None)
             user.save()  # Save modifications
             total_demoted += 1
             logger.info(

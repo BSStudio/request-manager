@@ -28,6 +28,23 @@ export default function AvatarPicker({ user }: { user: User }) {
     onSuccess: cacheUser,
   });
 
+  if (!avatars.length && user.role !== 'user') {
+    return (
+      <p className="text-sm leading-relaxed text-muted-foreground">
+        Még nincs profilképed. Tölts fel egyet a{' '}
+        <a
+          className="text-foreground underline underline-offset-4"
+          href="https://backstage.bsstudio.hu"
+          rel="noreferrer"
+          target="_blank"
+        >
+          Backstage-re
+        </a>
+        , és a következő bejelentkezés után itt is megjelenik.
+      </p>
+    );
+  }
+
   if (!avatars.length) {
     return (
       <p className="text-sm leading-relaxed text-muted-foreground">

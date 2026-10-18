@@ -4,6 +4,7 @@ from base64 import b64encode
 import requests
 from django.conf import settings
 from django.contrib.auth.models import Group
+from jsonschema import FormatChecker
 from libgravatar import Gravatar, sanitize_email
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from social_core.exceptions import AuthAssociationError, AuthPolicyError
@@ -177,8 +178,26 @@ def add_phone_number_to_profile(backend, details, response, user, *args, **kwarg
         user.save()
 
 
+def update_bss_login_avatar(user, url):
+    """Mirrors the directory's photo, which is shown when it first appears."""
+    if url and not FormatChecker().conforms(url, "uri"):
+        # The avatar schema would reject it on save, failing the login or the sync.
+        logger.error("Invalid avatar URL in the directory for %s.", user.username)
+        return
+
+    if url:
+        if "bss-login" not in user.avatar or not user.avatar.get("provider"):
+            user.avatar["provider"] = "bss-login"
+        user.avatar["bss-login"] = url
+    elif "bss-login" in user.avatar:
+        remove_avatar(user, "bss-login")
+
+
 def get_avatar(backend, response, user, *args, **kwargs):
-    if backend.name == "google-oauth2" and response.get("picture"):
+    if backend.name == "bss-login":
+        update_bss_login_avatar(user, response.get("picture"))
+
+    elif backend.name == "google-oauth2" and response.get("picture"):
         user.avatar["google-oauth2"] = response["picture"][:-6]
 
     elif backend.name == "microsoft-graph":
@@ -266,15 +285,19 @@ def delete_avatar(
     if name not in user.avatar:
         return
 
+    remove_avatar(user, name)
+    user.save()
+
+
+def remove_avatar(user, name):
     del user.avatar[name]
 
     if user.avatar.get("provider") == name:
-        remaining = sorted(key for key in user.avatar if key != "provider")
-        if "gravatar" in remaining:
-            user.avatar["provider"] = "gravatar"
-        elif remaining:
-            user.avatar["provider"] = remaining[0]
+        fallbacks = ["gravatar", "google-oauth2", "microsoft-graph", "bss-login"]
+        if user.is_staff:
+            fallbacks.insert(0, "bss-login")
+        provider = next((key for key in fallbacks if key in user.avatar), None)
+        if provider:
+            user.avatar["provider"] = provider
         else:
             user.avatar = {}
-
-    user.save()

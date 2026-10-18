@@ -80,10 +80,11 @@ test.describe('as a crew member', () => {
     await page.goto('/profile');
 
     await expect(
-      page.getByText(
-        'Az adataid a BSS címtárából jönnek, ott tudod módosítani őket.',
-      ),
+      page.getByText('Az adataidat a Backstage-en tudod módosítani.'),
     ).toBeVisible();
     await expect(page.getByLabel('Keresztnév')).toHaveCount(0);
+    await expect(
+      page.getByText('Tölts fel egyet a Backstage-re', { exact: false }),
+    ).toBeVisible();
   });
 });

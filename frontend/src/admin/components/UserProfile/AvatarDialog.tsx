@@ -30,7 +30,7 @@ const AvatarOption = ({
   selected,
 }: AvatarOptionProps) => {
   return (
-    <div className="col-12 lg:col-4">
+    <div className="col-12 lg:col-3">
       <div
         className={classNames(
           'border-2 border-round h-full shadow-1 surface-ground',

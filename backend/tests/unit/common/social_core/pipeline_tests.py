@@ -18,6 +18,7 @@ from common.social_core.pipeline import (
     delete_avatar,
     disconnect_all_other_profiles_and_change_username_on_first_bss_login,
     set_groups_and_permissions_for_staff,
+    update_bss_login_avatar,
 )
 from tests.factories import make_user
 
@@ -218,6 +219,32 @@ def test_delete_avatar_hands_the_provider_slot_to_a_remaining_image():
 
 
 @pytest.mark.django_db
+@pytest.mark.parametrize(
+    ("is_staff", "provider"), [(True, "bss-login"), (False, "google-oauth2")]
+)
+def test_delete_avatar_falls_back_to_the_bss_login_photo_only_for_staff(
+    is_staff, provider
+):
+    user = make_user(is_staff=is_staff)
+    user.avatar = {
+        "provider": "microsoft-graph",
+        "microsoft-graph": "https://example.com/a.png",
+        "google-oauth2": "https://example.com/b.png",
+        "bss-login": "https://example.com/c.webp",
+    }
+    user.save()
+
+    delete_avatar(anonymous_strategy(), user, "microsoft-graph", DjangoStorage.user)
+
+    user.refresh_from_db()
+    assert user.avatar == {
+        "provider": provider,
+        "google-oauth2": "https://example.com/b.png",
+        "bss-login": "https://example.com/c.webp",
+    }
+
+
+@pytest.mark.django_db
 def test_delete_avatar_clears_the_avatar_when_the_last_image_goes():
     user = make_user()
     user.avatar = {
@@ -249,3 +276,44 @@ def test_delete_avatar_falls_back_to_another_provider_without_a_gravatar():
         "provider": "google-oauth2",
         "google-oauth2": "https://example.com/b.png",
     }
+
+
+def test_a_new_bss_login_photo_replaces_the_shown_avatar():
+    user = SimpleNamespace(
+        avatar={"provider": "gravatar", "gravatar": "https://example.com/a.png"}
+    )
+
+    update_bss_login_avatar(user, "https://example.com/b.webp")
+
+    assert user.avatar == {
+        "provider": "bss-login",
+        "gravatar": "https://example.com/a.png",
+        "bss-login": "https://example.com/b.webp",
+    }
+
+
+def test_an_updated_bss_login_photo_keeps_the_avatar_the_user_chose():
+    user = SimpleNamespace(
+        avatar={
+            "provider": "gravatar",
+            "gravatar": "https://example.com/a.png",
+            "bss-login": "https://example.com/b.webp",
+        }
+    )
+
+    update_bss_login_avatar(user, "https://example.com/c.webp")
+
+    assert user.avatar == {
+        "provider": "gravatar",
+        "gravatar": "https://example.com/a.png",
+        "bss-login": "https://example.com/c.webp",
+    }
+
+
+def test_an_invalid_bss_login_photo_url_is_reported_and_ignored(caplog):
+    user = SimpleNamespace(username="foobar", avatar={})
+
+    update_bss_login_avatar(user, "/avatars/a b.webp")
+
+    assert user.avatar == {}
+    assert "Invalid avatar URL in the directory for foobar." in caplog.text

@@ -13,12 +13,13 @@
  */
 
 /**
- * * `google-oauth2` - Google * `gravatar` - Gravatar * `microsoft-graph` - Microsoft
+ * * `bss-login` - BSS * `google-oauth2` - Google * `gravatar` - Gravatar * `microsoft-graph` - Microsoft
  * @export
  * @enum {string}
  */
 
 export const AvatarProviderEnum = {
+  BssLogin: 'bss-login',
   GoogleOauth2: 'google-oauth2',
   Gravatar: 'gravatar',
   MicrosoftGraph: 'microsoft-graph',
