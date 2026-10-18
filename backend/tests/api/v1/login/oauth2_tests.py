@@ -247,6 +247,42 @@ def test_login_without_any_photo_leaves_the_avatar_provider_unset(
     assert user.avatar_url is None
 
 
+def test_bss_login_shows_the_photo_from_the_directory(api_client, mock_provider):
+    mocked = mock_provider(BSS_LOGIN)
+    responses.replace(
+        responses.GET,
+        BSS_LOGIN.user_data_url,
+        json={**BSS_LOGIN.user_data_body, "picture": "https://example.com/a.webp"},
+    )
+
+    assert log_in(api_client, mocked).status_code == HTTP_200_OK
+
+    user = UserSocialAuth.objects.get(provider=BSS_LOGIN.name).user
+    assert user.avatar == {
+        "provider": "bss-login",
+        "bss-login": "https://example.com/a.webp",
+    }
+
+
+def test_bss_login_drops_a_photo_removed_from_the_directory(api_client, mock_provider):
+    user = make_user(
+        email=BSS_LOGIN.user_data_body["email"],
+        avatar={
+            "provider": "bss-login",
+            "bss-login": "https://example.com/a.webp",
+            "google-oauth2": "https://example.com/b.png",
+        },
+    )
+
+    assert log_in(api_client, mock_provider(BSS_LOGIN)).status_code == HTTP_200_OK
+
+    user.refresh_from_db()
+    assert user.avatar == {
+        "provider": "google-oauth2",
+        "google-oauth2": "https://example.com/b.png",
+    }
+
+
 @pytest.mark.parametrize(
     "provider",
     [AUTHSCH, BSS_LOGIN, GOOGLE, MICROSOFT],

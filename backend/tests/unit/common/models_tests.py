@@ -62,7 +62,7 @@ class TestUserAvatarSchema:
 
         assert (
             "'randomValue' is not one of "
-            "['google-oauth2', 'gravatar', 'microsoft-graph']"
+            "['bss-login', 'google-oauth2', 'gravatar', 'microsoft-graph']"
             in error.value.messages[0]
         )
 

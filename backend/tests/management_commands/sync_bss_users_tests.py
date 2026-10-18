@@ -65,6 +65,40 @@ def test_sync_reports_users_with_missing_attributes_and_continues(caplog):
 
 @pytest.mark.django_db
 @responses.activate
+def test_sync_shows_the_photo_from_the_directory():
+    mock_directory(
+        directory_user(
+            "photo",
+            dict(COMPLETE_ATTRIBUTES, avatar_url="https://example.com/a.webp"),
+        )
+    )
+
+    call_command("sync_bss_users")
+
+    assert User.objects.get(username="photo").avatar == {
+        "provider": "bss-login",
+        "bss-login": "https://example.com/a.webp",
+    }
+
+
+@pytest.mark.django_db
+@responses.activate
+def test_sync_drops_a_photo_removed_from_the_directory():
+    user = make_user(
+        username="photo",
+        is_staff=True,
+        avatar={"provider": "bss-login", "bss-login": "https://example.com/a.webp"},
+    )
+    mock_directory(directory_user("photo", COMPLETE_ATTRIBUTES))
+
+    call_command("sync_bss_users")
+
+    user.refresh_from_db()
+    assert user.avatar == {}
+
+
+@pytest.mark.django_db
+@responses.activate
 def test_sync_does_not_demote_a_user_with_missing_attributes():
     user = make_user(username="no_mobile", is_staff=True)
     mock_directory(directory_user("no_mobile", dict(COMPLETE_ATTRIBUTES, mobile="")))
