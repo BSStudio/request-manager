@@ -280,7 +280,7 @@ const ProfileSection = ({ userData }: ProfileSectionProps) => {
             {userIsStaff && (
               <Message
                 severity="warn"
-                text="Az adatokat a BSS címtár szolgáltatásában kell módosítani."
+                text="Az adatokat a Backstage-en kell módosítani."
               />
             )}
           </div>

@@ -70,7 +70,18 @@ function ReadOnlyDetails({ user }: { user: User }) {
       </dl>
       <p className="mt-6 flex gap-3 rounded-2xl bg-muted/50 px-4 py-3 text-sm leading-relaxed">
         <InfoIcon className="mt-0.5 size-4 shrink-0 text-primary" />
-        Az adataid a BSS címtárából jönnek, ott tudod módosítani őket.
+        <span>
+          Az adataidat a{' '}
+          <a
+            className="underline underline-offset-4"
+            href="https://backstage.bsstudio.hu"
+            rel="noreferrer"
+            target="_blank"
+          >
+            Backstage-en
+          </a>{' '}
+          tudod módosítani.
+        </span>
       </p>
     </>
   );
