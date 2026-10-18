@@ -1,7 +1,8 @@
-import { useRef, useState } from 'react';
-import type { ComponentProps, DragEvent } from 'react';
+import { useEffect, useRef, useState } from 'react';
+import type { ComponentProps } from 'react';
 
 import wasmUrl from 'mediainfo.js/MediaInfoModule.wasm?url';
+import { BlockUI } from 'primereact/blockui';
 import { Button } from 'primereact/button';
 import { InputMask } from 'primereact/inputmask';
 
@@ -34,8 +35,19 @@ async function readLength(file: File) {
 
 const VideoLengthInput = ({ onChange, ...props }: VideoLengthInputProps) => {
   const fileInput = useRef<HTMLInputElement>(null);
+  const [isDragging, setIsDragging] = useState(false);
   const [isReading, setIsReading] = useState(false);
   const { showToast } = useToast();
+  const { disabled } = props;
+
+  useEffect(() => {
+    if (disabled) return;
+    const onDragEnter = (event: globalThis.DragEvent) => {
+      if (event.dataTransfer?.types.includes('Files')) setIsDragging(true);
+    };
+    window.addEventListener('dragenter', onDragEnter);
+    return () => window.removeEventListener('dragenter', onDragEnter);
+  }, [disabled]);
 
   const fillFrom = async (file: File) => {
     setIsReading(true);
@@ -55,20 +67,9 @@ const VideoLengthInput = ({ onChange, ...props }: VideoLengthInputProps) => {
     }
   };
 
-  const onDragOver = (event: DragEvent) => {
-    if (event.dataTransfer.types.includes('Files')) event.preventDefault();
-  };
-
-  const onDrop = (event: DragEvent) => {
-    const file = event.dataTransfer.files[0];
-    if (!file) return;
-    event.preventDefault();
-    if (!props.disabled && !isReading) void fillFrom(file);
-  };
-
   return (
     <>
-      <div className="p-inputgroup" onDragOver={onDragOver} onDrop={onDrop}>
+      <div className="p-inputgroup">
         <span className="p-inputgroup-addon">
           <i className="pi pi-clock" />
         </span>
@@ -81,7 +82,7 @@ const VideoLengthInput = ({ onChange, ...props }: VideoLengthInputProps) => {
         />
         <Button
           aria-label="Hossz kiolvasása fájlból"
-          disabled={props.disabled}
+          disabled={disabled}
           icon="pi pi-folder-open"
           loading={isReading}
           onClick={() => fileInput.current?.click()}
@@ -100,6 +101,33 @@ const VideoLengthInput = ({ onChange, ...props }: VideoLengthInputProps) => {
         }}
         ref={fileInput}
         type="file"
+      />
+      {/* Covers the page and keeps drag events off its content, so a
+          dragleave means the file left the window. */}
+      <BlockUI
+        blocked={isDragging && !disabled}
+        className="align-items-center flex justify-content-center"
+        fullScreen
+        pt={{
+          mask: {
+            onDragLeave: () => setIsDragging(false),
+            onDragOver: (event) => event.preventDefault(),
+            onDrop: (event) => {
+              event.preventDefault();
+              setIsDragging(false);
+              const file = event.dataTransfer.files[0];
+              if (file && !isReading) void fillFrom(file);
+            },
+          },
+        }}
+        template={
+          <div className="border-3 border-dashed border-primary border-round p-5 pointer-events-none surface-card text-center">
+            <i className="pi pi-video text-5xl text-primary" />
+            <div className="font-medium mt-3 text-900 text-xl">
+              Engedd el a videót a hossz kiolvasásához
+            </div>
+          </div>
+        }
       />
     </>
   );

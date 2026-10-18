@@ -38,10 +38,8 @@ test('reads the length of a picked video file', async ({ page }) => {
   await expect(length).toHaveValue('00:00:03');
 });
 
-test('reads the length of a dropped video file', async ({ page }) => {
-  await openNewVideo(page);
-  const length = page.getByLabel('Videó hossza');
-  const dataTransfer = await page.evaluateHandle(
+function dragMp4(page: Page) {
+  return page.evaluateHandle(
     (bytes) => {
       const dataTransfer = new DataTransfer();
       dataTransfer.items.add(new File([new Uint8Array(bytes)], 'video.mp4'));
@@ -49,9 +47,36 @@ test('reads the length of a dropped video file', async ({ page }) => {
     },
     [...readFileSync(mp4)],
   );
+}
 
-  await length.dispatchEvent('drop', { dataTransfer });
+test('reads the length of a video dropped anywhere on the page', async ({
+  page,
+}) => {
+  await openNewVideo(page);
+  const length = page.getByLabel('Videó hossza');
+  const dropHint = page.getByText('Engedd el a videót a hossz kiolvasásához');
+  const dataTransfer = await dragMp4(page);
+
+  await page
+    .getByText('Videó létrehozása')
+    .dispatchEvent('dragenter', { dataTransfer });
+  await expect(dropHint).toBeVisible();
+  await dropHint.dispatchEvent('drop', { dataTransfer });
+  await expect(dropHint).toBeHidden();
   await expect(length).toHaveValue('00:01:02');
+});
+
+test('hides the drop hint when the video is dragged away', async ({ page }) => {
+  await openNewVideo(page);
+  const dropHint = page.getByText('Engedd el a videót a hossz kiolvasásához');
+  const dataTransfer = await dragMp4(page);
+
+  await page
+    .getByText('Videó létrehozása')
+    .dispatchEvent('dragenter', { dataTransfer });
+  await expect(dropHint).toBeVisible();
+  await dropHint.dispatchEvent('dragleave', { dataTransfer });
+  await expect(dropHint).toBeHidden();
 });
 
 test('tells when a file has no length', async ({ page }) => {
