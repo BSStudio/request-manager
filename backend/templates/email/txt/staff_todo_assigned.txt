@@ -1,4 +1,4 @@
-Szia!
+{% autoescape off %}Szia!
 
 Az alábbi feladatot rendelték hozzád a(z) {{ title }} {% if assignment_type == "request" %}felkéréssel{% else %}videóval{% endif %} kapcsolatban:
 
@@ -7,4 +7,4 @@ Az alábbi feladatot rendelték hozzád a(z) {{ title }} {% if assignment_type =
 A következő oldalon tekintheted meg: {{ todo.request.admin_url }}
 
 Üdv:
-Felkéréskezelő robotka
+Felkéréskezelő robotka{% endautoescape %}

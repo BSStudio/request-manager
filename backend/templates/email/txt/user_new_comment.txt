@@ -1,4 +1,4 @@
-{% load i18n %}Kedves {{ comment.request.requester.first_name }}!
+{% load i18n %}{% autoescape off %}Kedves {{ comment.request.requester.first_name }}!
 
 {{ comment.request.title }} forgatási felkérésedhez üzenetet küldtünk:
 {% language 'hu' %}{{ comment.created|date:"DATETIME_FORMAT" }}{% endlanguage %}
@@ -8,4 +8,4 @@
 A következő oldalon válaszolhatsz: {{ comment.request.url }}
 
 Üdvözlettel:
-a Budavári Schönherz Stúdió csapata
+a Budavári Schönherz Stúdió csapata{% endautoescape %}

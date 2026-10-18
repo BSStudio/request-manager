@@ -1,4 +1,4 @@
-Kedves {{ video.request.requester.first_name }}!
+{% autoescape off %}Kedves {{ video.request.requester.first_name }}!
 
 Felkérésedhez új videót publikáltunk {{ video.title }} címmel, melyet az alábbi linken tekinthetsz meg: {{ video.published_url }}
 
@@ -7,4 +7,4 @@ Kíváncsiak vagyunk a véleményedre. Kérjük, a következő linken értékeld
 Az oldalra a felkéréshez megadott e-mail-címedhez tartozó AuthSCH-, Google- vagy Microsoft-fiókkal tudsz belépni.
 {% endif %}
 Üdvözlettel:
-a Budavári Schönherz Stúdió csapata
+a Budavári Schönherz Stúdió csapata{% endautoescape %}

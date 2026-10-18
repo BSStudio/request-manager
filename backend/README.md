@@ -116,6 +116,7 @@ Run `uv run python manage.py help` to list every available command. In addition 
 | `update_request_status`     | `video_requests` | Recalculate the status of video requests.                |
 | `email_daily_reminders`     | `video_requests` | Send daily reminder e-mails.                             |
 | `email_overdue_requests`    | `video_requests` | Send the weekly overdue request digests.                 |
+| `email_stale_todos`         | `video_requests` | Send the weekly digests of todos open for four weeks.    |
 | `email_unfinished_requests` | `video_requests` | Notify about unfinished requests.                        |
 | `email_weekly_tasks`        | `video_requests` | Send the weekly task summary e-mail.                     |
 | `seed_dev_data`             | `devtools`       | Replace the requests and test users with test data.      |

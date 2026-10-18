@@ -5,36 +5,6 @@
     "github>BSStudio/renovate-config:weekly",
     "github>BSStudio/renovate-config:approve-merges"
   ],
-  "customManagers": [
-    {
-      "customType": "regex",
-      "description": "Update Python version pinned in .python-version.",
-      "managerFilePatterns": ["/^backend/\\.python-version$/"],
-      "matchStrings": ["(?<currentValue>\\d+\\.\\d+(\\.\\d+)?)"],
-      "depNameTemplate": "python",
-      "datasourceTemplate": "python-version"
-    },
-    {
-      "customType": "regex",
-      "description": "Update the Node.js feature version in the dev container.",
-      "managerFilePatterns": ["/^\\.devcontainer/devcontainer\\.json$/"],
-      "matchStrings": [
-        "node:\\d+\":\\s*\\{\\s*\"version\":\\s*\"(?<currentValue>[^\"]+)\""
-      ],
-      "depNameTemplate": "node",
-      "datasourceTemplate": "node-version"
-    },
-    {
-      "customType": "regex",
-      "description": "Update the Python feature version in the dev container.",
-      "managerFilePatterns": ["/^\\.devcontainer/devcontainer\\.json$/"],
-      "matchStrings": [
-        "python:\\d+\":\\s*\\{\\s*\"version\":\\s*\"(?<currentValue>[^\"]+)\""
-      ],
-      "depNameTemplate": "python",
-      "datasourceTemplate": "python-version"
-    }
-  ],
   "packageRules": [
     {
       "description": "Group all minor and patch updates together for uv in /backend.",
@@ -57,7 +27,7 @@
       "description": "Group every Python runtime version bump (.python-version, dev container, Dockerfiles) into one PR.",
       "groupName": "Python runtime version",
       "matchDepNames": ["python"],
-      "matchManagers": ["custom.regex", "dockerfile"]
+      "matchManagers": ["dockerfile", "pyenv", "devcontainer"]
     },
     {
       "description": "Group every uv version bump (Dockerfiles, pre-commit hook) into one PR.",
