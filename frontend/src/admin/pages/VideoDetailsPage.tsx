@@ -25,6 +25,7 @@ import LinkButton from 'admin/components/LinkButton/LinkButton';
 import { VideoStatusTag } from 'admin/components/StatusTag/StatusTag';
 import User from 'admin/components/User/User';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
+import { formatVideoLength } from 'admin/helpers/formatVideoLength';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import useMobile from 'admin/hooks/useMobile';
 import { isNotFound } from 'api/errors';
@@ -359,9 +360,7 @@ const VideoDetailsPage = () => {
             <DetailsRow
               content={
                 queryResult.additional_data.length ? (
-                  new Date(queryResult.additional_data.length * 1000)
-                    .toISOString()
-                    .slice(11, 19)
+                  formatVideoLength(queryResult.additional_data.length)
                 ) : (
                   <Tag
                     className="mr-2"

@@ -28,6 +28,7 @@ import FormField from 'admin/components/FormField/FormField';
 import LastUpdatedAt from 'admin/components/LastUpdatedAt/LastUpdatedAt';
 import VideoLengthInput from 'admin/components/VideoLengthInput/VideoLengthInput';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
+import { formatVideoLength } from 'admin/helpers/formatVideoLength';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import type { LoadErrorState } from 'admin/pages/ErrorPage';
 import { useToast } from 'admin/providers/ToastProvider';
@@ -132,9 +133,7 @@ const VideoCreatorEditorPage = () => {
         additional_data: {
           ...loaderData.additional_data,
           length: loaderData.additional_data.length
-            ? new Date(1000 * loaderData.additional_data.length)
-                .toISOString()
-                .substring(11, 19)
+            ? formatVideoLength(loaderData.additional_data.length)
             : undefined,
         },
       });

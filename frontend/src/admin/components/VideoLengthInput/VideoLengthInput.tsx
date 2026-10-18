@@ -6,6 +6,7 @@ import wasmUrl from 'mediainfo.js/MediaInfoModule.wasm?url';
 import { Button } from 'primereact/button';
 import { InputMask } from 'primereact/inputmask';
 
+import { formatVideoLength } from 'admin/helpers/formatVideoLength';
 import { useToast } from 'admin/providers/ToastProvider';
 
 type VideoLengthInputProps = Omit<
@@ -57,9 +58,7 @@ const VideoLengthInput = ({ onChange, ...props }: VideoLengthInputProps) => {
     });
     setIsReading(false);
     if (length) {
-      onChange?.(
-        new Date(1000 * Math.round(length)).toISOString().substring(11, 19),
-      );
+      onChange?.(formatVideoLength(length));
     } else {
       showToast({
         detail: 'Nem sikerült kiolvasni a videó hosszát.',
