@@ -323,3 +323,29 @@ def test_an_inline_avatar_falls_back_to_the_default(crew, send_email, video_requ
     html = only_message().alternatives[0].content
     assert "data:image" not in html
     assert "images/default_avatar." in html
+
+
+@pytest.mark.parametrize(
+    "send_email",
+    [email_user_new_comment, email_crew_new_comment],
+    ids=["requester", "crew"],
+)
+def test_the_plain_text_keeps_a_comment_as_written(crew, send_email, video_request):
+    text = 'Jó lenne a "Gólyabál" & az afterparty is, ha belefér.'
+    comment = baker.make("video_requests.Comment", request=video_request, text=text)
+
+    send_email(comment.id)
+
+    assert text in only_message().body
+
+
+@pytest.mark.parametrize(
+    "template",
+    sorted((django_settings.BACKEND_DIR / "templates" / "email" / "txt").glob("*.txt")),
+    ids=lambda path: path.name,
+)
+def test_a_plain_text_template_turns_autoescape_off(template):
+    """Django escapes variables for HTML in every template, so the text part would show &quot; and &amp;."""
+    source = template.read_text(encoding="utf-8")
+    assert "{% autoescape off %}" in source
+    assert source.rstrip().endswith("{% endautoescape %}")

@@ -1,4 +1,4 @@
-{% load i18n %}Sziasztok!
+{% load i18n %}{% autoescape off %}Sziasztok!
 {% if recording %}
 E heti forgatások:
 {% for request in recording %}
@@ -18,4 +18,4 @@ Vágandó anyagok:
   {{ video.admin_url }}
 {% endfor %}{% endif %}
 Üdv:
-Felkéréskezelő robotka
+Felkéréskezelő robotka{% endautoescape %}

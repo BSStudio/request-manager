@@ -1,4 +1,4 @@
-{% load i18n %}Szia!
+{% load i18n %}{% autoescape off %}Szia!
 
 A(z) {{ comment.request.title }} felkéréshez új {% if comment.internal %}belső {% endif %}hozzászólás érkezett:
 {% language 'hu' %}{{ comment.created|date:"DATETIME_FORMAT" }}{% endlanguage %}
@@ -8,4 +8,4 @@ A(z) {{ comment.request.title }} felkéréshez új {% if comment.internal %}bels
 Válaszolok: {{ comment.request.admin_url }}
 
 Üdv:
-Felkéréskezelő robotka
+Felkéréskezelő robotka{% endautoescape %}

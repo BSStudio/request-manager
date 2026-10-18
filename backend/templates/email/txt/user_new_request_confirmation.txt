@@ -1,4 +1,4 @@
-{% load i18n %}Kedves {{ request.requester.first_name }}!
+{% load i18n %}{% autoescape off %}Kedves {{ request.requester.first_name }}!
 
 Köszönjük, hogy felkerestél minket!
 
@@ -16,4 +16,4 @@ További részleteket bejelentkezés után itt találsz: {{ request.url }}
 Ha a felkéréshez megadott e-mail-címedhez tartozó AuthSCH-, Google- vagy Microsoft-fiókkal belépsz az oldalra, folyamatosan követheted a felkérésed állapotát, üzenetet írhatsz nekünk, és az elkészült anyagot is értékelheted.
 {% endif %}
 Üdvözlettel:
-a Budavári Schönherz Stúdió csapata
+a Budavári Schönherz Stúdió csapata{% endautoescape %}

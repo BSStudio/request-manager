@@ -1,4 +1,4 @@
-{% load i18n %}Szia!
+{% load i18n %}{% autoescape off %}Szia!
 
 Ma forgatás lesz, ne felejtsd! Egyeztess a többiekkel is.
 
@@ -10,4 +10,4 @@ Stáb: {% for crew_member in request.crew.all %}{{ crew_member.member.get_full_n
 Részletek: {{ request.admin_url }}
 
 Üdv:
-Felkéréskezelő robotka
+Felkéréskezelő robotka{% endautoescape %}

@@ -1,4 +1,4 @@
-{% load i18n %}{% if summary %}Sziasztok!{% else %}Szia!{% endif %}
+{% load i18n %}{% autoescape off %}{% if summary %}Sziasztok!{% else %}Szia!{% endif %}
 
 {% if summary %}Az alábbi felkérések{% else %}Az alábbi felkéréseid{% endif %} határideje lejárt, de még nem készült el minden videójuk:
 {% for req in requests %}
@@ -10,4 +10,4 @@
 {% if summary %}A felelősök a saját felkéréseiket külön e-mailben is megkapták. Egy felkérés akkor kerül le erről a listáról, ha minden videója elkészült, vagy ha módosítják a határidejét.{% else %}Kérlek, nézz rájuk! Egy felkérés akkor kerül le erről a listáról, ha minden videója elkészült, vagy ha módosítod a határidejét.{% endif %}
 
 Üdv:
-Felkéréskezelő robotka
+Felkéréskezelő robotka{% endautoescape %}
