@@ -8,6 +8,7 @@ from common.utilities import get_editor_in_chief, get_production_manager
 from video_requests.models import Comment, Request, Todo, Video
 
 TEXT_HTML = "text/html"
+STALE_TODOS_LISTED = 10
 
 
 def get_crew_recipients(request):
@@ -306,7 +307,12 @@ def email_staff_overdue_requests(requests):
 
 
 def email_assignee_stale_todos(assignee, todos):
-    context = {"todos": todos}
+    context = {
+        "count": len(todos),
+        "todos": todos[:STALE_TODOS_LISTED],
+        "unlisted": max(len(todos) - STALE_TODOS_LISTED, 0),
+        "todos_url": f"{settings.BASE_URL}/admin/todos",
+    }
 
     msg_plain = render_to_string("email/txt/assignee_stale_todos.txt", context)
     msg_html = render_to_string("email/html/assignee_stale_todos.html", context)

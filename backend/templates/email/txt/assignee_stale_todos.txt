@@ -1,12 +1,14 @@
-Szia!
+{% autoescape off %}Szia!
 
-{{ todos|length }} hozzád rendelt feladat már régóta nyitva van:
+{{ count }} hozzád rendelt feladat már régóta nyitva van:
 {% for todo in todos %}
-- {{ todo.description|truncatechars:120 }}
+- {{ todo.description.split|join:" "|truncatechars:120 }}
   {{ todo.request.title }}{% if todo.video %} › {{ todo.video.title }}{% endif %} · {{ todo.weeks_open }} hete nyitva
   {{ todo.admin_url }}
-{% endfor %}
+{% endfor %}{% if unlisted %}
+…és még további {{ unlisted }} feladat: {{ todos_url }}
+{% endif %}
 Kérlek, nézd át őket, és ha lehet, zárd le! Egy feladat akkor kerül le erről a listáról, ha lezárod vagy elveted.
 
 Üdv:
-Felkéréskezelő robotka
+Felkéréskezelő robotka{% endautoescape %}

@@ -1,9 +1,9 @@
 {% extends 'email/html/email_base.html' %}
-{% block preheader %}Szia! {{ todos|length }} hozzád rendelt feladat már régóta nyitva van.{% endblock %}
+{% block preheader %}Szia! {{ count }} hozzád rendelt feladat már régóta nyitva van.{% endblock %}
 {% block heading %}Régóta nyitott feladataid{% endblock %}
 {% block content %}
     <p style="margin: 0 0 16px">Szia!</p>
-    <p style="margin: 0 0 24px">{{ todos|length }} hozzád rendelt feladat már régóta nyitva van:</p>
+    <p style="margin: 0 0 24px">{{ count }} hozzád rendelt feladat már régóta nyitva van:</p>
 
     <table
         role="presentation"
@@ -16,7 +16,7 @@
         {% for todo in todos %}
             <tr>
                 <td width="58" valign="top" style="width: 58px; padding: 16px 0 16px 16px;{% if not forloop.first %} border-top: 1px solid #e8edf3;{% endif %}">
-                    {% include "email/html/partials/date_tile.html" with date=todo.request.start_datetime %}
+                    {% include "email/html/partials/date_tile.html" with date=todo.created %}
                 </td>
                 <td valign="top" style="padding: 14px 16px 16px 14px;{% if not forloop.first %} border-top: 1px solid #e8edf3;{% endif %}">
                     <p style="margin: 0 0 4px; font-size: 16px; line-height: 24px; font-weight: 700">
@@ -29,6 +29,13 @@
                 </td>
             </tr>
         {% endfor %}
+        {% if unlisted %}
+            <tr>
+                <td colspan="2" style="padding: 12px 16px; border-top: 1px solid #e8edf3">
+                    <a href="{{ todos_url }}" target="_blank" rel="noopener noreferrer" style="color: #005baa; text-decoration: none">…és még további {{ unlisted }} feladat</a>
+                </td>
+            </tr>
+        {% endif %}
     </table>
 
     <p style="margin: 0">Kérlek, nézd át őket, és ha lehet, zárd le! Egy feladat akkor kerül le erről a listáról, ha lezárod vagy elveted.</p>

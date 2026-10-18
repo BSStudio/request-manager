@@ -442,7 +442,8 @@ class TestStaleTodos:
 
     @pytest.fixture(autouse=True)
     def today(self, time_machine):
-        time_machine.move_to(TODAY)
+        # Frozen, so the four-week boundary below holds to the second.
+        time_machine.move_to(TODAY, tick=False)
 
     @pytest.fixture
     def assignees(self, staff_user):
@@ -514,6 +515,39 @@ class TestStaleTodos:
 
         (digest,) = sent_with(self.SUBJECT)
         assert video.admin_url in digest.body
+
+    def test_the_plain_text_keeps_the_description_as_written(self, staff_user):
+        make_todo(
+            "2020-09-03T08:00:00+01:00",
+            'Vágd meg a "Gólyabál" videót\n& küldd el',
+            assignees=[staff_user],
+        )
+
+        run("email_stale_todos")
+
+        (digest,) = sent_with(self.SUBJECT)
+        assert '- Vágd meg a "Gólyabál" videót & küldd el\n' in digest.body
+
+    def test_a_long_digest_lists_the_oldest_ten(self, staff_user):
+        video_request = baker.make("video_requests.Request")
+        for day in range(1, 13):
+            make_todo(
+                f"2020-09-{day:02}T08:00:00+01:00",
+                f"Feladat {day:02}",
+                request=video_request,
+                assignees=[staff_user],
+            )
+
+        run("email_stale_todos")
+
+        (digest,) = sent_with(self.SUBJECT)
+        assert "12 hozzád rendelt feladat" in digest.body
+        assert "Feladat 10" in digest.body
+        assert "Feladat 11" not in digest.body
+        assert (
+            f"…és még további 2 feladat: {django_settings.BASE_URL}/admin/todos"
+            in digest.body
+        )
 
     def test_an_assignee_outside_the_studio_gets_no_digest(self):
         make_todo("2020-09-03T08:00:00+01:00", "Kint", assignees=[make_user()])
