@@ -220,7 +220,7 @@ def test_delete_avatar_hands_the_provider_slot_to_a_remaining_image():
 
 @pytest.mark.django_db
 @pytest.mark.parametrize(
-    ("is_staff", "provider"), [(True, "bss-login"), (False, "gravatar")]
+    ("is_staff", "provider"), [(True, "bss-login"), (False, "google-oauth2")]
 )
 def test_delete_avatar_falls_back_to_the_bss_login_photo_only_for_staff(
     is_staff, provider
@@ -229,7 +229,7 @@ def test_delete_avatar_falls_back_to_the_bss_login_photo_only_for_staff(
     user.avatar = {
         "provider": "microsoft-graph",
         "microsoft-graph": "https://example.com/a.png",
-        "gravatar": "https://example.com/b.png",
+        "google-oauth2": "https://example.com/b.png",
         "bss-login": "https://example.com/c.webp",
     }
     user.save()
@@ -239,7 +239,7 @@ def test_delete_avatar_falls_back_to_the_bss_login_photo_only_for_staff(
     user.refresh_from_db()
     assert user.avatar == {
         "provider": provider,
-        "gravatar": "https://example.com/b.png",
+        "google-oauth2": "https://example.com/b.png",
         "bss-login": "https://example.com/c.webp",
     }
 
@@ -308,3 +308,12 @@ def test_an_updated_bss_login_photo_keeps_the_avatar_the_user_chose():
         "gravatar": "https://example.com/a.png",
         "bss-login": "https://example.com/c.webp",
     }
+
+
+def test_an_invalid_bss_login_photo_url_is_reported_and_ignored(caplog):
+    user = SimpleNamespace(username="foobar", avatar={})
+
+    update_bss_login_avatar(user, "/avatars/a b.webp")
+
+    assert user.avatar == {}
+    assert "Invalid avatar URL in the directory for foobar." in caplog.text

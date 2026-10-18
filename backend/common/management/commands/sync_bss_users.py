@@ -130,6 +130,7 @@ class Command(BaseCommand):
             user.is_superuser = False
             user.is_staff = False
             user.groups.clear()
+            update_bss_login_avatar(user, None)
             user.save()  # Save modifications
             total_demoted += 1
             logger.info(

@@ -4,6 +4,7 @@ from base64 import b64encode
 import requests
 from django.conf import settings
 from django.contrib.auth.models import Group
+from jsonschema import FormatChecker
 from libgravatar import Gravatar, sanitize_email
 from rest_framework.exceptions import AuthenticationFailed, ValidationError
 from social_core.exceptions import AuthAssociationError, AuthPolicyError
@@ -179,6 +180,11 @@ def add_phone_number_to_profile(backend, details, response, user, *args, **kwarg
 
 def update_bss_login_avatar(user, url):
     """Mirrors the directory's photo, which is shown when it first appears."""
+    if url and not FormatChecker().conforms(url, "uri"):
+        # The avatar schema would reject it on save, failing the login or the sync.
+        logger.error("Invalid avatar URL in the directory for %s.", user.username)
+        return
+
     if url:
         if "bss-login" not in user.avatar or not user.avatar.get("provider"):
             user.avatar["provider"] = "bss-login"
@@ -287,12 +293,11 @@ def remove_avatar(user, name):
     del user.avatar[name]
 
     if user.avatar.get("provider") == name:
-        remaining = sorted(key for key in user.avatar if key != "provider")
-        if user.is_staff and "bss-login" in remaining:
-            user.avatar["provider"] = "bss-login"
-        elif "gravatar" in remaining:
-            user.avatar["provider"] = "gravatar"
-        elif remaining:
-            user.avatar["provider"] = remaining[0]
+        fallbacks = ["gravatar", "google-oauth2", "microsoft-graph", "bss-login"]
+        if user.is_staff:
+            fallbacks.insert(0, "bss-login")
+        provider = next((key for key in fallbacks if key in user.avatar), None)
+        if provider:
+            user.avatar["provider"] = provider
         else:
             user.avatar = {}
