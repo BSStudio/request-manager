@@ -12,6 +12,10 @@ repos:
         name: 'Check for merge conflicts'
       - id: trailing-whitespace
         name: 'Trim trailing whitespaces'
+      - id: end-of-file-fixer
+        name: 'End files with a single newline'
+        # The OpenAPI generator rewrites these without one on every run.
+        exclude: ^frontend/src/api/(\.npmignore|\.openapi-generator/VERSION)$
       - id: mixed-line-ending
         name: 'Replace mixed line endings'
         args: [--fix=lf]
