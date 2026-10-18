@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from 'react';
 import type { ComponentProps } from 'react';
 
+import { captureException } from '@sentry/react';
 import wasmUrl from 'mediainfo.js/MediaInfoModule.wasm?url';
-import { BlockUI } from 'primereact/blockui';
 import { Button } from 'primereact/button';
 import { InputMask } from 'primereact/inputmask';
 
@@ -51,7 +51,10 @@ const VideoLengthInput = ({ onChange, ...props }: VideoLengthInputProps) => {
 
   const fillFrom = async (file: File) => {
     setIsReading(true);
-    const length = await readLength(file).catch(() => undefined);
+    const length = await readLength(file).catch((error: unknown) => {
+      captureException(error);
+      return undefined;
+    });
     setIsReading(false);
     if (length) {
       onChange?.(
@@ -104,31 +107,26 @@ const VideoLengthInput = ({ onChange, ...props }: VideoLengthInputProps) => {
       />
       {/* Covers the page and keeps drag events off its content, so a
           dragleave means the file left the window. */}
-      <BlockUI
-        blocked={isDragging && !disabled}
-        className="align-items-center flex justify-content-center"
-        fullScreen
-        pt={{
-          mask: {
-            onDragLeave: () => setIsDragging(false),
-            onDragOver: (event) => event.preventDefault(),
-            onDrop: (event) => {
-              event.preventDefault();
-              setIsDragging(false);
-              const file = event.dataTransfer.files[0];
-              if (file && !isReading) void fillFrom(file);
-            },
-          },
-        }}
-        template={
+      {isDragging && !disabled && (
+        <div
+          className="align-items-center fixed flex h-full justify-content-center left-0 p-component-overlay p-component-overlay-enter top-0 w-full z-5"
+          onDragLeave={() => setIsDragging(false)}
+          onDragOver={(event) => event.preventDefault()}
+          onDrop={(event) => {
+            event.preventDefault();
+            setIsDragging(false);
+            const file = event.dataTransfer.files[0];
+            if (file && !isReading) void fillFrom(file);
+          }}
+        >
           <div className="border-3 border-dashed border-primary border-round p-5 pointer-events-none surface-card text-center">
             <i className="pi pi-video text-5xl text-primary" />
             <div className="font-medium mt-3 text-900 text-xl">
               Engedd el a videót a hossz kiolvasásához
             </div>
           </div>
-        }
-      />
+        </div>
+      )}
     </>
   );
 };
