@@ -3,7 +3,6 @@ import { useEffect, useMemo } from 'react';
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { Divider } from 'primereact/divider';
-import { InputMask } from 'primereact/inputmask';
 import { InputText } from 'primereact/inputtext';
 import { Message } from 'primereact/message';
 import { SplitButton } from 'primereact/splitbutton';
@@ -27,6 +26,7 @@ import { queryKeys } from 'admin/api/queryKeys';
 import AutoCompleteStaff from 'admin/components/AutoCompleteStaff/AutoCompleteStaff';
 import FormField from 'admin/components/FormField/FormField';
 import LastUpdatedAt from 'admin/components/LastUpdatedAt/LastUpdatedAt';
+import VideoLengthInput from 'admin/components/VideoLengthInput/VideoLengthInput';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import type { LoadErrorState } from 'admin/pages/ErrorPage';
@@ -266,11 +266,10 @@ const VideoCreatorEditorPage = () => {
             className="col-12 mb-4 md:col-6"
             control={control}
             disabled={isPending}
-            icon="pi-clock"
             label="Videó hossza"
             name="additional_data.length"
           >
-            <InputMask mask="99:99:99" placeholder="hh:mm:ss" type="text" />
+            <VideoLengthInput />
           </FormField>
           <FormField
             className="col-12 mb-0"
