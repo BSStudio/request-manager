@@ -43,7 +43,7 @@ BSS_LOGIN = Provider(
     user_data_body={
         "email": "foobar@example.com",
         "email_verified": True,
-        "mobile": "+36509999999",
+        "phone_number": "+36509999999",
         "name": "Foo Bar",
         "given_name": "Foo",
         "family_name": "Bar",
