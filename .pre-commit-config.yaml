@@ -37,11 +37,11 @@ repos:
         files: ^backend/(pyproject\.toml|uv\.lock)$
         args: [--project, ./backend, --check]
   - repo: https://github.com/asottile/pyupgrade
-    rev: v3.21.2
+    rev: v3.22.0
     hooks:
       - id: pyupgrade
         name: 'Upgrade Python syntax to newer versions'
-        args: [--py314-plus]
+        args: [--py315-plus]
   - repo: https://github.com/adamchainz/django-upgrade
     rev: 1.33.0
     hooks:
