@@ -5,7 +5,7 @@ from django.core.exceptions import ValidationError
 from django.core.serializers.json import DjangoJSONEncoder
 from django.db import models, transaction
 from django.db.models import Avg, JSONField
-from django.utils.timezone import localdate
+from django.utils.timezone import localdate, now
 from django.utils.translation import gettext_lazy as _
 from jsonschema import FormatChecker
 from jsonschema import ValidationError as JsonValidationError
@@ -233,6 +233,14 @@ class Todo(AbstractTodo):
     status = models.PositiveSmallIntegerField(
         choices=Statuses, default=Statuses.OPEN, db_index=True
     )
+
+    @property
+    def admin_url(self) -> str:
+        return (self.video or self.request).admin_url
+
+    @property
+    def weeks_open(self) -> int:
+        return (now() - self.created).days // 7
 
     def clean(self):
         if (

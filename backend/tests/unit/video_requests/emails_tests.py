@@ -12,6 +12,7 @@ from model_bakery import baker
 
 from tests.factories import make_user
 from video_requests.emails import (
+    email_assignee_stale_todos,
     email_crew_daily_reminder,
     email_crew_new_comment,
     email_crew_request_modified,
@@ -291,6 +292,16 @@ class TestToStaff:
         email_staff_overdue_requests([video_request])
 
         assert only_message().to == [both.email]
+
+    def test_stale_todos_digest(self, editor_in_chief, staff_user, video_request):
+        todo = baker.make("video_requests.Todo", request=video_request)
+
+        email_assignee_stale_todos(staff_user, [todo])
+
+        message = only_message()
+        assert message.subject == "Régóta nyitott feladataid"
+        assert message.to == [staff_user.email]
+        assert not message.cc
 
 
 @pytest.mark.parametrize(

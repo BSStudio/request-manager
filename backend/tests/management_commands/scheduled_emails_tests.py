@@ -1,11 +1,11 @@
-"""The four cron commands that mail the studio.
+"""The five cron commands that mail the studio.
 
 Each is checked for which rows it picks, and for reporting an empty run on stdout
 instead of mailing it. The builders are wrapped, not replaced, so the templates
 still render.
 """
 
-from datetime import timedelta
+from datetime import datetime, timedelta
 from io import StringIO
 from unittest.mock import patch
 
@@ -22,7 +22,7 @@ from video_requests.emails import (
     email_production_manager_unfinished_requests,
     email_staff_weekly_tasks,
 )
-from video_requests.models import Request, Video
+from video_requests.models import Request, Todo, Video
 
 pytestmark = [pytest.mark.django_db, pytest.mark.emails]
 
@@ -45,6 +45,15 @@ def make_request(start, status=Request.Statuses.REQUESTED, **kwargs):
         status=status,
         **kwargs,
     )
+
+
+def make_todo(created, description, status=Todo.Statuses.OPEN, **kwargs):
+    todo = baker.make(
+        "video_requests.Todo", description=description, status=status, **kwargs
+    )
+    # Saving always stamps the current time on created.
+    Todo.objects.filter(pk=todo.pk).update(created=datetime.fromisoformat(created))
+    return todo
 
 
 class TestWeeklyTasks:
@@ -424,3 +433,96 @@ class TestOverdueRequests:
         assert run("email_overdue_requests") == "No overdue request was found.\n"
 
         assert not mail.outbox
+
+
+class TestStaleTodos:
+    """A weekly digest of todos left open for four weeks or more."""
+
+    SUBJECT = "Régóta nyitott feladataid"
+
+    @pytest.fixture(autouse=True)
+    def today(self, time_machine):
+        time_machine.move_to(TODAY)
+
+    @pytest.fixture
+    def assignees(self, staff_user):
+        return staff_user, make_user(is_staff=True)
+
+    @pytest.fixture
+    def stale(self, assignees):
+        """Oldest first; the newer one was created exactly four weeks before TODAY."""
+        first, second = assignees
+        return [
+            make_todo(
+                "2020-09-03T08:00:00+01:00", "Régi feladat", assignees=[first, second]
+            ),
+            make_todo("2020-10-22T10:20:30+01:00", "Négyhetes", assignees=[first]),
+        ]
+
+    @pytest.fixture
+    def not_stale(self, assignees):
+        first, _ = assignees
+        return [
+            make_todo("2020-10-22T10:20:31+01:00", "Friss", assignees=[first]),
+            make_todo(
+                "2020-09-03T08:00:00+01:00",
+                "Lezárt",
+                Todo.Statuses.CLOSED,
+                assignees=[first],
+            ),
+            make_todo(
+                "2020-09-03T08:00:00+01:00",
+                "Elvetett",
+                Todo.Statuses.DISCARDED,
+                assignees=[first],
+            ),
+        ]
+
+    def test_each_assignee_gets_one_digest_of_their_own_todos(
+        self, stale, not_stale, assignees
+    ):
+        assert run("email_stale_todos") == (
+            "Stale todos emails were sent to 2 assignees.\n"
+        )
+
+        first, second = assignees
+        digests = {tuple(message.to): message for message in sent_with(self.SUBJECT)}
+        assert digests.keys() == {(first.email,), (second.email,)}
+
+        body = digests[(first.email,)].body
+        assert "2 hozzád rendelt feladat" in body
+        assert body.index("Régi feladat") < body.index("Négyhetes")
+        assert "11 hete nyitva" in body
+        assert "4 hete nyitva" in body
+        assert not any(todo.description in body for todo in not_stale)
+
+        body = digests[(second.email,)].body
+        assert "Régi feladat" in body
+        assert "Négyhetes" not in body
+
+    def test_a_todo_on_a_video_links_to_the_video(self, staff_user):
+        video = baker.make("video_requests.Video")
+        make_todo(
+            "2020-09-03T08:00:00+01:00",
+            "Vágás",
+            request=video.request,
+            video=video,
+            assignees=[staff_user],
+        )
+
+        run("email_stale_todos")
+
+        (digest,) = sent_with(self.SUBJECT)
+        assert video.admin_url in digest.body
+
+    def test_an_assignee_outside_the_studio_gets_no_digest(self):
+        make_todo("2020-09-03T08:00:00+01:00", "Kint", assignees=[make_user()])
+
+        assert run("email_stale_todos") == "No assignee has a stale todo.\n"
+
+        assert not sent_with(self.SUBJECT)
+
+    def test_nothing_stale_is_reported_instead_of_mailed(self, not_stale):
+        assert run("email_stale_todos") == "No assignee has a stale todo.\n"
+
+        assert not sent_with(self.SUBJECT)

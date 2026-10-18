@@ -47,6 +47,13 @@ def scheduled_send_overdue_requests_email():
 
 
 @shared_task
+def scheduled_send_stale_todos_email():
+    with StringIO() as out:
+        call_command("email_stale_todos", stdout=out)
+        return out.getvalue()
+
+
+@shared_task
 def scheduled_cleaning():
     with StringIO() as out:
         call_command(

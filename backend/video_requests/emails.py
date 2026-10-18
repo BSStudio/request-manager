@@ -303,3 +303,21 @@ def email_staff_overdue_requests(requests):
 
     msg.attach_alternative(msg_html, TEXT_HTML)
     msg.send()
+
+
+def email_assignee_stale_todos(assignee, todos):
+    context = {"todos": todos}
+
+    msg_plain = render_to_string("email/txt/assignee_stale_todos.txt", context)
+    msg_html = render_to_string("email/html/assignee_stale_todos.html", context)
+
+    subject = "Régóta nyitott feladataid"
+
+    msg = EmailMultiAlternatives(
+        subject=subject,
+        body=msg_plain,
+        to=[assignee.email],
+    )
+
+    msg.attach_alternative(msg_html, TEXT_HTML)
+    msg.send()
