@@ -1,4 +1,4 @@
-{% load i18n %}Szia!
+{% load i18n %}{% autoescape off %}Szia!
 
 Az alábbi anyagok elkészültek, de még nincsenek lezárva:
 {% for req in requests %}
@@ -7,4 +7,4 @@ Az alábbi anyagok elkészültek, de még nincsenek lezárva:
   {{ req.admin_url }}
 {% endfor %}
 Üdv:
-Felkéréskezelő robotka
+Felkéréskezelő robotka{% endautoescape %}

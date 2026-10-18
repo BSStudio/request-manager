@@ -1,8 +1,8 @@
-Kedves {{ name }}!
+{% autoescape off %}Kedves {{ name }}!
 
 Megkaptuk az alábbi üzenetedet, hamarosan válaszolunk.
 
 {{ message }}
 
 Üdvözlettel:
-a Budavári Schönherz Stúdió csapata
+a Budavári Schönherz Stúdió csapata{% endautoescape %}

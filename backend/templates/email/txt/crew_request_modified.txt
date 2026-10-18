@@ -1,4 +1,4 @@
-{% load i18n %}{% load extra_tags %}Szia!
+{% load i18n %}{% load extra_tags %}{% autoescape off %}Szia!
 
 {% language 'hu' %}{{ changed_by_name }} módosította a(z) {{ request.title }} felkérést {{ changed_datetime|date:"DATETIME_FORMAT" }}-kor.
 
@@ -7,4 +7,4 @@
 Ugrás a felkéréshez: {{ request.admin_url }}
 
 Üdv:
-Felkéréskezelő robotka
+Felkéréskezelő robotka{% endautoescape %}
