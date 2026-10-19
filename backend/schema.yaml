@@ -1641,6 +1641,18 @@ paths:
     get:
       operationId: admin_users_worked_on_list
       parameters:
+        - in: query
+          name: date_after
+          schema:
+            type: string
+            format: date
+          description: Default is 20 weeks before date_before.
+        - in: query
+          name: date_before
+          schema:
+            type: string
+            format: date
+          description: Default is today.
         - in: path
           name: id
           schema:
@@ -1652,18 +1664,6 @@ paths:
           schema:
             type: boolean
           description: Default is True.
-        - in: query
-          name: start_datetime_after
-          schema:
-            type: string
-            format: date
-          description: Default is 20 weeks before start_datetime_before.
-        - in: query
-          name: start_datetime_before
-          schema:
-            type: string
-            format: date
-          description: Default is today.
       tags:
         - admin
       security:
@@ -2006,22 +2006,22 @@ paths:
       operationId: me_worked_on_list
       parameters:
         - in: query
-          name: is_responsible
-          schema:
-            type: boolean
-          description: Default is True.
-        - in: query
-          name: start_datetime_after
+          name: date_after
           schema:
             type: string
             format: date
-          description: Default is 20 weeks before start_datetime_before.
+          description: Default is 20 weeks before date_before.
         - in: query
-          name: start_datetime_before
+          name: date_before
           schema:
             type: string
             format: date
           description: Default is today.
+        - in: query
+          name: is_responsible
+          schema:
+            type: boolean
+          description: Default is True.
       tags:
         - me
       security:
@@ -3952,29 +3952,23 @@ components:
     UserAdminWorkedOn:
       type: object
       properties:
-        edited_at:
+        date:
           type: string
           format: date
           readOnly: true
-          nullable: true
         id:
           type: integer
           readOnly: true
         position:
           type: string
           readOnly: true
-        start_datetime:
-          type: string
-          format: date-time
-          readOnly: true
         title:
           type: string
           readOnly: true
       required:
-        - edited_at
+        - date
         - id
         - position
-        - start_datetime
         - title
     UserNestedDetail:
       type: object

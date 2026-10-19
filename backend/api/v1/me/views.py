@@ -45,13 +45,13 @@ class MeViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
                 description="Default is True.",
             ),
             OpenApiParameter(
-                "start_datetime_after",
+                "date_after",
                 OpenApiTypes.DATE,
                 OpenApiParameter.QUERY,
-                description="Default is 20 weeks before start_datetime_before.",
+                description="Default is 20 weeks before date_before.",
             ),
             OpenApiParameter(
-                "start_datetime_before",
+                "date_before",
                 OpenApiTypes.DATE,
                 OpenApiParameter.QUERY,
                 description="Default is today.",

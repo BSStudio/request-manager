@@ -337,16 +337,16 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {string} [dateAfter] Default is 20 weeks before date_before.
+     * @param {string} [dateBefore] Default is today.
      * @param {boolean} [isResponsible] Default is True.
-     * @param {string} [startDatetimeAfter] Default is 20 weeks before start_datetime_before.
-     * @param {string} [startDatetimeBefore] Default is today.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     meWorkedOnList: async (
+      dateAfter?: string,
+      dateBefore?: string,
       isResponsible?: boolean,
-      startDatetimeAfter?: string,
-      startDatetimeBefore?: string,
       options: AxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/v1/me/worked_on`;
@@ -374,22 +374,22 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
 
       // authentication cookieAuth required
 
+      if (dateAfter !== undefined) {
+        localVarQueryParameter['date_after'] =
+          (dateAfter as any) instanceof Date
+            ? (dateAfter as any).toISOString().substring(0, 10)
+            : dateAfter;
+      }
+
+      if (dateBefore !== undefined) {
+        localVarQueryParameter['date_before'] =
+          (dateBefore as any) instanceof Date
+            ? (dateBefore as any).toISOString().substring(0, 10)
+            : dateBefore;
+      }
+
       if (isResponsible !== undefined) {
         localVarQueryParameter['is_responsible'] = isResponsible;
-      }
-
-      if (startDatetimeAfter !== undefined) {
-        localVarQueryParameter['start_datetime_after'] =
-          (startDatetimeAfter as any) instanceof Date
-            ? (startDatetimeAfter as any).toISOString().substring(0, 10)
-            : startDatetimeAfter;
-      }
-
-      if (startDatetimeBefore !== undefined) {
-        localVarQueryParameter['start_datetime_before'] =
-          (startDatetimeBefore as any) instanceof Date
-            ? (startDatetimeBefore as any).toISOString().substring(0, 10)
-            : startDatetimeBefore;
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -532,16 +532,16 @@ export const MeApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {string} [dateAfter] Default is 20 weeks before date_before.
+     * @param {string} [dateBefore] Default is today.
      * @param {boolean} [isResponsible] Default is True.
-     * @param {string} [startDatetimeAfter] Default is 20 weeks before start_datetime_before.
-     * @param {string} [startDatetimeBefore] Default is today.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async meWorkedOnList(
+      dateAfter?: string,
+      dateBefore?: string,
       isResponsible?: boolean,
-      startDatetimeAfter?: string,
-      startDatetimeBefore?: string,
       options?: AxiosRequestConfig,
     ): Promise<
       (
@@ -550,9 +550,9 @@ export const MeApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<Array<UserAdminWorkedOn>>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.meWorkedOnList(
+        dateAfter,
+        dateBefore,
         isResponsible,
-        startDatetimeAfter,
-        startDatetimeBefore,
         options,
       );
       return createRequestFunction(
@@ -640,25 +640,20 @@ export const MeApiFactory = function (
     },
     /**
      *
+     * @param {string} [dateAfter] Default is 20 weeks before date_before.
+     * @param {string} [dateBefore] Default is today.
      * @param {boolean} [isResponsible] Default is True.
-     * @param {string} [startDatetimeAfter] Default is 20 weeks before start_datetime_before.
-     * @param {string} [startDatetimeBefore] Default is today.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     meWorkedOnList(
+      dateAfter?: string,
+      dateBefore?: string,
       isResponsible?: boolean,
-      startDatetimeAfter?: string,
-      startDatetimeBefore?: string,
       options?: any,
     ): AxiosPromise<Array<UserAdminWorkedOn>> {
       return localVarFp
-        .meWorkedOnList(
-          isResponsible,
-          startDatetimeAfter,
-          startDatetimeBefore,
-          options,
-        )
+        .meWorkedOnList(dateAfter, dateBefore, isResponsible, options)
         .then((request) => request(axios, basePath));
     },
   };
@@ -745,26 +740,21 @@ export class MeApi extends BaseAPI {
 
   /**
    *
+   * @param {string} [dateAfter] Default is 20 weeks before date_before.
+   * @param {string} [dateBefore] Default is today.
    * @param {boolean} [isResponsible] Default is True.
-   * @param {string} [startDatetimeAfter] Default is 20 weeks before start_datetime_before.
-   * @param {string} [startDatetimeBefore] Default is today.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof MeApi
    */
   public meWorkedOnList(
+    dateAfter?: string,
+    dateBefore?: string,
     isResponsible?: boolean,
-    startDatetimeAfter?: string,
-    startDatetimeBefore?: string,
     options?: AxiosRequestConfig,
   ) {
     return MeApiFp(this.configuration)
-      .meWorkedOnList(
-        isResponsible,
-        startDatetimeAfter,
-        startDatetimeBefore,
-        options,
-      )
+      .meWorkedOnList(dateAfter, dateBefore, isResponsible, options)
       .then((request) => request(this.axios, this.basePath));
   }
 }

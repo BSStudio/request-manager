@@ -97,13 +97,13 @@ class UserAdminViewSet(
                 description="Default is True.",
             ),
             OpenApiParameter(
-                "start_datetime_after",
+                "date_after",
                 OpenApiTypes.DATE,
                 OpenApiParameter.QUERY,
-                description="Default is 20 weeks before start_datetime_before.",
+                description="Default is 20 weeks before date_before.",
             ),
             OpenApiParameter(
-                "start_datetime_before",
+                "date_before",
                 OpenApiTypes.DATE,
                 OpenApiParameter.QUERY,
                 description="Default is today.",
@@ -119,28 +119,26 @@ class UserAdminViewSet(
         # Get and validate all query parameters by trying to convert them to the corresponding type
         # if not the default value was used.
         try:
-            start_datetime_before = request.query_params.get(
-                "start_datetime_before", localdate()
-            )
-            start_datetime_before = (
-                date.fromisoformat(start_datetime_before)
-                if type(start_datetime_before) is str
-                else start_datetime_before
+            date_before = request.query_params.get("date_before", localdate())
+            date_before = (
+                date.fromisoformat(date_before)
+                if type(date_before) is str
+                else date_before
             )
         except ValueError:
-            raise ValidationError({"start_datetime_before": [_("Invalid filter.")]})
+            raise ValidationError({"date_before": [_("Invalid filter.")]})
 
         try:
-            start_datetime_after = request.query_params.get(
-                "start_datetime_after", start_datetime_before - timedelta(weeks=20)
+            date_after = request.query_params.get(
+                "date_after", date_before - timedelta(weeks=20)
             )
-            start_datetime_after = (
-                date.fromisoformat(start_datetime_after)
-                if type(start_datetime_after) is str
-                else start_datetime_after
+            date_after = (
+                date.fromisoformat(date_after)
+                if type(date_after) is str
+                else date_after
             )
         except ValueError:
-            raise ValidationError({"start_datetime_after": [_("Invalid filter.")]})
+            raise ValidationError({"date_after": [_("Invalid filter.")]})
 
         try:
             is_responsible = request.query_params.get("is_responsible", True)
@@ -153,16 +151,12 @@ class UserAdminViewSet(
             raise ValidationError({"is_responsible": [_("Invalid filter.")]})
 
         # Check if date range is valid
-        if start_datetime_before < start_datetime_after:
+        if date_before < date_after:
             raise ValidationError(
-                {
-                    "start_datetime_after": [
-                        _("Must be earlier than start_datetime_before.")
-                    ]
-                }
+                {"date_after": [_("The start of the period cannot be after its end.")]}
             )
 
-        date_range = [start_datetime_after, start_datetime_before]
+        date_range = [date_after, date_before]
 
         if is_responsible:
             for req in Request.objects.filter(
@@ -173,7 +167,7 @@ class UserAdminViewSet(
                     {
                         "id": req.id,
                         "title": req.title,
-                        "start_datetime": req.start_datetime,
+                        "date": localdate(req.start_datetime),
                         "position": _("Responsible"),
                     }
                 )
@@ -186,7 +180,7 @@ class UserAdminViewSet(
                 {
                     "id": crew.request.id,
                     "title": crew.request.title,
-                    "start_datetime": crew.request.start_datetime,
+                    "date": localdate(crew.request.start_datetime),
                     "position": crew.position,
                 }
             )
@@ -199,8 +193,7 @@ class UserAdminViewSet(
                 {
                     "id": video.request.id,
                     "title": video.request.title,
-                    "start_datetime": video.request.start_datetime,
-                    "edited_at": video.edited_at,
+                    "date": video.edited_at,
                     "position": _("Editor"),
                 }
             )
