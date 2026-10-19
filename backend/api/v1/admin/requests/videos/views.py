@@ -127,6 +127,7 @@ class VideoAdminSearchListAPIView(ListAPIView):
     ordering = ["-request__start_datetime"]
     ordering_fields = [
         "avg_rating",
+        "edited_at",
         "last_aired",
         "length",
         "request__start_datetime",

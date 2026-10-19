@@ -42,6 +42,7 @@ class TodoFilter(FilterSet):
 
 
 class VideoFilter(FilterSet):
+    edited_at = DateFromToRangeFilter()
     last_aired = DateFilter(method="filter_last_aired")
     length_max = extend_schema_field(OpenApiTypes.NUMBER)(
         IntegerFilter(field_name="additional_data__length", method="filter_length_max")
