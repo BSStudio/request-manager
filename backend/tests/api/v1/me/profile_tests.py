@@ -17,6 +17,7 @@ from common.models import User
 from tests.api.asserts import assert_exact_fields
 from tests.api.helpers import do_login, get_response, login
 from tests.api.matrix import any_user, staff_only
+from video_requests.models import Video
 
 pytestmark = pytest.mark.django_db
 
@@ -305,11 +306,41 @@ def test_me_worked_on(
 
     if was_editor:
         videos = [
-            baker.make("video_requests.Video", editor=user, request=video_requests[2]),
-            baker.make("video_requests.Video", editor=user, request=video_requests[2]),
-            baker.make("video_requests.Video", editor=user, request=video_requests[4]),
-            baker.make("video_requests.Video", editor=user, request=video_requests[5]),
-            baker.make("video_requests.Video", editor=user, request=video_requests[7]),
+            baker.make(
+                "video_requests.Video",
+                additional_data={"editing_done": True},
+                editor=user,
+                request=video_requests[2],
+                status=Video.Statuses.EDITED,
+            ),
+            baker.make(
+                "video_requests.Video",
+                additional_data={"editing_done": True},
+                editor=user,
+                request=video_requests[2],
+                status=Video.Statuses.EDITED,
+            ),
+            baker.make(
+                "video_requests.Video",
+                additional_data={"editing_done": True},
+                editor=user,
+                request=video_requests[4],
+                status=Video.Statuses.EDITED,
+            ),
+            baker.make(
+                "video_requests.Video",
+                additional_data={"editing_done": True},
+                editor=user,
+                request=video_requests[5],
+                status=Video.Statuses.EDITED,
+            ),
+            baker.make(
+                "video_requests.Video",
+                additional_data={"editing_done": True},
+                editor=user,
+                request=video_requests[7],
+                status=Video.Statuses.EDITED,
+            ),
         ]
         for video in videos:
             should_find.append({"id": video.request.id, "position": "Editor"})
@@ -344,7 +375,7 @@ def test_me_worked_on(
     assert len(response.data) == len(should_find)
     for video_request in response.data:
         assert_exact_fields(
-            video_request, ["id", "position", "start_datetime", "title"]
+            video_request, ["edited_at", "id", "position", "start_datetime", "title"]
         )
         assert any(
             expected_find["id"] == video_request["id"]

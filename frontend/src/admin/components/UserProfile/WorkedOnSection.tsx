@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { Button } from 'primereact/button';
 import { Calendar } from 'primereact/calendar';
 import { Column } from 'primereact/column';
@@ -13,7 +13,7 @@ import { Controller, useForm } from 'react-hook-form';
 import { href } from 'react-router';
 
 import LinkButton from 'admin/components/LinkButton/LinkButton';
-import { dateTimeToLocaleString } from 'admin/helpers/DateToLocaleStringCoverters';
+import { dateToLocaleString } from 'admin/helpers/DateToLocaleStringCoverters';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import { adminApi } from 'api/http';
 import { UserAdminWorkedOn } from 'api/models/user-admin-worked-on';
@@ -24,11 +24,8 @@ interface IWorkedOnForm {
   start_datetime_before: Date | null;
 }
 
-interface UserAdminWorkedOnDates extends Omit<
-  UserAdminWorkedOn,
-  'start_datetime'
-> {
-  start_datetime: Date;
+interface UserAdminWorkedOnDates extends UserAdminWorkedOn {
+  date: Date;
 }
 
 type WorkedOnSectionProps = {
@@ -78,8 +75,8 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
     );
   };
 
-  const dateBodyTemplate = ({ start_datetime }: UserAdminWorkedOnDates) => {
-    return dateTimeToLocaleString(start_datetime, true);
+  const dateBodyTemplate = ({ date }: UserAdminWorkedOnDates) => {
+    return dateToLocaleString(date, true);
   };
 
   const exportCSV = () => {
@@ -121,7 +118,7 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
         const data = [...response.data].map((request) => {
           return {
             ...request,
-            start_datetime: new Date(request.start_datetime),
+            date: parseISO(request.edited_at ?? request.start_datetime),
           };
         });
         setWorkedOnResults(data || []);
@@ -145,7 +142,7 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
           render={({ field }) => (
             <div className="field col-12 mb-4 md:col-6">
               <label className="font-medium text-900" htmlFor={field.name}>
-                Kezdés időpontja későbbi mint
+                Időszak kezdete
               </label>
               <Calendar
                 {...field}
@@ -164,7 +161,7 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
           render={({ field }) => (
             <div className="field col-12 mb-4 md:col-6">
               <label className="font-medium text-900" htmlFor={field.name}>
-                Kezdés időpontja korábbi mint
+                Időszak vége
               </label>
               <Calendar
                 {...field}
@@ -218,7 +215,7 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
         rows={25}
         rowsPerPageOptions={[10, 25, 50, 100]}
         showGridlines
-        sortField="start_datetime"
+        sortField="date"
         sortOrder={-1}
         stripedRows
         value={workedOnResults}
@@ -228,8 +225,8 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
           align="center"
           body={dateBodyTemplate}
           dataType="date"
-          field="start_datetime"
-          header="Kezdés ideje"
+          field="date"
+          header="Dátum"
           sortable
           style={{ whiteSpace: 'nowrap' }}
         />

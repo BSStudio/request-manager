@@ -193,13 +193,14 @@ class UserAdminViewSet(
 
         for video in Video.objects.select_related("request").filter(
             editor=user,
-            request__start_datetime__date__range=date_range,
+            edited_at__range=date_range,
         ):
             worked_on.append(
                 {
                     "id": video.request.id,
                     "title": video.request.title,
                     "start_datetime": video.request.start_datetime,
+                    "edited_at": video.edited_at,
                     "position": _("Editor"),
                 }
             )

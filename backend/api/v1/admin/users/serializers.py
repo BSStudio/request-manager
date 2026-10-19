@@ -2,6 +2,7 @@ from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework.fields import (
     BooleanField,
     CharField,
+    DateField,
     DateTimeField,
     EmailField,
     IntegerField,
@@ -78,6 +79,7 @@ class UserAdminListSerializer(UserNestedDetailSerializer):
 
 
 class UserAdminWorkedOnSerializer(Serializer):
+    edited_at = DateField(allow_null=True, read_only=True)
     id = IntegerField(read_only=True)
     position = CharField(read_only=True)
     start_datetime = DateTimeField(read_only=True)

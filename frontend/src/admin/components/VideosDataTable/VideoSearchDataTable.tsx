@@ -17,8 +17,9 @@ import { VideoAdminSearch } from 'api/models';
 
 interface VideoAdminSearchDates extends Omit<
   VideoAdminSearch,
-  'last_aired' | 'request_start_datetime'
+  'edited_at' | 'last_aired' | 'request_start_datetime'
 > {
+  edited_at: Date | null;
   last_aired: Date | null;
   request_start_datetime: Date;
 }
@@ -35,6 +36,7 @@ const VideoSearchDataTable = forwardRef<
     return [...videos].map((video) => {
       return {
         ...video,
+        edited_at: video.edited_at ? parseISO(video.edited_at) : null,
         last_aired: video.last_aired ? parseISO(video.last_aired) : null,
         request_start_datetime: new Date(video.request_start_datetime),
       };
@@ -65,6 +67,11 @@ const VideoSearchDataTable = forwardRef<
     status_by_admin,
   }: VideoAdminSearchDates) => {
     return <VideoStatusTag modified={status_by_admin} statusNum={status} />;
+  };
+
+  const editedAtBodyTemplate = ({ edited_at }: VideoAdminSearchDates) => {
+    if (!edited_at) return;
+    return dateToLocaleString(edited_at, true);
   };
 
   const lastAiredBodyTemplate = ({ last_aired }: VideoAdminSearchDates) => {
@@ -141,6 +148,15 @@ const VideoSearchDataTable = forwardRef<
           dataType="date"
           field="request_start_datetime"
           header="Felkérés kezdése"
+          sortable
+          style={{ whiteSpace: 'nowrap' }}
+        />
+        <Column
+          align="center"
+          body={editedAtBodyTemplate}
+          dataType="date"
+          field="edited_at"
+          header="Megvágva"
           sortable
           style={{ whiteSpace: 'nowrap' }}
         />

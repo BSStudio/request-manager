@@ -11,10 +11,11 @@ test.describe.configure({ mode: 'serial' });
 const videoUrl = 'https://example.com/videok/kari-golyabal-aftermovie';
 let requestPath: string;
 
+// A row's text starts with its label; tags in other rows may repeat it.
 function detailsRow(page: Page, label: string) {
   return page
     .getByRole('listitem')
-    .filter({ has: page.getByText(label, { exact: true }) });
+    .filter({ hasText: new RegExp(`^${label}`) });
 }
 
 function status(page: Page) {
@@ -115,11 +116,20 @@ test.describe('as a crew member', () => {
     await expect(page.getByText('Videó létrehozva')).toBeVisible();
     // The video's page, so the video's status from here on.
     await expect(status(page)).toContainText('Vágás alatt');
+    const editedAt = detailsRow(page, 'Megvágva');
+    await expect(editedAt).toContainText('Még nincs megvágva');
 
     await editVideo(page, () =>
       page.getByRole('checkbox', { name: 'Megvágva' }).check(),
     );
     await expect(status(page)).toContainText('Megvágva');
+    await expect(editedAt).toContainText(
+      new Date().toLocaleDateString('hu-HU', {
+        day: '2-digit',
+        month: 'long',
+        year: 'numeric',
+      }),
+    );
 
     await editVideo(page, async () => {
       await page.getByRole('checkbox', { name: 'Kikódolva' }).check();

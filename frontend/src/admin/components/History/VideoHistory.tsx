@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { parseISO } from 'date-fns';
 import { ProgressBar } from 'primereact/progressbar';
 import { Skeleton } from 'primereact/skeleton';
 
@@ -8,6 +9,7 @@ import {
 } from 'admin/api/queries';
 import { VideoStatusTag } from 'admin/components/StatusTag/StatusTag';
 import User from 'admin/components/User/User';
+import { dateToLocaleString } from 'admin/helpers/DateToLocaleStringCoverters';
 
 import HistoryComponent, { getHistory } from './History';
 
@@ -18,6 +20,7 @@ type VideoHistoryProps = {
 
 const VideoFieldNames: Record<string, string> = {
   additional_data: 'Egyéb adatok',
+  edited_at: 'Megvágva',
   editor: 'Vágó',
   status: 'Státusz',
   title: 'Videó címe',
@@ -47,6 +50,9 @@ const VideoHistory = ({ requestId, videoId }: VideoHistoryProps) => {
           .replaceAll('None', 'null'),
       );
       return JSON.stringify(obj, null, 2);
+    }
+    if (name === 'edited_at') {
+      return dateToLocaleString(parseISO(value));
     }
     if (name === 'editor') {
       const user = users?.find((user) => user.id === Number(value));

@@ -157,6 +157,7 @@ class Video(models.Model):
     status = models.PositiveSmallIntegerField(
         choices=Statuses, default=Statuses.PENDING, db_index=True
     )
+    edited_at = models.DateField(blank=True, null=True, db_index=True)
     additional_data = JSONField(
         encoder=DjangoJSONEncoder,
         validators=[validate_video_additional_data],
@@ -198,6 +199,12 @@ class Video(models.Model):
             aired.sort(
                 key=lambda date: datetime.strptime(date, "%Y-%m-%d"), reverse=True
             )
+        # The date of the latest cut. Only unchecking editing_done clears it:
+        # the status also drops when the request changes.
+        if not self.additional_data.get("editing_done"):
+            self.edited_at = None
+        elif self.status >= Video.Statuses.EDITED and not self.edited_at:
+            self.edited_at = localdate()
         super().save(*args, **kwargs)
 
     def __str__(self):

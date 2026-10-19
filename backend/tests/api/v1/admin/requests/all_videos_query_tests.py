@@ -15,6 +15,9 @@ pytestmark = pytest.mark.django_db
 @pytest.mark.parametrize(
     "filters,expected",
     [
+        ({"edited_at_after": "2021-11-15"}, 3),
+        ({"edited_at_before": "2021-11-15"}, 2),
+        ({"edited_at_after": "2021-11-12", "edited_at_before": "2021-11-30"}, 2),
         ({"last_aired": "2023-05-01"}, 5),
         ({"length_max": 60}, 4),
         ({"length_min": 60}, 3),
@@ -67,20 +70,28 @@ def test_filter_all_videos(admin_user, api_client, filters, expected, pagination
     ),
     baker.make(
         "video_requests.Video",
-        additional_data={"aired": ["2023-04-01"]},
+        additional_data={"aired": ["2023-04-01"], "editing_done": True},
+        edited_at=date(2021, 11, 15),
         request=video_requests[3],
         status=Video.Statuses.CODED,
         title="BBBB1",
     ),
     baker.make(
         "video_requests.Video",
+        additional_data={"editing_done": True},
+        edited_at=date(2021, 11, 10),
         request=video_requests[0],
         status=Video.Statuses.EDITED,
         title="CCCC1",
     ),
     baker.make(
         "video_requests.Video",
-        additional_data={"aired": ["2023-01-21", "2012-01-10"], "length": 60},
+        additional_data={
+            "aired": ["2023-01-21", "2012-01-10"],
+            "editing_done": True,
+            "length": 60,
+        },
+        edited_at=date(2021, 11, 25),
         request=video_requests[1],
         status=Video.Statuses.DONE,
         title="BBBB2",
@@ -89,8 +100,10 @@ def test_filter_all_videos(admin_user, api_client, filters, expected, pagination
         "video_requests.Video",
         additional_data={
             "aired": ["2023-05-30", "2012-01-10", "2008-11-25"],
+            "editing_done": True,
             "length": 100,
         },
+        edited_at=date(2021, 12, 1),
         request=video_requests[0],
         status=Video.Statuses.PUBLISHED,
         title="CCCC2",
@@ -161,6 +174,7 @@ def test_filter_all_videos_multiple_status(admin_user, api_client, pagination):
     [
         # Add title as secondary ordering field to make tests consistent.
         ("avg_rating,title", [6, 3, 2, 1, 4, 5]),
+        ("edited_at,title", [5, 3, 1, 4, 6, 2]),
         ("last_aired,title", [6, 4, 1, 2, 3, 5]),
         ("length,title", [6, 1, 3, 2, 4, 5]),
         ("request__start_datetime,title", [4, 6, 2, 1, 3, 5]),
@@ -194,8 +208,10 @@ def test_order_all_videos(admin_user, api_client, expected, ordering, pagination
             "video_requests.Video",
             additional_data={
                 "aired": ["2023-05-30", "2012-01-10", "2008-11-25"],
+                "editing_done": True,
                 "length": 100,
             },
+            edited_at=date(2023, 5, 20),
             request=video_request[2],
             status=Video.Statuses.PUBLISHED,
             title="AAAA1",
@@ -208,20 +224,24 @@ def test_order_all_videos(admin_user, api_client, expected, ordering, pagination
         ),
         baker.make(
             "video_requests.Video",
-            additional_data={"length": 600},
+            additional_data={"editing_done": True, "length": 600},
+            edited_at=date(2023, 5, 10),
             request=video_request[0],
             status=Video.Statuses.CODED,
             title="CCCC1",
         ),
         baker.make(
             "video_requests.Video",
-            additional_data={"aired": ["2023-04-01"]},
+            additional_data={"aired": ["2023-04-01"], "editing_done": True},
+            edited_at=date(2023, 5, 25),
             request=video_request[1],
             status=Video.Statuses.DONE,
             title="BBBB2",
         ),
         baker.make(
             "video_requests.Video",
+            additional_data={"editing_done": True},
+            edited_at=date(2023, 5, 1),
             request=video_request[0],
             status=Video.Statuses.EDITED,
             title="CCCC2",

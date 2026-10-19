@@ -20,6 +20,12 @@
 export interface UserAdminWorkedOn {
   /**
    *
+   * @type {string}
+   * @memberof UserAdminWorkedOn
+   */
+  edited_at: string | null;
+  /**
+   *
    * @type {number}
    * @memberof UserAdminWorkedOn
    */
