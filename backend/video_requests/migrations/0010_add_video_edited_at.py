@@ -7,19 +7,30 @@ EDITED = 3
 
 
 def set_edited_at(apps, schema_editor):
-    """The start of the newest unbroken run of history records at edited or later."""
+    """Replay every video's history with the rule of Video.save(), so the history diffs stay quiet."""
     Video = apps.get_model("video_requests", "Video")
     HistoricalVideo = apps.get_model("video_requests", "HistoricalVideo")
-    videos = list(Video.objects.filter(status__gte=EDITED))
-    for video in videos:
-        records = HistoricalVideo.objects.filter(id=video.id).order_by(
-            "-history_date", "-history_id"
-        )
-        for status, history_date in records.values_list("status", "history_date"):
-            if status < EDITED:
-                break
-            video.edited_at = localdate(history_date)
-    Video.objects.bulk_update(videos, ["edited_at"])
+    records = HistoricalVideo.objects.order_by(
+        "id", "history_date", "history_id"
+    ).values_list("history_id", "id", "status", "additional_data", "history_date")
+    dates = {}
+    history = []
+    for history_id, video_id, status, additional_data, history_date in records:
+        edited_at = dates.get(video_id)
+        if not additional_data.get("editing_done"):
+            edited_at = None
+        elif status >= EDITED and not edited_at:
+            edited_at = localdate(history_date)
+        dates[video_id] = edited_at
+        if edited_at:
+            history.append(HistoricalVideo(history_id=history_id, edited_at=edited_at))
+    HistoricalVideo.objects.bulk_update(history, ["edited_at"], batch_size=1000)
+    videos = [
+        Video(id=video_id, edited_at=edited_at)
+        for video_id, edited_at in dates.items()
+        if edited_at
+    ]
+    Video.objects.bulk_update(videos, ["edited_at"], batch_size=1000)
 
 
 class Migration(migrations.Migration):

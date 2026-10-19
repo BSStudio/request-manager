@@ -178,7 +178,13 @@ class TestVideoEditedAt:
 
     def cut(self, video, time_machine, day):
         time_machine.move_to(day)
+        video.additional_data["editing_done"] = True
         video.status = Video.Statuses.EDITED
+        video.save()
+
+    def uncut(self, video):
+        video.additional_data["editing_done"] = False
+        video.status = Video.Statuses.IN_PROGRESS
         video.save()
 
     def test_is_empty_before_the_cut(self, video):
@@ -200,17 +206,29 @@ class TestVideoEditedAt:
 
         assert video.edited_at == self.FIRST_CUT
 
-    def test_going_back_below_edited_drops_it(self, video, time_machine):
+    def test_a_status_drop_from_the_request_keeps_the_day(self, video, time_machine):
         self.cut(video, time_machine, self.FIRST_CUT)
-        video.status = Video.Statuses.IN_PROGRESS
+        video.status = Video.Statuses.PENDING
         video.save()
+        self.cut(video, time_machine, self.SECOND_CUT)
+
+        assert video.edited_at == self.FIRST_CUT
+
+    def test_a_forced_status_without_the_cut_has_no_day(self, video):
+        video.status = Video.Statuses.DONE
+        video.save()
+
+        assert video.edited_at is None
+
+    def test_unchecking_the_cut_drops_it(self, video, time_machine):
+        self.cut(video, time_machine, self.FIRST_CUT)
+        self.uncut(video)
 
         assert video.edited_at is None
 
     def test_a_new_cut_gets_a_new_day(self, video, time_machine):
         self.cut(video, time_machine, self.FIRST_CUT)
-        video.status = Video.Statuses.IN_PROGRESS
-        video.save()
+        self.uncut(video)
         self.cut(video, time_machine, self.SECOND_CUT)
 
         assert video.edited_at == self.SECOND_CUT

@@ -256,6 +256,7 @@ def test_filter_worked_on(
 
     baker.make(
         "video_requests.Video",
+        additional_data={"editing_done": True},
         edited_at=date(1998, 9, 6),
         editor=admin_user,
         request=video_requests[2],
@@ -291,11 +292,13 @@ def test_worked_on_finds_videos_by_the_day_they_were_cut(
 
     filmed_last_year = video_of(
         datetime(1997, 9, 1),
+        additional_data={"editing_done": True},
         edited_at=date(1998, 9, 10),
         status=Video.Statuses.PUBLISHED,
     )
     video_of(
         datetime(1997, 3, 1),
+        additional_data={"editing_done": True},
         edited_at=date(1997, 3, 10),
         status=Video.Statuses.EDITED,
     )

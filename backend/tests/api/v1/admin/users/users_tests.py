@@ -536,30 +536,35 @@ def test_user_worked_on(
         videos = [
             baker.make(
                 "video_requests.Video",
+                additional_data={"editing_done": True},
                 editor=user,
                 request=video_requests[2],
                 status=Video.Statuses.EDITED,
             ),
             baker.make(
                 "video_requests.Video",
+                additional_data={"editing_done": True},
                 editor=user,
                 request=video_requests[2],
                 status=Video.Statuses.EDITED,
             ),
             baker.make(
                 "video_requests.Video",
+                additional_data={"editing_done": True},
                 editor=user,
                 request=video_requests[4],
                 status=Video.Statuses.EDITED,
             ),
             baker.make(
                 "video_requests.Video",
+                additional_data={"editing_done": True},
                 editor=user,
                 request=video_requests[5],
                 status=Video.Statuses.EDITED,
             ),
             baker.make(
                 "video_requests.Video",
+                additional_data={"editing_done": True},
                 editor=user,
                 request=video_requests[7],
                 status=Video.Statuses.EDITED,
