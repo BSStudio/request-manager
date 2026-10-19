@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { parseISO } from 'date-fns';
 import { ProgressBar } from 'primereact/progressbar';
 import { Skeleton } from 'primereact/skeleton';
 
@@ -51,7 +52,7 @@ const VideoHistory = ({ requestId, videoId }: VideoHistoryProps) => {
       return JSON.stringify(obj, null, 2);
     }
     if (name === 'edited_at') {
-      return dateToLocaleString(new Date(value));
+      return dateToLocaleString(parseISO(value));
     }
     if (name === 'editor') {
       const user = users?.find((user) => user.id === Number(value));

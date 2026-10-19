@@ -2,7 +2,7 @@ import { Suspense, lazy, useRef, useState } from 'react';
 
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { Button } from 'primereact/button';
 import { Chip } from 'primereact/chip';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
@@ -361,7 +361,7 @@ const VideoDetailsPage = () => {
             <DetailsRow
               content={
                 queryResult.edited_at ? (
-                  dateToLocaleString(new Date(queryResult.edited_at), isMobile)
+                  dateToLocaleString(parseISO(queryResult.edited_at), isMobile)
                 ) : (
                   <Tag
                     className="mr-2"

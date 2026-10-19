@@ -1,5 +1,6 @@
 import { forwardRef } from 'react';
 
+import { parseISO } from 'date-fns';
 import { Column } from 'primereact/column';
 import { DataTable } from 'primereact/datatable';
 import type { DataTableProps, DataTableValueArray } from 'primereact/datatable';
@@ -35,7 +36,7 @@ const VideoSearchDataTable = forwardRef<
     return [...videos].map((video) => {
       return {
         ...video,
-        edited_at: video.edited_at ? new Date(video.edited_at) : null,
+        edited_at: video.edited_at ? parseISO(video.edited_at) : null,
         last_aired: video.last_aired ? new Date(video.last_aired) : null,
         request_start_datetime: new Date(video.request_start_datetime),
       };

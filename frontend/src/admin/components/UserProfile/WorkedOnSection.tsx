@@ -1,6 +1,6 @@
 import { useRef, useState } from 'react';
 
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { Button } from 'primereact/button';
 import { Calendar } from 'primereact/calendar';
 import { Column } from 'primereact/column';
@@ -118,7 +118,7 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
         const data = [...response.data].map((request) => {
           return {
             ...request,
-            date: new Date(request.edited_at ?? request.start_datetime),
+            date: parseISO(request.edited_at ?? request.start_datetime),
           };
         });
         setWorkedOnResults(data || []);
