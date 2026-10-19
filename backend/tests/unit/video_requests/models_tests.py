@@ -1,4 +1,4 @@
-from datetime import timedelta
+from datetime import date, timedelta
 
 import pytest
 from django.conf import settings
@@ -170,6 +170,68 @@ class TestVideoAiredDates:
             "2019-11-25",
             "2018-05-19",
         ]
+
+
+class TestVideoEditedAt:
+    FIRST_CUT = date(2026, 3, 2)
+    SECOND_CUT = date(2026, 4, 13)
+
+    def cut(self, video, time_machine, day):
+        time_machine.move_to(day)
+        video.additional_data["editing_done"] = True
+        video.status = Video.Statuses.EDITED
+        video.save()
+
+    def uncut(self, video):
+        video.additional_data["editing_done"] = False
+        video.status = Video.Statuses.IN_PROGRESS
+        video.save()
+
+    def test_is_empty_before_the_cut(self, video):
+        video.status = Video.Statuses.IN_PROGRESS
+        video.save()
+
+        assert video.edited_at is None
+
+    def test_reaching_edited_stamps_the_day(self, video, time_machine):
+        self.cut(video, time_machine, self.FIRST_CUT)
+
+        assert video.edited_at == self.FIRST_CUT
+
+    def test_a_later_status_keeps_the_day(self, video, time_machine):
+        self.cut(video, time_machine, self.FIRST_CUT)
+        time_machine.move_to(self.SECOND_CUT)
+        video.status = Video.Statuses.PUBLISHED
+        video.save()
+
+        assert video.edited_at == self.FIRST_CUT
+
+    def test_a_status_drop_from_the_request_keeps_the_day(self, video, time_machine):
+        self.cut(video, time_machine, self.FIRST_CUT)
+        video.status = Video.Statuses.PENDING
+        video.save()
+        self.cut(video, time_machine, self.SECOND_CUT)
+
+        assert video.edited_at == self.FIRST_CUT
+
+    def test_a_forced_status_without_the_cut_has_no_day(self, video):
+        video.status = Video.Statuses.DONE
+        video.save()
+
+        assert video.edited_at is None
+
+    def test_unchecking_the_cut_drops_it(self, video, time_machine):
+        self.cut(video, time_machine, self.FIRST_CUT)
+        self.uncut(video)
+
+        assert video.edited_at is None
+
+    def test_a_new_cut_gets_a_new_day(self, video, time_machine):
+        self.cut(video, time_machine, self.FIRST_CUT)
+        self.uncut(video)
+        self.cut(video, time_machine, self.SECOND_CUT)
+
+        assert video.edited_at == self.SECOND_CUT
 
 
 class TestTodoValidation:

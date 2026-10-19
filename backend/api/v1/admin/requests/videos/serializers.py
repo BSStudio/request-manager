@@ -35,6 +35,7 @@ class VideoAdminListSerializer(Serializer):
 
 class VideoAdminRetrieveSerializer(VideoAdminListSerializer):
     additional_data = JSONField(read_only=True)
+    edited_at = DateField(allow_null=True, read_only=True)
 
 
 class VideoAdminCreateUpdateSerializer(ModelSerializer):
@@ -61,6 +62,7 @@ class VideoAdminCreateUpdateSerializer(ModelSerializer):
 
 class VideoAdminSearchSerializer(Serializer):
     avg_rating = FloatField(default=0.0, read_only=True)
+    edited_at = DateField(allow_null=True, read_only=True)
     editor = UserNestedListSerializer(read_only=True)
     id = IntegerField(read_only=True)
     last_aired = DateField(read_only=True)

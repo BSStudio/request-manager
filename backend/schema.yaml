@@ -1683,6 +1683,16 @@ paths:
       operationId: admin_videos_list
       parameters:
         - in: query
+          name: edited_at_after
+          schema:
+            type: string
+            format: date
+        - in: query
+          name: edited_at_before
+          schema:
+            type: string
+            format: date
+        - in: query
           name: last_aired
           schema:
             type: string
@@ -3942,6 +3952,11 @@ components:
     UserAdminWorkedOn:
       type: object
       properties:
+        edited_at:
+          type: string
+          format: date
+          readOnly: true
+          nullable: true
         id:
           type: integer
           readOnly: true
@@ -3956,6 +3971,7 @@ components:
           type: string
           readOnly: true
       required:
+        - edited_at
         - id
         - position
         - start_datetime
@@ -4118,9 +4134,15 @@ components:
           readOnly: true
         additional_data:
           readOnly: true
+        edited_at:
+          type: string
+          format: date
+          readOnly: true
+          nullable: true
       required:
         - additional_data
         - avg_rating
+        - edited_at
         - editor
         - id
         - rated
@@ -4135,6 +4157,11 @@ components:
           format: double
           readOnly: true
           default: 0.0
+        edited_at:
+          type: string
+          format: date
+          readOnly: true
+          nullable: true
         editor:
           allOf:
             - $ref: '#/components/schemas/UserNestedList'
@@ -4167,6 +4194,7 @@ components:
           readOnly: true
       required:
         - avg_rating
+        - edited_at
         - editor
         - id
         - last_aired

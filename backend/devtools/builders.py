@@ -66,6 +66,11 @@ def add_video(
         title=title,
         status=status,
         editor=editor,
+        # Cut a week after the event; Video.save() drops it on an uncut video.
+        edited_at=min(
+            timezone.localdate(),
+            timezone.localdate(request.end_datetime) + timedelta(weeks=1),
+        ),
         additional_data=_video_data(request, title, status, aired),
     )
 

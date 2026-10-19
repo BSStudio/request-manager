@@ -38,6 +38,7 @@ def assert_retrieve_response_keys(video):
         [
             "additional_data",
             "avg_rating",
+            "edited_at",
             "editor",
             "id",
             "rated",
@@ -413,6 +414,7 @@ def test_list_all_videos(api_client, expected, pagination, request, user):
                 video,
                 [
                     "avg_rating",
+                    "edited_at",
                     "editor",
                     "id",
                     "last_aired",

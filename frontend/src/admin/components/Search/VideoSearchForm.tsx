@@ -18,6 +18,8 @@ import { adminApi } from 'api/http';
 import { VideoAdminSearch } from 'api/models/video-admin-search';
 
 interface IVideoSearchForm {
+  edited_at_after: Date | null;
+  edited_at_before: Date | null;
   last_aired: Date | null;
   length_max?: string;
   length_min?: string;
@@ -33,6 +35,8 @@ type VideoSearchFormProps = {
 
 const VideoSearchForm = ({ setVideoSearchResults }: VideoSearchFormProps) => {
   const defaultValues = {
+    edited_at_after: null,
+    edited_at_before: null,
     last_aired: null,
     request_start_datetime_after: null,
     request_start_datetime_before: null,
@@ -76,6 +80,12 @@ const VideoSearchForm = ({ setVideoSearchResults }: VideoSearchFormProps) => {
 
   const onSubmit = async (data: IVideoSearchForm) => {
     setIsLoading(true);
+    const edited_at_after = data.edited_at_after
+      ? format(data.edited_at_after, 'yyyy-MM-dd')
+      : undefined;
+    const edited_at_before = data.edited_at_before
+      ? format(data.edited_at_before, 'yyyy-MM-dd')
+      : undefined;
     const last_aired = data.last_aired
       ? format(data.last_aired, 'yyyy-MM-dd')
       : undefined;
@@ -98,6 +108,8 @@ const VideoSearchForm = ({ setVideoSearchResults }: VideoSearchFormProps) => {
 
     await adminApi
       .adminVideosList(
+        edited_at_after,
+        edited_at_before,
         last_aired,
         length_max,
         length_min,
@@ -198,6 +210,42 @@ const VideoSearchForm = ({ setVideoSearchResults }: VideoSearchFormProps) => {
           <div className="field col-12 mb-4 md:col-6">
             <label className="font-medium text-900" htmlFor={field.name}>
               Utoljára adásba került
+            </label>
+            <Calendar
+              {...field}
+              inputId={field.name}
+              mask="9999.99.99"
+              showButtonBar
+              showIcon
+            />
+          </div>
+        )}
+      />
+      <Controller
+        control={control}
+        name="edited_at_after"
+        render={({ field }) => (
+          <div className="field col-12 mb-4 md:col-6">
+            <label className="font-medium text-900" htmlFor={field.name}>
+              Megvágva legkorábban
+            </label>
+            <Calendar
+              {...field}
+              inputId={field.name}
+              mask="9999.99.99"
+              showButtonBar
+              showIcon
+            />
+          </div>
+        )}
+      />
+      <Controller
+        control={control}
+        name="edited_at_before"
+        render={({ field }) => (
+          <div className="field col-12 mb-4 md:col-6">
+            <label className="font-medium text-900" htmlFor={field.name}>
+              Megvágva legkésőbb
             </label>
             <Calendar
               {...field}

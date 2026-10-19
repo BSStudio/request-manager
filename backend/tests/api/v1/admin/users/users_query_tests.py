@@ -11,6 +11,7 @@ from rest_framework.status import HTTP_400_BAD_REQUEST, is_success
 
 from common.models import User
 from tests.api.helpers import login
+from video_requests.models import Video
 
 pytestmark = pytest.mark.django_db
 
@@ -253,7 +254,14 @@ def test_filter_worked_on(
         "video_requests.CrewMember", member=admin_user, request=video_requests[4]
     ),
 
-    baker.make("video_requests.Video", editor=admin_user, request=video_requests[2]),
+    baker.make(
+        "video_requests.Video",
+        additional_data={"editing_done": True},
+        edited_at=date(1998, 9, 6),
+        editor=admin_user,
+        request=video_requests[2],
+        status=Video.Statuses.EDITED,
+    ),
 
     if use_me_endpoint:
         url = reverse("api:v1:me:me-worked-on")
@@ -264,6 +272,49 @@ def test_filter_worked_on(
 
     assert is_success(response.status_code)
     assert len(response.data) == expected
+
+
+@pytest.mark.parametrize("use_me_endpoint", [True, False])
+def test_worked_on_finds_videos_by_the_day_they_were_cut(
+    admin_user, api_client, time_machine, use_me_endpoint
+):
+    time_machine.move_to(datetime(1998, 9, 13))
+    login(api_client, admin_user)
+
+    def video_of(start_datetime, **kwargs):
+        video_request = baker.make(
+            "video_requests.Request", start_datetime=make_aware(start_datetime)
+        )
+        baker.make(
+            "video_requests.Video", editor=admin_user, request=video_request, **kwargs
+        )
+        return video_request
+
+    filmed_last_year = video_of(
+        datetime(1997, 9, 1),
+        additional_data={"editing_done": True},
+        edited_at=date(1998, 9, 10),
+        status=Video.Statuses.PUBLISHED,
+    )
+    video_of(
+        datetime(1997, 3, 1),
+        additional_data={"editing_done": True},
+        edited_at=date(1997, 3, 10),
+        status=Video.Statuses.EDITED,
+    )
+    video_of(datetime(1998, 9, 1), status=Video.Statuses.IN_PROGRESS)
+
+    if use_me_endpoint:
+        url = reverse("api:v1:me:me-worked-on")
+    else:
+        url = reverse("api:v1:admin:users:user-worked-on", kwargs={"pk": admin_user.id})
+
+    response = api_client.get(url)
+
+    assert is_success(response.status_code)
+    assert [(row["id"], row["edited_at"]) for row in response.data] == [
+        (filmed_last_year.id, "1998-09-10")
+    ]
 
 
 @pytest.mark.parametrize("use_me_endpoint", [True, False])
