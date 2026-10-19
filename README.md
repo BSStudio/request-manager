@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://bsstudio.hu/system/files/site_content/logo/bss_logo_169.png" width="50%" alt="Budavári Schönherz Stúdió logo">
+  <img src="https://raw.githubusercontent.com/BSStudio/.github/main/assets/bss-logo.png" width="40%" alt="Budavári Schönherz Stúdió logo">
 </p>
 
 ---
