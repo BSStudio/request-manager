@@ -208,6 +208,9 @@ importers:
       lucide-react:
         specifier: 1.56.0
         version: 1.56.0(@types/react@19.3.0)(react@19.3.0)
+      mediainfo.js:
+        specifier: 0.3.8
+        version: 0.3.8
       primeflex:
         specifier: 3.3.1
         version: 3.3.1
@@ -4347,6 +4350,11 @@ packages:
   mdn-data@2.27.1:
     resolution: {integrity: sha512-9Yubnt3e8A0OKwxYSXyhLymGW4sCufcLG6VdiDdUGVkPhpqLxlvP5vl1983gQjJl3tqbrM731mjaZaP68AgosQ==}
 
+  mediainfo.js@0.3.8:
+    resolution: {integrity: sha512-34ruGC47ytdp5IE9lXx4Yj8XMxESbzqLxDGfnYXimnokxH+aavC/YqubakOKm0vwrC5ZisL55WMmud6R6TmjBw==}
+    engines: {node: '>=18.0.0'}
+    hasBin: true
+
   mime-db@1.52.0:
     resolution: {integrity: sha512-sPU4uV7dYlvtWJxwwxHD0PuihVNiE7TyAbQ5SWxDCB9mUYvOgroQOwYQQOKPJ8CIbE+1ETVlOoK1UC2nU3gYvg==}
     engines: {node: '>= 0.6'}
@@ -4972,6 +4980,10 @@ packages:
     resolution: {integrity: sha512-tsaTIkKW9b4N+AEj+SVA+WhJzV7/zMhcSu78mLKWSk7cXMOSHsBKFWUs0fWwq8QyK3MgJBQRX6Gbi4kYbdvGkQ==}
     engines: {node: '>=18'}
 
+  string-width@8.3.0:
+    resolution: {integrity: sha512-ZbmZM0JCihQN91dWnxoipT2KOEyHqEyfRXUyjuRhW8b/xnqPDoq4gWEVApTVa9db2wN8mmoikgFBbjh71+cGeQ==}
+    engines: {node: '>=20'}
+
   string.prototype.matchall@4.1.0:
     resolution: {integrity: sha512-tHNHTxInrYLCga9O9YGxWA3G9/nnzQw8UGAyqGx3Ar1pSTTzIuM4woFSq4SowkXCjJIwq5sIiQvEfRI9tCH1qQ==}
     engines: {node: '>= 0.4'}
@@ -5489,6 +5501,10 @@ packages:
 
   yargs@18.0.0:
     resolution: {integrity: sha512-4UEqdc2RYGHZc7Doyqkrqiln3p9X2DZVxaGbwhn2pi7MrRagKaOcIKe8L3OxYcbhXLgLFUS3zAYuQjKBQgmuNg==}
+    engines: {node: ^20.19.0 || ^22.12.0 || >=23}
+
+  yargs@18.2.0:
+    resolution: {integrity: sha512-9OpKOLeaoNFecEp7P6iYbzze/5CqWoH7N3SMs/6y1XF4nMvFMspEGZzJ6uFi9MmQwXhyzqYoSEKO3tvA3Z/o2w==}
     engines: {node: ^20.19.0 || ^22.12.0 || >=23}
 
   yocto-queue@0.1.0:
@@ -9549,6 +9565,10 @@ snapshots:
 
   mdn-data@2.27.1: {}
 
+  mediainfo.js@0.3.8:
+    dependencies:
+      yargs: 18.2.0
+
   mime-db@1.52.0: {}
 
   mime-types@2.1.35:
@@ -10288,6 +10308,11 @@ snapshots:
       get-east-asian-width: 1.6.0
       strip-ansi: 7.2.0
 
+  string-width@8.3.0:
+    dependencies:
+      get-east-asian-width: 1.6.0
+      strip-ansi: 7.2.0
+
   string.prototype.matchall@4.1.0:
     dependencies:
       call-bind: 1.0.9
@@ -10888,6 +10913,15 @@ snapshots:
       escalade: 3.2.0
       get-caller-file: 2.0.5
       string-width: 7.2.0
+      y18n: 5.0.8
+      yargs-parser: 22.0.0
+
+  yargs@18.2.0:
+    dependencies:
+      cliui: 9.0.1
+      escalade: 3.2.0
+      get-caller-file: 2.0.5
+      string-width: 8.3.0
       y18n: 5.0.8
       yargs-parser: 22.0.0
 

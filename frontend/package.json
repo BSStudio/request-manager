@@ -19,6 +19,7 @@
     "date-fns": "4.4.0",
     "libphonenumber-js": "1.13.15",
     "lucide-react": "1.56.0",
+    "mediainfo.js": "0.3.8",
     "primeflex": "3.3.1",
     "primeicons": "7.0.0",
     "primelocale": "github:primefaces/primelocale#2.6.0",

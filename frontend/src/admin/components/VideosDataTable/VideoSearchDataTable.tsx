@@ -10,6 +10,7 @@ import LinkButton from 'admin/components/LinkButton/LinkButton';
 import { VideoStatusTag } from 'admin/components/StatusTag/StatusTag';
 import User from 'admin/components/User/User';
 import { dateToLocaleString } from 'admin/helpers/DateToLocaleStringCoverters';
+import { formatVideoLength } from 'admin/helpers/formatVideoLength';
 import useMobile from 'admin/hooks/useMobile';
 import { VideoAdminSearch } from 'api/models';
 
@@ -72,7 +73,7 @@ const VideoSearchDataTable = forwardRef<
 
   const lengthBodyTemplate = ({ length }: VideoAdminSearchDates) => {
     if (!length) return;
-    return new Date(1000 * length).toISOString().substring(11, 19);
+    return formatVideoLength(length);
   };
 
   const ratingBodyTemplate = ({ avg_rating }: VideoAdminSearchDates) => {
