@@ -70,4 +70,10 @@ export interface VideoAdminRetrieve {
    * @memberof VideoAdminRetrieve
    */
   additional_data: any;
+  /**
+   *
+   * @type {string}
+   * @memberof VideoAdminRetrieve
+   */
+  edited_at: string | null;
 }

@@ -30,6 +30,12 @@ export interface VideoAdminSearch {
   avg_rating: number;
   /**
    *
+   * @type {string}
+   * @memberof VideoAdminSearch
+   */
+  edited_at: string | null;
+  /**
+   *
    * @type {UserNestedList}
    * @memberof VideoAdminSearch
    */

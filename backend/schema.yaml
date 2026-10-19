@@ -3952,6 +3952,11 @@ components:
     UserAdminWorkedOn:
       type: object
       properties:
+        edited_at:
+          type: string
+          format: date
+          readOnly: true
+          nullable: true
         id:
           type: integer
           readOnly: true
@@ -3966,6 +3971,7 @@ components:
           type: string
           readOnly: true
       required:
+        - edited_at
         - id
         - position
         - start_datetime

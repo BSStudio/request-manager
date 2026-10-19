@@ -3516,6 +3516,8 @@ export const AdminApiAxiosParamCreator = function (
     },
     /**
      *
+     * @param {string} [editedAtAfter]
+     * @param {string} [editedAtBefore]
      * @param {string} [lastAired]
      * @param {number} [lengthMax]
      * @param {number} [lengthMin]
@@ -3531,6 +3533,8 @@ export const AdminApiAxiosParamCreator = function (
      * @throws {RequiredError}
      */
     adminVideosList: async (
+      editedAtAfter?: string,
+      editedAtBefore?: string,
       lastAired?: string,
       lengthMax?: number,
       lengthMin?: number,
@@ -3568,6 +3572,20 @@ export const AdminApiAxiosParamCreator = function (
       );
 
       // authentication cookieAuth required
+
+      if (editedAtAfter !== undefined) {
+        localVarQueryParameter['edited_at_after'] =
+          (editedAtAfter as any) instanceof Date
+            ? (editedAtAfter as any).toISOString().substring(0, 10)
+            : editedAtAfter;
+      }
+
+      if (editedAtBefore !== undefined) {
+        localVarQueryParameter['edited_at_before'] =
+          (editedAtBefore as any) instanceof Date
+            ? (editedAtBefore as any).toISOString().substring(0, 10)
+            : editedAtBefore;
+      }
 
       if (lastAired !== undefined) {
         localVarQueryParameter['last_aired'] =
@@ -5203,6 +5221,8 @@ export const AdminApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {string} [editedAtAfter]
+     * @param {string} [editedAtBefore]
      * @param {string} [lastAired]
      * @param {number} [lengthMax]
      * @param {number} [lengthMin]
@@ -5218,6 +5238,8 @@ export const AdminApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async adminVideosList(
+      editedAtAfter?: string,
+      editedAtBefore?: string,
       lastAired?: string,
       lengthMax?: number,
       lengthMin?: number,
@@ -5237,6 +5259,8 @@ export const AdminApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<PaginatedVideoAdminSearchList>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.adminVideosList(
+        editedAtAfter,
+        editedAtBefore,
         lastAired,
         lengthMax,
         lengthMin,
@@ -6251,6 +6275,8 @@ export const AdminApiFactory = function (
     },
     /**
      *
+     * @param {string} [editedAtAfter]
+     * @param {string} [editedAtBefore]
      * @param {string} [lastAired]
      * @param {number} [lengthMax]
      * @param {number} [lengthMin]
@@ -6266,6 +6292,8 @@ export const AdminApiFactory = function (
      * @throws {RequiredError}
      */
     adminVideosList(
+      editedAtAfter?: string,
+      editedAtBefore?: string,
       lastAired?: string,
       lengthMax?: number,
       lengthMin?: number,
@@ -6281,6 +6309,8 @@ export const AdminApiFactory = function (
     ): AxiosPromise<PaginatedVideoAdminSearchList> {
       return localVarFp
         .adminVideosList(
+          editedAtAfter,
+          editedAtBefore,
           lastAired,
           lengthMax,
           lengthMin,
@@ -7368,6 +7398,8 @@ export class AdminApi extends BaseAPI {
 
   /**
    *
+   * @param {string} [editedAtAfter]
+   * @param {string} [editedAtBefore]
    * @param {string} [lastAired]
    * @param {number} [lengthMax]
    * @param {number} [lengthMin]
@@ -7384,6 +7416,8 @@ export class AdminApi extends BaseAPI {
    * @memberof AdminApi
    */
   public adminVideosList(
+    editedAtAfter?: string,
+    editedAtBefore?: string,
     lastAired?: string,
     lengthMax?: number,
     lengthMin?: number,
@@ -7399,6 +7433,8 @@ export class AdminApi extends BaseAPI {
   ) {
     return AdminApiFp(this.configuration)
       .adminVideosList(
+        editedAtAfter,
+        editedAtBefore,
         lastAired,
         lengthMax,
         lengthMin,

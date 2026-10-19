@@ -370,7 +370,7 @@ def test_me_worked_on(
     assert len(response.data) == len(should_find)
     for video_request in response.data:
         assert_exact_fields(
-            video_request, ["id", "position", "start_datetime", "title"]
+            video_request, ["edited_at", "id", "position", "start_datetime", "title"]
         )
         assert any(
             expected_find["id"] == video_request["id"]

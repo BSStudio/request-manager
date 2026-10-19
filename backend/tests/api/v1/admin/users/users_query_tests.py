@@ -309,7 +309,9 @@ def test_worked_on_finds_videos_by_the_day_they_were_cut(
     response = api_client.get(url)
 
     assert is_success(response.status_code)
-    assert [row["id"] for row in response.data] == [filmed_last_year.id]
+    assert [(row["id"], row["edited_at"]) for row in response.data] == [
+        (filmed_last_year.id, "1998-09-10")
+    ]
 
 
 @pytest.mark.parametrize("use_me_endpoint", [True, False])

@@ -200,6 +200,7 @@ class UserAdminViewSet(
                     "id": video.request.id,
                     "title": video.request.title,
                     "start_datetime": video.request.start_datetime,
+                    "edited_at": video.edited_at,
                     "position": _("Editor"),
                 }
             )

@@ -24,6 +24,7 @@ import LastUpdatedAt from 'admin/components/LastUpdatedAt/LastUpdatedAt';
 import LinkButton from 'admin/components/LinkButton/LinkButton';
 import { VideoStatusTag } from 'admin/components/StatusTag/StatusTag';
 import User from 'admin/components/User/User';
+import { dateToLocaleString } from 'admin/helpers/DateToLocaleStringCoverters';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
 import { formatVideoLength } from 'admin/helpers/formatVideoLength';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
@@ -356,6 +357,21 @@ const VideoDetailsPage = () => {
                 )
               }
               label="Vágó"
+            />
+            <DetailsRow
+              content={
+                queryResult.edited_at ? (
+                  dateToLocaleString(new Date(queryResult.edited_at), isMobile)
+                ) : (
+                  <Tag
+                    className="mr-2"
+                    icon="bi bi-scissors"
+                    severity="info"
+                    value="Még nincs megvágva"
+                  />
+                )
+              }
+              label="Megvágva"
             />
             <DetailsRow
               content={
