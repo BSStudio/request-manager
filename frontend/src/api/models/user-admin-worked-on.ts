@@ -23,7 +23,7 @@ export interface UserAdminWorkedOn {
    * @type {string}
    * @memberof UserAdminWorkedOn
    */
-  edited_at: string | null;
+  date: string;
   /**
    *
    * @type {number}
@@ -36,12 +36,6 @@ export interface UserAdminWorkedOn {
    * @memberof UserAdminWorkedOn
    */
   position: string;
-  /**
-   *
-   * @type {string}
-   * @memberof UserAdminWorkedOn
-   */
-  start_datetime: string;
   /**
    *
    * @type {string}

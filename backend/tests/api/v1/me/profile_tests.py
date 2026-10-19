@@ -374,9 +374,7 @@ def test_me_worked_on(
     assert is_success(response.status_code)
     assert len(response.data) == len(should_find)
     for video_request in response.data:
-        assert_exact_fields(
-            video_request, ["edited_at", "id", "position", "start_datetime", "title"]
-        )
+        assert_exact_fields(video_request, ["date", "id", "position", "title"])
         assert any(
             expected_find["id"] == video_request["id"]
             and expected_find["position"] == video_request["position"]

@@ -188,22 +188,22 @@ def test_search_users(admin_user, api_client, pagination):
     [
         ({"is_responsible": False}, 4),
         ({"is_responsible": True}, 6),
-        ({"is_responsible": False, "start_datetime_after": "1998-08-01"}, 3),
-        ({"is_responsible": False, "start_datetime_before": "1998-08-01"}, 1),
+        ({"is_responsible": False, "date_after": "1998-08-01"}, 3),
+        ({"is_responsible": False, "date_before": "1998-08-01"}, 1),
         (
             {
                 "is_responsible": False,
-                "start_datetime_after": "1998-08-01",
-                "start_datetime_before": "1998-09-01",
+                "date_after": "1998-08-01",
+                "date_before": "1998-09-01",
             },
             1,
         ),
-        ({"start_datetime_after": "1998-08-01"}, 4),
-        ({"start_datetime_before": "1998-08-01"}, 2),
+        ({"date_after": "1998-08-01"}, 4),
+        ({"date_before": "1998-08-01"}, 2),
         (
             {
-                "start_datetime_after": "1998-08-01",
-                "start_datetime_before": "1998-09-01",
+                "date_after": "1998-08-01",
+                "date_before": "1998-09-01",
             },
             1,
         ),
@@ -312,9 +312,34 @@ def test_worked_on_finds_videos_by_the_day_they_were_cut(
     response = api_client.get(url)
 
     assert is_success(response.status_code)
-    assert [(row["id"], row["edited_at"]) for row in response.data] == [
+    assert [(row["id"], row["date"]) for row in response.data] == [
         (filmed_last_year.id, "1998-09-10")
     ]
+
+
+@pytest.mark.parametrize("use_me_endpoint", [True, False])
+def test_worked_on_dates_events_by_the_budapest_day(
+    admin_user, api_client, time_machine, use_me_endpoint
+):
+    time_machine.move_to(datetime(1998, 9, 13))
+    login(api_client, admin_user)
+    # Already the next day in Budapest, still the day before in UTC.
+    after_midnight = baker.make(
+        "video_requests.Request",
+        responsible=admin_user,
+        start_datetime=make_aware(datetime(1998, 9, 2, 0, 30)),
+    )
+    baker.make("video_requests.CrewMember", member=admin_user, request=after_midnight)
+
+    if use_me_endpoint:
+        url = reverse("api:v1:me:me-worked-on")
+    else:
+        url = reverse("api:v1:admin:users:user-worked-on", kwargs={"pk": admin_user.id})
+
+    response = api_client.get(url)
+
+    assert is_success(response.status_code)
+    assert [row["date"] for row in response.data] == ["1998-09-02", "1998-09-02"]
 
 
 @pytest.mark.parametrize("use_me_endpoint", [True, False])
@@ -326,30 +351,30 @@ def test_filter_worked_on_error(admin_user, api_client, use_me_endpoint):
     else:
         url = reverse("api:v1:admin:users:user-worked-on", kwargs={"pk": admin_user.id})
 
-    response = api_client.get(url, {"start_datetime_after": "LoremIpsum"})
+    response = api_client.get(url, {"date_after": "LoremIpsum"})
 
     assert response.status_code == HTTP_400_BAD_REQUEST
-    assert response.data["start_datetime_after"][0] == ErrorDetail(
+    assert response.data["date_after"][0] == ErrorDetail(
         string="Invalid filter.",
         code="invalid",
     )
 
-    response = api_client.get(url, {"start_datetime_before": "LoremIpsum"})
+    response = api_client.get(url, {"date_before": "LoremIpsum"})
 
     assert response.status_code == HTTP_400_BAD_REQUEST
-    assert response.data["start_datetime_before"][0] == ErrorDetail(
+    assert response.data["date_before"][0] == ErrorDetail(
         string="Invalid filter.",
         code="invalid",
     )
 
     response = api_client.get(
         url,
-        {"start_datetime_after": "1998-09-01", "start_datetime_before": "1998-08-01"},
+        {"date_after": "1998-09-01", "date_before": "1998-08-01"},
     )
 
     assert response.status_code == HTTP_400_BAD_REQUEST
-    assert response.data["start_datetime_after"][0] == ErrorDetail(
-        string="Must be earlier than start_datetime_before.",
+    assert response.data["date_after"][0] == ErrorDetail(
+        string="The start of the period cannot be after its end.",
         code="invalid",
     )
 

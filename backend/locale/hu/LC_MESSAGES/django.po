@@ -37,20 +37,20 @@ msgid "All requester data fields must be present if one is present."
 msgstr ""
 "A felkérő minden adatát szükséges kitölteni ha bármely közülük meg van adva."
 
-#: .\api\v1\admin\users\views.py:131 .\api\v1\admin\users\views.py:143
-#: .\api\v1\admin\users\views.py:153
+#: .\api\v1\admin\users\views.py:129 .\api\v1\admin\users\views.py:141
+#: .\api\v1\admin\users\views.py:151
 msgid "Invalid filter."
 msgstr "Érvénytelen szűrő."
 
-#: .\api\v1\admin\users\views.py:160
-msgid "Must be earlier than start_datetime_before."
-msgstr "Korábbinak kell lennie mint a start_datetime_before."
+#: .\api\v1\admin\users\views.py:156
+msgid "The start of the period cannot be after its end."
+msgstr "Az időszak kezdete nem lehet a vége után."
 
-#: .\api\v1\admin\users\views.py:177
+#: .\api\v1\admin\users\views.py:171
 msgid "Responsible"
 msgstr "Felelős"
 
-#: .\api\v1\admin\users\views.py:203
+#: .\api\v1\admin\users\views.py:197
 msgid "Editor"
 msgstr "Vágó"
 

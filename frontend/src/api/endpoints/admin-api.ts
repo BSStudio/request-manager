@@ -3439,17 +3439,17 @@ export const AdminApiAxiosParamCreator = function (
     /**
      *
      * @param {number} id A unique integer value identifying this user.
+     * @param {string} [dateAfter] Default is 20 weeks before date_before.
+     * @param {string} [dateBefore] Default is today.
      * @param {boolean} [isResponsible] Default is True.
-     * @param {string} [startDatetimeAfter] Default is 20 weeks before start_datetime_before.
-     * @param {string} [startDatetimeBefore] Default is today.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminUsersWorkedOnList: async (
       id: number,
+      dateAfter?: string,
+      dateBefore?: string,
       isResponsible?: boolean,
-      startDatetimeAfter?: string,
-      startDatetimeBefore?: string,
       options: AxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
@@ -3482,22 +3482,22 @@ export const AdminApiAxiosParamCreator = function (
 
       // authentication cookieAuth required
 
+      if (dateAfter !== undefined) {
+        localVarQueryParameter['date_after'] =
+          (dateAfter as any) instanceof Date
+            ? (dateAfter as any).toISOString().substring(0, 10)
+            : dateAfter;
+      }
+
+      if (dateBefore !== undefined) {
+        localVarQueryParameter['date_before'] =
+          (dateBefore as any) instanceof Date
+            ? (dateBefore as any).toISOString().substring(0, 10)
+            : dateBefore;
+      }
+
       if (isResponsible !== undefined) {
         localVarQueryParameter['is_responsible'] = isResponsible;
-      }
-
-      if (startDatetimeAfter !== undefined) {
-        localVarQueryParameter['start_datetime_after'] =
-          (startDatetimeAfter as any) instanceof Date
-            ? (startDatetimeAfter as any).toISOString().substring(0, 10)
-            : startDatetimeAfter;
-      }
-
-      if (startDatetimeBefore !== undefined) {
-        localVarQueryParameter['start_datetime_before'] =
-          (startDatetimeBefore as any) instanceof Date
-            ? (startDatetimeBefore as any).toISOString().substring(0, 10)
-            : startDatetimeBefore;
       }
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
@@ -5186,17 +5186,17 @@ export const AdminApiFp = function (configuration?: Configuration) {
     /**
      *
      * @param {number} id A unique integer value identifying this user.
+     * @param {string} [dateAfter] Default is 20 weeks before date_before.
+     * @param {string} [dateBefore] Default is today.
      * @param {boolean} [isResponsible] Default is True.
-     * @param {string} [startDatetimeAfter] Default is 20 weeks before start_datetime_before.
-     * @param {string} [startDatetimeBefore] Default is today.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async adminUsersWorkedOnList(
       id: number,
+      dateAfter?: string,
+      dateBefore?: string,
       isResponsible?: boolean,
-      startDatetimeAfter?: string,
-      startDatetimeBefore?: string,
       options?: AxiosRequestConfig,
     ): Promise<
       (
@@ -5207,9 +5207,9 @@ export const AdminApiFp = function (configuration?: Configuration) {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.adminUsersWorkedOnList(
           id,
+          dateAfter,
+          dateBefore,
           isResponsible,
-          startDatetimeAfter,
-          startDatetimeBefore,
           options,
         );
       return createRequestFunction(
@@ -6250,25 +6250,25 @@ export const AdminApiFactory = function (
     /**
      *
      * @param {number} id A unique integer value identifying this user.
+     * @param {string} [dateAfter] Default is 20 weeks before date_before.
+     * @param {string} [dateBefore] Default is today.
      * @param {boolean} [isResponsible] Default is True.
-     * @param {string} [startDatetimeAfter] Default is 20 weeks before start_datetime_before.
-     * @param {string} [startDatetimeBefore] Default is today.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminUsersWorkedOnList(
       id: number,
+      dateAfter?: string,
+      dateBefore?: string,
       isResponsible?: boolean,
-      startDatetimeAfter?: string,
-      startDatetimeBefore?: string,
       options?: any,
     ): AxiosPromise<Array<UserAdminWorkedOn>> {
       return localVarFp
         .adminUsersWorkedOnList(
           id,
+          dateAfter,
+          dateBefore,
           isResponsible,
-          startDatetimeAfter,
-          startDatetimeBefore,
           options,
         )
         .then((request) => request(axios, basePath));
@@ -7371,28 +7371,22 @@ export class AdminApi extends BaseAPI {
   /**
    *
    * @param {number} id A unique integer value identifying this user.
+   * @param {string} [dateAfter] Default is 20 weeks before date_before.
+   * @param {string} [dateBefore] Default is today.
    * @param {boolean} [isResponsible] Default is True.
-   * @param {string} [startDatetimeAfter] Default is 20 weeks before start_datetime_before.
-   * @param {string} [startDatetimeBefore] Default is today.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminUsersWorkedOnList(
     id: number,
+    dateAfter?: string,
+    dateBefore?: string,
     isResponsible?: boolean,
-    startDatetimeAfter?: string,
-    startDatetimeBefore?: string,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminUsersWorkedOnList(
-        id,
-        isResponsible,
-        startDatetimeAfter,
-        startDatetimeBefore,
-        options,
-      )
+      .adminUsersWorkedOnList(id, dateAfter, dateBefore, isResponsible, options)
       .then((request) => request(this.axios, this.basePath));
   }
 

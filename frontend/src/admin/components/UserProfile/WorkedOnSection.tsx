@@ -19,13 +19,9 @@ import { adminApi } from 'api/http';
 import { UserAdminWorkedOn } from 'api/models/user-admin-worked-on';
 
 interface IWorkedOnForm {
+  date_after: Date | null;
+  date_before: Date | null;
   is_responsible: boolean;
-  start_datetime_after: Date | null;
-  start_datetime_before: Date | null;
-}
-
-interface UserAdminWorkedOnDates extends UserAdminWorkedOn {
-  date: Date;
 }
 
 type WorkedOnSectionProps = {
@@ -35,14 +31,14 @@ type WorkedOnSectionProps = {
 const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
   const dataTableRef = useRef<DataTable<DataTableValueArray>>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [workedOnResults, setWorkedOnResults] = useState<
-    UserAdminWorkedOnDates[]
-  >([]);
+  const [workedOnResults, setWorkedOnResults] = useState<UserAdminWorkedOn[]>(
+    [],
+  );
 
   const defaultValues = {
+    date_after: null,
+    date_before: null,
     is_responsible: true,
-    start_datetime_after: null,
-    start_datetime_before: null,
   };
 
   const { control, handleSubmit, reset } = useForm<IWorkedOnForm>({
@@ -60,7 +56,7 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
     },
   ];
 
-  const actionBodyTemplate = ({ id }: UserAdminWorkedOnDates) => {
+  const actionBodyTemplate = ({ id }: UserAdminWorkedOn) => {
     return (
       <LinkButton
         buttonProps={{
@@ -75,8 +71,8 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
     );
   };
 
-  const dateBodyTemplate = ({ date }: UserAdminWorkedOnDates) => {
-    return dateToLocaleString(date, true);
+  const dateBodyTemplate = ({ date }: UserAdminWorkedOn) => {
+    return dateToLocaleString(parseISO(date), true);
   };
 
   const exportCSV = () => {
@@ -100,28 +96,22 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
 
   const onSubmit = async (data: IWorkedOnForm) => {
     setIsLoading(true);
-    const start_datetime_after = data.start_datetime_after
-      ? format(data.start_datetime_after, 'yyyy-MM-dd')
+    const date_after = data.date_after
+      ? format(data.date_after, 'yyyy-MM-dd')
       : undefined;
-    const start_datetime_before = data.start_datetime_before
-      ? format(data.start_datetime_before, 'yyyy-MM-dd')
+    const date_before = data.date_before
+      ? format(data.date_before, 'yyyy-MM-dd')
       : undefined;
 
     await adminApi
       .adminUsersWorkedOnList(
         userId,
+        date_after,
+        date_before,
         data.is_responsible,
-        start_datetime_after,
-        start_datetime_before,
       )
       .then((response) => {
-        const data = [...response.data].map((request) => {
-          return {
-            ...request,
-            date: parseISO(request.edited_at ?? request.start_datetime),
-          };
-        });
-        setWorkedOnResults(data || []);
+        setWorkedOnResults(response.data);
       })
       .catch(showErrorToast)
       .finally(() => {
@@ -138,7 +128,7 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
       <form className="formgrid grid p-fluid">
         <Controller
           control={control}
-          name="start_datetime_after"
+          name="date_after"
           render={({ field }) => (
             <div className="field col-12 mb-4 md:col-6">
               <label className="font-medium text-900" htmlFor={field.name}>
@@ -157,7 +147,7 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
         />
         <Controller
           control={control}
-          name="start_datetime_before"
+          name="date_before"
           render={({ field }) => (
             <div className="field col-12 mb-4 md:col-6">
               <label className="font-medium text-900" htmlFor={field.name}>
@@ -224,7 +214,6 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
         <Column
           align="center"
           body={dateBodyTemplate}
-          dataType="date"
           field="date"
           header="Dátum"
           sortable
