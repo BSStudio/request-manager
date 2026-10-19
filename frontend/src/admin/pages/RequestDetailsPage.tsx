@@ -2,7 +2,7 @@ import { lazy, Suspense, useEffect, useRef, useState } from 'react';
 
 import { useMutation, useSuspenseQuery } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { Badge } from 'primereact/badge';
 import { Button } from 'primereact/button';
 import { ConfirmDialog, confirmDialog } from 'primereact/confirmdialog';
@@ -100,7 +100,7 @@ const RequestDetailsPage = () => {
     return {
       ...data,
       created: new Date(data.created),
-      deadline: new Date(data.deadline),
+      deadline: parseISO(data.deadline),
       end_datetime: new Date(data.end_datetime),
       start_datetime: new Date(data.start_datetime),
     };

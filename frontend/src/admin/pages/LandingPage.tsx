@@ -1,7 +1,7 @@
 import { lazy, Suspense, useState } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
-import { addWeeks, format } from 'date-fns';
+import { addWeeks, format, parseISO } from 'date-fns';
 import { Column } from 'primereact/column';
 import { ConfirmDialog } from 'primereact/confirmdialog';
 import { DataTable } from 'primereact/datatable';
@@ -17,7 +17,10 @@ import Statistics, {
 import { VideoStatusTag } from 'admin/components/StatusTag/StatusTag';
 import Todos from 'admin/components/Todos/Todos';
 import User from 'admin/components/User/User';
-import { dateTimeToLocaleString } from 'admin/helpers/DateToLocaleStringCoverters';
+import {
+  dateTimeToLocaleString,
+  dateToLocaleString,
+} from 'admin/helpers/DateToLocaleStringCoverters';
 import { adminApi } from 'api/http';
 import { RequestAdminList } from 'api/models/request-admin-list';
 import { VideoAdminSearch } from 'api/models/video-admin-search';
@@ -205,7 +208,7 @@ const LandingPage = () => {
   };
 
   const deadlineBodyTemplate = ({ deadline }: RequestAdminList) => {
-    return dateTimeToLocaleString(new Date(deadline), true);
+    return dateToLocaleString(parseISO(deadline), true);
   };
 
   const editorBodyTemplate = ({ editor }: VideoAdminSearch) => {

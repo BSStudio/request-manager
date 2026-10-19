@@ -1,4 +1,5 @@
 import { useQuery } from '@tanstack/react-query';
+import { parseISO } from 'date-fns';
 import { ProgressBar } from 'primereact/progressbar';
 import { Skeleton } from 'primereact/skeleton';
 
@@ -57,10 +58,10 @@ const RequestHistory = ({ requestId }: RequestHistoryProps) => {
       return JSON.stringify(obj, null, 2);
     }
     if (['created', 'end_datetime', 'start_datetime'].includes(name)) {
-      return dateTimeToLocaleString(new Date(value));
+      return dateTimeToLocaleString(parseISO(value));
     }
     if (name === 'deadline') {
-      return dateToLocaleString(new Date(value));
+      return dateToLocaleString(parseISO(value));
     }
     if (['requested_by', 'requester', 'responsible'].includes(name)) {
       const user = users?.find((user) => user.id === Number(value));

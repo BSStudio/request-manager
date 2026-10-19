@@ -2,7 +2,7 @@ import { Suspense, lazy, useEffect, useMemo } from 'react';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
-import { format } from 'date-fns';
+import { format, parseISO } from 'date-fns';
 import { Calendar } from 'primereact/calendar';
 import { Checkbox } from 'primereact/checkbox';
 import { Divider } from 'primereact/divider';
@@ -141,7 +141,7 @@ const RequestCreatorEditorPage = () => {
       reset({
         ...defaultValues,
         ...loaderData,
-        deadline: new Date(loaderData.deadline),
+        deadline: parseISO(loaderData.deadline),
         end_datetime: new Date(loaderData.end_datetime),
         start_datetime: new Date(loaderData.start_datetime),
       });

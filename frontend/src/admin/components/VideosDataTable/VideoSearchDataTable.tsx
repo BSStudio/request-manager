@@ -37,7 +37,7 @@ const VideoSearchDataTable = forwardRef<
       return {
         ...video,
         edited_at: video.edited_at ? parseISO(video.edited_at) : null,
-        last_aired: video.last_aired ? new Date(video.last_aired) : null,
+        last_aired: video.last_aired ? parseISO(video.last_aired) : null,
         request_start_datetime: new Date(video.request_start_datetime),
       };
     });
