@@ -27,8 +27,9 @@ async function readLength(file: File) {
       async (size, offset) =>
         new Uint8Array(await file.slice(offset, offset + size).arrayBuffer()),
     );
-    return result.media?.track.find((track) => track['@type'] === 'General')
-      ?.Duration;
+    const tracks = result.media?.track ?? [];
+    if (!tracks.some((track) => track['@type'] === 'Video')) return undefined;
+    return tracks.find((track) => track['@type'] === 'General')?.Duration;
   } finally {
     mediaInfo.close();
   }

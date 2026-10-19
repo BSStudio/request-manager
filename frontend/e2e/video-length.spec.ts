@@ -12,6 +12,8 @@ test.use({ storageState: loginAs('admin.aladar') });
 const mp4 = path.join(import.meta.dirname, 'files', 'video.mp4');
 // 2.6 seconds long.
 const mxf = path.join(import.meta.dirname, 'files', 'video.mxf');
+// 1.5 seconds of sound, no picture.
+const audio = path.join(import.meta.dirname, 'files', 'audio.m4a');
 
 // A new video of the seeded 'Állásbörze', which is never saved.
 async function openNewVideo(page: Page) {
@@ -123,6 +125,17 @@ test('tells when a file has no length', async ({ page }) => {
     mimeType: 'text/plain',
     name: 'jegyzet.txt',
   });
+  await expect(
+    page.getByText('Nem sikerült kiolvasni a videó hosszát.'),
+  ).toBeVisible();
+  await expect(length).toHaveValue('');
+});
+
+test('does not take the length of a file without picture', async ({ page }) => {
+  await openNewVideo(page);
+  const length = page.getByLabel('Videó hossza');
+
+  await pickFile(page, audio);
   await expect(
     page.getByText('Nem sikerült kiolvasni a videó hosszát.'),
   ).toBeVisible();
