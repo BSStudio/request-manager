@@ -24,6 +24,7 @@ import {
 } from 'admin/api/queries';
 import { queryKeys } from 'admin/api/queryKeys';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
+import { pickDirtyFields } from 'admin/helpers/pickDirtyFields';
 import { isNotFound } from 'api/errors';
 import { RatingAdminListRetrieve } from 'api/models';
 
@@ -63,17 +64,18 @@ const RatingDialog = forwardRef<React.Ref<HTMLDivElement>, RatingDialogProps>(
 
     const {
       control,
-      formState: { isDirty },
+      formState: { dirtyFields, isDirty },
       handleSubmit,
       reset,
       setError,
     } = useForm<IRating>({
       shouldFocusError: false,
     });
-    const { mutateAsync } = useMutation(
-      ratingId
-        ? requestVideoRatingUpdateMutation(requestId, videoId, ratingId)
-        : requestVideoRatingCreateMutation(requestId, videoId),
+    const { mutateAsync: createRating } = useMutation(
+      requestVideoRatingCreateMutation(requestId, videoId),
+    );
+    const { mutateAsync: updateRating } = useMutation(
+      requestVideoRatingUpdateMutation(requestId, videoId, ratingId),
     );
     const { mutateAsync: deleteRating } = useMutation(
       requestVideoRatingDeleteMutation(requestId, videoId, ratingId),
@@ -143,7 +145,13 @@ const RatingDialog = forwardRef<React.Ref<HTMLDivElement>, RatingDialogProps>(
     const onSubmit = async (data: IRating) => {
       setLoading(true);
 
-      await mutateAsync({ ...data })
+      const fields = { rating: data.rating, review: data.review };
+
+      await (
+        ratingId
+          ? updateRating(pickDirtyFields(fields, dirtyFields))
+          : createRating(fields)
+      )
         .then(async (response) => {
           await queryClient.invalidateQueries({
             queryKey: queryKeys.video(requestId, videoId),

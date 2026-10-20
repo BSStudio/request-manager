@@ -23,6 +23,7 @@ import { queryKeys } from 'admin/api/queryKeys';
 import Avatar from 'admin/components/Avatar/Avatar';
 import { dateTimeToLocaleString } from 'admin/helpers/DateToLocaleStringCoverters';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
+import { pickDirtyFields } from 'admin/helpers/pickDirtyFields';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import TimeAgo from 'admin/helpers/TimeAgo';
 import { useTheme } from 'admin/hooks/useTheme';
@@ -268,7 +269,12 @@ const CommentCardEdit = ({
   requestId,
 }: CommentCardEditProps) => {
   const [loading, setLoading] = useState<boolean>(false);
-  const { control, handleSubmit, setError } = useForm<IComment>({
+  const {
+    control,
+    formState: { dirtyFields },
+    handleSubmit,
+    setError,
+  } = useForm<IComment>({
     defaultValues: { internal: comment.internal, text: comment.text },
     shouldFocusError: false,
   });
@@ -281,7 +287,7 @@ const CommentCardEdit = ({
   const onSubmit = async (data: IComment) => {
     setLoading(true);
 
-    await mutateAsync({ ...data })
+    await mutateAsync(pickDirtyFields(data, dirtyFields))
       .then(async () => {
         await queryClient.invalidateQueries({
           queryKey: queryKeys.requestComments(requestId),

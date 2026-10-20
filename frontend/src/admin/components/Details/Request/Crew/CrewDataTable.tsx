@@ -19,6 +19,7 @@ import { requestCrewListQuery } from 'admin/api/queries';
 import { queryKeys } from 'admin/api/queryKeys';
 import AutoCompleteStaff from 'admin/components/AutoCompleteStaff/AutoCompleteStaff';
 import User from 'admin/components/User/User';
+import { pickDirtyFields } from 'admin/helpers/pickDirtyFields';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import useMobile from 'admin/hooks/useMobile';
 import { isNotFound } from 'api/errors';
@@ -155,13 +156,18 @@ const CrewDataTable = ({ requestId }: CrewDataTableProps) => {
   };
 
   const onRowEditComplete = async (e: DataTableRowEditCompleteEvent) => {
-    const { newData } = e;
-
-    const { id, ...data } = newData as CrewMemberAdminListRetrieve;
+    const row = e.data as CrewMemberAdminListRetrieve;
+    const { id, member, position } = e.newData as CrewMemberAdminListRetrieve;
 
     await updateCrew({
       crewId: id,
-      crewMember: { ...data, member: data.member.id },
+      crewMember: pickDirtyFields(
+        { member: member.id, position },
+        {
+          member: member.id !== row.member.id,
+          position: position !== row.position,
+        },
+      ),
     })
       .then(async () => {
         await queryClient.invalidateQueries({

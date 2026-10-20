@@ -1,4 +1,4 @@
-import type { Page } from '@playwright/test';
+import type { Locator, Page } from '@playwright/test';
 import { differenceInCalendarMonths, format } from 'date-fns';
 import { hu } from 'date-fns/locale';
 
@@ -16,6 +16,12 @@ export async function pickDay(page: Page, label: string, day: Date) {
   await page
     .getByRole('button', { name: format(day, 'PPPP', { locale: hu }) })
     .click();
+}
+
+// The options open at the end of the page, outside any dialog.
+export async function pick(page: Page, field: Locator, option: string) {
+  await field.fill(option.split(' ')[0]);
+  await page.getByRole('option').filter({ hasText: option }).click();
 }
 
 // Through the API: the admin's request list only shows the current semester.

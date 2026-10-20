@@ -25,6 +25,7 @@ import LinkButton from 'admin/components/LinkButton/LinkButton';
 import { VideoStatusTag } from 'admin/components/StatusTag/StatusTag';
 import User from 'admin/components/User/User';
 import { dateToLocaleString } from 'admin/helpers/DateToLocaleStringCoverters';
+import { diffAdditionalData } from 'admin/helpers/diffAdditionalData';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
 import { formatVideoLength } from 'admin/helpers/formatVideoLength';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
@@ -113,7 +114,12 @@ const VideoDetailsPage = () => {
       return;
     }
 
-    await mutateAsync({ additional_data: additional_data })
+    await mutateAsync({
+      additional_data: diffAdditionalData(
+        queryResult.additional_data,
+        additional_data,
+      ),
+    })
       .then(async () => {
         await queryClient.invalidateQueries({
           queryKey: queryKeys.request(requestId),

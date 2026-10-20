@@ -22,6 +22,7 @@ import { queryKeys } from 'admin/api/queryKeys';
 import AutoCompleteStaffMultiple from 'admin/components/AutoCompleteStaff/AutoCompleteStaffMultiple';
 import { TodoStatusTag } from 'admin/components/StatusTag/StatusTag';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
+import { pickDirtyFields } from 'admin/helpers/pickDirtyFields';
 import { isNotFound } from 'api/errors';
 import { StatusEnum, TodoAdminListRetrieve } from 'api/models';
 
@@ -49,20 +50,19 @@ const TodoDialog = forwardRef<
 
   const {
     control,
-    formState: { isDirty },
+    formState: { dirtyFields, isDirty },
     handleSubmit,
     reset,
     setError,
   } = useForm<ITodo>({
     shouldFocusError: false,
   });
-  const { mutateAsync } = useMutation(
-    todoId
-      ? todoUpdateMutation(todoId)
-      : videoId
-        ? requestVideoTodoCreateMutation(requestId, videoId)
-        : requestTodoCreateMutation(requestId),
+  const { mutateAsync: createTodo } = useMutation(
+    videoId
+      ? requestVideoTodoCreateMutation(requestId, videoId)
+      : requestTodoCreateMutation(requestId),
   );
+  const { mutateAsync: updateTodo } = useMutation(todoUpdateMutation(todoId));
 
   useEffect(() => {
     let query: QueryExecuteOptions<TodoAdminListRetrieve> | undefined =
@@ -120,11 +120,17 @@ const TodoDialog = forwardRef<
 
     setLoading(true);
 
-    await mutateAsync({
-      ...data,
+    const fields = {
       assignees: data.assignees?.map((assignee) => assignee.id),
+      description: data.description,
       status: data.status as StatusEnum,
-    })
+    };
+
+    await (
+      todoId
+        ? updateTodo(pickDirtyFields(fields, dirtyFields))
+        : createTodo(fields)
+    )
       .then(async () => {
         await invalidateQueries();
         onHide();

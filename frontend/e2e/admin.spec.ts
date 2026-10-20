@@ -1,8 +1,8 @@
-import type { Locator, Page } from '@playwright/test';
+import type { Page } from '@playwright/test';
 import { format, subDays } from 'date-fns';
 
 import { expect, loginAs, test } from './fixtures';
-import { requestLink } from './helpers';
+import { pick, requestLink } from './helpers';
 
 // The seeded 'Kari gólyabál', which only this spec touches, taken from
 // submitted to closed; every step builds on the last.
@@ -24,12 +24,6 @@ function status(page: Page) {
 
 function recording(page: Page) {
   return detailsRow(page, 'Nyersek');
-}
-
-// The options open at the end of the page, outside any dialog.
-async function pick(page: Page, field: Locator, option: string) {
-  await field.fill(option.split(' ')[0]);
-  await page.getByRole('option').filter({ hasText: option }).click();
 }
 
 async function editVideo(page: Page, change: () => Promise<void>) {

@@ -40,7 +40,9 @@ import {
   dateTimeToLocaleString,
   dateToLocaleString,
 } from 'admin/helpers/DateToLocaleStringCoverters';
+import { diffAdditionalData } from 'admin/helpers/diffAdditionalData';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
+import { pickDirtyFields } from 'admin/helpers/pickDirtyFields';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import useMobile from 'admin/hooks/useMobile';
 import { useToast } from 'admin/providers/ToastProvider';
@@ -189,7 +191,10 @@ const RequestDetailsPage = () => {
     };
 
     await mutateAsync({
-      additional_data: { ...queryResult.additional_data, ..._data },
+      additional_data: diffAdditionalData(queryResult.additional_data, {
+        ...queryResult.additional_data,
+        ..._data,
+      }),
     })
       .then(async () => {
         await queryClient.invalidateQueries({
@@ -232,7 +237,12 @@ const RequestDetailsPage = () => {
       return;
     }
 
-    await mutateAsync({ additional_data: additional_data })
+    await mutateAsync({
+      additional_data: diffAdditionalData(
+        queryResult.additional_data,
+        additional_data,
+      ),
+    })
       .then(async () => {
         await queryClient.invalidateQueries({
           queryKey: queryKeys.request(requestId),
@@ -304,16 +314,18 @@ const RequestDetailsPage = () => {
     </div>
   );
 
+  const recordingValues = {
+    copied_to_gdrive: data.additional_data.recording?.copied_to_gdrive,
+    path: data.additional_data.recording?.path,
+    removed: data.additional_data.recording?.removed,
+  };
   const {
     control: recordingContentControl,
+    formState: { dirtyFields: recordingDirtyFields },
     handleSubmit: recordingContentHandleSubmit,
     reset: recordingContentReset,
   } = useForm<RequestAdditionalDataRecordingType>({
-    defaultValues: {
-      copied_to_gdrive: data.additional_data.recording?.copied_to_gdrive,
-      path: data.additional_data.recording?.path,
-      removed: data.additional_data.recording?.removed,
-    },
+    defaultValues: recordingValues,
   });
 
   const onSubmitRecordingContent: SubmitHandler<
@@ -323,8 +335,7 @@ const RequestDetailsPage = () => {
 
     await mutateAsync({
       additional_data: {
-        ...queryResult.additional_data,
-        recording: { ...queryResult.additional_data.recording, ...data },
+        recording: pickDirtyFields(data, recordingDirtyFields),
       },
     })
       .then(async () => {
@@ -599,6 +610,7 @@ const RequestDetailsPage = () => {
                     onRecordingDataCancel();
                   }}
                   editOnClick={() => {
+                    recordingContentReset(recordingValues);
                     setRecordingIsEditing(true);
                   }}
                   editOnSave={recordingContentHandleSubmit(

@@ -17,6 +17,7 @@ import { useRevalidator } from 'react-router';
 import { userUpdateMutation } from 'admin/api/mutations';
 import { queryKeys } from 'admin/api/queryKeys';
 import FormField from 'admin/components/FormField/FormField';
+import { pickDirtyFields } from 'admin/helpers/pickDirtyFields';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import { useToast } from 'admin/providers/ToastProvider';
 import { AvatarProviderEnum, UserAdminRetrieveUpdate } from 'api';
@@ -76,10 +77,15 @@ function getUserRole(role: string, banned: boolean) {
 const ProfileSection = ({ userData }: ProfileSectionProps) => {
   const [avatarDialogVisible, setAvatarDialogVisible] =
     useState<boolean>(false);
-  const { control, handleSubmit, reset, setError } =
-    useForm<UserAdminRetrieveUpdate>({
-      defaultValues: toFormValues(userData),
-    });
+  const {
+    control,
+    formState: { dirtyFields },
+    handleSubmit,
+    reset,
+    setError,
+  } = useForm<UserAdminRetrieveUpdate>({
+    defaultValues: toFormValues(userData),
+  });
   const { isPending, mutateAsync } = useMutation(
     userUpdateMutation(userData.id),
   );
@@ -128,7 +134,13 @@ const ProfileSection = ({ userData }: ProfileSectionProps) => {
 
   const onSubmit: SubmitHandler<UserAdminRetrieveUpdate> = async (data) => {
     const phone = data.phone_number;
-    await mutateAsync({ ...data, phone_number: phone && toE164(phone) })
+    const fields = {
+      email: data.email,
+      first_name: data.first_name,
+      last_name: data.last_name,
+      phone_number: phone && toE164(phone),
+    };
+    await mutateAsync(pickDirtyFields(fields, dirtyFields))
       .then(async (response) => {
         showToast({
           detail: 'Felhasználó módosítva',
