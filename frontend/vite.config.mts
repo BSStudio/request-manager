@@ -9,13 +9,20 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const { BACKEND_URL } = loadEnv(mode, import.meta.dirname, '');
+  const { BACKEND_URL, SENTRY_RELEASE } = loadEnv(
+    mode,
+    import.meta.dirname,
+    '',
+  );
 
   return {
     build: {
       assetsDir: 'static/frontend',
       outDir: 'build',
       sourcemap: 'hidden',
+    },
+    define: {
+      'import.meta.env.RELEASE': JSON.stringify(SENTRY_RELEASE ?? ''),
     },
     plugins: [
       basicSsl(),
