@@ -1,4 +1,6 @@
-from django.utils.timezone import localdate
+from datetime import datetime, time
+
+from django.utils.timezone import localdate, make_aware
 from drf_spectacular.utils import extend_schema
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -24,11 +26,11 @@ class ReportAdminView(APIView):
         date_before = query.validated_data["date_before"]
 
         # An event belongs to every day it runs on, so one spanning two months
-        # is in both reports.
+        # is in both reports. One that ends at midnight does not run on the next day.
         requests = (
             Request.objects.filter(
                 start_datetime__date__lte=date_before,
-                end_datetime__date__gte=date_after,
+                end_datetime__gt=make_aware(datetime.combine(date_after, time.min)),
             )
             .exclude(
                 status__in=[

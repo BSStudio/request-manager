@@ -54,6 +54,7 @@ def test_report_permissions(api_client, expected, request, user):
 def test_report_lists_events_running_in_the_period(api_client, staff_user):
     login(api_client, staff_user)
     event("Before", datetime(2026, 8, 20, 18), datetime(2026, 8, 20, 22))
+    event("Until midnight", datetime(2026, 8, 31, 20), datetime(2026, 9, 1))
     event("From August", datetime(2026, 8, 31, 18), datetime(2026, 9, 2, 2))
     event("Whole month", datetime(2026, 8, 25, 10), datetime(2026, 10, 5, 10))
     # Already the next day in Budapest, still the day before in UTC.

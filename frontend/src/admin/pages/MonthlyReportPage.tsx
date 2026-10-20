@@ -130,7 +130,9 @@ const MonthlyReportPage = () => {
       </div>
       <div className="border-round flex flex-column gap-4 p-3 shadow-2 sm:p-4 surface-card">
         {isLoading && <ProgressBar mode="indeterminate" />}
-        {isError && <p className="m-0">Nem sikerült betölteni a beszámolót.</p>}
+        {isError && !data && (
+          <p className="m-0">Nem sikerült betölteni a beszámolót.</p>
+        )}
         {data && (
           <>
             <ReportList
