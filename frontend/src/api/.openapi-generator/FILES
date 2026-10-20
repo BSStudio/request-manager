@@ -53,6 +53,8 @@ models/rating-admin-list-retrieve.ts
 models/rating-create-update-request.ts
 models/rating-create-update.ts
 models/rating-retrieve.ts
+models/report-admin.ts
+models/report-item.ts
 models/request-admin-create-request.ts
 models/request-admin-list.ts
 models/request-admin-retrieve.ts

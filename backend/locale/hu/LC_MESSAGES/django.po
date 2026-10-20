@@ -42,7 +42,7 @@ msgstr ""
 msgid "Invalid filter."
 msgstr "Érvénytelen szűrő."
 
-#: .\api\v1\admin\users\views.py:156
+#: .\api\v1\admin\reports\serializers.py:14 .\api\v1\admin\users\views.py:156
 msgid "The start of the period cannot be after its end."
 msgstr "Az időszak kezdete nem lehet a vége után."
 

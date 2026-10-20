@@ -9,6 +9,34 @@ info:
     email: kecskemety.oliver@simonyi.bme.hu
     name: Olivér Kecskeméty
 paths:
+  /api/v1/admin/report:
+    get:
+      operationId: admin_report_retrieve
+      parameters:
+        - in: query
+          name: date_after
+          schema:
+            type: string
+            format: date
+          required: true
+        - in: query
+          name: date_before
+          schema:
+            type: string
+            format: date
+          required: true
+      tags:
+        - admin
+      security:
+        - tokenAuth: []
+        - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ReportAdmin'
+          description: ''
   /api/v1/admin/requests:
     get:
       operationId: admin_requests_list
@@ -3214,6 +3242,39 @@ components:
         - created
         - rating
         - review
+    ReportAdmin:
+      type: object
+      properties:
+        requests:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportItem'
+          readOnly: true
+        videos:
+          type: array
+          items:
+            $ref: '#/components/schemas/ReportItem'
+          readOnly: true
+      required:
+        - requests
+        - videos
+    ReportItem:
+      type: object
+      properties:
+        date:
+          type: string
+          format: date
+          readOnly: true
+        id:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+      required:
+        - date
+        - id
+        - title
     RequestAdminCreateRequest:
       type: object
       properties:

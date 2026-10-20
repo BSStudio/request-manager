@@ -82,6 +82,8 @@ import { RatingAdminCreateUpdateRequest } from '../models';
 // @ts-ignore
 import { RatingAdminListRetrieve } from '../models';
 // @ts-ignore
+import { ReportAdmin } from '../models';
+// @ts-ignore
 import { RequestAdminCreateRequest } from '../models';
 // @ts-ignore
 import { RequestAdminRetrieve } from '../models';
@@ -111,6 +113,75 @@ export const AdminApiAxiosParamCreator = function (
   configuration?: Configuration,
 ) {
   return {
+    /**
+     *
+     * @param {string} dateAfter
+     * @param {string} dateBefore
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminReportRetrieve: async (
+      dateAfter: string,
+      dateBefore: string,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'dateAfter' is not null or undefined
+      assertParamExists('adminReportRetrieve', 'dateAfter', dateAfter);
+      // verify required parameter 'dateBefore' is not null or undefined
+      assertParamExists('adminReportRetrieve', 'dateBefore', dateBefore);
+      const localVarPath = `/api/v1/admin/report`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication tokenAuth required
+      await setApiKeyToObject(
+        localVarHeaderParameter,
+        'Authorization',
+        configuration,
+      );
+
+      // authentication cookieAuth required
+
+      if (dateAfter !== undefined) {
+        localVarQueryParameter['date_after'] =
+          (dateAfter as any) instanceof Date
+            ? (dateAfter as any).toISOString().substring(0, 10)
+            : dateAfter;
+      }
+
+      if (dateBefore !== undefined) {
+        localVarQueryParameter['date_before'] =
+          (dateBefore as any) instanceof Date
+            ? (dateBefore as any).toISOString().substring(0, 10)
+            : dateBefore;
+      }
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
     /**
      *
      * @param {number} requestId
@@ -3666,6 +3737,33 @@ export const AdminApiFp = function (configuration?: Configuration) {
   return {
     /**
      *
+     * @param {string} dateAfter
+     * @param {string} dateBefore
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminReportRetrieve(
+      dateAfter: string,
+      dateBefore: string,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ReportAdmin>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminReportRetrieve(
+          dateAfter,
+          dateBefore,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {number} requestId
      * @param {CommentAdminCreateUpdateRequest} commentAdminCreateUpdateRequest
      * @param {*} [options] Override http request option.
@@ -5297,6 +5395,22 @@ export const AdminApiFactory = function (
   return {
     /**
      *
+     * @param {string} dateAfter
+     * @param {string} dateBefore
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminReportRetrieve(
+      dateAfter: string,
+      dateBefore: string,
+      options?: any,
+    ): AxiosPromise<ReportAdmin> {
+      return localVarFp
+        .adminReportRetrieve(dateAfter, dateBefore, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {number} requestId
      * @param {CommentAdminCreateUpdateRequest} commentAdminCreateUpdateRequest
      * @param {*} [options] Override http request option.
@@ -6336,6 +6450,24 @@ export const AdminApiFactory = function (
  * @extends {BaseAPI}
  */
 export class AdminApi extends BaseAPI {
+  /**
+   *
+   * @param {string} dateAfter
+   * @param {string} dateBefore
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public adminReportRetrieve(
+    dateAfter: string,
+    dateBefore: string,
+    options?: AxiosRequestConfig,
+  ) {
+    return AdminApiFp(this.configuration)
+      .adminReportRetrieve(dateAfter, dateBefore, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
   /**
    *
    * @param {number} requestId
