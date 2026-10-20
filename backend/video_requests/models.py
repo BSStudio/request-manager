@@ -126,6 +126,13 @@ class Request(models.Model):
         return f"{self.title} || {self.start_datetime.date()}"
 
 
+class DeletedRequest(Request.history.model):
+    class Meta:
+        proxy = True
+        verbose_name = _("deleted request")
+        verbose_name_plural = _("deleted requests")
+
+
 class CrewMember(models.Model):
     member = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     request = models.ForeignKey(Request, on_delete=models.CASCADE, related_name="crew")

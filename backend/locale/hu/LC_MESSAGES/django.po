@@ -192,6 +192,23 @@ msgstr "Videók száma"
 msgid "Requester"
 msgstr "Felkérő"
 
+#: .\video_requests\admin.py:149
+msgid "Deleted at"
+msgstr "Törlés ideje"
+
+#: .\video_requests\admin.py:153
+msgid "Deleted by"
+msgstr "Törölte"
+
+#: .\video_requests\admin.py:158
+msgid "Restore selected requests with everything deleted with them"
+msgstr "Kiválasztott felkérések visszaállítása mindenestül"
+
+#: .\video_requests\admin.py:164
+#, python-format
+msgid "Restored: %(title)s"
+msgstr "Visszaállítva: %(title)s"
+
 #: .\video_requests\admin.py:86 .\video_requests\admin.py:109
 #: .\video_requests\admin.py:135 .\video_requests\admin.py:193
 msgid "Request"
@@ -273,6 +290,14 @@ msgstr "Későbbinek kell lennie mint az esemény kezdése."
 #: .\video_requests\models.py:108
 msgid "Must be later than the end of the event."
 msgstr "Későbbinek kell lennie mint az esemény vége."
+
+#: .\video_requests\models.py:132
+msgid "deleted request"
+msgstr "törölt felkérés"
+
+#: .\video_requests\models.py:133
+msgid "deleted requests"
+msgstr "törölt felkérések"
 
 #: .\video_requests\models.py:135
 msgid "Vágásra vár"

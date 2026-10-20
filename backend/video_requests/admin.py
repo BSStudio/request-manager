@@ -1,5 +1,8 @@
+from datetime import timedelta
+
 from django import forms
 from django.contrib import admin
+from django.db import transaction
 from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html, format_html_join
@@ -7,7 +10,15 @@ from django.utils.translation import gettext_lazy as _
 from simple_history.admin import SimpleHistoryAdmin
 from simple_history.manager import SIMPLE_HISTORY_REVERSE_ATTR_NAME
 
-from video_requests.models import Comment, CrewMember, Rating, Request, Todo, Video
+from video_requests.models import (
+    Comment,
+    CrewMember,
+    DeletedRequest,
+    Rating,
+    Request,
+    Todo,
+    Video,
+)
 
 
 def change_link(obj, text):
@@ -75,6 +86,83 @@ class RequestHistoryAdmin(AddedByMixin, SimpleHistoryAdmin):
 
     def view_on_site(self, obj):
         return obj.admin_url
+
+
+# A restore brings back only what went with the request: Django deletes the
+# rows of a request moments before the request itself.
+DELETED_TOGETHER = timedelta(minutes=1)
+
+
+def restore_deleted_request(deleted):
+    def records(model, **filters):
+        return model.history.filter(
+            history_type="-",
+            history_date__range=(
+                deleted.history_date - DELETED_TOGETHER,
+                deleted.history_date,
+            ),
+            **filters,
+        )
+
+    with transaction.atomic():
+        deleted.instance.save(force_insert=True)
+        videos = list(records(Video, request_id=deleted.id))
+        for record in [
+            *videos,
+            *records(Rating, video_id__in=[video.id for video in videos]),
+            *records(CrewMember, request_id=deleted.id),
+            *records(Comment, request_id=deleted.id),
+            *records(Todo, request_id=deleted.id),
+        ]:
+            obj = record.instance
+            obj.save(force_insert=True)
+            if isinstance(obj, Todo):
+                obj.assignees.set(record.assignees.values_list("user", flat=True))
+
+
+@admin.register(DeletedRequest)
+class DeletedRequestAdmin(admin.ModelAdmin):
+    actions = ["restore"]
+    list_display = ["id", "title", "start_datetime", "deleted", "deleted_by"]
+    list_display_links = None
+    list_select_related = ["history_user"]
+    ordering = ["-history_date"]
+    search_fields = ["title"]
+
+    def get_queryset(self, request):
+        return (
+            super()
+            .get_queryset(request)
+            .filter(history_type="-")
+            .exclude(id__in=Request.objects.values("id"))
+        )
+
+    def has_add_permission(self, request):
+        return False
+
+    def has_change_permission(self, request, obj=None):
+        return False
+
+    def has_delete_permission(self, request, obj=None):
+        return False
+
+    @admin.display(description=_("Deleted at"), ordering="history_date")
+    def deleted(self, obj):
+        return obj.history_date
+
+    @admin.display(description=_("Deleted by"))
+    def deleted_by(self, obj):
+        return obj.history_user and user_link(obj.history_user)
+
+    @admin.action(
+        description=_("Restore selected requests with everything deleted with them")
+    )
+    def restore(self, request, queryset):
+        for deleted in queryset:
+            restore_deleted_request(deleted)
+            self.message_user(
+                request, _("Restored: %(title)s") % {"title": deleted.title}
+            )
 
 
 @admin.register(CrewMember)

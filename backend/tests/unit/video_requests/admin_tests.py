@@ -1,3 +1,4 @@
+from datetime import timedelta
 from unittest.mock import ANY
 
 import pytest
@@ -5,11 +6,12 @@ from django.apps import apps
 from django.db import connection
 from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
+from django.utils import timezone
 from model_bakery import baker
 from rest_framework.status import HTTP_200_OK, HTTP_302_FOUND
 
 from tests.factories import make_user
-from video_requests.models import CrewMember, Request, Todo, Video
+from video_requests.models import Comment, CrewMember, Rating, Request, Todo, Video
 
 EVERY_MODEL = pytest.mark.parametrize(
     "model_name", ["comment", "crewmember", "rating", "request", "todo", "video"]
@@ -208,6 +210,58 @@ def test_the_crew_and_todos_of_a_deleted_request_can_be_restored(client):
     # Reverting saves the row anew, and Django stamps auto_now_add fields then.
     assert Todo.objects.values().get() == {**todo_before, "created": ANY}
     assert list(Todo.objects.get().assignees.all()) == [assignee]
+
+
+@pytest.mark.django_db
+def test_deleted_requests_list_the_requests_still_deleted(client):
+    admin = make_user(username="listing_admin", is_admin=True, is_superuser=True)
+    kept, deleted, restored = baker.make("video_requests.Request", _quantity=3)
+    deleted_id = deleted.id
+    deleted.delete()
+    restored.delete()
+    Request.history.latest().instance.save()
+    url = reverse("admin:video_requests_deletedrequest_changelist")
+
+    client.force_login(admin)
+    changelist = client.get(url).context["cl"]
+    found = client.get(url, {"q": deleted.title}).context["cl"]
+
+    assert [record.id for record in changelist.result_list] == [deleted_id]
+    assert [record.id for record in found.result_list] == [deleted_id]
+    for index in range(len(changelist.list_display)):
+        assert client.get(url, {"o": index}).status_code == HTTP_200_OK
+
+
+def rows_without_created():
+    # A restore stamps the time of the restore on created.
+    return [
+        {key: value for key, value in row.items() if key != "created"}
+        for model in (Request, Video, Rating, CrewMember, Comment, Todo)
+        for row in model.objects.order_by("id").values()
+    ]
+
+
+@pytest.mark.django_db
+def test_restoring_a_request_brings_back_what_was_deleted_with_it(client):
+    admin = make_user(username="restoring_admin", is_admin=True, is_superuser=True)
+    make_one_of_each(admin)
+    video_request = Request.objects.get()
+    baker.make("video_requests.CrewMember", request=video_request).delete()
+    CrewMember.history.filter(history_type="-").update(
+        history_date=timezone.now() - timedelta(minutes=2)
+    )
+    before = rows_without_created()
+    video_request.delete()
+
+    client.force_login(admin)
+    response = client.post(
+        reverse("admin:video_requests_deletedrequest_changelist"),
+        {"action": "restore", "_selected_action": [Request.history.latest().pk]},
+    )
+
+    assert response.status_code == HTTP_302_FOUND
+    assert rows_without_created() == before
+    assert list(Todo.objects.get().assignees.all()) == [admin]
 
 
 @pytest.mark.django_db
