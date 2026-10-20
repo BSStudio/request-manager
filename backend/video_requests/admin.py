@@ -22,6 +22,7 @@ from video_requests.models import (
     Todo,
     Video,
 )
+from video_requests.services import delete_project
 
 
 def change_link(obj, text):
@@ -65,6 +66,13 @@ class ProjectHistoryAdmin(SimpleHistoryAdmin):
     list_select_related = ["responsible"]
     ordering = ["-id"]
     search_fields = ["name"]
+
+    def delete_model(self, request, obj):
+        delete_project(obj)
+
+    def delete_queryset(self, request, queryset):
+        for project in queryset:
+            delete_project(project)
 
     def view_on_site(self, obj):
         return obj.admin_url

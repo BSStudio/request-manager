@@ -11,7 +11,15 @@ from model_bakery import baker
 from rest_framework.status import HTTP_200_OK, HTTP_302_FOUND
 
 from tests.factories import make_user
-from video_requests.models import Comment, CrewMember, Rating, Request, Todo, Video
+from video_requests.models import (
+    Comment,
+    CrewMember,
+    Project,
+    Rating,
+    Request,
+    Todo,
+    Video,
+)
 
 EVERY_MODEL = pytest.mark.parametrize(
     "model_name",
@@ -290,6 +298,34 @@ def test_restoring_a_request_whose_project_is_gone_clears_its_project(client):
 
     assert response.status_code == HTTP_302_FOUND
     assert Request.objects.get(pk=request_id).project is None
+
+
+@pytest.mark.django_db
+@pytest.mark.parametrize("bulk", [False, True])
+def test_deleting_projects_in_the_admin_unassigns_their_requests(client, bulk):
+    admin = make_user(username="deleting_admin", is_admin=True, is_superuser=True)
+    project = baker.make("video_requests.Project")
+    video_request = baker.make("video_requests.Request", project=project)
+
+    client.force_login(admin)
+    if bulk:
+        response = client.post(
+            reverse("admin:video_requests_project_changelist"),
+            {
+                "action": "delete_selected",
+                "_selected_action": [project.pk],
+                "post": "yes",
+            },
+        )
+    else:
+        response = client.post(
+            reverse("admin:video_requests_project_delete", args=(project.pk,)),
+            {"post": "yes"},
+        )
+
+    assert response.status_code == HTTP_302_FOUND
+    assert not Project.objects.exists()
+    assert video_request.history.latest().project_id is None
 
 
 @pytest.mark.django_db
