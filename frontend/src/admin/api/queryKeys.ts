@@ -6,6 +6,12 @@
 type Id = string | number | undefined;
 
 export const queryKeys = {
+  report: (dateAfter: string, dateBefore: string) => [
+    'requests',
+    'report',
+    dateAfter,
+    dateBefore,
+  ],
   request: (requestId: Id) => ['requests', Number(requestId)],
   requestComments: (requestId: Id) => [
     'requests',

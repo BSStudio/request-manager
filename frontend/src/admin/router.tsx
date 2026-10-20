@@ -80,6 +80,11 @@ const router = sentryCreateBrowserRouter(
               lazy: () => import('admin/pages/RequestCreatorEditorPage'),
             },
             {
+              path: 'report',
+              handle: { crumb: () => 'Havi beszámoló' },
+              lazy: () => import('admin/pages/MonthlyReportPage'),
+            },
+            {
               path: ':requestId',
               handle: {
                 crumb: ({ requestTitle }: requestLoaderData) => requestTitle,

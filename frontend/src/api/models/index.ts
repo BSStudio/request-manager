@@ -37,6 +37,8 @@ export * from './rating-admin-list-retrieve';
 export * from './rating-create-update';
 export * from './rating-create-update-request';
 export * from './rating-retrieve';
+export * from './report-admin';
+export * from './report-item';
 export * from './request-admin-create-request';
 export * from './request-admin-list';
 export * from './request-admin-retrieve';

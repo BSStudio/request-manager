@@ -46,6 +46,11 @@ const Menubar = () => {
             dropdownItems={[
               { icon: 'pi-bars', label: 'Lista', path: '/requests' },
               { icon: 'pi-plus', label: 'Új', path: '/requests/new' },
+              {
+                icon: 'pi-calendar',
+                label: 'Havi beszámoló',
+                path: '/requests/report',
+              },
             ]}
           />
           <Button icon="pi-list-check" label="Feladatok" path="/todos" />
