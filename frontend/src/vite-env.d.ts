@@ -2,6 +2,7 @@
 /// <reference types="vite-plugin-pwa/react" />
 
 interface ImportMetaEnv {
+  readonly RELEASE?: string;
   readonly VITE_AUTHSCH_CLIENT_ID: string;
   readonly VITE_BSS_CLIENT_ID: string;
   readonly VITE_GOOGLE_CLIENT_ID: string;

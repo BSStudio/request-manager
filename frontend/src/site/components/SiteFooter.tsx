@@ -7,6 +7,19 @@ import SocialLinks from 'site/components/SocialLinks';
 
 type FooterLink = { external?: boolean; label: string; to: string };
 
+const repoUrl = 'https://github.com/BSStudio/request-manager';
+
+// Tagged builds are released as request-manager@<version>, others by commit.
+function releaseLink(release?: string) {
+  if (!release) return null;
+  const version = release.split('@')[1];
+  return version
+    ? { label: `v${version}`, url: `${repoUrl}/releases/tag/v${version}` }
+    : { label: release.slice(0, 7), url: `${repoUrl}/commit/${release}` };
+}
+
+const release = releaseLink(import.meta.env.RELEASE);
+
 function FooterColumn({
   links,
   title,
@@ -121,6 +134,19 @@ export default function SiteFooter() {
           <SocialLinks className="text-white md:order-last" />
           <p className="text-sm text-white/50">
             © {new Date().getFullYear()} Budavári Schönherz Stúdió
+            {release && (
+              <>
+                {' · '}
+                <a
+                  className="font-mono transition-colors hover:text-white"
+                  href={release.url}
+                  rel="noreferrer"
+                  target="_blank"
+                >
+                  {release.label}
+                </a>
+              </>
+            )}
           </p>
         </div>
       </div>
