@@ -138,12 +138,14 @@ export default function SiteFooter() {
               <>
                 {' · '}
                 <a
-                  className="font-mono transition-colors hover:text-white"
+                  aria-label={`Verzió: ${release.label}`}
+                  className="group inline-flex items-center gap-1 font-mono transition-colors hover:text-white"
                   href={release.url}
                   rel="noreferrer"
                   target="_blank"
                 >
                   {release.label}
+                  <ArrowUpRightIcon className="size-3.5 opacity-50 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100" />
                 </a>
               </>
             )}
