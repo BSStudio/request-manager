@@ -314,17 +314,18 @@ const RequestDetailsPage = () => {
     </div>
   );
 
+  const recordingValues = {
+    copied_to_gdrive: data.additional_data.recording?.copied_to_gdrive,
+    path: data.additional_data.recording?.path,
+    removed: data.additional_data.recording?.removed,
+  };
   const {
     control: recordingContentControl,
     formState: { dirtyFields: recordingDirtyFields },
     handleSubmit: recordingContentHandleSubmit,
     reset: recordingContentReset,
   } = useForm<RequestAdditionalDataRecordingType>({
-    defaultValues: {
-      copied_to_gdrive: data.additional_data.recording?.copied_to_gdrive,
-      path: data.additional_data.recording?.path,
-      removed: data.additional_data.recording?.removed,
-    },
+    defaultValues: recordingValues,
   });
 
   const onSubmitRecordingContent: SubmitHandler<
@@ -341,7 +342,6 @@ const RequestDetailsPage = () => {
         await queryClient.invalidateQueries({
           queryKey: queryKeys.request(requestId),
         });
-        recordingContentReset(data);
         setRecordingIsEditing(false);
       })
       .catch(async (error) => {
@@ -610,6 +610,7 @@ const RequestDetailsPage = () => {
                     onRecordingDataCancel();
                   }}
                   editOnClick={() => {
+                    recordingContentReset(recordingValues);
                     setRecordingIsEditing(true);
                   }}
                   editOnSave={recordingContentHandleSubmit(

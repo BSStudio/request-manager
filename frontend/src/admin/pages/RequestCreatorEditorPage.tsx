@@ -253,7 +253,7 @@ const RequestCreatorEditorPage = () => {
     await (
       requestId
         ? updateRequest({
-            ...requester,
+            ...pickDirtyFields(requester, dirtyFields),
             ...pickDirtyFields(fields, dirtyFields),
             send_notification: data.send_notification,
           })
