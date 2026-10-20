@@ -1,10 +1,12 @@
 from django.db.models import Q
 from django.forms import IntegerField
 from django_filters.rest_framework import (
+    BooleanFilter,
     DateFilter,
     DateFromToRangeFilter,
     Filter,
     FilterSet,
+    ModelChoiceFilter,
     ModelMultipleChoiceFilter,
     MultipleChoiceFilter,
 )
@@ -12,7 +14,7 @@ from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import extend_schema_field
 
 from common.models import User
-from video_requests.models import Request, Todo, Video
+from video_requests.models import Project, Request, Todo, Video
 
 
 class IntegerFilter(Filter):
@@ -26,6 +28,10 @@ class IntegerFilter(Filter):
 
 class RequestFilter(FilterSet):
     deadline = DateFromToRangeFilter()
+    has_project = BooleanFilter(
+        field_name="project", lookup_expr="isnull", exclude=True
+    )
+    project = ModelChoiceFilter(queryset=Project.objects.all())
     start_datetime = DateFromToRangeFilter()
     status = MultipleChoiceFilter(choices=Request.Statuses.choices)
 
