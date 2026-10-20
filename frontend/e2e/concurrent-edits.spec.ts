@@ -17,6 +17,7 @@ async function savedFields(page: Page, save: () => Promise<void>) {
     (response) => response.request().method() === 'PATCH',
   );
   await save();
+  expect((await response).ok()).toBe(true);
   return (await response).request().postDataJSON() as unknown;
 }
 

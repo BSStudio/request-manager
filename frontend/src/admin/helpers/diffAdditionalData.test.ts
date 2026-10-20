@@ -45,6 +45,12 @@ describe('diffAdditionalData', () => {
     ).toEqual({ aired: ['2026-10-01', '2026-10-15'] });
   });
 
+  it('leaves anything but an object as it is', () => {
+    expect(diffAdditionalData({ accepted: true }, ['accepted'])).toEqual([
+      'accepted',
+    ]);
+  });
+
   it('returns nothing when nothing changed', () => {
     expect(
       diffAdditionalData(

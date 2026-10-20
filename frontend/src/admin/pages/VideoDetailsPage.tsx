@@ -28,7 +28,6 @@ import { dateToLocaleString } from 'admin/helpers/DateToLocaleStringCoverters';
 import { diffAdditionalData } from 'admin/helpers/diffAdditionalData';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
 import { formatVideoLength } from 'admin/helpers/formatVideoLength';
-import { isObject } from 'admin/helpers/pickDirtyFields';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import useMobile from 'admin/hooks/useMobile';
 import { isNotFound } from 'api/errors';
@@ -116,9 +115,10 @@ const VideoDetailsPage = () => {
     }
 
     await mutateAsync({
-      additional_data: isObject(additional_data)
-        ? diffAdditionalData(queryResult.additional_data, additional_data)
-        : additional_data,
+      additional_data: diffAdditionalData(
+        queryResult.additional_data,
+        additional_data,
+      ),
     })
       .then(async () => {
         await queryClient.invalidateQueries({

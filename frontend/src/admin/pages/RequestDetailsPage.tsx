@@ -42,7 +42,7 @@ import {
 } from 'admin/helpers/DateToLocaleStringCoverters';
 import { diffAdditionalData } from 'admin/helpers/diffAdditionalData';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
-import { isObject, pickDirtyFields } from 'admin/helpers/pickDirtyFields';
+import { pickDirtyFields } from 'admin/helpers/pickDirtyFields';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import useMobile from 'admin/hooks/useMobile';
 import { useToast } from 'admin/providers/ToastProvider';
@@ -238,9 +238,10 @@ const RequestDetailsPage = () => {
     }
 
     await mutateAsync({
-      additional_data: isObject(additional_data)
-        ? diffAdditionalData(queryResult.additional_data, additional_data)
-        : additional_data,
+      additional_data: diffAdditionalData(
+        queryResult.additional_data,
+        additional_data,
+      ),
     })
       .then(async () => {
         await queryClient.invalidateQueries({
