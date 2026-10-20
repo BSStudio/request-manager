@@ -87,7 +87,6 @@ const RatingDialog = forwardRef<React.Ref<HTMLDivElement>, RatingDialogProps>(
       ) => {
         await queryClient.query(query).then((data) => {
           setRatingId(data.id);
-          setLoading(false);
           reset({ ...data });
         });
       };
@@ -116,10 +115,12 @@ const RatingDialog = forwardRef<React.Ref<HTMLDivElement>, RatingDialogProps>(
         }
 
         if (query) {
-          fetchData(query).catch(console.error);
+          fetchData(query)
+            .catch(console.error)
+            .finally(() => {
+              setLoading(false);
+            });
         }
-
-        setLoading(false);
 
         return () => {
           if (query) {
