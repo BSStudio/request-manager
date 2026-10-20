@@ -4,6 +4,14 @@ import { queryKeys } from './queryKeys';
 import { AdminTodosListStatusEnum } from '../../api/endpoints/admin-api';
 import { adminApi } from '../../api/http';
 
+export const reportQuery = (dateAfter: string, dateBefore: string) => ({
+  queryFn: async () => {
+    const report = await adminApi.adminReportRetrieve(dateAfter, dateBefore);
+    return report.data;
+  },
+  queryKey: queryKeys.report(dateAfter, dateBefore),
+});
+
 export const requestCommentsListQuery = (requestId: string | number) => ({
   queryFn: async () => {
     const comments = await adminApi.adminRequestsCommentsList(

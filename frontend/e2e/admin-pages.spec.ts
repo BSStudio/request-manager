@@ -32,6 +32,11 @@ test('every page opens from the menu', async ({ page }) => {
   await expect(page).toHaveTitle(crumbs('Új', 'Felkérések'));
   await expect(page.getByLabel('Esemény neve')).toBeVisible();
 
+  await menu.getByText('Felkérések', { exact: true }).click();
+  await menu.getByRole('link', { name: 'Havi beszámoló' }).click();
+  await expect(page).toHaveTitle(crumbs('Havi beszámoló', 'Felkérések'));
+  await expect(page.getByRole('region', { name: 'Vágások' })).toBeVisible();
+
   await menu.getByRole('link', { name: 'Feladatok' }).click();
   await expect(page).toHaveTitle(crumbs('Feladatok'));
   await expect(
