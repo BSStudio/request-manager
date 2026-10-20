@@ -13,11 +13,11 @@ async function save(page: Page, toast: string) {
 }
 
 async function savedFields(page: Page, save: () => Promise<void>) {
-  const request = page.waitForRequest(
-    (request) => request.method() === 'PATCH',
+  const response = page.waitForResponse(
+    (response) => response.request().method() === 'PATCH',
   );
   await save();
-  return (await request).postDataJSON() as unknown;
+  return (await response).request().postDataJSON() as unknown;
 }
 
 async function openTab(page: Page, tab: string) {
@@ -162,4 +162,90 @@ test('a rating edit sends only the changed field', async ({ page }) => {
       dialog.getByRole('button', { name: 'Mentés' }).click(),
     ),
   ).toEqual({ review: 'Jól sikerült, csak kicsit hosszú.' });
+});
+
+test('a decision on the request sends only the changed field', async ({
+  page,
+}) => {
+  await page.goto(await adminRequestPath(page, 'Sportnap'));
+  await page.getByRole('button', { name: 'Felkérés elbírálása' }).click();
+  const dialog = page.getByRole('dialog', { name: 'Felkérés elfogadása' });
+  await dialog
+    .getByRole('checkbox', { name: 'Szervezők által lemondva' })
+    .check();
+  expect(
+    await savedFields(page, () =>
+      dialog.getByRole('button', { exact: true, name: 'Mentés' }).click(),
+    ),
+  ).toEqual({ additional_data: { canceled: true } });
+});
+
+test('a recording edit sends only the changed field', async ({ page }) => {
+  await page.goto(await adminRequestPath(page, 'Sportnap'));
+  const recording = page.getByRole('listitem').filter({ hasText: /^Nyersek/ });
+  await recording.getByRole('button', { name: 'Szerkesztés' }).click();
+  await recording.getByPlaceholder('Elérési út').fill('/Felvetelek/Sportnap');
+  expect(
+    await savedFields(page, () =>
+      recording.getByRole('button', { name: 'Mentés' }).click(),
+    ),
+  ).toEqual({
+    additional_data: { recording: { path: '/Felvetelek/Sportnap' } },
+  });
+});
+
+async function editAdditionalData(
+  page: Page,
+  apiPath: string,
+  edit: (data: Record<string, unknown>) => void,
+) {
+  const response = await page.request.get(apiPath);
+  await expect(response).toBeOK();
+  const { additional_data } = (await response.json()) as {
+    additional_data: Record<string, unknown>;
+  };
+  edit(additional_data);
+
+  await page
+    .getByRole('button', { name: 'További adatok szerkesztése' })
+    .click();
+  const dialog = page.getByRole('dialog', {
+    name: 'További adatok szerkesztése',
+  });
+  await dialog.getByRole('textbox').fill(JSON.stringify(additional_data));
+  return savedFields(page, () =>
+    dialog.getByRole('button', { exact: true, name: 'Mentés' }).click(),
+  );
+}
+
+test("the request's data editor sends only what changed", async ({ page }) => {
+  const requestPath = await adminRequestPath(page, 'Sportnap');
+  await page.goto(requestPath);
+  expect(
+    await editAdditionalData(page, `/api/v1${requestPath}`, (data) => {
+      delete data.accepted;
+      (data.recording as Record<string, unknown>).copied_to_gdrive = false;
+    }),
+  ).toEqual({
+    additional_data: { accepted: null, recording: { copied_to_gdrive: false } },
+  });
+
+  const response = await page.request.get(`/api/v1${requestPath}`);
+  const { additional_data } = (await response.json()) as {
+    additional_data: object;
+  };
+  expect(additional_data).not.toHaveProperty('accepted');
+  expect(additional_data).toHaveProperty('recording.copied_to_gdrive', false);
+});
+
+test("the video's data editor sends only what changed", async ({ page }) => {
+  const videos = await openTab(page, 'Videók');
+  await videos.getByRole('link', { name: 'Ugrás a videóhoz' }).click();
+  await expect(page).toHaveURL(/\/videos\/\d+$/);
+  const videoPath = new URL(page.url()).pathname;
+  expect(
+    await editAdditionalData(page, `/api/v1${videoPath}`, (data) => {
+      data.length = 90;
+    }),
+  ).toEqual({ additional_data: { length: 90 } });
 });

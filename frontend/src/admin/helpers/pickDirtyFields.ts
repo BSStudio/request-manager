@@ -1,4 +1,4 @@
-const isObject = (value: unknown): value is object =>
+export const isObject = (value: unknown): value is object =>
   typeof value === 'object' && value !== null && !Array.isArray(value);
 
 // Nested objects keep only their dirty keys: the API deep-merges
