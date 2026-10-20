@@ -1,6 +1,7 @@
 from io import StringIO
 
 from celery import shared_task
+from django.apps import apps
 from django.core.management import call_command
 
 
@@ -62,9 +63,17 @@ def scheduled_cleaning():
         call_command(
             "clean_old_history",
             "video_requests.Comment",
+            "video_requests.CrewMember",
             "video_requests.Rating",
+            "video_requests.Todo",
             "--days",
             "90",
             stdout=out,
         )
+        # The assignees recorded with a todo version must go with it, but
+        # clean_old_history leaves them behind.
+        HistoricalTodo = apps.get_model("video_requests", "HistoricalTodo")
+        apps.get_model("video_requests", "HistoricalTodo_assignees").objects.exclude(
+            history__in=HistoricalTodo.objects.all()
+        ).delete()
         return out.getvalue()
