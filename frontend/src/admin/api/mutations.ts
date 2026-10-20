@@ -7,11 +7,12 @@ import {
   PatchedCrewMemberAdminCreateUpdateRequest,
   PatchedRatingAdminCreateUpdateRequest,
   PatchedRequestAdminUpdateRequest,
+  PatchedTodoAdminCreateUpdateRequest,
+  PatchedUserAdminRetrieveUpdateRequest,
   PatchedVideoAdminCreateUpdateRequest,
   RatingAdminCreateUpdateRequest,
   RequestAdminCreateRequest,
   TodoAdminCreateUpdateRequest,
-  UserAdminRetrieveUpdateRequest,
   VideoAdminCreateUpdateRequest,
 } from '../../api/models';
 
@@ -115,13 +116,13 @@ export const requestVideoUpdateMutation = (
 });
 
 export const todoUpdateMutation = (todoId: number) => ({
-  mutationFn: (updateTodo: TodoAdminCreateUpdateRequest) => {
+  mutationFn: (updateTodo: PatchedTodoAdminCreateUpdateRequest) => {
     return adminApi.adminTodosPartialUpdate(todoId, updateTodo);
   },
 });
 
 export const userUpdateMutation = (userId: number) => ({
-  mutationFn: (updateUser: UserAdminRetrieveUpdateRequest) => {
+  mutationFn: (updateUser: PatchedUserAdminRetrieveUpdateRequest) => {
     return adminApi.adminUsersPartialUpdate(userId, updateUser);
   },
 });
