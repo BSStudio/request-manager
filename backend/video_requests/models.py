@@ -126,10 +126,18 @@ class Request(models.Model):
         return f"{self.title} || {self.start_datetime.date()}"
 
 
+class DeletedRequest(Request.history.model):
+    class Meta:
+        proxy = True
+        verbose_name = _("deleted request")
+        verbose_name_plural = _("deleted requests")
+
+
 class CrewMember(models.Model):
     member = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     request = models.ForeignKey(Request, on_delete=models.CASCADE, related_name="crew")
     position = models.CharField(max_length=20)
+    history = HistoricalRecords()
 
     def __str__(self):
         return f"{self.request.title} || {self.member.get_full_name_eastern_order()} - {self.position}"

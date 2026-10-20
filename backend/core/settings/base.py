@@ -229,6 +229,10 @@ CELERY_BEAT_SCHEDULE = {
     },
 }
 
+# How long the cleaning task keeps the history of comments, crew members,
+# ratings and todos. A deleted request can be restored whole only within it.
+TRIMMED_HISTORY_DAYS = 90
+
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
