@@ -29,6 +29,7 @@ import LastUpdatedAt from 'admin/components/LastUpdatedAt/LastUpdatedAt';
 import VideoLengthInput from 'admin/components/VideoLengthInput/VideoLengthInput';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
 import { formatVideoLength } from 'admin/helpers/formatVideoLength';
+import { pickDirtyFields } from 'admin/helpers/pickDirtyFields';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import type { LoadErrorState } from 'admin/pages/ErrorPage';
 import { useToast } from 'admin/providers/ToastProvider';
@@ -86,17 +87,25 @@ const VideoCreatorEditorPage = () => {
     };
   }, []);
 
-  const { control, handleSubmit, reset, setError } = useForm<IVideoCreator>({
+  const {
+    control,
+    formState: { dirtyFields },
+    handleSubmit,
+    reset,
+    setError,
+  } = useForm<IVideoCreator>({
     defaultValues,
     mode: 'onChange',
   });
   const { requestId, videoId } = useParams();
   const { showToast } = useToast();
-  const { isPending, mutateAsync } = useMutation(
-    requestId && videoId
-      ? requestVideoUpdateMutation(Number(requestId), Number(videoId))
-      : requestVideoCreateMutation(Number(requestId)),
+  const { isPending: isCreating, mutateAsync: createVideo } = useMutation(
+    requestVideoCreateMutation(Number(requestId)),
   );
+  const { isPending: isUpdating, mutateAsync: updateVideo } = useMutation(
+    requestVideoUpdateMutation(Number(requestId), Number(videoId)),
+  );
+  const isPending = isCreating || isUpdating;
   const query = useQuery({
     ...requestVideoRetrieveQuery(Number(requestId), Number(videoId)),
     enabled: !!requestId && !!videoId,
@@ -145,23 +154,23 @@ const VideoCreatorEditorPage = () => {
   };
 
   const onSubmit: SubmitHandler<IVideoCreator> = async (data) => {
-    const prevAdditionalData = loaderData?.additional_data ?? {};
-
     let length = null;
     if (data.additional_data.length) {
       const [hours, minutes, seconds] = data.additional_data.length.split(':');
       length = Number(hours) * 60 * 60 + Number(minutes) * 60 + Number(seconds);
     }
 
-    await mutateAsync({
-      ...data,
-      additional_data: {
-        ...prevAdditionalData,
-        ...data.additional_data,
-        length: length,
-      },
+    const fields = {
+      additional_data: { ...data.additional_data, length: length },
       editor: data.editor?.id || null,
-    })
+      title: data.title,
+    };
+
+    await (
+      videoId
+        ? updateVideo(pickDirtyFields(fields, dirtyFields))
+        : createVideo(fields)
+    )
       .then(async (response) => {
         showToast({
           detail: `Videó ${videoId ? 'módosítva' : 'létrehozva'}`,

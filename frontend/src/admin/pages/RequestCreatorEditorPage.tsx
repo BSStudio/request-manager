@@ -34,6 +34,7 @@ import AutoCompleteStaff from 'admin/components/AutoCompleteStaff/AutoCompleteSt
 import FormField from 'admin/components/FormField/FormField';
 import LastUpdatedAt from 'admin/components/LastUpdatedAt/LastUpdatedAt';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
+import { pickDirtyFields } from 'admin/helpers/pickDirtyFields';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import useMobile from 'admin/hooks/useMobile';
 import type { LoadErrorState } from 'admin/pages/ErrorPage';
@@ -102,18 +103,26 @@ const RequestCreatorEditorPage = () => {
     };
   }, []);
 
-  const { control, handleSubmit, reset, setError, setValue } =
-    useForm<IRequestCreator>({
-      defaultValues,
-      mode: 'onChange',
-    });
+  const {
+    control,
+    formState: { dirtyFields },
+    handleSubmit,
+    reset,
+    setError,
+    setValue,
+  } = useForm<IRequestCreator>({
+    defaultValues,
+    mode: 'onChange',
+  });
   const { requestId } = useParams();
   const { showToast } = useToast();
-  const { isPending, mutateAsync } = useMutation(
-    requestId
-      ? requestUpdateMutation(Number(requestId))
-      : requestCreateMutation(),
+  const { isPending: isCreating, mutateAsync: createRequest } = useMutation(
+    requestCreateMutation(),
   );
+  const { isPending: isUpdating, mutateAsync: updateRequest } = useMutation(
+    requestUpdateMutation(Number(requestId)),
+  );
+  const isPending = isCreating || isUpdating;
   const query = useQuery({
     ...requestRetrieveQuery(Number(requestId)),
     enabled: !!requestId,
@@ -230,18 +239,30 @@ const RequestCreatorEditorPage = () => {
       ? format(data.deadline, 'yyyy-MM-dd')
       : undefined;
 
-    await mutateAsync({
-      ...requester,
+    const fields = {
       comment: data.comment || undefined,
       deadline: deadline,
       end_datetime: data.end_datetime.toISOString(),
       place: data.place,
       responsible: data.responsible?.id || null,
-      send_notification: data.send_notification,
       start_datetime: data.start_datetime.toISOString(),
       title: data.title,
       type: data.type,
-    })
+    };
+
+    await (
+      requestId
+        ? updateRequest({
+            ...requester,
+            ...pickDirtyFields(fields, dirtyFields),
+            send_notification: data.send_notification,
+          })
+        : createRequest({
+            ...requester,
+            ...fields,
+            send_notification: data.send_notification,
+          })
+    )
       .then(async (response) => {
         showToast({
           detail: `Felkérés ${requestId ? 'módosítva' : 'létrehozva'}`,
