@@ -14,13 +14,15 @@ from tests.factories import make_user
 from video_requests.models import Comment, CrewMember, Rating, Request, Todo, Video
 
 EVERY_MODEL = pytest.mark.parametrize(
-    "model_name", ["comment", "crewmember", "rating", "request", "todo", "video"]
+    "model_name",
+    ["comment", "crewmember", "project", "rating", "request", "todo", "video"],
 )
 
 
 def make_one_of_each(user):
+    project = baker.make("video_requests.Project", responsible=user)
     video_request = baker.make(
-        "video_requests.Request", requester=user, responsible=user
+        "video_requests.Request", project=project, requester=user, responsible=user
     )
     video = baker.make("video_requests.Video", request=video_request, editor=user)
     baker.make("video_requests.CrewMember", request=video_request, member=user)
@@ -273,6 +275,24 @@ def test_restoring_a_request_brings_back_what_was_deleted_with_it(
 
 
 @pytest.mark.django_db
+def test_restoring_a_request_whose_project_is_gone_clears_its_project(client):
+    admin = make_user(username="restoring_admin", is_admin=True, is_superuser=True)
+    project = baker.make("video_requests.Project")
+    request_id = baker.make("video_requests.Request", project=project).id
+    Request.objects.get(pk=request_id).delete()
+    project.delete()
+
+    client.force_login(admin)
+    response = client.post(
+        reverse("admin:video_requests_deletedrequest_changelist"),
+        {"action": "restore", "_selected_action": [Request.history.latest().pk]},
+    )
+
+    assert response.status_code == HTTP_302_FOUND
+    assert Request.objects.get(pk=request_id).project is None
+
+
+@pytest.mark.django_db
 @EVERY_MODEL
 def test_changelists_can_be_searched(client, model_name):
     # Django resolves the search_fields lookups only once someone searches.
@@ -317,7 +337,7 @@ def test_changelists_can_be_sorted_by_computed_columns(client, model_name, colum
 
 
 @pytest.mark.django_db
-@pytest.mark.parametrize("model_name", ["request", "video"])
+@pytest.mark.parametrize("model_name", ["project", "request", "video"])
 def test_admins_link_to_the_same_page_in_the_app(client, model_name):
     user = make_user(username="linking_admin", is_admin=True, is_superuser=True)
     make_one_of_each(user)
@@ -367,7 +387,8 @@ def test_add_forms_run_as_many_queries_for_more_related_rows(client, model_name)
 # Autocompletes page through their results, which needs an ordered queryset.
 @pytest.mark.filterwarnings("error::django.core.paginator.UnorderedObjectListWarning")
 @pytest.mark.parametrize(
-    ("model_name", "field_name"), [("rating", "video"), ("video", "request")]
+    ("model_name", "field_name"),
+    [("rating", "video"), ("request", "project"), ("video", "request")],
 )
 def test_autocompletes_run_as_many_queries_for_more_results(
     client, model_name, field_name

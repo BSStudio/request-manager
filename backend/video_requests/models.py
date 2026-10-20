@@ -43,6 +43,26 @@ class AnnotatedManager(models.Manager):
         return super().get_queryset().annotate(avg_rating=Avg("ratings__rating"))
 
 
+class Project(models.Model):
+    name = models.CharField(max_length=200)
+    responsible = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="responsible_projects",
+        on_delete=models.SET(get_sentinel_user),
+        blank=True,
+        null=True,
+    )
+    created = models.DateTimeField(auto_now_add=True)
+    history = HistoricalRecords()
+
+    @property
+    def admin_url(self) -> str:
+        return f"{settings.BASE_URL}/admin/projects/{self.id}"
+
+    def __str__(self):
+        return self.name
+
+
 class Request(models.Model):
     class Statuses(models.IntegerChoices):
         DENIED = 0, _("Elutasítva")
@@ -82,6 +102,13 @@ class Request(models.Model):
         settings.AUTH_USER_MODEL,
         related_name="submitted_requests",
         on_delete=models.SET(get_sentinel_user),
+    )
+    project = models.ForeignKey(
+        Project,
+        related_name="requests",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
     )
     additional_data = JSONField(
         encoder=DjangoJSONEncoder,
