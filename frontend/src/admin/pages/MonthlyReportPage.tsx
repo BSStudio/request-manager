@@ -58,15 +58,23 @@ const ReportList = ({
     )
     .join('\n');
 
-  const copy = () => {
-    void navigator.clipboard.writeText(text).then(() =>
+  const copy = async () => {
+    try {
+      await navigator.clipboard.writeText(text);
       showToast({
         detail: `${title} a vágólapra másolva`,
         life: 3000,
         severity: 'info',
         summary: 'Információ',
-      }),
-    );
+      });
+    } catch {
+      showToast({
+        detail: 'Nem sikerült a vágólapra másolni.',
+        life: 3000,
+        severity: 'error',
+        summary: 'Hiba',
+      });
+    }
   };
 
   return (
@@ -79,7 +87,7 @@ const ReportList = ({
           disabled={!items.length}
           icon="pi pi-copy"
           label="Másolás"
-          onClick={copy}
+          onClick={() => void copy()}
           size="small"
           text
         />

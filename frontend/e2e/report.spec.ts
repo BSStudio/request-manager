@@ -57,3 +57,23 @@ test('copies last month with and without dates', async ({ page }) => {
   await expect(videos).toContainText('Ebben a hónapban nem volt vágás.');
   await expect(videos.getByRole('button', { name: 'Másolás' })).toBeDisabled();
 });
+
+test('tells when copying fails', async ({ page }) => {
+  await page.route(
+    (url) => url.pathname === '/api/v1/admin/report',
+    (route) => route.fulfill({ json: report }),
+  );
+  await page.goto('/admin/requests/report');
+  await page.evaluate(() => {
+    navigator.clipboard.writeText = () => Promise.reject(new Error('Denied'));
+  });
+
+  await page
+    .getByRole('region', { name: 'Felkérések' })
+    .getByRole('button', { name: 'Másolás' })
+    .click();
+
+  await expect(
+    page.getByText('Nem sikerült a vágólapra másolni.'),
+  ).toBeVisible();
+});
