@@ -148,6 +148,10 @@ const Ratings = ({
   const [ratingDialogAuthorName, setRatingDialogAuthorName] =
     useState<string>('');
   const [ratingDialogId, setRatingDialogId] = useState<number>(0);
+  // The dialog loads its rating only when it opens. Saving a new rating sets
+  // isRated, and reloading then would overwrite what is typed after the save.
+  const [ratingDialogIsRated, setRatingDialogIsRated] =
+    useState<boolean>(false);
   const [ratingDialogVisible, setRatingDialogVisible] =
     useState<boolean>(false);
 
@@ -195,7 +199,7 @@ const Ratings = ({
   return (
     <>
       <RatingDialog
-        isRated={isRated}
+        isRated={ratingDialogIsRated}
         onHide={onRatingDialogHide}
         ratingAuthorName={ratingDialogAuthorName}
         ratingId={ratingDialogId}
@@ -245,6 +249,7 @@ const Ratings = ({
             disabled={videoStatus < VideoStatus.EDITED}
             label={isRated ? 'Értékelés szerkesztése' : 'Értékelés írása'}
             onClick={() => {
+              setRatingDialogIsRated(isRated);
               setRatingDialogVisible(true);
             }}
           />
