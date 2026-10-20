@@ -1,9 +1,11 @@
+from django import forms
 from django.contrib import admin
 from django.db.models import Count
 from django.urls import reverse
 from django.utils.html import format_html, format_html_join
 from django.utils.translation import gettext_lazy as _
 from simple_history.admin import SimpleHistoryAdmin
+from simple_history.manager import SIMPLE_HISTORY_REVERSE_ATTR_NAME
 
 from video_requests.models import Comment, CrewMember, Rating, Request, Todo, Video
 
@@ -169,10 +171,23 @@ class RatingHistoryAdmin(AddedByMixin, KeepParentMixin, SimpleHistoryAdmin):
         return user_link(obj.author)
 
 
+class TodoForm(forms.ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # A version opened from the history must show the assignees it had,
+        # while Django reads them from the current rows of the todo.
+        record = getattr(self.instance, SIMPLE_HISTORY_REVERSE_ATTR_NAME, None)
+        if record is not None:
+            self.initial["assignees"] = list(
+                record.assignees.values_list("user", flat=True)
+            )
+
+
 @admin.register(Todo)
-class TodoAdmin(AddedByMixin, KeepParentMixin, admin.ModelAdmin):
+class TodoHistoryAdmin(AddedByMixin, KeepParentMixin, SimpleHistoryAdmin):
     added_by_field = "creator"
     autocomplete_fields = ["request", "video", "assignees"]
+    form = TodoForm
     list_display = [
         "id",
         "created",

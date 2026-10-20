@@ -280,6 +280,7 @@ class AbstractTodo(models.Model):
         related_name="created_todos",
     )
     description = models.TextField()
+    history = HistoricalRecords(inherit=True, m2m_fields=["assignees"])
 
     class Meta:
         abstract = True

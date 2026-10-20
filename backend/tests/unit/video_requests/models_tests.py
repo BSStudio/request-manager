@@ -1,6 +1,7 @@
 from datetime import date, timedelta
 
 import pytest
+from django.apps import apps
 from django.conf import settings
 from django.core.exceptions import ValidationError
 from model_bakery import baker
@@ -275,3 +276,17 @@ class TestVideoValidation:
             "Additional properties are not allowed ('randomKey' was unexpected)"
             in error.value.messages[0]
         )
+
+
+class TestHistory:
+    @pytest.mark.parametrize("model_name", ["crewmember", "todo"])
+    def test_records_creation_change_and_deletion(self, model_name):
+        model = apps.get_model("video_requests", model_name)
+        obj = baker.make(model)
+        obj.save()
+        obj_id = obj.id
+        obj.delete()
+
+        history = model.history.filter(id=obj_id)
+
+        assert [record.history_type for record in history] == ["-", "~", "+"]

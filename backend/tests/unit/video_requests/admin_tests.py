@@ -1,3 +1,5 @@
+from unittest.mock import ANY
+
 import pytest
 from django.apps import apps
 from django.db import connection
@@ -7,7 +9,7 @@ from model_bakery import baker
 from rest_framework.status import HTTP_200_OK, HTTP_302_FOUND
 
 from tests.factories import make_user
-from video_requests.models import Request, Todo
+from video_requests.models import CrewMember, Request, Todo, Video
 
 EVERY_MODEL = pytest.mark.parametrize(
     "model_name", ["comment", "crewmember", "rating", "request", "todo", "video"]
@@ -175,6 +177,37 @@ def test_todo_admin_rejects_a_video_of_another_request(client):
     assert response.status_code == HTTP_200_OK
     assert "video" in response.context["adminform"].form.errors
     assert not Todo.objects.exists()
+
+
+@pytest.mark.django_db
+def test_the_crew_and_todos_of_a_deleted_request_can_be_restored(client):
+    admin = make_user(username="restoring_admin", is_admin=True, is_superuser=True)
+    assignee = make_user(username="assignee")
+    video = baker.make("video_requests.Video")
+    baker.make("video_requests.CrewMember", request=video.request)
+    todo = baker.make("video_requests.Todo", request=video.request, video=video)
+    todo.assignees.add(assignee)
+    crew_before = CrewMember.objects.values().get()
+    todo_before = Todo.objects.values().get()
+    video.request.delete()
+    for parent in (Request, Video):
+        parent.history.latest().instance.save()
+
+    client.force_login(admin)
+    for model in (CrewMember, Todo):
+        record = model.history.latest()
+        assert record.history_type == "-"
+        url = reverse(
+            f"admin:video_requests_{model._meta.model_name}_simple_history",
+            args=(record.id, record.history_id),
+        )
+        form = client.get(url).context["adminform"].form
+        assert client.post(url, form.initial).status_code == HTTP_302_FOUND
+
+    assert CrewMember.objects.values().get() == crew_before
+    # Reverting saves the row anew, and Django stamps auto_now_add fields then.
+    assert Todo.objects.values().get() == {**todo_before, "created": ANY}
+    assert list(Todo.objects.get().assignees.all()) == [assignee]
 
 
 @pytest.mark.django_db
