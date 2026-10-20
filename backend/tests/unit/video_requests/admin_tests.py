@@ -213,21 +213,24 @@ def test_the_crew_and_todos_of_a_deleted_request_can_be_restored(client):
 
 
 @pytest.mark.django_db
-def test_deleted_requests_list_the_requests_still_deleted(client):
+def test_deleted_requests_list_each_recent_deletion_once(client):
     admin = make_user(username="listing_admin", is_admin=True, is_superuser=True)
-    kept, deleted, restored = baker.make("video_requests.Request", _quantity=3)
+    kept, deleted, old = baker.make("video_requests.Request", _quantity=3)
+    old.delete()
+    Request.history.update(history_date=timezone.now() - timedelta(days=91))
     deleted_id = deleted.id
     deleted.delete()
-    restored.delete()
     Request.history.latest().instance.save()
+    Request.objects.get(id=deleted_id).delete()
+    deletion = Request.history.latest()
     url = reverse("admin:video_requests_deletedrequest_changelist")
 
     client.force_login(admin)
     changelist = client.get(url).context["cl"]
     found = client.get(url, {"q": deleted.title}).context["cl"]
 
-    assert [record.id for record in changelist.result_list] == [deleted_id]
-    assert [record.id for record in found.result_list] == [deleted_id]
+    assert list(changelist.result_list) == [deletion]
+    assert list(found.result_list) == [deletion]
     for index in range(len(changelist.list_display)):
         assert client.get(url, {"o": index}).status_code == HTTP_200_OK
 
@@ -242,7 +245,9 @@ def rows_without_created():
 
 
 @pytest.mark.django_db
-def test_restoring_a_request_brings_back_what_was_deleted_with_it(client):
+def test_restoring_a_request_brings_back_what_was_deleted_with_it(
+    client, django_capture_on_commit_callbacks
+):
     admin = make_user(username="restoring_admin", is_admin=True, is_superuser=True)
     make_one_of_each(admin)
     video_request = Request.objects.get()
@@ -254,14 +259,17 @@ def test_restoring_a_request_brings_back_what_was_deleted_with_it(client):
     video_request.delete()
 
     client.force_login(admin)
-    response = client.post(
-        reverse("admin:video_requests_deletedrequest_changelist"),
-        {"action": "restore", "_selected_action": [Request.history.latest().pk]},
-    )
+    with django_capture_on_commit_callbacks() as callbacks:
+        response = client.post(
+            reverse("admin:video_requests_deletedrequest_changelist"),
+            {"action": "restore", "_selected_action": [Request.history.latest().pk]},
+        )
 
     assert response.status_code == HTTP_302_FOUND
     assert rows_without_created() == before
     assert list(Todo.objects.get().assignees.all()) == [admin]
+    # The assignee e-mail waits for the restore to commit.
+    assert len(callbacks) == 1
 
 
 @pytest.mark.django_db

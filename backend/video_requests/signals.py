@@ -1,3 +1,6 @@
+from functools import partial
+
+from django.db import transaction
 from django.db.models.signals import m2m_changed, post_delete, pre_delete
 from django.dispatch import receiver
 from simple_history.signals import pre_create_historical_m2m_records
@@ -17,7 +20,10 @@ def send_notification_to_new_assignees(
 ):
     if action == "post_add" and not reverse:
         # In this case pk_set will be the set of user ids added as new assignees
-        email_staff_todo_assigned.delay(instance.id, list(pk_set))
+        # The task reads the todo, which a worker can only see once committed.
+        transaction.on_commit(
+            partial(email_staff_todo_assigned.delay, instance.id, list(pk_set))
+        )
 
 
 m2m_changed.connect(send_notification_to_new_assignees, sender=Todo.assignees.through)

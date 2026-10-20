@@ -1,11 +1,13 @@
 from datetime import timedelta
 
 from django import forms
+from django.conf import settings
 from django.contrib import admin
 from django.db import transaction
-from django.db.models import Count
+from django.db.models import Count, OuterRef, Subquery
 from django.urls import reverse
 from django.utils.html import format_html, format_html_join
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from simple_history.admin import SimpleHistoryAdmin
 from simple_history.manager import SIMPLE_HISTORY_REVERSE_ATTR_NAME
@@ -130,11 +132,18 @@ class DeletedRequestAdmin(admin.ModelAdmin):
     search_fields = ["title"]
 
     def get_queryset(self, request):
+        # A request is still deleted when its latest version is a deletion.
+        latest = Request.history.filter(id=OuterRef("id")).order_by(
+            "-history_date", "-history_id"
+        )
         return (
             super()
             .get_queryset(request)
-            .filter(history_type="-")
-            .exclude(id__in=Request.objects.values("id"))
+            .filter(
+                history_type="-",
+                history_date__gte=now() - timedelta(days=settings.TRIMMED_HISTORY_DAYS),
+                history_id=Subquery(latest.values("history_id")[:1]),
+            )
         )
 
     def has_add_permission(self, request):

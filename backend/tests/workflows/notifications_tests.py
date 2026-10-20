@@ -10,6 +10,7 @@ from unittest.mock import patch
 import pytest
 from django.conf import settings as django_settings
 from django.core import mail
+from django.db import transaction
 from django.utils.timezone import localtime
 from model_bakery import baker
 from rest_framework.reverse import reverse
@@ -24,9 +25,11 @@ pytestmark = [pytest.mark.django_db, pytest.mark.emails]
 
 
 @pytest.fixture(autouse=True)
-def run_tasks_eagerly(settings):
-    """The notifications are Celery tasks; run them inline."""
+def run_tasks_eagerly(monkeypatch, settings):
+    """The notifications are Celery tasks; run them inline, without waiting for
+    a commit that never comes inside the test's transaction."""
     settings.CELERY_TASK_ALWAYS_EAGER = True
+    monkeypatch.setattr(transaction, "on_commit", lambda func, **kwargs: func())
 
 
 @pytest.fixture

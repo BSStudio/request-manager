@@ -2,6 +2,7 @@ from io import StringIO
 
 from celery import shared_task
 from django.apps import apps
+from django.conf import settings
 from django.core.management import call_command
 
 
@@ -67,7 +68,7 @@ def scheduled_cleaning():
             "video_requests.Rating",
             "video_requests.Todo",
             "--days",
-            "90",
+            str(settings.TRIMMED_HISTORY_DAYS),
             stdout=out,
         )
         # The assignees recorded with a todo version must go with it, but
