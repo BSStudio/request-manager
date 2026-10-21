@@ -137,7 +137,9 @@ class ProjectAdminWriteSerializer(ModelSerializer):
         for index, row in enumerate(rows):
             row.pop("send_notification", None)
             # Request.clean() runs in save(), after the validation that would
-            # have put its errors under the row's index.
+            # have put its errors under the row's index. It raises before the
+            # INSERT, so the other rows can still be tried; the atomic() around
+            # the save undoes the ones that went in.
             try:
                 RequestAdminCreateSerializer(context=self.context).create(
                     {**row, "project": project, "requested_by": user}
@@ -148,4 +150,5 @@ class ProjectAdminWriteSerializer(ModelSerializer):
                     if hasattr(error, "error_dict")
                     else {"non_field_errors": error.messages}
                 )
-                raise ValidationError({"new_requests": errors})
+        if any(errors):
+            raise ValidationError({"new_requests": errors})

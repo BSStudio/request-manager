@@ -287,6 +287,28 @@ def test_one_bad_row_changes_nothing(api_client, new_row, staff_user):
     assert Request.objects.count() == 2
 
 
+def test_every_bad_row_is_reported(api_client, new_row, staff_user):
+    login(api_client, staff_user)
+
+    response = save(
+        api_client,
+        {
+            "name": "Fizika 1 előadások",
+            "new_requests": [
+                new_row(),
+                invalid_row(new_row),
+                new_row(),
+                invalid_row(new_row),
+            ],
+        },
+    )
+
+    assert response.status_code == HTTP_400_BAD_REQUEST
+    errors = response.data["new_requests"]
+    assert [bool(error) for error in errors] == [False, True, False, True]
+    assert not Request.objects.exists()
+
+
 def test_one_bad_row_creates_no_project(api_client, new_row, staff_user):
     login(api_client, staff_user)
 

@@ -1,6 +1,7 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 from io import StringIO
 from unittest.mock import patch
+from zoneinfo import ZoneInfo
 
 import pytest
 from django.core import mail
@@ -91,7 +92,9 @@ def test_deletes_every_existing_project():
     assert not Project.objects.filter(pk=project.pk).exists()
 
 
-def test_creates_a_week_and_a_lecture_series():
+def test_creates_a_week_and_a_lecture_series(time_machine):
+    # The lectures straddle the switch to winter time on 25 October.
+    time_machine.move_to(datetime(2026, 10, 10, 12, tzinfo=ZoneInfo("Europe/Budapest")))
     seed()
 
     projects = Project.objects.annotate(request_count=Count("requests"))
@@ -99,14 +102,17 @@ def test_creates_a_week_and_a_lecture_series():
         "Kollégiumi hét": 3,
         "Fizika 1 előadások": 4,
     }
-    starts = list(
-        Request.objects.filter(project__name="Fizika 1 előadások")
+    starts = [
+        timezone.localtime(start)
+        for start in Request.objects.filter(project__name="Fizika 1 előadások")
         .order_by("start_datetime")
         .values_list("start_datetime", flat=True)
-    )
-    assert [later - earlier for earlier, later in zip(starts, starts[1:])] == [
+    ]
+    days = [start.date() for start in starts]
+    assert [later - earlier for earlier, later in zip(days, days[1:])] == [
         timedelta(weeks=1)
     ] * 3
+    assert {start.hour for start in starts} == {10}
 
 
 def test_deletes_requests_that_no_longer_validate():
