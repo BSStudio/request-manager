@@ -66,6 +66,8 @@ import { PatchedCommentAdminCreateUpdateRequest } from '../models';
 // @ts-ignore
 import { PatchedCrewMemberAdminCreateUpdateRequest } from '../models';
 // @ts-ignore
+import { PatchedProjectAdminWriteRequest } from '../models';
+// @ts-ignore
 import { PatchedRatingAdminCreateUpdateRequest } from '../models';
 // @ts-ignore
 import { PatchedRequestAdminUpdateRequest } from '../models';
@@ -75,6 +77,12 @@ import { PatchedTodoAdminCreateUpdateRequest } from '../models';
 import { PatchedUserAdminRetrieveUpdateRequest } from '../models';
 // @ts-ignore
 import { PatchedVideoAdminCreateUpdateRequest } from '../models';
+// @ts-ignore
+import { ProjectAdminList } from '../models';
+// @ts-ignore
+import { ProjectAdminRetrieve } from '../models';
+// @ts-ignore
+import { ProjectAdminWriteRequest } from '../models';
 // @ts-ignore
 import { RatingAdminCreateUpdate } from '../models';
 // @ts-ignore
@@ -113,6 +121,355 @@ export const AdminApiAxiosParamCreator = function (
   configuration?: Configuration,
 ) {
   return {
+    /**
+     *
+     * @param {ProjectAdminWriteRequest} projectAdminWriteRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminProjectsCreate: async (
+      projectAdminWriteRequest: ProjectAdminWriteRequest,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'projectAdminWriteRequest' is not null or undefined
+      assertParamExists(
+        'adminProjectsCreate',
+        'projectAdminWriteRequest',
+        projectAdminWriteRequest,
+      );
+      const localVarPath = `/api/v1/admin/projects`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'POST',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication tokenAuth required
+      await setApiKeyToObject(
+        localVarHeaderParameter,
+        'Authorization',
+        configuration,
+      );
+
+      // authentication cookieAuth required
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        projectAdminWriteRequest,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {number} id A unique integer value identifying this project.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminProjectsDestroy: async (
+      id: number,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('adminProjectsDestroy', 'id', id);
+      const localVarPath = `/api/v1/admin/projects/{id}`.replace(
+        `{${'id'}}`,
+        encodeURIComponent(String(id)),
+      );
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'DELETE',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication tokenAuth required
+      await setApiKeyToObject(
+        localVarHeaderParameter,
+        'Authorization',
+        configuration,
+      );
+
+      // authentication cookieAuth required
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminProjectsList: async (
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/api/v1/admin/projects`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication tokenAuth required
+      await setApiKeyToObject(
+        localVarHeaderParameter,
+        'Authorization',
+        configuration,
+      );
+
+      // authentication cookieAuth required
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {number} id A unique integer value identifying this project.
+     * @param {PatchedProjectAdminWriteRequest} [patchedProjectAdminWriteRequest]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminProjectsPartialUpdate: async (
+      id: number,
+      patchedProjectAdminWriteRequest?: PatchedProjectAdminWriteRequest,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('adminProjectsPartialUpdate', 'id', id);
+      const localVarPath = `/api/v1/admin/projects/{id}`.replace(
+        `{${'id'}}`,
+        encodeURIComponent(String(id)),
+      );
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'PATCH',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication tokenAuth required
+      await setApiKeyToObject(
+        localVarHeaderParameter,
+        'Authorization',
+        configuration,
+      );
+
+      // authentication cookieAuth required
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        patchedProjectAdminWriteRequest,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {number} id A unique integer value identifying this project.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminProjectsRetrieve: async (
+      id: number,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('adminProjectsRetrieve', 'id', id);
+      const localVarPath = `/api/v1/admin/projects/{id}`.replace(
+        `{${'id'}}`,
+        encodeURIComponent(String(id)),
+      );
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication tokenAuth required
+      await setApiKeyToObject(
+        localVarHeaderParameter,
+        'Authorization',
+        configuration,
+      );
+
+      // authentication cookieAuth required
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {number} id A unique integer value identifying this project.
+     * @param {ProjectAdminWriteRequest} projectAdminWriteRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminProjectsUpdate: async (
+      id: number,
+      projectAdminWriteRequest: ProjectAdminWriteRequest,
+      options: AxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'id' is not null or undefined
+      assertParamExists('adminProjectsUpdate', 'id', id);
+      // verify required parameter 'projectAdminWriteRequest' is not null or undefined
+      assertParamExists(
+        'adminProjectsUpdate',
+        'projectAdminWriteRequest',
+        projectAdminWriteRequest,
+      );
+      const localVarPath = `/api/v1/admin/projects/{id}`.replace(
+        `{${'id'}}`,
+        encodeURIComponent(String(id)),
+      );
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'PUT',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication tokenAuth required
+      await setApiKeyToObject(
+        localVarHeaderParameter,
+        'Authorization',
+        configuration,
+      );
+
+      // authentication cookieAuth required
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        projectAdminWriteRequest,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
     /**
      *
      * @param {string} dateAfter
@@ -1194,10 +1551,12 @@ export const AdminApiAxiosParamCreator = function (
      *
      * @param {string} [deadlineAfter]
      * @param {string} [deadlineBefore]
+     * @param {boolean} [hasProject]
      * @param {string} [ordering] Which field to use when ordering the results.
      * @param {number} [page] A page number within the paginated result set.
      * @param {number} [pageSize] Number of results to return per page.
      * @param {boolean} [pagination] Return paginated response.
+     * @param {number} [project]
      * @param {string} [search] A search term.
      * @param {string} [startDatetimeAfter]
      * @param {string} [startDatetimeBefore]
@@ -1208,10 +1567,12 @@ export const AdminApiAxiosParamCreator = function (
     adminRequestsList: async (
       deadlineAfter?: string,
       deadlineBefore?: string,
+      hasProject?: boolean,
       ordering?: string,
       page?: number,
       pageSize?: number,
       pagination?: boolean,
+      project?: number,
       search?: string,
       startDatetimeAfter?: string,
       startDatetimeBefore?: string,
@@ -1257,6 +1618,10 @@ export const AdminApiAxiosParamCreator = function (
             : deadlineBefore;
       }
 
+      if (hasProject !== undefined) {
+        localVarQueryParameter['has_project'] = hasProject;
+      }
+
       if (ordering !== undefined) {
         localVarQueryParameter['ordering'] = ordering;
       }
@@ -1271,6 +1636,10 @@ export const AdminApiAxiosParamCreator = function (
 
       if (pagination !== undefined) {
         localVarQueryParameter['pagination'] = pagination;
+      }
+
+      if (project !== undefined) {
+        localVarQueryParameter['project'] = project;
       }
 
       if (search !== undefined) {
@@ -3737,6 +4106,160 @@ export const AdminApiFp = function (configuration?: Configuration) {
   return {
     /**
      *
+     * @param {ProjectAdminWriteRequest} projectAdminWriteRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminProjectsCreate(
+      projectAdminWriteRequest: ProjectAdminWriteRequest,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<ProjectAdminRetrieve>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminProjectsCreate(
+          projectAdminWriteRequest,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {number} id A unique integer value identifying this project.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminProjectsDestroy(
+      id: number,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminProjectsDestroy(id, options);
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminProjectsList(
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<Array<ProjectAdminList>>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminProjectsList(options);
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {number} id A unique integer value identifying this project.
+     * @param {PatchedProjectAdminWriteRequest} [patchedProjectAdminWriteRequest]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminProjectsPartialUpdate(
+      id: number,
+      patchedProjectAdminWriteRequest?: PatchedProjectAdminWriteRequest,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<ProjectAdminRetrieve>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminProjectsPartialUpdate(
+          id,
+          patchedProjectAdminWriteRequest,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {number} id A unique integer value identifying this project.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminProjectsRetrieve(
+      id: number,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<ProjectAdminRetrieve>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminProjectsRetrieve(id, options);
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
+     * @param {number} id A unique integer value identifying this project.
+     * @param {ProjectAdminWriteRequest} projectAdminWriteRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async adminProjectsUpdate(
+      id: number,
+      projectAdminWriteRequest: ProjectAdminWriteRequest,
+      options?: AxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<ProjectAdminRetrieve>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.adminProjectsUpdate(
+          id,
+          projectAdminWriteRequest,
+          options,
+        );
+      return createRequestFunction(
+        localVarAxiosArgs,
+        globalAxios,
+        BASE_PATH,
+        configuration,
+      );
+    },
+    /**
+     *
      * @param {string} dateAfter
      * @param {string} dateBefore
      * @param {*} [options] Override http request option.
@@ -4228,10 +4751,12 @@ export const AdminApiFp = function (configuration?: Configuration) {
      *
      * @param {string} [deadlineAfter]
      * @param {string} [deadlineBefore]
+     * @param {boolean} [hasProject]
      * @param {string} [ordering] Which field to use when ordering the results.
      * @param {number} [page] A page number within the paginated result set.
      * @param {number} [pageSize] Number of results to return per page.
      * @param {boolean} [pagination] Return paginated response.
+     * @param {number} [project]
      * @param {string} [search] A search term.
      * @param {string} [startDatetimeAfter]
      * @param {string} [startDatetimeBefore]
@@ -4242,10 +4767,12 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminRequestsList(
       deadlineAfter?: string,
       deadlineBefore?: string,
+      hasProject?: boolean,
       ordering?: string,
       page?: number,
       pageSize?: number,
       pagination?: boolean,
+      project?: number,
       search?: string,
       startDatetimeAfter?: string,
       startDatetimeBefore?: string,
@@ -4261,10 +4788,12 @@ export const AdminApiFp = function (configuration?: Configuration) {
         await localVarAxiosParamCreator.adminRequestsList(
           deadlineAfter,
           deadlineBefore,
+          hasProject,
           ordering,
           page,
           pageSize,
           pagination,
+          project,
           search,
           startDatetimeAfter,
           startDatetimeBefore,
@@ -5395,6 +5924,91 @@ export const AdminApiFactory = function (
   return {
     /**
      *
+     * @param {ProjectAdminWriteRequest} projectAdminWriteRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminProjectsCreate(
+      projectAdminWriteRequest: ProjectAdminWriteRequest,
+      options?: any,
+    ): AxiosPromise<ProjectAdminRetrieve> {
+      return localVarFp
+        .adminProjectsCreate(projectAdminWriteRequest, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {number} id A unique integer value identifying this project.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminProjectsDestroy(id: number, options?: any): AxiosPromise<void> {
+      return localVarFp
+        .adminProjectsDestroy(id, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminProjectsList(options?: any): AxiosPromise<Array<ProjectAdminList>> {
+      return localVarFp
+        .adminProjectsList(options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {number} id A unique integer value identifying this project.
+     * @param {PatchedProjectAdminWriteRequest} [patchedProjectAdminWriteRequest]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminProjectsPartialUpdate(
+      id: number,
+      patchedProjectAdminWriteRequest?: PatchedProjectAdminWriteRequest,
+      options?: any,
+    ): AxiosPromise<ProjectAdminRetrieve> {
+      return localVarFp
+        .adminProjectsPartialUpdate(
+          id,
+          patchedProjectAdminWriteRequest,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {number} id A unique integer value identifying this project.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminProjectsRetrieve(
+      id: number,
+      options?: any,
+    ): AxiosPromise<ProjectAdminRetrieve> {
+      return localVarFp
+        .adminProjectsRetrieve(id, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {number} id A unique integer value identifying this project.
+     * @param {ProjectAdminWriteRequest} projectAdminWriteRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminProjectsUpdate(
+      id: number,
+      projectAdminWriteRequest: ProjectAdminWriteRequest,
+      options?: any,
+    ): AxiosPromise<ProjectAdminRetrieve> {
+      return localVarFp
+        .adminProjectsUpdate(id, projectAdminWriteRequest, options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {string} dateAfter
      * @param {string} dateBefore
      * @param {*} [options] Override http request option.
@@ -5696,10 +6310,12 @@ export const AdminApiFactory = function (
      *
      * @param {string} [deadlineAfter]
      * @param {string} [deadlineBefore]
+     * @param {boolean} [hasProject]
      * @param {string} [ordering] Which field to use when ordering the results.
      * @param {number} [page] A page number within the paginated result set.
      * @param {number} [pageSize] Number of results to return per page.
      * @param {boolean} [pagination] Return paginated response.
+     * @param {number} [project]
      * @param {string} [search] A search term.
      * @param {string} [startDatetimeAfter]
      * @param {string} [startDatetimeBefore]
@@ -5710,10 +6326,12 @@ export const AdminApiFactory = function (
     adminRequestsList(
       deadlineAfter?: string,
       deadlineBefore?: string,
+      hasProject?: boolean,
       ordering?: string,
       page?: number,
       pageSize?: number,
       pagination?: boolean,
+      project?: number,
       search?: string,
       startDatetimeAfter?: string,
       startDatetimeBefore?: string,
@@ -5724,10 +6342,12 @@ export const AdminApiFactory = function (
         .adminRequestsList(
           deadlineAfter,
           deadlineBefore,
+          hasProject,
           ordering,
           page,
           pageSize,
           pagination,
+          project,
           search,
           startDatetimeAfter,
           startDatetimeBefore,
@@ -6452,6 +7072,96 @@ export const AdminApiFactory = function (
 export class AdminApi extends BaseAPI {
   /**
    *
+   * @param {ProjectAdminWriteRequest} projectAdminWriteRequest
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public adminProjectsCreate(
+    projectAdminWriteRequest: ProjectAdminWriteRequest,
+    options?: AxiosRequestConfig,
+  ) {
+    return AdminApiFp(this.configuration)
+      .adminProjectsCreate(projectAdminWriteRequest, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {number} id A unique integer value identifying this project.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public adminProjectsDestroy(id: number, options?: AxiosRequestConfig) {
+    return AdminApiFp(this.configuration)
+      .adminProjectsDestroy(id, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public adminProjectsList(options?: AxiosRequestConfig) {
+    return AdminApiFp(this.configuration)
+      .adminProjectsList(options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {number} id A unique integer value identifying this project.
+   * @param {PatchedProjectAdminWriteRequest} [patchedProjectAdminWriteRequest]
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public adminProjectsPartialUpdate(
+    id: number,
+    patchedProjectAdminWriteRequest?: PatchedProjectAdminWriteRequest,
+    options?: AxiosRequestConfig,
+  ) {
+    return AdminApiFp(this.configuration)
+      .adminProjectsPartialUpdate(id, patchedProjectAdminWriteRequest, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {number} id A unique integer value identifying this project.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public adminProjectsRetrieve(id: number, options?: AxiosRequestConfig) {
+    return AdminApiFp(this.configuration)
+      .adminProjectsRetrieve(id, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {number} id A unique integer value identifying this project.
+   * @param {ProjectAdminWriteRequest} projectAdminWriteRequest
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof AdminApi
+   */
+  public adminProjectsUpdate(
+    id: number,
+    projectAdminWriteRequest: ProjectAdminWriteRequest,
+    options?: AxiosRequestConfig,
+  ) {
+    return AdminApiFp(this.configuration)
+      .adminProjectsUpdate(id, projectAdminWriteRequest, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
    * @param {string} dateAfter
    * @param {string} dateBefore
    * @param {*} [options] Override http request option.
@@ -6784,10 +7494,12 @@ export class AdminApi extends BaseAPI {
    *
    * @param {string} [deadlineAfter]
    * @param {string} [deadlineBefore]
+   * @param {boolean} [hasProject]
    * @param {string} [ordering] Which field to use when ordering the results.
    * @param {number} [page] A page number within the paginated result set.
    * @param {number} [pageSize] Number of results to return per page.
    * @param {boolean} [pagination] Return paginated response.
+   * @param {number} [project]
    * @param {string} [search] A search term.
    * @param {string} [startDatetimeAfter]
    * @param {string} [startDatetimeBefore]
@@ -6799,10 +7511,12 @@ export class AdminApi extends BaseAPI {
   public adminRequestsList(
     deadlineAfter?: string,
     deadlineBefore?: string,
+    hasProject?: boolean,
     ordering?: string,
     page?: number,
     pageSize?: number,
     pagination?: boolean,
+    project?: number,
     search?: string,
     startDatetimeAfter?: string,
     startDatetimeBefore?: string,
@@ -6813,10 +7527,12 @@ export class AdminApi extends BaseAPI {
       .adminRequestsList(
         deadlineAfter,
         deadlineBefore,
+        hasProject,
         ordering,
         page,
         pageSize,
         pagination,
+        project,
         search,
         startDatetimeAfter,
         startDatetimeBefore,

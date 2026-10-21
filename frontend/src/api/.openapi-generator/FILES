@@ -39,6 +39,7 @@ models/paginated-video-admin-search-list.ts
 models/patched-comment-admin-create-update-request.ts
 models/patched-comment-create-update-request.ts
 models/patched-crew-member-admin-create-update-request.ts
+models/patched-project-admin-write-request.ts
 models/patched-rating-admin-create-update-request.ts
 models/patched-rating-create-update-request.ts
 models/patched-request-admin-update-request.ts
@@ -47,6 +48,11 @@ models/patched-user-admin-retrieve-update-request.ts
 models/patched-user-request.ts
 models/patched-video-admin-create-update-request.ts
 models/polymorphic-proxy-request.ts
+models/project-admin-list.ts
+models/project-admin-retrieve.ts
+models/project-admin-write-request.ts
+models/project-nested.ts
+models/project-request.ts
 models/rating-admin-create-update-request.ts
 models/rating-admin-create-update.ts
 models/rating-admin-list-retrieve.ts

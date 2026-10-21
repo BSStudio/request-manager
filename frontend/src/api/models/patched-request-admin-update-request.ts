@@ -47,6 +47,12 @@ export interface PatchedRequestAdminUpdateRequest {
    * @type {number}
    * @memberof PatchedRequestAdminUpdateRequest
    */
+  project?: number | null;
+  /**
+   *
+   * @type {number}
+   * @memberof PatchedRequestAdminUpdateRequest
+   */
   requester?: number;
   /**
    *
