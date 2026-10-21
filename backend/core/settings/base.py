@@ -82,6 +82,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
+    "common.middleware.PWASessionMiddleware",
     "common.middleware.SentryUserMiddleware",
     "common.middleware.RequestLoggingMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
@@ -164,6 +165,10 @@ SESSION_COOKIE_AGE = 60 * 60 * 6
 SESSION_COOKIE_SAMESITE = "Lax"
 SESSION_COOKIE_SECURE = True
 SESSION_SAVE_EVERY_REQUEST = True
+# Browser tabs may run on shared computers, so only the installed app (PWA)
+# stays logged in this long. It shares the cookie with the browser on most
+# platforms, which then keeps the longer session too.
+PWA_SESSION_COOKIE_AGE = 60 * 60 * 24 * 30
 
 # CSRF
 # https://docs.djangoproject.com/en/6.0/ref/csrf/
