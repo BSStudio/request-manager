@@ -8,7 +8,8 @@ from devtools.builders import (
     at,
     create_request,
 )
-from video_requests.models import Request, Todo, Video
+from video_requests.models import Project, Request, Todo, Video
+from video_requests.services import set_project
 from video_requests.utilities import update_request_status
 
 LIVE = "Élő közvetítés"
@@ -297,3 +298,41 @@ def create_scenarios(people: dict[str, User]) -> dict[str, Request]:
     for request in scenarios.values():
         update_request_status(request)
     return scenarios
+
+
+def create_projects(people: dict[str, User]) -> list[Project]:
+    week = Project.objects.create(
+        name="Kollégiumi hét", responsible=people["gyarto.gabor"]
+    )
+    for day, (title, type, place) in enumerate(
+        [
+            ("Megnyitó", LIVE, "Schönherz Kollégium, földszinti aula"),
+            ("Vetélkedő", MUSIC_VIDEO, "Schönherz Kollégium, Konferenciaterem"),
+            ("Koncert", REPORT_VIDEO, "Schönherz Kollégium, udvar"),
+        ]
+    ):
+        request = create_request(
+            f"Kollégiumi hét – {title}",
+            requester=people["minta.anna"],
+            start=at(20 + day, 18),
+            hours=3,
+            type=type,
+            place=place,
+        )
+        set_project(request, week)
+
+    lectures = Project.objects.create(
+        name="Fizika 1 előadások", responsible=people["kamera.karoly"]
+    )
+    for week_number in range(4):
+        request = create_request(
+            "Fizika 1 előadás",
+            requester=people["teszt.elek"],
+            start=at(7 + 7 * week_number, 10),
+            hours=2,
+            type=DOCUMENTARY,
+            place="F épület, előadóterem",
+        )
+        set_project(request, lectures)
+
+    return [week, lectures]

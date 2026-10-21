@@ -7,14 +7,14 @@ from common.models import User
 from devtools.bulk import create_bulk
 from devtools.me import attach_to
 from devtools.people import EMAIL_DOMAIN, PEOPLE, create_people
-from devtools.scenarios import create_scenarios
-from video_requests.models import Request, Video
+from devtools.scenarios import create_projects, create_scenarios
+from video_requests.models import Project, Request, Video
 from video_requests.signals import update_request_status_after_video_delete
 
 
 class Command(BaseCommand):
     help = (
-        "Replace every request and every test user with fresh test data. "
+        "Replace every request, project and test user with fresh test data. "
         "Only the debug and test settings have this command."
     )
 
@@ -42,6 +42,7 @@ class Command(BaseCommand):
             people = create_people()
             scenarios = create_scenarios(people)
             create_bulk(people)
+            create_projects(people)
             if me:
                 # Looked up only now: --me may name one of the people just created.
                 attach_to(find_user(me), people, scenarios)
@@ -60,7 +61,7 @@ class Command(BaseCommand):
     def confirm(self) -> bool:
         database = connection.settings_dict
         answer = input(
-            f"This deletes every request in the {database['NAME']} database on "
+            f"This deletes every request and project in the {database['NAME']} database on "
             f"{database['HOST']}, and every user with an @{EMAIL_DOMAIN} address.\n"
             "Type 'yes' to continue, or anything else to cancel: "
         )
@@ -85,6 +86,7 @@ def delete_seed_data() -> None:
         Request.objects.all().delete()
     finally:
         post_delete.connect(update_request_status_after_video_delete, sender=Video)
+    Project.objects.all().delete()
     User.objects.filter(
         Q(email__endswith=f"@{EMAIL_DOMAIN}")
         | Q(username__in=[person.username for person in PEOPLE])
