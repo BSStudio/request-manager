@@ -160,7 +160,9 @@ CACHES = {
 # Sessions
 # https://docs.djangoproject.com/en/6.0/topics/http/sessions/
 
-SESSION_ENGINE = "django.contrib.sessions.backends.cache"
+# Sessions must outlive a Redis restart or eviction, as the installed app's
+# last a month. The cache only speeds up reading them.
+SESSION_ENGINE = "django.contrib.sessions.backends.cached_db"
 SESSION_COOKIE_AGE = 60 * 60 * 6
 SESSION_COOKIE_SAMESITE = "Lax"
 SESSION_COOKIE_SECURE = True

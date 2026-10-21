@@ -2,6 +2,7 @@ from datetime import timedelta
 
 import pytest
 from django.apps import apps
+from django.contrib.sessions.models import Session
 from django.utils import timezone
 from model_bakery import baker
 
@@ -32,3 +33,17 @@ def test_cleaning_drops_crew_and_todo_history_older_than_90_days():
     assert list(assignees.objects.values_list("history", flat=True)) == [
         Todo.history.get().history_id
     ]
+
+
+def test_cleaning_drops_expired_sessions():
+    now = timezone.now()
+    Session.objects.create(
+        session_key="expired", session_data="", expire_date=now - timedelta(days=1)
+    )
+    Session.objects.create(
+        session_key="active", session_data="", expire_date=now + timedelta(days=1)
+    )
+
+    scheduled_cleaning()
+
+    assert list(Session.objects.values_list("session_key", flat=True)) == ["active"]
