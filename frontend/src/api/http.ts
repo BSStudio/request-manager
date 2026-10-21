@@ -2,6 +2,7 @@ import { create, isAxiosError } from 'axios';
 
 import { isAdminPath } from 'helpers/isAdminPath';
 import { clearSession, setRedirectedFrom } from 'helpers/LocalStorageHelper';
+import { isStandalone } from 'helpers/pwa';
 
 import {
   AdminApiFactory,
@@ -19,6 +20,13 @@ const axiosInstance = create({
   // Django rejects unsafe requests of a session without this header.
   xsrfCookieName: 'csrftoken',
   xsrfHeaderName: 'X-CSRFToken',
+});
+
+// The backend keeps the installed app logged in longer than a browser tab.
+// Checked per request, as Chrome can move an open tab into the app window.
+axiosInstance.interceptors.request.use((config) => {
+  if (isStandalone()) config.headers.set('X-Display-Mode', 'standalone');
+  return config;
 });
 
 axiosInstance.interceptors.response.use(undefined, (error) => {
