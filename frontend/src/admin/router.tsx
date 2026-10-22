@@ -4,6 +4,7 @@ import { ProgressSpinner } from 'primereact/progressspinner';
 import { createBrowserRouter, type LoaderFunctionArgs } from 'react-router';
 
 import {
+  projectRetrieveQuery,
   requestRetrieveQuery,
   requestVideoRetrieveQuery,
 } from 'admin/api/queries';
@@ -25,6 +26,17 @@ async function requestLoader({ params }: LoaderFunctionArgs) {
   return { requestId: params.requestId, requestTitle: request.title };
 }
 
+async function projectLoader({ params }: LoaderFunctionArgs) {
+  if (!params.projectId) {
+    throw new Error('No project ID provided');
+  }
+  const project = await queryClient.query({
+    ...projectRetrieveQuery(params.projectId),
+    staleTime: 'static',
+  });
+  return { projectId: params.projectId, projectName: project.name };
+}
+
 async function videoLoader({ params }: LoaderFunctionArgs) {
   if (!params.requestId) {
     throw new Error('No request ID provided');
@@ -43,6 +55,7 @@ async function videoLoader({ params }: LoaderFunctionArgs) {
   };
 }
 
+type projectLoaderData = Awaited<ReturnType<typeof projectLoader>>;
 type requestLoaderData = Awaited<ReturnType<typeof requestLoader>>;
 type videoLoaderData = Awaited<ReturnType<typeof videoLoader>>;
 
@@ -143,6 +156,19 @@ const router = sentryCreateBrowserRouter(
           handle: { crumb: () => 'Projektek' },
           children: [
             { index: true, lazy: () => import('admin/pages/ProjectsListPage') },
+            {
+              path: 'new',
+              handle: { crumb: () => 'Új' },
+              lazy: () => import('admin/pages/ProjectCreatorEditorPage'),
+            },
+            {
+              path: ':projectId',
+              handle: {
+                crumb: ({ projectName }: projectLoaderData) => projectName,
+              },
+              loader: projectLoader,
+              lazy: () => import('admin/pages/ProjectCreatorEditorPage'),
+            },
           ],
         },
         {

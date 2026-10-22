@@ -1,12 +1,20 @@
 import type { Page } from '@playwright/test';
 
 import { expect, loginAs, test } from './fixtures';
-import { adminRequestPath } from './helpers';
+import { adminRequestPath, fillDateTime, inDays } from './helpers';
 
 function projectRow(page: Page) {
   return page
     .getByRole('listitem')
     .filter({ has: page.getByText('Projekt', { exact: true }) });
+}
+
+// An editable Dropdown labels both its read-only focus target and the input
+// one types into.
+function videoType(page: Page, label: string) {
+  return page
+    .getByLabel(label, { exact: true })
+    .and(page.locator(':not([readonly])'));
 }
 
 // The labelled input of PrimeReact's Dropdown is its hidden focus target, and
@@ -63,6 +71,119 @@ test.describe('as a crew member', () => {
     await page.getByRole('button', { exact: true, name: 'Mentés' }).click();
 
     await expect(page).toHaveURL(/\/admin\/requests\/\d+$/);
+    await expect(projectRow(page)).toHaveCount(0);
+  });
+});
+
+test.describe('as an admin', () => {
+  test.use({ storageState: loginAs('admin.aladar') });
+
+  test('creates a week of different events in one go', async ({ page }) => {
+    await page.goto('/admin/projects/new');
+    await page.getByLabel('Projekt neve').fill('Próbahét');
+    await videoType(page, 'Videó típusa').fill('Zenés hangulatvideó');
+    await page.getByLabel('Helyszín', { exact: true }).fill('Sportcsarnok');
+
+    await page.getByRole('button', { name: 'Új felkérés' }).click();
+    await page.getByLabel('Esemény neve, 1. új felkérés').fill('Megnyitó');
+    await fillDateTime(page, 'Kezdés, 1. új felkérés', inDays(30, 18));
+    await fillDateTime(page, 'Befejezés, 1. új felkérés', inDays(30, 20));
+    // A day later, with the same times.
+    await page.getByRole('button', { name: 'Új felkérés' }).click();
+    await page.getByLabel('Helyszín, 2. új felkérés').fill('Uszoda');
+    await expect(page.getByText('Mentéskor: 2 új felkérés')).toBeVisible();
+    await page.getByRole('button', { exact: true, name: 'Mentés' }).click();
+
+    await expect(page).toHaveURL(/\/admin\/projects$/);
+    const project = page.getByRole('row').filter({ hasText: 'Próbahét' });
+    await expect(project).toContainText('2');
+    await project.getByRole('button', { name: /^Kiterjed/ }).click();
+    await expect(page.getByText('Megnyitó', { exact: true })).toBeVisible();
+    // The project and its second request, which took the project name.
+    await expect(
+      page.getByRole('cell', { exact: true, name: 'Próbahét' }),
+    ).toHaveCount(2);
+  });
+
+  test('takes a date and time typed key by key', async ({ page }) => {
+    await page.goto('/admin/projects/new');
+    await page.getByRole('button', { name: 'Új felkérés' }).click();
+    const start = page.getByLabel('Kezdés, 1. új felkérés', { exact: true });
+    await start.click();
+    await page.keyboard.type('202611201830');
+    await start.press('Tab');
+
+    await expect(start).toHaveValue('2026.11.20 18:30');
+  });
+
+  test('a failed save keeps the rows and saves nothing', async ({ page }) => {
+    await page.goto('/admin/projects/new');
+    await page.getByLabel('Projekt neve').fill('Hibás hét');
+    await page.getByRole('button', { name: 'Új felkérés' }).click();
+    await page.getByLabel('Esemény neve, 1. új felkérés').fill('Fordított');
+    await fillDateTime(page, 'Kezdés, 1. új felkérés', inDays(30, 20));
+    await fillDateTime(page, 'Befejezés, 1. új felkérés', inDays(30, 18));
+    await videoType(page, 'Videó típusa, 1. új felkérés').fill(
+      'Élő közvetítés',
+    );
+    await page.getByLabel('Helyszín, 1. új felkérés').fill('Aula');
+    await page.getByRole('button', { exact: true, name: 'Mentés' }).click();
+
+    await expect(
+      page.getByLabel('Befejezés, 1. új felkérés', { exact: true }),
+    ).toHaveAttribute('aria-invalid', 'true');
+    await expect(page.getByLabel('Esemény neve, 1. új felkérés')).toHaveValue(
+      'Fordított',
+    );
+    await expect(page).toHaveURL(/\/admin\/projects\/new$/);
+
+    await page.goto('/admin/projects');
+    await expect(
+      page.getByRole('row').filter({ hasText: 'Hibás hét' }),
+    ).toHaveCount(0);
+  });
+
+  test('opens a request of the project in a new tab', async ({ page }) => {
+    await page.goto('/admin/projects');
+    await page
+      .getByRole('row')
+      .filter({ hasText: 'Kollégiumi hét' })
+      .getByRole('link', { name: 'Projekt szerkesztése' })
+      .click();
+
+    await expect(
+      page
+        .getByRole('row')
+        .filter({ hasText: 'Kollégiumi hét – Megnyitó' })
+        .getByRole('link', { name: 'Ugrás a felkéréshez' }),
+    ).toHaveAttribute('target', '_blank');
+  });
+
+  test('deletes a project and keeps its requests', async ({ page }) => {
+    await page.goto('/admin/projects/new');
+    await page.getByLabel('Projekt neve').fill('Törlendő');
+    await videoType(page, 'Videó típusa').fill('Élő közvetítés');
+    await page.getByLabel('Helyszín', { exact: true }).fill('Aula');
+    await page.getByRole('button', { name: 'Új felkérés' }).click();
+    await page.getByLabel('Esemény neve, 1. új felkérés').fill('Megmaradó');
+    await fillDateTime(page, 'Kezdés, 1. új felkérés', inDays(40, 18));
+    await fillDateTime(page, 'Befejezés, 1. új felkérés', inDays(40, 20));
+    await page.getByRole('button', { exact: true, name: 'Mentés' }).click();
+    await expect(page).toHaveURL(/\/admin\/projects$/);
+
+    await page
+      .getByRole('row')
+      .filter({ hasText: 'Törlendő' })
+      .getByRole('link', { name: 'Projekt szerkesztése' })
+      .click();
+    await page.getByRole('button', { name: 'Projekt törlése' }).click();
+    await page.getByRole('button', { exact: true, name: 'Igen' }).click();
+
+    await expect(page).toHaveURL(/\/admin\/projects$/);
+    await expect(
+      page.getByRole('row').filter({ hasText: 'Törlendő' }),
+    ).toHaveCount(0);
+    await page.goto(await adminRequestPath(page, 'Megmaradó'));
     await expect(projectRow(page)).toHaveCount(0);
   });
 });
