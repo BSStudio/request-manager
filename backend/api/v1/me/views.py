@@ -4,6 +4,7 @@ from django.conf import settings
 from django.http import HttpResponse
 from django.utils.decorators import method_decorator
 from django.utils.encoding import iri_to_uri
+from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from django.views.decorators.cache import never_cache
 from drf_spectacular.types import OpenApiTypes
@@ -11,7 +12,7 @@ from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework.decorators import action
 from rest_framework.exceptions import ValidationError
 from rest_framework.generics import GenericAPIView
-from rest_framework.mixins import RetrieveModelMixin, UpdateModelMixin
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.response import Response
 from rest_framework.status import (
     HTTP_201_CREATED,
@@ -23,10 +24,18 @@ from social_core.exceptions import AuthException
 
 from api.v1.admin.users.serializers import UserAdminWorkedOnSerializer
 from api.v1.admin.users.views import UserAdminViewSet
-from api.v1.me.serializers import OAuth2ConnectSerializer, UserSerializer
+from api.v1.me.serializers import (
+    MarkNotificationsReadSerializer,
+    NotificationSerializer,
+    OAuth2ConnectSerializer,
+    UnreadCountSerializer,
+    UserSerializer,
+)
 from common.models import User
+from common.rest_framework.pagination import ExtendedPagination
 from common.rest_framework.permissions import IsAuthenticated, IsStaffUser
 from common.social_core.helpers import decorate_request, handle_exception
+from video_requests.models import Notification
 
 
 class MeViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
@@ -67,6 +76,42 @@ class MeViewSet(RetrieveModelMixin, UpdateModelMixin, GenericViewSet):
     )
     def worked_on(self, request, pk=None):
         return UserAdminViewSet.worked_on(UserAdminViewSet(), request, request.user.pk)
+
+
+class NotificationViewSet(ListModelMixin, GenericViewSet):
+    pagination_class = ExtendedPagination
+    permission_classes = [IsAuthenticated]
+    serializer_class = NotificationSerializer
+
+    def get_queryset(self):
+        if getattr(self, "swagger_fake_view", False):
+            return Notification.objects.none()
+        return Notification.objects.filter(recipient=self.request.user)
+
+    @extend_schema(responses=UnreadCountSerializer)
+    @action(
+        detail=False,
+        filter_backends=[],
+        pagination_class=None,
+        url_path="unread-count",
+    )
+    def unread_count(self, request):
+        unread = self.get_queryset().filter(read_at__isnull=True)
+        return Response({"count": unread.count()})
+
+    @extend_schema(
+        request=MarkNotificationsReadSerializer,
+        responses={HTTP_204_NO_CONTENT: None},
+    )
+    @action(detail=False, methods=["post"])
+    def read(self, request):
+        serializer = MarkNotificationsReadSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        unread = self.get_queryset().filter(read_at__isnull=True)
+        if "request" in serializer.validated_data:
+            unread = unread.filter(request_id=serializer.validated_data["request"])
+        unread.update(read_at=now())
+        return Response(status=HTTP_204_NO_CONTENT)
 
 
 class OAuth2ConnectDisconnectView(GenericAPIView):

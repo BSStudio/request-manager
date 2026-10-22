@@ -2139,6 +2139,77 @@ paths:
               schema:
                 $ref: '#/components/schemas/User'
           description: ''
+  /api/v1/me/notifications:
+    get:
+      operationId: me_notifications_list
+      parameters:
+        - name: page
+          required: false
+          in: query
+          description: A page number within the paginated result set.
+          schema:
+            type: integer
+        - name: page_size
+          required: false
+          in: query
+          description: Number of results to return per page.
+          schema:
+            type: integer
+        - name: pagination
+          required: false
+          in: query
+          description: Return paginated response.
+          schema:
+            type: boolean
+      tags:
+        - me
+      security:
+        - tokenAuth: []
+        - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNotificationList'
+          description: ''
+  /api/v1/me/notifications/read:
+    post:
+      operationId: me_notifications_read_create
+      tags:
+        - me
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MarkNotificationsReadRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/MarkNotificationsReadRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/MarkNotificationsReadRequest'
+      security:
+        - tokenAuth: []
+        - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/me/notifications/unread-count:
+    get:
+      operationId: me_notifications_unread_count_retrieve
+      tags:
+        - me
+      security:
+        - tokenAuth: []
+        - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UnreadCount'
+          description: ''
   /api/v1/me/social/{provider}:
     post:
       operationId: me_social_create
@@ -2989,6 +3060,69 @@ components:
         - field
         - new
         - old
+    KindEnum:
+      enum:
+        - studio_message
+        - request_accepted
+        - video_published
+        - new_request
+        - requester_message
+        - internal_comment
+        - todo_assigned
+      type: string
+      description: |-
+        * `studio_message` - Új üzenet a BSS-től
+        * `request_accepted` - Elvállaltuk a felkérésed
+        * `video_published` - Közzétettük a videót
+        * `new_request` - Új felkérés
+        * `requester_message` - Új üzenet a felkérőtől
+        * `internal_comment` - Új belső megjegyzés
+        * `todo_assigned` - Feladatot rendeltek hozzád
+    MarkNotificationsReadRequest:
+      type: object
+      properties:
+        request:
+          type: integer
+    Notification:
+      type: object
+      properties:
+        body:
+          type: string
+          readOnly: true
+        created:
+          type: string
+          format: date-time
+          readOnly: true
+        id:
+          type: integer
+          readOnly: true
+        kind:
+          allOf:
+            - $ref: '#/components/schemas/KindEnum'
+          readOnly: true
+        read_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        request:
+          type: integer
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+        url:
+          type: string
+          readOnly: true
+      required:
+        - body
+        - created
+        - id
+        - kind
+        - read_at
+        - request
+        - title
+        - url
     OAuth2ConnectRequest:
       type: object
       properties:
@@ -3001,6 +3135,32 @@ components:
       required:
         - code
         - nonce
+    PaginatedNotificationList:
+      type: object
+      properties:
+        count:
+          type: integer
+          example: 123
+        links:
+          type: object
+          properties:
+            next:
+              type: string
+              nullable: true
+              format: uri
+              example: http://api.example.org/accounts/?page=4
+            previous:
+              type: string
+              nullable: true
+              format: uri
+              example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notification'
+        total_pages:
+          type: integer
+          example: 123
     PaginatedRequestAdminListList:
       type: object
       properties:
@@ -4186,6 +4346,13 @@ components:
       required:
         - id
         - title
+    UnreadCount:
+      type: object
+      properties:
+        count:
+          type: integer
+      required:
+        - count
     User:
       type: object
       properties:
