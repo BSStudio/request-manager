@@ -35,6 +35,7 @@ import FormField from 'admin/components/FormField/FormField';
 import LastUpdatedAt from 'admin/components/LastUpdatedAt/LastUpdatedAt';
 import NewRequesterForm from 'admin/components/RequestCreator/NewRequesterForm';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
+import { parseDateTimeInput } from 'admin/helpers/parseDateTimeInput';
 import { pickDirtyFields } from 'admin/helpers/pickDirtyFields';
 import {
   type RequesterValues,
@@ -351,6 +352,7 @@ const RequestCreatorEditorPage = () => {
           >
             <Calendar
               mask="9999.99.99 99:99"
+              parseDateTime={parseDateTimeInput}
               showButtonBar
               showIcon
               showOnFocus={false}
@@ -368,6 +370,7 @@ const RequestCreatorEditorPage = () => {
           >
             <Calendar
               mask="9999.99.99 99:99"
+              parseDateTime={parseDateTimeInput}
               showButtonBar
               showIcon
               showOnFocus={false}

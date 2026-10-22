@@ -59,6 +59,18 @@ test('every page opens from the menu', async ({ page }) => {
   await expect(page).toHaveTitle(crumbs('Keresés'));
 });
 
+test('the request form takes a date and time typed key by key', async ({
+  page,
+}) => {
+  await page.goto('/admin/requests/new');
+  const start = page.getByLabel('Kezdés időpontja');
+  await start.click();
+  await page.keyboard.type('202611201830');
+  await start.press('Tab');
+
+  await expect(start).toHaveValue('2026.11.20 18:30');
+});
+
 test('the breadcrumbs lead back from a video', async ({ page }) => {
   await page.goto(await adminRequestPath(page, 'Kollégiumi kulturális est'));
   await page.getByRole('tab', { name: 'Videók' }).click();
