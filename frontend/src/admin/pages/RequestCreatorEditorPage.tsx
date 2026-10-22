@@ -33,8 +33,14 @@ import { queryKeys } from 'admin/api/queryKeys';
 import AutoCompleteStaff from 'admin/components/AutoCompleteStaff/AutoCompleteStaff';
 import FormField from 'admin/components/FormField/FormField';
 import LastUpdatedAt from 'admin/components/LastUpdatedAt/LastUpdatedAt';
+import NewRequesterForm from 'admin/components/RequestCreator/NewRequesterForm';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
 import { pickDirtyFields } from 'admin/helpers/pickDirtyFields';
+import {
+  type RequesterValues,
+  requesterPayload,
+} from 'admin/helpers/requester';
+import { requestTypeOptions } from 'admin/helpers/requestTypes';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import useMobile from 'admin/hooks/useMobile';
 import type { LoadErrorState } from 'admin/pages/ErrorPage';
@@ -43,28 +49,18 @@ import { isNotFound, setFieldErrors } from 'api/errors';
 import { UserNestedDetail } from 'api/models';
 import { queryClient } from 'api/queryClient';
 import { getName } from 'helpers/LocalStorageHelper';
-import { toE164 } from 'helpers/phone';
 
-const NewRequesterForm = lazy(
-  () => import('admin/components/RequestCreator/NewRequesterForm'),
-);
 const UsersDataTable = lazy(
   () => import('admin/components/UsersDataTable/UsersDataTable'),
 );
 
-export interface IRequestCreator {
+export interface IRequestCreator extends RequesterValues {
   comment: string;
   createMore: boolean;
   deadline: Date | null;
   end_datetime: Date | null;
   place: string;
   responsible: UserNestedDetail | null;
-  requester: UserNestedDetail | null;
-  requester_email: string;
-  requester_first_name: string;
-  requester_last_name: string;
-  requester_mobile: string;
-  requesterType: string;
   send_notification: boolean;
   start_datetime: Date | null;
   title: string;
@@ -82,7 +78,7 @@ export async function loader({ params }: LoaderFunctionArgs) {
 }
 
 const RequestCreatorEditorPage = () => {
-  const defaultValues = useMemo(() => {
+  const defaultValues = useMemo((): IRequestCreator => {
     return {
       comment: '',
       createMore: false,
@@ -185,14 +181,6 @@ const RequestCreatorEditorPage = () => {
     { icon: 'pi pi-plus', text: 'Új felhasználó hozzáadása', value: 'new' },
   ];
 
-  const typeOptions = [
-    'Zenés hangulatvideó',
-    'Zenés hangulatvideó riportokkal',
-    'Promóciós videó',
-    'Élő közvetítés',
-    'Előadás/rendezvény dokumentálás jellegű rögzítése',
-  ];
-
   const requesterTypeOptionTemplate = (option: {
     icon: IconType<IRequestCreator>;
     text: string;
@@ -212,27 +200,15 @@ const RequestCreatorEditorPage = () => {
   const onSubmit: SubmitHandler<IRequestCreator> = async (data) => {
     if (!data.start_datetime || !data.end_datetime) return;
 
-    let requester = {};
-    if (data.requesterType == 'search') {
-      if (!data.requester) {
-        showToast({
-          detail: 'Nincs kijelölve felkérő',
-          life: 3000,
-          severity: 'error',
-          summary: 'Hiba',
-        });
-        return;
-      }
-      requester = {
-        requester: data.requester.id,
-      };
-    } else if (data.requesterType == 'new') {
-      requester = {
-        requester_email: data.requester_email,
-        requester_first_name: data.requester_first_name,
-        requester_last_name: data.requester_last_name,
-        requester_mobile: toE164(data.requester_mobile),
-      };
+    const requester = requesterPayload(data);
+    if (!requester) {
+      showToast({
+        detail: 'Nincs kijelölve felkérő',
+        life: 3000,
+        severity: 'error',
+        summary: 'Hiba',
+      });
+      return;
     }
 
     const deadline = data.deadline
@@ -422,7 +398,11 @@ const RequestCreatorEditorPage = () => {
               },
             }}
           >
-            <Dropdown aria-label="Típus" editable options={typeOptions} />
+            <Dropdown
+              aria-label="Típus"
+              editable
+              options={requestTypeOptions}
+            />
           </FormField>
           <Divider align="center" type="dashed">
             <b>Opcionális mezők</b>
@@ -525,9 +505,7 @@ const RequestCreatorEditorPage = () => {
             />
           )}
           {watchRequesterType === 'new' && (
-            <Suspense fallback={<ProgressBar mode="indeterminate" />}>
-              <NewRequesterForm control={control} disabled={isPending} />
-            </Suspense>
+            <NewRequesterForm control={control} disabled={isPending} />
           )}
           <Divider />
 
