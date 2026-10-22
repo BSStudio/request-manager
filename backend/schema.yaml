@@ -9,6 +9,153 @@ info:
     email: kecskemety.oliver@simonyi.bme.hu
     name: Olivér Kecskeméty
 paths:
+  /api/v1/admin/projects:
+    get:
+      operationId: admin_projects_list
+      tags:
+        - admin
+      security:
+        - tokenAuth: []
+        - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ProjectAdminList'
+          description: ''
+    post:
+      operationId: admin_projects_create
+      tags:
+        - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectAdminWriteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectAdminWriteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectAdminWriteRequest'
+        required: true
+      security:
+        - tokenAuth: []
+        - cookieAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectAdminRetrieve'
+          description: ''
+  /api/v1/admin/projects/{id}:
+    get:
+      operationId: admin_projects_retrieve
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this project.
+          required: true
+      tags:
+        - admin
+      security:
+        - tokenAuth: []
+        - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectAdminRetrieve'
+          description: ''
+    put:
+      operationId: admin_projects_update
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this project.
+          required: true
+      tags:
+        - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProjectAdminWriteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/ProjectAdminWriteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/ProjectAdminWriteRequest'
+        required: true
+      security:
+        - tokenAuth: []
+        - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectAdminRetrieve'
+          description: ''
+    patch:
+      operationId: admin_projects_partial_update
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this project.
+          required: true
+      tags:
+        - admin
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectAdminWriteRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectAdminWriteRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedProjectAdminWriteRequest'
+      security:
+        - tokenAuth: []
+        - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProjectAdminRetrieve'
+          description: ''
+    delete:
+      operationId: admin_projects_destroy
+      parameters:
+        - in: path
+          name: id
+          schema:
+            type: integer
+          description: A unique integer value identifying this project.
+          required: true
+      tags:
+        - admin
+      security:
+        - tokenAuth: []
+        - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
   /api/v1/admin/report:
     get:
       operationId: admin_report_retrieve
@@ -51,6 +198,10 @@ paths:
           schema:
             type: string
             format: date
+        - in: query
+          name: has_project
+          schema:
+            type: boolean
         - name: ordering
           required: false
           in: query
@@ -75,6 +226,10 @@ paths:
           description: Return paginated response.
           schema:
             type: boolean
+        - in: query
+          name: project
+          schema:
+            type: integer
         - name: search
           required: false
           in: query
@@ -2999,6 +3154,33 @@ components:
           type: string
           minLength: 1
           maxLength: 20
+    PatchedProjectAdminWriteRequest:
+      type: object
+      properties:
+        add_requests:
+          type: array
+          items:
+            type: integer
+            writeOnly: true
+          writeOnly: true
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        new_requests:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestAdminCreateRequest'
+          writeOnly: true
+        remove_requests:
+          type: array
+          items:
+            type: integer
+            writeOnly: true
+          writeOnly: true
+        responsible:
+          type: integer
+          nullable: true
     PatchedRatingAdminCreateUpdateRequest:
       type: object
       properties:
@@ -3031,6 +3213,9 @@ components:
           type: string
           minLength: 1
           maxLength: 150
+        project:
+          type: integer
+          nullable: true
         requester:
           type: integer
         requester_email:
@@ -3136,6 +3321,143 @@ components:
       oneOf:
         - $ref: '#/components/schemas/RequestCreateRequest'
         - $ref: '#/components/schemas/RequestAnonymousCreateRequest'
+    ProjectAdminList:
+      type: object
+      properties:
+        first_start:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        id:
+          type: integer
+          readOnly: true
+        last_end:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+        name:
+          type: string
+          readOnly: true
+        request_count:
+          type: integer
+          readOnly: true
+        responsible:
+          allOf:
+            - $ref: '#/components/schemas/UserNestedList'
+          readOnly: true
+          nullable: true
+      required:
+        - first_start
+        - id
+        - last_end
+        - name
+        - request_count
+        - responsible
+    ProjectAdminRetrieve:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+        requests:
+          type: array
+          items:
+            $ref: '#/components/schemas/ProjectRequest'
+          readOnly: true
+        responsible:
+          allOf:
+            - $ref: '#/components/schemas/UserNestedDetail'
+          readOnly: true
+          nullable: true
+      required:
+        - id
+        - name
+        - requests
+        - responsible
+    ProjectAdminWriteRequest:
+      type: object
+      properties:
+        add_requests:
+          type: array
+          items:
+            type: integer
+            writeOnly: true
+          writeOnly: true
+        name:
+          type: string
+          minLength: 1
+          maxLength: 200
+        new_requests:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestAdminCreateRequest'
+          writeOnly: true
+        remove_requests:
+          type: array
+          items:
+            type: integer
+            writeOnly: true
+          writeOnly: true
+        responsible:
+          type: integer
+          nullable: true
+      required:
+        - name
+    ProjectNested:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          readOnly: true
+      required:
+        - id
+        - name
+    ProjectRequest:
+      type: object
+      properties:
+        end_datetime:
+          type: string
+          format: date-time
+          readOnly: true
+        id:
+          type: integer
+          readOnly: true
+        place:
+          type: string
+          readOnly: true
+        start_datetime:
+          type: string
+          format: date-time
+          readOnly: true
+        status:
+          type: integer
+          readOnly: true
+        status_by_admin:
+          type: boolean
+          readOnly: true
+        title:
+          type: string
+          readOnly: true
+        type:
+          type: string
+          readOnly: true
+      required:
+        - end_datetime
+        - id
+        - place
+        - start_datetime
+        - status
+        - status_by_admin
+        - title
+        - type
     RatingAdminCreateUpdate:
       type: object
       properties:
@@ -3291,6 +3613,9 @@ components:
           type: string
           minLength: 1
           maxLength: 150
+        project:
+          type: integer
+          nullable: true
         requester:
           type: integer
         requester_email:
@@ -3431,6 +3756,11 @@ components:
         place:
           type: string
           readOnly: true
+        project:
+          allOf:
+            - $ref: '#/components/schemas/ProjectNested'
+          readOnly: true
+          nullable: true
         requester:
           allOf:
             - $ref: '#/components/schemas/UserNestedDetail'
@@ -3454,6 +3784,7 @@ components:
         - end_datetime
         - id
         - place
+        - project
         - requested_by
         - requester
         - responsible
@@ -3478,6 +3809,9 @@ components:
           type: string
           minLength: 1
           maxLength: 150
+        project:
+          type: integer
+          nullable: true
         requester:
           type: integer
         requester_email:

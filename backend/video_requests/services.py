@@ -1,7 +1,9 @@
+from django.db import transaction
+
 from common.models import User
 from common.utilities import create_calendar_event
 from video_requests.emails import email_user_new_request_confirmation
-from video_requests.models import Comment, Request
+from video_requests.models import Comment, Project, Request
 from video_requests.utilities import update_request_status
 
 
@@ -23,7 +25,21 @@ def create_request(
         )
     # Admins can create a request that is already accepted.
     update_request_status(request)
-    create_calendar_event.delay(request.id)
+    create_calendar_event.delay_on_commit(request.id)
     if send_confirmation:
-        email_user_new_request_confirmation.delay(request.id)
+        email_user_new_request_confirmation.delay_on_commit(request.id)
     return request
+
+
+def set_project(request: Request, project: Project | None) -> None:
+    # A save rather than QuerySet.update(): simple-history and cacheops only
+    # notice saves.
+    request.project = project
+    request.save(update_fields=["project"])
+
+
+def delete_project(project: Project) -> None:
+    with transaction.atomic():
+        for request in project.requests.all():
+            set_project(request, None)
+        project.delete()

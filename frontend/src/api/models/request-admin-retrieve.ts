@@ -14,6 +14,9 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
+import { ProjectNested } from './project-nested';
+// May contain unused imports in some cases
+// @ts-ignore
 import { UserNestedDetail } from './user-nested-detail';
 // May contain unused imports in some cases
 // @ts-ignore
@@ -109,6 +112,12 @@ export interface RequestAdminRetrieve {
    * @memberof RequestAdminRetrieve
    */
   place: string;
+  /**
+   *
+   * @type {ProjectNested}
+   * @memberof RequestAdminRetrieve
+   */
+  project: ProjectNested | null;
   /**
    *
    * @type {UserNestedDetail}

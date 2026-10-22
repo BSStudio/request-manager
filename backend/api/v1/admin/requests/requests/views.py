@@ -86,7 +86,8 @@ class RequestAdminViewSet(ModelViewSet):
             )
 
         return (
-            Request.objects.select_related("requester")
+            Request.objects.select_related("project")
+            .select_related("requester")
             .select_related("requested_by")
             .select_related("responsible")
             .prefetch_related(

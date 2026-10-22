@@ -16,11 +16,13 @@ from video_requests.models import (
     Comment,
     CrewMember,
     DeletedRequest,
+    Project,
     Rating,
     Request,
     Todo,
     Video,
 )
+from video_requests.services import delete_project
 
 
 def change_link(obj, text):
@@ -57,10 +59,30 @@ class KeepParentMixin:
         return [*readonly_fields, *self.parent_fields]
 
 
+@admin.register(Project)
+class ProjectHistoryAdmin(SimpleHistoryAdmin):
+    autocomplete_fields = ["responsible"]
+    list_display = ["id", "name", "responsible", "created"]
+    list_select_related = ["responsible"]
+    ordering = ["-id"]
+    search_fields = ["name"]
+
+    def delete_model(self, request, obj):
+        delete_project(obj)
+
+    def delete_queryset(self, request, queryset):
+        with transaction.atomic():
+            for project in queryset:
+                delete_project(project)
+
+    def view_on_site(self, obj):
+        return obj.admin_url
+
+
 @admin.register(Request)
 class RequestHistoryAdmin(AddedByMixin, SimpleHistoryAdmin):
     added_by_field = "requested_by"
-    autocomplete_fields = ["requester", "responsible"]
+    autocomplete_fields = ["project", "requester", "responsible"]
     list_display = [
         "id",
         "title",
@@ -70,7 +92,7 @@ class RequestHistoryAdmin(AddedByMixin, SimpleHistoryAdmin):
         "num_of_videos",
         "requester_link",
     ]
-    list_filter = ["status"]
+    list_filter = ["status", "project"]
     list_select_related = ["requester"]
     ordering = ["-id"]
     search_fields = ["title"]
@@ -106,8 +128,17 @@ def restore_deleted_request(deleted):
             **filters,
         )
 
+    request = deleted.instance
+    # The project may have been deleted since, and full_clean() rejects a
+    # missing foreign key.
+    if (
+        request.project_id
+        and not Project.objects.filter(pk=request.project_id).exists()
+    ):
+        request.project = None
+
     with transaction.atomic():
-        deleted.instance.save(force_insert=True)
+        request.save(force_insert=True)
         videos = list(records(Video, request_id=deleted.id))
         for record in [
             *videos,

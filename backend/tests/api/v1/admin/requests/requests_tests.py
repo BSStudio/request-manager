@@ -64,6 +64,7 @@ def assert_retrieve_response_keys(video_request):
             "end_datetime",
             "id",
             "place",
+            "project",
             "requester",
             "requested_by",
             "start_datetime",
@@ -567,6 +568,65 @@ def test_update_request_remove_responsible(
         assert_user_details(response_before.data["responsible"])
         assert response_before.data["responsible"]["id"] == test_user.id
         assert not response.data["responsible"]
+
+
+@staff_only(HTTP_200_OK)
+def test_retrieve_request_project(api_client, expected, request, user):
+    project = baker.make("video_requests.Project", name="Kollégiumi hét")
+    video_request = baker.make("video_requests.Request", project=project)
+
+    do_login(api_client, request, user)
+
+    response = api_client.get(
+        reverse("api:v1:admin:requests:request-detail", kwargs={"pk": video_request.id})
+    )
+
+    assert response.status_code == expected
+    if is_success(response.status_code):
+        assert response.data["project"] == {"id": project.id, "name": "Kollégiumi hét"}
+
+
+@staff_only(HTTP_200_OK)
+def test_update_request_project(api_client, expected, request, user):
+    project = baker.make("video_requests.Project")
+    video_request = baker.make("video_requests.Request")
+    url = reverse(
+        "api:v1:admin:requests:request-detail", kwargs={"pk": video_request.id}
+    )
+
+    do_login(api_client, request, user)
+
+    response = api_client.patch(url, {"project": project.id})
+
+    assert response.status_code == expected
+    if is_success(response.status_code):
+        assert response.data["project"]["id"] == project.id
+        assert video_request.history.latest().project_id == project.id
+
+        response = api_client.patch(url, {"project": ""})
+
+        assert response.status_code == HTTP_200_OK
+        assert response.data["project"] is None
+        video_request.refresh_from_db()
+        assert video_request.project is None
+
+
+@staff_only(HTTP_201_CREATED)
+def test_create_request_in_a_project(
+    api_client, expected, request, request_create_data, user
+):
+    project = baker.make("video_requests.Project")
+
+    do_login(api_client, request, user)
+
+    response = api_client.post(
+        reverse("api:v1:admin:requests:request-list"),
+        request_create_data | {"project": project.id},
+    )
+
+    assert response.status_code == expected
+    if is_success(response.status_code):
+        assert response.data["project"]["id"] == project.id
 
 
 @staff_only(HTTP_400_BAD_REQUEST)

@@ -1,17 +1,25 @@
-from datetime import timedelta
+from datetime import datetime, timedelta
 from io import StringIO
 from unittest.mock import patch
+from zoneinfo import ZoneInfo
 
 import pytest
 from django.core import mail
 from django.core.management import CommandError, call_command
-from django.db.models import F
+from django.db.models import Count, F
 from django.utils import timezone
 from model_bakery import baker
 
 from common.models import Ban, User
 from tests.factories import make_user
-from video_requests.models import Comment, CrewMember, Request, Todo, Video
+from video_requests.models import (
+    Comment,
+    CrewMember,
+    Project,
+    Request,
+    Todo,
+    Video,
+)
 
 pytestmark = pytest.mark.django_db
 
@@ -28,7 +36,10 @@ def sso_user(username, **kwargs):
 
 
 def counts():
-    return [model.objects.count() for model in (User, Request, Video, Comment, Todo)]
+    return [
+        model.objects.count()
+        for model in (User, Project, Request, Video, Comment, Todo)
+    ]
 
 
 def test_creates_the_people_in_their_roles():
@@ -71,6 +82,37 @@ def test_deletes_every_existing_request():
     seed()
 
     assert not Request.objects.filter(pk=request.pk).exists()
+
+
+def test_deletes_every_existing_project():
+    project = baker.make(Project, name="Régi projekt")
+
+    seed()
+
+    assert not Project.objects.filter(pk=project.pk).exists()
+
+
+def test_creates_a_week_and_a_lecture_series(time_machine):
+    # The lectures straddle the switch to winter time on 25 October.
+    time_machine.move_to(datetime(2026, 10, 10, 12, tzinfo=ZoneInfo("Europe/Budapest")))
+    seed()
+
+    projects = Project.objects.annotate(request_count=Count("requests"))
+    assert {project.name: project.request_count for project in projects} == {
+        "Kollégiumi hét": 3,
+        "Fizika 1 előadások": 4,
+    }
+    starts = [
+        timezone.localtime(start)
+        for start in Request.objects.filter(project__name="Fizika 1 előadások")
+        .order_by("start_datetime")
+        .values_list("start_datetime", flat=True)
+    ]
+    days = [start.date() for start in starts]
+    assert [later - earlier for earlier, later in zip(days, days[1:])] == [
+        timedelta(weeks=1)
+    ] * 3
+    assert {start.hour for start in starts} == {10}
 
 
 def test_deletes_requests_that_no_longer_validate():

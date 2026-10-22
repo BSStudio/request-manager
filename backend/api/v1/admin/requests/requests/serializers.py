@@ -21,6 +21,7 @@ from api.v1.admin.requests.helpers import (
     handle_additional_data,
     is_status_by_admin,
 )
+from api.v1.admin.serializers import ProjectNestedSerializer
 from api.v1.admin.users.serializers import (
     UserNestedDetailSerializer,
     UserNestedListSerializer,
@@ -62,6 +63,7 @@ class RequestAdminRetrieveSerializer(RequestAdminListSerializer):
     comment_count = IntegerField(read_only=True, source="comments.count")
     end_datetime = DateTimeField(read_only=True)
     place = CharField(read_only=True)
+    project = ProjectNestedSerializer(read_only=True, allow_null=True)
     requester = UserNestedDetailSerializer(read_only=True)
     requested_by = UserNestedDetailSerializer(read_only=True)
     responsible = UserNestedDetailSerializer(read_only=True)
@@ -91,6 +93,7 @@ class RequestAdminUpdateSerializer(ModelSerializer):
             "deadline",
             "end_datetime",
             "place",
+            "project",
             "requester",
             "requester_email",
             "requester_first_name",
@@ -190,6 +193,7 @@ class RequestAdminCreateSerializer(RequestAdminUpdateSerializer):
             "deadline",
             "end_datetime",
             "place",
+            "project",
             "requester",
             "requester_email",
             "requester_first_name",

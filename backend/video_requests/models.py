@@ -43,6 +43,26 @@ class AnnotatedManager(models.Manager):
         return super().get_queryset().annotate(avg_rating=Avg("ratings__rating"))
 
 
+class Project(models.Model):
+    name = models.CharField(max_length=200)
+    responsible = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        related_name="responsible_projects",
+        on_delete=models.SET(get_sentinel_user),
+        blank=True,
+        null=True,
+    )
+    created = models.DateTimeField(auto_now_add=True)
+    history = HistoricalRecords()
+
+    @property
+    def admin_url(self) -> str:
+        return f"{settings.BASE_URL}/admin/projects/{self.id}"
+
+    def __str__(self):
+        return self.name
+
+
 class Request(models.Model):
     class Statuses(models.IntegerChoices):
         DENIED = 0, _("Elutasítva")
@@ -83,6 +103,13 @@ class Request(models.Model):
         related_name="submitted_requests",
         on_delete=models.SET(get_sentinel_user),
     )
+    project = models.ForeignKey(
+        Project,
+        related_name="requests",
+        on_delete=models.SET_NULL,
+        blank=True,
+        null=True,
+    )
     additional_data = JSONField(
         encoder=DjangoJSONEncoder,
         validators=[validate_request_additional_data],
@@ -104,6 +131,9 @@ class Request(models.Model):
         return (localdate() - self.deadline).days
 
     def clean(self):
+        # Django runs clean() even after clean_fields() found a missing time.
+        if not self.start_datetime or not self.end_datetime:
+            return
         if self.start_datetime > self.end_datetime:
             raise ValidationError(
                 {"end_datetime": [_("Must be later than the start of the event.")]}
@@ -117,7 +147,7 @@ class Request(models.Model):
         return self.requester
 
     def save(self, *args, **kwargs):
-        if not self.deadline:
+        if not self.deadline and self.end_datetime:
             self.deadline = (self.end_datetime + timedelta(weeks=3)).date()
         self.full_clean(exclude=["additional_data"])
         super().save(*args, **kwargs)

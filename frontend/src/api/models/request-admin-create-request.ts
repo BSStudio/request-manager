@@ -53,6 +53,12 @@ export interface RequestAdminCreateRequest {
    * @type {number}
    * @memberof RequestAdminCreateRequest
    */
+  project?: number | null;
+  /**
+   *
+   * @type {number}
+   * @memberof RequestAdminCreateRequest
+   */
   requester?: number;
   /**
    *

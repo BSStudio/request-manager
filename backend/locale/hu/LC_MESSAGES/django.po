@@ -17,6 +17,16 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
+#: .\api\v1\admin\projects\serializers.py:81
+#, python-format
+msgid "%(title)s belongs to another project."
+msgstr "%(title)s egy másik projekthez tartozik."
+
+#: .\api\v1\admin\projects\serializers.py:90
+#, python-format
+msgid "%(title)s is not in this project."
+msgstr "%(title)s nem tartozik ehhez a projekthez."
+
 #: .\api\v1\admin\requests\ratings\views.py:60
 msgid "The video has not been edited yet."
 msgstr "A videó még nincs megvágva."

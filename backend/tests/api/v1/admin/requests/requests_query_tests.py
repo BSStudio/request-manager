@@ -4,7 +4,7 @@ import pytest
 from django.utils.timezone import make_aware
 from model_bakery import baker
 from rest_framework.reverse import reverse
-from rest_framework.status import is_success
+from rest_framework.status import HTTP_400_BAD_REQUEST, is_success
 
 from common.models import User
 from tests.api.helpers import login
@@ -237,3 +237,52 @@ def test_search_requests(admin_user, api_client, pagination):
     assert response_data[0]["id"] == requests[0].id
     assert response_data[1]["id"] == requests[1].id
     assert response_data[2]["id"] == requests[2].id
+
+
+class TestFilterByProject:
+    @pytest.fixture(autouse=True)
+    def requests(self, admin_user, api_client):
+        login(api_client, admin_user)
+        week, lectures = baker.make("video_requests.Project", _quantity=2)
+        return {
+            "week": baker.make(
+                "video_requests.Request", title="Megnyitó", project=week
+            ),
+            "lecture": baker.make(
+                "video_requests.Request", title="Előadás", project=lectures
+            ),
+            "loose": baker.make("video_requests.Request", title="Megnyitó gála"),
+        }
+
+    def ids(self, api_client, **filters):
+        response = api_client.get(
+            reverse("api:v1:admin:requests:request-list"),
+            {"pagination": False, **filters},
+        )
+        assert is_success(response.status_code), response.data
+        return {item["id"] for item in response.data}
+
+    def test_by_project(self, api_client, requests):
+        project = requests["week"].project
+
+        assert self.ids(api_client, project=project.id) == {requests["week"].id}
+
+    @pytest.mark.parametrize(
+        ("has_project", "names"), [(False, {"loose"}), (True, {"week", "lecture"})]
+    )
+    def test_by_having_a_project(self, api_client, requests, has_project, names):
+        assert self.ids(api_client, has_project=has_project) == {
+            requests[name].id for name in names
+        }
+
+    def test_search_without_a_project(self, api_client, requests):
+        assert self.ids(api_client, search="Megnyitó", has_project=False) == {
+            requests["loose"].id
+        }
+
+    def test_unknown_project(self, api_client, missing_id):
+        response = api_client.get(
+            reverse("api:v1:admin:requests:request-list"), {"project": missing_id}
+        )
+
+        assert response.status_code == HTTP_400_BAD_REQUEST

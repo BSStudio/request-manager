@@ -47,6 +47,12 @@ export interface RequestAdminUpdateRequest {
    * @type {number}
    * @memberof RequestAdminUpdateRequest
    */
+  project?: number | null;
+  /**
+   *
+   * @type {number}
+   * @memberof RequestAdminUpdateRequest
+   */
   requester?: number;
   /**
    *
