@@ -13,7 +13,7 @@
  */
 
 import type { Configuration } from '../configuration';
-import type { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios';
+import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
 import globalAxios from 'axios';
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -28,26 +28,27 @@ import {
   serializeDataIfNeeded,
   toPathString,
   createRequestFunction,
+  replaceWithSerializableTypeIfNeeded,
 } from '../common';
 // @ts-ignore
 import {
   BASE_PATH,
   COLLECTION_FORMATS,
-  RequestArgs,
+  type RequestArgs,
   BaseAPI,
   RequiredError,
+  operationServerMap,
 } from '../base';
 // @ts-ignore
-import { CommentCreateUpdate } from '../models';
+import type { CommentCreateUpdate } from '../models';
 // @ts-ignore
-import { CommentCreateUpdateRequest } from '../models';
+import type { CommentCreateUpdateRequest } from '../models';
 // @ts-ignore
-import { RequestExternalSchEventsCreateRequest } from '../models';
+import type { RequestExternalSchEventsCreateRequest } from '../models';
 // @ts-ignore
-import { RequestRetrieve } from '../models';
+import type { RequestRetrieve } from '../models';
 /**
  * ExternalApi - axios parameter creator
- * @export
  */
 export const ExternalApiAxiosParamCreator = function (
   configuration?: Configuration,
@@ -63,7 +64,7 @@ export const ExternalApiAxiosParamCreator = function (
     externalSchEventsRequestsCommentsCreate: async (
       requestId: number,
       commentCreateUpdateRequest: CommentCreateUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists(
@@ -79,7 +80,7 @@ export const ExternalApiAxiosParamCreator = function (
       );
       const localVarPath =
         `/api/v1/external/sch-events/requests/{request_id}/comments`.replace(
-          `{${'request_id'}}`,
+          '{request_id}',
           encodeURIComponent(String(requestId)),
         );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -107,6 +108,7 @@ export const ExternalApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -135,7 +137,7 @@ export const ExternalApiAxiosParamCreator = function (
      */
     externalSchEventsRequestsCreate: async (
       requestExternalSchEventsCreateRequest: RequestExternalSchEventsCreateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestExternalSchEventsCreateRequest' is not null or undefined
       assertParamExists(
@@ -169,6 +171,7 @@ export const ExternalApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -197,12 +200,12 @@ export const ExternalApiAxiosParamCreator = function (
      */
     externalSchEventsRequestsRetrieve: async (
       id: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('externalSchEventsRequestsRetrieve', 'id', id);
       const localVarPath = `/api/v1/external/sch-events/requests/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -229,6 +232,8 @@ export const ExternalApiAxiosParamCreator = function (
 
       // authentication cookieAuth required
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -248,7 +253,6 @@ export const ExternalApiAxiosParamCreator = function (
 
 /**
  * ExternalApi - functional programming interface
- * @export
  */
 export const ExternalApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = ExternalApiAxiosParamCreator(configuration);
@@ -263,7 +267,7 @@ export const ExternalApiFp = function (configuration?: Configuration) {
     async externalSchEventsRequestsCommentsCreate(
       requestId: number,
       commentCreateUpdateRequest: CommentCreateUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -276,12 +280,18 @@ export const ExternalApiFp = function (configuration?: Configuration) {
           commentCreateUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'ExternalApi.externalSchEventsRequestsCommentsCreate'
+        ]?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -291,7 +301,7 @@ export const ExternalApiFp = function (configuration?: Configuration) {
      */
     async externalSchEventsRequestsCreate(
       requestExternalSchEventsCreateRequest: RequestExternalSchEventsCreateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -303,12 +313,18 @@ export const ExternalApiFp = function (configuration?: Configuration) {
           requestExternalSchEventsCreateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['ExternalApi.externalSchEventsRequestsCreate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -318,7 +334,7 @@ export const ExternalApiFp = function (configuration?: Configuration) {
      */
     async externalSchEventsRequestsRetrieve(
       id: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -330,19 +346,24 @@ export const ExternalApiFp = function (configuration?: Configuration) {
           id,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['ExternalApi.externalSchEventsRequestsRetrieve']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
   };
 };
 
 /**
  * ExternalApi - factory interface
- * @export
  */
 export const ExternalApiFactory = function (
   configuration?: Configuration,
@@ -359,7 +380,7 @@ export const ExternalApiFactory = function (
      */
     externalSchEventsRequestsCommentsCreate(
       requestParameters: ExternalApiExternalSchEventsRequestsCommentsCreateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<CommentCreateUpdate> {
       return localVarFp
         .externalSchEventsRequestsCommentsCreate(
@@ -377,7 +398,7 @@ export const ExternalApiFactory = function (
      */
     externalSchEventsRequestsCreate(
       requestParameters: ExternalApiExternalSchEventsRequestsCreateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RequestRetrieve> {
       return localVarFp
         .externalSchEventsRequestsCreate(
@@ -394,7 +415,7 @@ export const ExternalApiFactory = function (
      */
     externalSchEventsRequestsRetrieve(
       requestParameters: ExternalApiExternalSchEventsRequestsRetrieveRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RequestRetrieve> {
       return localVarFp
         .externalSchEventsRequestsRetrieve(requestParameters.id, options)
@@ -405,58 +426,29 @@ export const ExternalApiFactory = function (
 
 /**
  * Request parameters for externalSchEventsRequestsCommentsCreate operation in ExternalApi.
- * @export
- * @interface ExternalApiExternalSchEventsRequestsCommentsCreateRequest
  */
 export interface ExternalApiExternalSchEventsRequestsCommentsCreateRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof ExternalApiExternalSchEventsRequestsCommentsCreate
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {CommentCreateUpdateRequest}
-   * @memberof ExternalApiExternalSchEventsRequestsCommentsCreate
-   */
   readonly commentCreateUpdateRequest: CommentCreateUpdateRequest;
 }
 
 /**
  * Request parameters for externalSchEventsRequestsCreate operation in ExternalApi.
- * @export
- * @interface ExternalApiExternalSchEventsRequestsCreateRequest
  */
 export interface ExternalApiExternalSchEventsRequestsCreateRequest {
-  /**
-   *
-   * @type {RequestExternalSchEventsCreateRequest}
-   * @memberof ExternalApiExternalSchEventsRequestsCreate
-   */
   readonly requestExternalSchEventsCreateRequest: RequestExternalSchEventsCreateRequest;
 }
 
 /**
  * Request parameters for externalSchEventsRequestsRetrieve operation in ExternalApi.
- * @export
- * @interface ExternalApiExternalSchEventsRequestsRetrieveRequest
  */
 export interface ExternalApiExternalSchEventsRequestsRetrieveRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof ExternalApiExternalSchEventsRequestsRetrieve
-   */
   readonly id: number;
 }
 
 /**
  * ExternalApi - object-oriented interface
- * @export
- * @class ExternalApi
- * @extends {BaseAPI}
  */
 export class ExternalApi extends BaseAPI {
   /**
@@ -464,11 +456,10 @@ export class ExternalApi extends BaseAPI {
    * @param {ExternalApiExternalSchEventsRequestsCommentsCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ExternalApi
    */
   public externalSchEventsRequestsCommentsCreate(
     requestParameters: ExternalApiExternalSchEventsRequestsCommentsCreateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return ExternalApiFp(this.configuration)
       .externalSchEventsRequestsCommentsCreate(
@@ -484,11 +475,10 @@ export class ExternalApi extends BaseAPI {
    * @param {ExternalApiExternalSchEventsRequestsCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ExternalApi
    */
   public externalSchEventsRequestsCreate(
     requestParameters: ExternalApiExternalSchEventsRequestsCreateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return ExternalApiFp(this.configuration)
       .externalSchEventsRequestsCreate(
@@ -503,11 +493,10 @@ export class ExternalApi extends BaseAPI {
    * @param {ExternalApiExternalSchEventsRequestsRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof ExternalApi
    */
   public externalSchEventsRequestsRetrieve(
     requestParameters: ExternalApiExternalSchEventsRequestsRetrieveRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return ExternalApiFp(this.configuration)
       .externalSchEventsRequestsRetrieve(requestParameters.id, options)

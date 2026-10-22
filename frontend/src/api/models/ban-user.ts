@@ -14,30 +14,10 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { UserNestedList } from './user-nested-list';
+import type { UserNestedList } from './user-nested-list';
 
-/**
- *
- * @export
- * @interface BanUser
- */
 export interface BanUser {
-  /**
-   *
-   * @type {string}
-   * @memberof BanUser
-   */
   created: string;
-  /**
-   *
-   * @type {UserNestedList}
-   * @memberof BanUser
-   */
   creator: UserNestedList;
-  /**
-   *
-   * @type {string}
-   * @memberof BanUser
-   */
   reason?: string;
 }

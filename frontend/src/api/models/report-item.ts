@@ -12,28 +12,8 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ReportItem
- */
 export interface ReportItem {
-  /**
-   *
-   * @type {string}
-   * @memberof ReportItem
-   */
   date: string;
-  /**
-   *
-   * @type {number}
-   * @memberof ReportItem
-   */
   id: number;
-  /**
-   *
-   * @type {string}
-   * @memberof ReportItem
-   */
   title: string;
 }

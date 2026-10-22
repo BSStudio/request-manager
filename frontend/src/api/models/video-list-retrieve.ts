@@ -14,42 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { RatingRetrieve } from './rating-retrieve';
+import type { RatingRetrieve } from './rating-retrieve';
 
-/**
- *
- * @export
- * @interface VideoListRetrieve
- */
 export interface VideoListRetrieve {
-  /**
-   *
-   * @type {number}
-   * @memberof VideoListRetrieve
-   */
   id: number;
-  /**
-   *
-   * @type {RatingRetrieve}
-   * @memberof VideoListRetrieve
-   */
   rating: RatingRetrieve;
-  /**
-   *
-   * @type {number}
-   * @memberof VideoListRetrieve
-   */
   status: number;
-  /**
-   *
-   * @type {string}
-   * @memberof VideoListRetrieve
-   */
   title: string;
-  /**
-   *
-   * @type {string}
-   * @memberof VideoListRetrieve
-   */
   video_url: string | null;
 }

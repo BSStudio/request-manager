@@ -14,42 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { RequestAdminCreateRequest } from './request-admin-create-request';
+import type { RequestAdminCreateRequest } from './request-admin-create-request';
 
-/**
- *
- * @export
- * @interface ProjectAdminWriteRequest
- */
 export interface ProjectAdminWriteRequest {
-  /**
-   *
-   * @type {Array<number>}
-   * @memberof ProjectAdminWriteRequest
-   */
   add_requests?: Array<number>;
-  /**
-   *
-   * @type {string}
-   * @memberof ProjectAdminWriteRequest
-   */
   name: string;
-  /**
-   *
-   * @type {Array<RequestAdminCreateRequest>}
-   * @memberof ProjectAdminWriteRequest
-   */
   new_requests?: Array<RequestAdminCreateRequest>;
-  /**
-   *
-   * @type {Array<number>}
-   * @memberof ProjectAdminWriteRequest
-   */
   remove_requests?: Array<number>;
-  /**
-   *
-   * @type {number}
-   * @memberof ProjectAdminWriteRequest
-   */
   responsible?: number | null;
 }

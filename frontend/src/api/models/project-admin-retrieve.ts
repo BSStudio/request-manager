@@ -14,39 +14,14 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ProjectRequest } from './project-request';
+import type { ProjectRequest } from './project-request';
 // May contain unused imports in some cases
 // @ts-ignore
-import { UserNestedDetail } from './user-nested-detail';
+import type { UserNestedDetail } from './user-nested-detail';
 
-/**
- *
- * @export
- * @interface ProjectAdminRetrieve
- */
 export interface ProjectAdminRetrieve {
-  /**
-   *
-   * @type {number}
-   * @memberof ProjectAdminRetrieve
-   */
   id: number;
-  /**
-   *
-   * @type {string}
-   * @memberof ProjectAdminRetrieve
-   */
   name: string;
-  /**
-   *
-   * @type {Array<ProjectRequest>}
-   * @memberof ProjectAdminRetrieve
-   */
   requests: Array<ProjectRequest>;
-  /**
-   *
-   * @type {UserNestedDetail}
-   * @memberof ProjectAdminRetrieve
-   */
   responsible: UserNestedDetail | null;
 }

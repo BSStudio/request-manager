@@ -12,46 +12,11 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface RequestCreateRequest
- */
 export interface RequestCreateRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof RequestCreateRequest
-   */
   comment?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestCreateRequest
-   */
   end_datetime: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestCreateRequest
-   */
   place: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestCreateRequest
-   */
   start_datetime: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestCreateRequest
-   */
   title: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestCreateRequest
-   */
   type: string;
 }

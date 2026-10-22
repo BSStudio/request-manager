@@ -12,106 +12,21 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface RequestAdminCreateRequest
- */
 export interface RequestAdminCreateRequest {
-  /**
-   *
-   * @type {any}
-   * @memberof RequestAdminCreateRequest
-   */
   additional_data?: any;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminCreateRequest
-   */
   comment?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminCreateRequest
-   */
   deadline?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminCreateRequest
-   */
   end_datetime: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminCreateRequest
-   */
   place: string;
-  /**
-   *
-   * @type {number}
-   * @memberof RequestAdminCreateRequest
-   */
   project?: number | null;
-  /**
-   *
-   * @type {number}
-   * @memberof RequestAdminCreateRequest
-   */
   requester?: number;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminCreateRequest
-   */
   requester_email?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminCreateRequest
-   */
   requester_first_name?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminCreateRequest
-   */
   requester_last_name?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminCreateRequest
-   */
   requester_mobile?: string;
-  /**
-   *
-   * @type {number}
-   * @memberof RequestAdminCreateRequest
-   */
   responsible?: number | null;
-  /**
-   *
-   * @type {boolean}
-   * @memberof RequestAdminCreateRequest
-   */
   send_notification?: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminCreateRequest
-   */
   start_datetime: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminCreateRequest
-   */
   title: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminCreateRequest
-   */
   type: string;
 }

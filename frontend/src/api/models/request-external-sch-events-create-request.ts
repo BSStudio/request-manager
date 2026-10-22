@@ -12,82 +12,17 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface RequestExternalSchEventsCreateRequest
- */
 export interface RequestExternalSchEventsCreateRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof RequestExternalSchEventsCreateRequest
-   */
   callback_url: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestExternalSchEventsCreateRequest
-   */
   comment?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestExternalSchEventsCreateRequest
-   */
   comment_text?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestExternalSchEventsCreateRequest
-   */
   end_datetime: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestExternalSchEventsCreateRequest
-   */
   place: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestExternalSchEventsCreateRequest
-   */
   requester_first_name: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestExternalSchEventsCreateRequest
-   */
   requester_email: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestExternalSchEventsCreateRequest
-   */
   requester_last_name: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestExternalSchEventsCreateRequest
-   */
   requester_mobile: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestExternalSchEventsCreateRequest
-   */
   start_datetime: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestExternalSchEventsCreateRequest
-   */
   title: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestExternalSchEventsCreateRequest
-   */
   type: string;
 }

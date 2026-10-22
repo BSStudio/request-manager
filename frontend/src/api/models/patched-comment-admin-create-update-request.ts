@@ -12,22 +12,7 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface PatchedCommentAdminCreateUpdateRequest
- */
 export interface PatchedCommentAdminCreateUpdateRequest {
-  /**
-   *
-   * @type {boolean}
-   * @memberof PatchedCommentAdminCreateUpdateRequest
-   */
   internal?: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof PatchedCommentAdminCreateUpdateRequest
-   */
   text?: string;
 }

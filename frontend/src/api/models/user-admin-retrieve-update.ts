@@ -14,87 +14,25 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { BanUser } from './ban-user';
+import type { BanUser } from './ban-user';
 // May contain unused imports in some cases
 // @ts-ignore
-import { UserSocialAuth } from './user-social-auth';
+import type { UserSocialAuth } from './user-social-auth';
 
-/**
- *
- * @export
- * @interface UserAdminRetrieveUpdate
- */
 export interface UserAdminRetrieveUpdate {
-  /**
-   *
-   * @type {any}
-   * @memberof UserAdminRetrieveUpdate
-   */
   avatar: any;
-  /**
-   *
-   * @type {string}
-   * @memberof UserAdminRetrieveUpdate
-   */
   avatar_url: string | null;
-  /**
-   *
-   * @type {BanUser}
-   * @memberof UserAdminRetrieveUpdate
-   */
   ban: BanUser | null;
-  /**
-   *
-   * @type {string}
-   * @memberof UserAdminRetrieveUpdate
-   */
   email?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof UserAdminRetrieveUpdate
-   */
   first_name?: string;
-  /**
-   *
-   * @type {Array<string>}
-   * @memberof UserAdminRetrieveUpdate
-   */
   groups: Array<string>;
-  /**
-   *
-   * @type {number}
-   * @memberof UserAdminRetrieveUpdate
-   */
   id: number;
-  /**
-   *
-   * @type {string}
-   * @memberof UserAdminRetrieveUpdate
-   */
   last_name?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof UserAdminRetrieveUpdate
-   */
   phone_number?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof UserAdminRetrieveUpdate
-   */
   role: string;
-  /**
-   *
-   * @type {Array<UserSocialAuth>}
-   * @memberof UserAdminRetrieveUpdate
-   */
   social_accounts: Array<UserSocialAuth>;
   /**
    * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-   * @type {string}
-   * @memberof UserAdminRetrieveUpdate
    */
   username: string;
 }

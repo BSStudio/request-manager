@@ -12,16 +12,6 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface BanUserRequest
- */
 export interface BanUserRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof BanUserRequest
-   */
   reason?: string;
 }

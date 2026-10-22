@@ -14,81 +14,21 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { UserNestedDetail } from './user-nested-detail';
+import type { UserNestedDetail } from './user-nested-detail';
 // May contain unused imports in some cases
 // @ts-ignore
-import { UserNestedList } from './user-nested-list';
+import type { UserNestedList } from './user-nested-list';
 
-/**
- *
- * @export
- * @interface RequestRetrieve
- */
 export interface RequestRetrieve {
-  /**
-   *
-   * @type {string}
-   * @memberof RequestRetrieve
-   */
   created: string;
-  /**
-   *
-   * @type {number}
-   * @memberof RequestRetrieve
-   */
   id: number;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestRetrieve
-   */
   start_datetime: string;
-  /**
-   *
-   * @type {number}
-   * @memberof RequestRetrieve
-   */
   status: number;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestRetrieve
-   */
   title: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestRetrieve
-   */
   end_datetime: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestRetrieve
-   */
   place: string;
-  /**
-   *
-   * @type {UserNestedDetail}
-   * @memberof RequestRetrieve
-   */
   requester: UserNestedDetail;
-  /**
-   *
-   * @type {UserNestedList}
-   * @memberof RequestRetrieve
-   */
   requested_by: UserNestedList;
-  /**
-   *
-   * @type {UserNestedDetail}
-   * @memberof RequestRetrieve
-   */
   responsible: UserNestedDetail;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestRetrieve
-   */
   type: string;
 }

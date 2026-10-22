@@ -14,54 +14,14 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { UserNestedList } from './user-nested-list';
+import type { UserNestedList } from './user-nested-list';
 
-/**
- *
- * @export
- * @interface VideoAdminList
- */
 export interface VideoAdminList {
-  /**
-   *
-   * @type {number}
-   * @memberof VideoAdminList
-   */
   avg_rating: number;
-  /**
-   *
-   * @type {UserNestedList}
-   * @memberof VideoAdminList
-   */
   editor: UserNestedList;
-  /**
-   *
-   * @type {number}
-   * @memberof VideoAdminList
-   */
   id: number;
-  /**
-   *
-   * @type {boolean}
-   * @memberof VideoAdminList
-   */
   rated: boolean;
-  /**
-   *
-   * @type {number}
-   * @memberof VideoAdminList
-   */
   status: number;
-  /**
-   *
-   * @type {boolean}
-   * @memberof VideoAdminList
-   */
   status_by_admin: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof VideoAdminList
-   */
   title: string;
 }

@@ -13,7 +13,7 @@
  */
 
 import type { Configuration } from '../configuration';
-import type { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios';
+import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
 import globalAxios from 'axios';
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -28,42 +28,43 @@ import {
   serializeDataIfNeeded,
   toPathString,
   createRequestFunction,
+  replaceWithSerializableTypeIfNeeded,
 } from '../common';
 // @ts-ignore
 import {
   BASE_PATH,
   COLLECTION_FORMATS,
-  RequestArgs,
+  type RequestArgs,
   BaseAPI,
   RequiredError,
+  operationServerMap,
 } from '../base';
 // @ts-ignore
-import { CommentCreateUpdate } from '../models';
+import type { CommentCreateUpdate } from '../models';
 // @ts-ignore
-import { CommentCreateUpdateRequest } from '../models';
+import type { CommentCreateUpdateRequest } from '../models';
 // @ts-ignore
-import { CommentListRetrieve } from '../models';
+import type { CommentListRetrieve } from '../models';
 // @ts-ignore
-import { PaginatedRequestListList } from '../models';
+import type { PaginatedRequestListList } from '../models';
 // @ts-ignore
-import { PatchedCommentCreateUpdateRequest } from '../models';
+import type { PatchedCommentCreateUpdateRequest } from '../models';
 // @ts-ignore
-import { PatchedRatingCreateUpdateRequest } from '../models';
+import type { PatchedRatingCreateUpdateRequest } from '../models';
 // @ts-ignore
-import { PolymorphicProxyRequest } from '../models';
+import type { PolymorphicProxyRequest } from '../models';
 // @ts-ignore
-import { RatingCreateUpdate } from '../models';
+import type { RatingCreateUpdate } from '../models';
 // @ts-ignore
-import { RatingCreateUpdateRequest } from '../models';
+import type { RatingCreateUpdateRequest } from '../models';
 // @ts-ignore
-import { RatingRetrieve } from '../models';
+import type { RatingRetrieve } from '../models';
 // @ts-ignore
-import { RequestRetrieve } from '../models';
+import type { RequestRetrieve } from '../models';
 // @ts-ignore
-import { VideoListRetrieve } from '../models';
+import type { VideoListRetrieve } from '../models';
 /**
  * RequestsApi - axios parameter creator
- * @export
  */
 export const RequestsApiAxiosParamCreator = function (
   configuration?: Configuration,
@@ -79,7 +80,7 @@ export const RequestsApiAxiosParamCreator = function (
     requestsCommentsCreate: async (
       requestId: number,
       commentCreateUpdateRequest: CommentCreateUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists('requestsCommentsCreate', 'requestId', requestId);
@@ -90,7 +91,7 @@ export const RequestsApiAxiosParamCreator = function (
         commentCreateUpdateRequest,
       );
       const localVarPath = `/api/v1/requests/{request_id}/comments`.replace(
-        `{${'request_id'}}`,
+        '{request_id}',
         encodeURIComponent(String(requestId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -118,6 +119,7 @@ export const RequestsApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -148,15 +150,15 @@ export const RequestsApiAxiosParamCreator = function (
     requestsCommentsDestroy: async (
       id: number,
       requestId: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('requestsCommentsDestroy', 'id', id);
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists('requestsCommentsDestroy', 'requestId', requestId);
       const localVarPath = `/api/v1/requests/{request_id}/comments/{id}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{request_id}', encodeURIComponent(String(requestId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -205,12 +207,12 @@ export const RequestsApiAxiosParamCreator = function (
     requestsCommentsList: async (
       requestId: number,
       ordering?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists('requestsCommentsList', 'requestId', requestId);
       const localVarPath = `/api/v1/requests/{request_id}/comments`.replace(
-        `{${'request_id'}}`,
+        '{request_id}',
         encodeURIComponent(String(requestId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -241,6 +243,8 @@ export const RequestsApiAxiosParamCreator = function (
         localVarQueryParameter['ordering'] = ordering;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -267,7 +271,7 @@ export const RequestsApiAxiosParamCreator = function (
       id: number,
       requestId: number,
       patchedCommentCreateUpdateRequest?: PatchedCommentCreateUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('requestsCommentsPartialUpdate', 'id', id);
@@ -278,8 +282,8 @@ export const RequestsApiAxiosParamCreator = function (
         requestId,
       );
       const localVarPath = `/api/v1/requests/{request_id}/comments/{id}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{request_id}', encodeURIComponent(String(requestId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -305,6 +309,7 @@ export const RequestsApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -335,15 +340,15 @@ export const RequestsApiAxiosParamCreator = function (
     requestsCommentsRetrieve: async (
       id: number,
       requestId: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('requestsCommentsRetrieve', 'id', id);
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists('requestsCommentsRetrieve', 'requestId', requestId);
       const localVarPath = `/api/v1/requests/{request_id}/comments/{id}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{request_id}', encodeURIComponent(String(requestId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -367,6 +372,8 @@ export const RequestsApiAxiosParamCreator = function (
       );
 
       // authentication cookieAuth required
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -394,7 +401,7 @@ export const RequestsApiAxiosParamCreator = function (
       id: number,
       requestId: number,
       commentCreateUpdateRequest: CommentCreateUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('requestsCommentsUpdate', 'id', id);
@@ -407,8 +414,8 @@ export const RequestsApiAxiosParamCreator = function (
         commentCreateUpdateRequest,
       );
       const localVarPath = `/api/v1/requests/{request_id}/comments/{id}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{request_id}', encodeURIComponent(String(requestId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -434,6 +441,7 @@ export const RequestsApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -462,7 +470,7 @@ export const RequestsApiAxiosParamCreator = function (
      */
     requestsCreate: async (
       polymorphicProxyRequest?: PolymorphicProxyRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/v1/requests`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -490,6 +498,7 @@ export const RequestsApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -526,7 +535,7 @@ export const RequestsApiAxiosParamCreator = function (
       pageSize?: number,
       pagination?: boolean,
       search?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/v1/requests`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -573,6 +582,8 @@ export const RequestsApiAxiosParamCreator = function (
         localVarQueryParameter['search'] = search;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -595,12 +606,12 @@ export const RequestsApiAxiosParamCreator = function (
      */
     requestsRetrieve: async (
       id: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('requestsRetrieve', 'id', id);
       const localVarPath = `/api/v1/requests/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -627,6 +638,8 @@ export const RequestsApiAxiosParamCreator = function (
 
       // authentication cookieAuth required
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -651,12 +664,12 @@ export const RequestsApiAxiosParamCreator = function (
     requestsVideosList: async (
       requestId: number,
       ordering?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists('requestsVideosList', 'requestId', requestId);
       const localVarPath = `/api/v1/requests/{request_id}/videos`.replace(
-        `{${'request_id'}}`,
+        '{request_id}',
         encodeURIComponent(String(requestId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -687,6 +700,8 @@ export const RequestsApiAxiosParamCreator = function (
         localVarQueryParameter['ordering'] = ordering;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -713,7 +728,7 @@ export const RequestsApiAxiosParamCreator = function (
       requestId: number,
       videoId: number,
       ratingCreateUpdateRequest: RatingCreateUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists('requestsVideosRatingCreate', 'requestId', requestId);
@@ -727,8 +742,8 @@ export const RequestsApiAxiosParamCreator = function (
       );
       const localVarPath =
         `/api/v1/requests/{request_id}/videos/{video_id}/rating`
-          .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)))
-          .replace(`{${'video_id'}}`, encodeURIComponent(String(videoId)));
+          .replace('{request_id}', encodeURIComponent(String(requestId)))
+          .replace('{video_id}', encodeURIComponent(String(videoId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -754,6 +769,7 @@ export const RequestsApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -784,7 +800,7 @@ export const RequestsApiAxiosParamCreator = function (
     requestsVideosRatingDestroy: async (
       requestId: number,
       videoId: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists('requestsVideosRatingDestroy', 'requestId', requestId);
@@ -792,8 +808,8 @@ export const RequestsApiAxiosParamCreator = function (
       assertParamExists('requestsVideosRatingDestroy', 'videoId', videoId);
       const localVarPath =
         `/api/v1/requests/{request_id}/videos/{video_id}/rating`
-          .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)))
-          .replace(`{${'video_id'}}`, encodeURIComponent(String(videoId)));
+          .replace('{request_id}', encodeURIComponent(String(requestId)))
+          .replace('{video_id}', encodeURIComponent(String(videoId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -844,7 +860,7 @@ export const RequestsApiAxiosParamCreator = function (
       requestId: number,
       videoId: number,
       patchedRatingCreateUpdateRequest?: PatchedRatingCreateUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists(
@@ -860,8 +876,8 @@ export const RequestsApiAxiosParamCreator = function (
       );
       const localVarPath =
         `/api/v1/requests/{request_id}/videos/{video_id}/rating`
-          .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)))
-          .replace(`{${'video_id'}}`, encodeURIComponent(String(videoId)));
+          .replace('{request_id}', encodeURIComponent(String(requestId)))
+          .replace('{video_id}', encodeURIComponent(String(videoId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -887,6 +903,7 @@ export const RequestsApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -917,7 +934,7 @@ export const RequestsApiAxiosParamCreator = function (
     requestsVideosRatingRetrieve: async (
       requestId: number,
       videoId: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists('requestsVideosRatingRetrieve', 'requestId', requestId);
@@ -925,8 +942,8 @@ export const RequestsApiAxiosParamCreator = function (
       assertParamExists('requestsVideosRatingRetrieve', 'videoId', videoId);
       const localVarPath =
         `/api/v1/requests/{request_id}/videos/{video_id}/rating`
-          .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)))
-          .replace(`{${'video_id'}}`, encodeURIComponent(String(videoId)));
+          .replace('{request_id}', encodeURIComponent(String(requestId)))
+          .replace('{video_id}', encodeURIComponent(String(videoId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -950,6 +967,8 @@ export const RequestsApiAxiosParamCreator = function (
       );
 
       // authentication cookieAuth required
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -977,7 +996,7 @@ export const RequestsApiAxiosParamCreator = function (
       requestId: number,
       videoId: number,
       ratingCreateUpdateRequest: RatingCreateUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists('requestsVideosRatingUpdate', 'requestId', requestId);
@@ -991,8 +1010,8 @@ export const RequestsApiAxiosParamCreator = function (
       );
       const localVarPath =
         `/api/v1/requests/{request_id}/videos/{video_id}/rating`
-          .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)))
-          .replace(`{${'video_id'}}`, encodeURIComponent(String(videoId)));
+          .replace('{request_id}', encodeURIComponent(String(requestId)))
+          .replace('{video_id}', encodeURIComponent(String(videoId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -1018,6 +1037,7 @@ export const RequestsApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -1048,15 +1068,15 @@ export const RequestsApiAxiosParamCreator = function (
     requestsVideosRetrieve: async (
       id: number,
       requestId: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('requestsVideosRetrieve', 'id', id);
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists('requestsVideosRetrieve', 'requestId', requestId);
       const localVarPath = `/api/v1/requests/{request_id}/videos/{id}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{request_id}', encodeURIComponent(String(requestId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -1081,6 +1101,8 @@ export const RequestsApiAxiosParamCreator = function (
 
       // authentication cookieAuth required
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1100,7 +1122,6 @@ export const RequestsApiAxiosParamCreator = function (
 
 /**
  * RequestsApi - functional programming interface
- * @export
  */
 export const RequestsApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = RequestsApiAxiosParamCreator(configuration);
@@ -1115,7 +1136,7 @@ export const RequestsApiFp = function (configuration?: Configuration) {
     async requestsCommentsCreate(
       requestId: number,
       commentCreateUpdateRequest: CommentCreateUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -1128,12 +1149,18 @@ export const RequestsApiFp = function (configuration?: Configuration) {
           commentCreateUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['RequestsApi.requestsCommentsCreate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -1145,7 +1172,7 @@ export const RequestsApiFp = function (configuration?: Configuration) {
     async requestsCommentsDestroy(
       id: number,
       requestId: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
     > {
@@ -1155,12 +1182,18 @@ export const RequestsApiFp = function (configuration?: Configuration) {
           requestId,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['RequestsApi.requestsCommentsDestroy']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -1172,7 +1205,7 @@ export const RequestsApiFp = function (configuration?: Configuration) {
     async requestsCommentsList(
       requestId: number,
       ordering?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -1185,12 +1218,18 @@ export const RequestsApiFp = function (configuration?: Configuration) {
           ordering,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['RequestsApi.requestsCommentsList']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -1204,7 +1243,7 @@ export const RequestsApiFp = function (configuration?: Configuration) {
       id: number,
       requestId: number,
       patchedCommentCreateUpdateRequest?: PatchedCommentCreateUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -1218,12 +1257,18 @@ export const RequestsApiFp = function (configuration?: Configuration) {
           patchedCommentCreateUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['RequestsApi.requestsCommentsPartialUpdate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -1235,7 +1280,7 @@ export const RequestsApiFp = function (configuration?: Configuration) {
     async requestsCommentsRetrieve(
       id: number,
       requestId: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -1248,12 +1293,18 @@ export const RequestsApiFp = function (configuration?: Configuration) {
           requestId,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['RequestsApi.requestsCommentsRetrieve']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -1267,7 +1318,7 @@ export const RequestsApiFp = function (configuration?: Configuration) {
       id: number,
       requestId: number,
       commentCreateUpdateRequest: CommentCreateUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -1281,12 +1332,18 @@ export const RequestsApiFp = function (configuration?: Configuration) {
           commentCreateUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['RequestsApi.requestsCommentsUpdate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -1296,7 +1353,7 @@ export const RequestsApiFp = function (configuration?: Configuration) {
      */
     async requestsCreate(
       polymorphicProxyRequest?: PolymorphicProxyRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -1307,12 +1364,18 @@ export const RequestsApiFp = function (configuration?: Configuration) {
         polymorphicProxyRequest,
         options,
       );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['RequestsApi.requestsCreate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -1330,7 +1393,7 @@ export const RequestsApiFp = function (configuration?: Configuration) {
       pageSize?: number,
       pagination?: boolean,
       search?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -1345,12 +1408,18 @@ export const RequestsApiFp = function (configuration?: Configuration) {
         search,
         options,
       );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['RequestsApi.requestsList']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -1360,7 +1429,7 @@ export const RequestsApiFp = function (configuration?: Configuration) {
      */
     async requestsRetrieve(
       id: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -1369,12 +1438,18 @@ export const RequestsApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.requestsRetrieve(id, options);
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['RequestsApi.requestsRetrieve']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -1386,7 +1461,7 @@ export const RequestsApiFp = function (configuration?: Configuration) {
     async requestsVideosList(
       requestId: number,
       ordering?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -1399,12 +1474,18 @@ export const RequestsApiFp = function (configuration?: Configuration) {
           ordering,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['RequestsApi.requestsVideosList']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -1418,7 +1499,7 @@ export const RequestsApiFp = function (configuration?: Configuration) {
       requestId: number,
       videoId: number,
       ratingCreateUpdateRequest: RatingCreateUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -1432,12 +1513,18 @@ export const RequestsApiFp = function (configuration?: Configuration) {
           ratingCreateUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['RequestsApi.requestsVideosRatingCreate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -1449,7 +1536,7 @@ export const RequestsApiFp = function (configuration?: Configuration) {
     async requestsVideosRatingDestroy(
       requestId: number,
       videoId: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
     > {
@@ -1459,12 +1546,18 @@ export const RequestsApiFp = function (configuration?: Configuration) {
           videoId,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['RequestsApi.requestsVideosRatingDestroy']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -1478,7 +1571,7 @@ export const RequestsApiFp = function (configuration?: Configuration) {
       requestId: number,
       videoId: number,
       patchedRatingCreateUpdateRequest?: PatchedRatingCreateUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -1492,12 +1585,18 @@ export const RequestsApiFp = function (configuration?: Configuration) {
           patchedRatingCreateUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['RequestsApi.requestsVideosRatingPartialUpdate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -1509,7 +1608,7 @@ export const RequestsApiFp = function (configuration?: Configuration) {
     async requestsVideosRatingRetrieve(
       requestId: number,
       videoId: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<RatingRetrieve>
     > {
@@ -1519,12 +1618,18 @@ export const RequestsApiFp = function (configuration?: Configuration) {
           videoId,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['RequestsApi.requestsVideosRatingRetrieve']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -1538,7 +1643,7 @@ export const RequestsApiFp = function (configuration?: Configuration) {
       requestId: number,
       videoId: number,
       ratingCreateUpdateRequest: RatingCreateUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -1552,12 +1657,18 @@ export const RequestsApiFp = function (configuration?: Configuration) {
           ratingCreateUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['RequestsApi.requestsVideosRatingUpdate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -1569,7 +1680,7 @@ export const RequestsApiFp = function (configuration?: Configuration) {
     async requestsVideosRetrieve(
       id: number,
       requestId: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -1582,19 +1693,24 @@ export const RequestsApiFp = function (configuration?: Configuration) {
           requestId,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['RequestsApi.requestsVideosRetrieve']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
   };
 };
 
 /**
  * RequestsApi - factory interface
- * @export
  */
 export const RequestsApiFactory = function (
   configuration?: Configuration,
@@ -1611,7 +1727,7 @@ export const RequestsApiFactory = function (
      */
     requestsCommentsCreate(
       requestParameters: RequestsApiRequestsCommentsCreateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<CommentCreateUpdate> {
       return localVarFp
         .requestsCommentsCreate(
@@ -1629,7 +1745,7 @@ export const RequestsApiFactory = function (
      */
     requestsCommentsDestroy(
       requestParameters: RequestsApiRequestsCommentsDestroyRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .requestsCommentsDestroy(
@@ -1647,7 +1763,7 @@ export const RequestsApiFactory = function (
      */
     requestsCommentsList(
       requestParameters: RequestsApiRequestsCommentsListRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Array<CommentListRetrieve>> {
       return localVarFp
         .requestsCommentsList(
@@ -1665,7 +1781,7 @@ export const RequestsApiFactory = function (
      */
     requestsCommentsPartialUpdate(
       requestParameters: RequestsApiRequestsCommentsPartialUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<CommentCreateUpdate> {
       return localVarFp
         .requestsCommentsPartialUpdate(
@@ -1684,7 +1800,7 @@ export const RequestsApiFactory = function (
      */
     requestsCommentsRetrieve(
       requestParameters: RequestsApiRequestsCommentsRetrieveRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<CommentListRetrieve> {
       return localVarFp
         .requestsCommentsRetrieve(
@@ -1702,7 +1818,7 @@ export const RequestsApiFactory = function (
      */
     requestsCommentsUpdate(
       requestParameters: RequestsApiRequestsCommentsUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<CommentCreateUpdate> {
       return localVarFp
         .requestsCommentsUpdate(
@@ -1721,7 +1837,7 @@ export const RequestsApiFactory = function (
      */
     requestsCreate(
       requestParameters: RequestsApiRequestsCreateRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RequestRetrieve> {
       return localVarFp
         .requestsCreate(requestParameters.polymorphicProxyRequest, options)
@@ -1735,7 +1851,7 @@ export const RequestsApiFactory = function (
      */
     requestsList(
       requestParameters: RequestsApiRequestsListRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<PaginatedRequestListList> {
       return localVarFp
         .requestsList(
@@ -1756,7 +1872,7 @@ export const RequestsApiFactory = function (
      */
     requestsRetrieve(
       requestParameters: RequestsApiRequestsRetrieveRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RequestRetrieve> {
       return localVarFp
         .requestsRetrieve(requestParameters.id, options)
@@ -1770,7 +1886,7 @@ export const RequestsApiFactory = function (
      */
     requestsVideosList(
       requestParameters: RequestsApiRequestsVideosListRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Array<VideoListRetrieve>> {
       return localVarFp
         .requestsVideosList(
@@ -1788,7 +1904,7 @@ export const RequestsApiFactory = function (
      */
     requestsVideosRatingCreate(
       requestParameters: RequestsApiRequestsVideosRatingCreateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RatingCreateUpdate> {
       return localVarFp
         .requestsVideosRatingCreate(
@@ -1807,7 +1923,7 @@ export const RequestsApiFactory = function (
      */
     requestsVideosRatingDestroy(
       requestParameters: RequestsApiRequestsVideosRatingDestroyRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .requestsVideosRatingDestroy(
@@ -1825,7 +1941,7 @@ export const RequestsApiFactory = function (
      */
     requestsVideosRatingPartialUpdate(
       requestParameters: RequestsApiRequestsVideosRatingPartialUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RatingCreateUpdate> {
       return localVarFp
         .requestsVideosRatingPartialUpdate(
@@ -1844,7 +1960,7 @@ export const RequestsApiFactory = function (
      */
     requestsVideosRatingRetrieve(
       requestParameters: RequestsApiRequestsVideosRatingRetrieveRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RatingRetrieve> {
       return localVarFp
         .requestsVideosRatingRetrieve(
@@ -1862,7 +1978,7 @@ export const RequestsApiFactory = function (
      */
     requestsVideosRatingUpdate(
       requestParameters: RequestsApiRequestsVideosRatingUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RatingCreateUpdate> {
       return localVarFp
         .requestsVideosRatingUpdate(
@@ -1881,7 +1997,7 @@ export const RequestsApiFactory = function (
      */
     requestsVideosRetrieve(
       requestParameters: RequestsApiRequestsVideosRetrieveRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<VideoListRetrieve> {
       return localVarFp
         .requestsVideosRetrieve(
@@ -1896,387 +2012,201 @@ export const RequestsApiFactory = function (
 
 /**
  * Request parameters for requestsCommentsCreate operation in RequestsApi.
- * @export
- * @interface RequestsApiRequestsCommentsCreateRequest
  */
 export interface RequestsApiRequestsCommentsCreateRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof RequestsApiRequestsCommentsCreate
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {CommentCreateUpdateRequest}
-   * @memberof RequestsApiRequestsCommentsCreate
-   */
   readonly commentCreateUpdateRequest: CommentCreateUpdateRequest;
 }
 
 /**
  * Request parameters for requestsCommentsDestroy operation in RequestsApi.
- * @export
- * @interface RequestsApiRequestsCommentsDestroyRequest
  */
 export interface RequestsApiRequestsCommentsDestroyRequest {
   /**
    * A unique integer value identifying this comment.
-   * @type {number}
-   * @memberof RequestsApiRequestsCommentsDestroy
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof RequestsApiRequestsCommentsDestroy
-   */
   readonly requestId: number;
 }
 
 /**
  * Request parameters for requestsCommentsList operation in RequestsApi.
- * @export
- * @interface RequestsApiRequestsCommentsListRequest
  */
 export interface RequestsApiRequestsCommentsListRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof RequestsApiRequestsCommentsList
-   */
   readonly requestId: number;
 
   /**
    * Which field to use when ordering the results.
-   * @type {string}
-   * @memberof RequestsApiRequestsCommentsList
    */
   readonly ordering?: string;
 }
 
 /**
  * Request parameters for requestsCommentsPartialUpdate operation in RequestsApi.
- * @export
- * @interface RequestsApiRequestsCommentsPartialUpdateRequest
  */
 export interface RequestsApiRequestsCommentsPartialUpdateRequest {
   /**
    * A unique integer value identifying this comment.
-   * @type {number}
-   * @memberof RequestsApiRequestsCommentsPartialUpdate
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof RequestsApiRequestsCommentsPartialUpdate
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {PatchedCommentCreateUpdateRequest}
-   * @memberof RequestsApiRequestsCommentsPartialUpdate
-   */
   readonly patchedCommentCreateUpdateRequest?: PatchedCommentCreateUpdateRequest;
 }
 
 /**
  * Request parameters for requestsCommentsRetrieve operation in RequestsApi.
- * @export
- * @interface RequestsApiRequestsCommentsRetrieveRequest
  */
 export interface RequestsApiRequestsCommentsRetrieveRequest {
   /**
    * A unique integer value identifying this comment.
-   * @type {number}
-   * @memberof RequestsApiRequestsCommentsRetrieve
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof RequestsApiRequestsCommentsRetrieve
-   */
   readonly requestId: number;
 }
 
 /**
  * Request parameters for requestsCommentsUpdate operation in RequestsApi.
- * @export
- * @interface RequestsApiRequestsCommentsUpdateRequest
  */
 export interface RequestsApiRequestsCommentsUpdateRequest {
   /**
    * A unique integer value identifying this comment.
-   * @type {number}
-   * @memberof RequestsApiRequestsCommentsUpdate
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof RequestsApiRequestsCommentsUpdate
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {CommentCreateUpdateRequest}
-   * @memberof RequestsApiRequestsCommentsUpdate
-   */
   readonly commentCreateUpdateRequest: CommentCreateUpdateRequest;
 }
 
 /**
  * Request parameters for requestsCreate operation in RequestsApi.
- * @export
- * @interface RequestsApiRequestsCreateRequest
  */
 export interface RequestsApiRequestsCreateRequest {
-  /**
-   *
-   * @type {PolymorphicProxyRequest}
-   * @memberof RequestsApiRequestsCreate
-   */
   readonly polymorphicProxyRequest?: PolymorphicProxyRequest;
 }
 
 /**
  * Request parameters for requestsList operation in RequestsApi.
- * @export
- * @interface RequestsApiRequestsListRequest
  */
 export interface RequestsApiRequestsListRequest {
   /**
    * Which field to use when ordering the results.
-   * @type {string}
-   * @memberof RequestsApiRequestsList
    */
   readonly ordering?: string;
 
   /**
    * A page number within the paginated result set.
-   * @type {number}
-   * @memberof RequestsApiRequestsList
    */
   readonly page?: number;
 
   /**
    * Number of results to return per page.
-   * @type {number}
-   * @memberof RequestsApiRequestsList
    */
   readonly pageSize?: number;
 
   /**
    * Return paginated response.
-   * @type {boolean}
-   * @memberof RequestsApiRequestsList
    */
   readonly pagination?: boolean;
 
   /**
    * A search term.
-   * @type {string}
-   * @memberof RequestsApiRequestsList
    */
   readonly search?: string;
 }
 
 /**
  * Request parameters for requestsRetrieve operation in RequestsApi.
- * @export
- * @interface RequestsApiRequestsRetrieveRequest
  */
 export interface RequestsApiRequestsRetrieveRequest {
   /**
    * A unique integer value identifying this request.
-   * @type {number}
-   * @memberof RequestsApiRequestsRetrieve
    */
   readonly id: number;
 }
 
 /**
  * Request parameters for requestsVideosList operation in RequestsApi.
- * @export
- * @interface RequestsApiRequestsVideosListRequest
  */
 export interface RequestsApiRequestsVideosListRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof RequestsApiRequestsVideosList
-   */
   readonly requestId: number;
 
   /**
    * Which field to use when ordering the results.
-   * @type {string}
-   * @memberof RequestsApiRequestsVideosList
    */
   readonly ordering?: string;
 }
 
 /**
  * Request parameters for requestsVideosRatingCreate operation in RequestsApi.
- * @export
- * @interface RequestsApiRequestsVideosRatingCreateRequest
  */
 export interface RequestsApiRequestsVideosRatingCreateRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof RequestsApiRequestsVideosRatingCreate
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof RequestsApiRequestsVideosRatingCreate
-   */
   readonly videoId: number;
 
-  /**
-   *
-   * @type {RatingCreateUpdateRequest}
-   * @memberof RequestsApiRequestsVideosRatingCreate
-   */
   readonly ratingCreateUpdateRequest: RatingCreateUpdateRequest;
 }
 
 /**
  * Request parameters for requestsVideosRatingDestroy operation in RequestsApi.
- * @export
- * @interface RequestsApiRequestsVideosRatingDestroyRequest
  */
 export interface RequestsApiRequestsVideosRatingDestroyRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof RequestsApiRequestsVideosRatingDestroy
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof RequestsApiRequestsVideosRatingDestroy
-   */
   readonly videoId: number;
 }
 
 /**
  * Request parameters for requestsVideosRatingPartialUpdate operation in RequestsApi.
- * @export
- * @interface RequestsApiRequestsVideosRatingPartialUpdateRequest
  */
 export interface RequestsApiRequestsVideosRatingPartialUpdateRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof RequestsApiRequestsVideosRatingPartialUpdate
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof RequestsApiRequestsVideosRatingPartialUpdate
-   */
   readonly videoId: number;
 
-  /**
-   *
-   * @type {PatchedRatingCreateUpdateRequest}
-   * @memberof RequestsApiRequestsVideosRatingPartialUpdate
-   */
   readonly patchedRatingCreateUpdateRequest?: PatchedRatingCreateUpdateRequest;
 }
 
 /**
  * Request parameters for requestsVideosRatingRetrieve operation in RequestsApi.
- * @export
- * @interface RequestsApiRequestsVideosRatingRetrieveRequest
  */
 export interface RequestsApiRequestsVideosRatingRetrieveRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof RequestsApiRequestsVideosRatingRetrieve
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof RequestsApiRequestsVideosRatingRetrieve
-   */
   readonly videoId: number;
 }
 
 /**
  * Request parameters for requestsVideosRatingUpdate operation in RequestsApi.
- * @export
- * @interface RequestsApiRequestsVideosRatingUpdateRequest
  */
 export interface RequestsApiRequestsVideosRatingUpdateRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof RequestsApiRequestsVideosRatingUpdate
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof RequestsApiRequestsVideosRatingUpdate
-   */
   readonly videoId: number;
 
-  /**
-   *
-   * @type {RatingCreateUpdateRequest}
-   * @memberof RequestsApiRequestsVideosRatingUpdate
-   */
   readonly ratingCreateUpdateRequest: RatingCreateUpdateRequest;
 }
 
 /**
  * Request parameters for requestsVideosRetrieve operation in RequestsApi.
- * @export
- * @interface RequestsApiRequestsVideosRetrieveRequest
  */
 export interface RequestsApiRequestsVideosRetrieveRequest {
   /**
    * A unique integer value identifying this video.
-   * @type {number}
-   * @memberof RequestsApiRequestsVideosRetrieve
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof RequestsApiRequestsVideosRetrieve
-   */
   readonly requestId: number;
 }
 
 /**
  * RequestsApi - object-oriented interface
- * @export
- * @class RequestsApi
- * @extends {BaseAPI}
  */
 export class RequestsApi extends BaseAPI {
   /**
@@ -2284,11 +2214,10 @@ export class RequestsApi extends BaseAPI {
    * @param {RequestsApiRequestsCommentsCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RequestsApi
    */
   public requestsCommentsCreate(
     requestParameters: RequestsApiRequestsCommentsCreateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
       .requestsCommentsCreate(
@@ -2304,11 +2233,10 @@ export class RequestsApi extends BaseAPI {
    * @param {RequestsApiRequestsCommentsDestroyRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RequestsApi
    */
   public requestsCommentsDestroy(
     requestParameters: RequestsApiRequestsCommentsDestroyRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
       .requestsCommentsDestroy(
@@ -2324,11 +2252,10 @@ export class RequestsApi extends BaseAPI {
    * @param {RequestsApiRequestsCommentsListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RequestsApi
    */
   public requestsCommentsList(
     requestParameters: RequestsApiRequestsCommentsListRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
       .requestsCommentsList(
@@ -2344,11 +2271,10 @@ export class RequestsApi extends BaseAPI {
    * @param {RequestsApiRequestsCommentsPartialUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RequestsApi
    */
   public requestsCommentsPartialUpdate(
     requestParameters: RequestsApiRequestsCommentsPartialUpdateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
       .requestsCommentsPartialUpdate(
@@ -2365,11 +2291,10 @@ export class RequestsApi extends BaseAPI {
    * @param {RequestsApiRequestsCommentsRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RequestsApi
    */
   public requestsCommentsRetrieve(
     requestParameters: RequestsApiRequestsCommentsRetrieveRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
       .requestsCommentsRetrieve(
@@ -2385,11 +2310,10 @@ export class RequestsApi extends BaseAPI {
    * @param {RequestsApiRequestsCommentsUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RequestsApi
    */
   public requestsCommentsUpdate(
     requestParameters: RequestsApiRequestsCommentsUpdateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
       .requestsCommentsUpdate(
@@ -2406,11 +2330,10 @@ export class RequestsApi extends BaseAPI {
    * @param {RequestsApiRequestsCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RequestsApi
    */
   public requestsCreate(
     requestParameters: RequestsApiRequestsCreateRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
       .requestsCreate(requestParameters.polymorphicProxyRequest, options)
@@ -2422,11 +2345,10 @@ export class RequestsApi extends BaseAPI {
    * @param {RequestsApiRequestsListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RequestsApi
    */
   public requestsList(
     requestParameters: RequestsApiRequestsListRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
       .requestsList(
@@ -2445,11 +2367,10 @@ export class RequestsApi extends BaseAPI {
    * @param {RequestsApiRequestsRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RequestsApi
    */
   public requestsRetrieve(
     requestParameters: RequestsApiRequestsRetrieveRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
       .requestsRetrieve(requestParameters.id, options)
@@ -2461,11 +2382,10 @@ export class RequestsApi extends BaseAPI {
    * @param {RequestsApiRequestsVideosListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RequestsApi
    */
   public requestsVideosList(
     requestParameters: RequestsApiRequestsVideosListRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
       .requestsVideosList(
@@ -2481,11 +2401,10 @@ export class RequestsApi extends BaseAPI {
    * @param {RequestsApiRequestsVideosRatingCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RequestsApi
    */
   public requestsVideosRatingCreate(
     requestParameters: RequestsApiRequestsVideosRatingCreateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
       .requestsVideosRatingCreate(
@@ -2502,11 +2421,10 @@ export class RequestsApi extends BaseAPI {
    * @param {RequestsApiRequestsVideosRatingDestroyRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RequestsApi
    */
   public requestsVideosRatingDestroy(
     requestParameters: RequestsApiRequestsVideosRatingDestroyRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
       .requestsVideosRatingDestroy(
@@ -2522,11 +2440,10 @@ export class RequestsApi extends BaseAPI {
    * @param {RequestsApiRequestsVideosRatingPartialUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RequestsApi
    */
   public requestsVideosRatingPartialUpdate(
     requestParameters: RequestsApiRequestsVideosRatingPartialUpdateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
       .requestsVideosRatingPartialUpdate(
@@ -2543,11 +2460,10 @@ export class RequestsApi extends BaseAPI {
    * @param {RequestsApiRequestsVideosRatingRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RequestsApi
    */
   public requestsVideosRatingRetrieve(
     requestParameters: RequestsApiRequestsVideosRatingRetrieveRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
       .requestsVideosRatingRetrieve(
@@ -2563,11 +2479,10 @@ export class RequestsApi extends BaseAPI {
    * @param {RequestsApiRequestsVideosRatingUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RequestsApi
    */
   public requestsVideosRatingUpdate(
     requestParameters: RequestsApiRequestsVideosRatingUpdateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
       .requestsVideosRatingUpdate(
@@ -2584,11 +2499,10 @@ export class RequestsApi extends BaseAPI {
    * @param {RequestsApiRequestsVideosRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof RequestsApi
    */
   public requestsVideosRetrieve(
     requestParameters: RequestsApiRequestsVideosRetrieveRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
       .requestsVideosRetrieve(

@@ -12,16 +12,6 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface PatchedCommentCreateUpdateRequest
- */
 export interface PatchedCommentCreateUpdateRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof PatchedCommentCreateUpdateRequest
-   */
   text?: string;
 }

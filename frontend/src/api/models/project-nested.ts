@@ -12,22 +12,7 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ProjectNested
- */
 export interface ProjectNested {
-  /**
-   *
-   * @type {number}
-   * @memberof ProjectNested
-   */
   id: number;
-  /**
-   *
-   * @type {string}
-   * @memberof ProjectNested
-   */
   name: string;
 }

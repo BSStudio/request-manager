@@ -14,42 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { RequestAdminCreateRequest } from './request-admin-create-request';
+import type { RequestAdminCreateRequest } from './request-admin-create-request';
 
-/**
- *
- * @export
- * @interface PatchedProjectAdminWriteRequest
- */
 export interface PatchedProjectAdminWriteRequest {
-  /**
-   *
-   * @type {Array<number>}
-   * @memberof PatchedProjectAdminWriteRequest
-   */
   add_requests?: Array<number>;
-  /**
-   *
-   * @type {string}
-   * @memberof PatchedProjectAdminWriteRequest
-   */
   name?: string;
-  /**
-   *
-   * @type {Array<RequestAdminCreateRequest>}
-   * @memberof PatchedProjectAdminWriteRequest
-   */
   new_requests?: Array<RequestAdminCreateRequest>;
-  /**
-   *
-   * @type {Array<number>}
-   * @memberof PatchedProjectAdminWriteRequest
-   */
   remove_requests?: Array<number>;
-  /**
-   *
-   * @type {number}
-   * @memberof PatchedProjectAdminWriteRequest
-   */
   responsible?: number | null;
 }

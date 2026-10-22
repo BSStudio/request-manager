@@ -12,40 +12,10 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface RequestList
- */
 export interface RequestList {
-  /**
-   *
-   * @type {string}
-   * @memberof RequestList
-   */
   created: string;
-  /**
-   *
-   * @type {number}
-   * @memberof RequestList
-   */
   id: number;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestList
-   */
   start_datetime: string;
-  /**
-   *
-   * @type {number}
-   * @memberof RequestList
-   */
   status: number;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestList
-   */
   title: string;
 }

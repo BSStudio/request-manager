@@ -12,28 +12,8 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface UserNestedList
- */
 export interface UserNestedList {
-  /**
-   *
-   * @type {string}
-   * @memberof UserNestedList
-   */
   avatar_url: string;
-  /**
-   *
-   * @type {string}
-   * @memberof UserNestedList
-   */
   full_name: string;
-  /**
-   *
-   * @type {number}
-   * @memberof UserNestedList
-   */
   id: number;
 }

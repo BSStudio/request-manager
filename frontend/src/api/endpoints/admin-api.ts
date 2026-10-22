@@ -13,7 +13,7 @@
  */
 
 import type { Configuration } from '../configuration';
-import type { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios';
+import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
 import globalAxios from 'axios';
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -28,94 +28,95 @@ import {
   serializeDataIfNeeded,
   toPathString,
   createRequestFunction,
+  replaceWithSerializableTypeIfNeeded,
 } from '../common';
 // @ts-ignore
 import {
   BASE_PATH,
   COLLECTION_FORMATS,
-  RequestArgs,
+  type RequestArgs,
   BaseAPI,
   RequiredError,
+  operationServerMap,
 } from '../base';
 // @ts-ignore
-import { BanUser } from '../models';
+import type { BanUser } from '../models';
 // @ts-ignore
-import { BanUserRequest } from '../models';
+import type { BanUserRequest } from '../models';
 // @ts-ignore
-import { CommentAdminCreateUpdate } from '../models';
+import type { CommentAdminCreateUpdate } from '../models';
 // @ts-ignore
-import { CommentAdminCreateUpdateRequest } from '../models';
+import type { CommentAdminCreateUpdateRequest } from '../models';
 // @ts-ignore
-import { CommentAdminListRetrieve } from '../models';
+import type { CommentAdminListRetrieve } from '../models';
 // @ts-ignore
-import { CrewMemberAdminCreateUpdateRequest } from '../models';
+import type { CrewMemberAdminCreateUpdateRequest } from '../models';
 // @ts-ignore
-import { CrewMemberAdminListRetrieve } from '../models';
+import type { CrewMemberAdminListRetrieve } from '../models';
 // @ts-ignore
-import { History } from '../models';
+import type { History } from '../models';
 // @ts-ignore
-import { PaginatedRequestAdminListList } from '../models';
+import type { PaginatedRequestAdminListList } from '../models';
 // @ts-ignore
-import { PaginatedTodoAdminListRetrieveList } from '../models';
+import type { PaginatedTodoAdminListRetrieveList } from '../models';
 // @ts-ignore
-import { PaginatedUserAdminListList } from '../models';
+import type { PaginatedUserAdminListList } from '../models';
 // @ts-ignore
-import { PaginatedVideoAdminSearchList } from '../models';
+import type { PaginatedVideoAdminSearchList } from '../models';
 // @ts-ignore
-import { PatchedCommentAdminCreateUpdateRequest } from '../models';
+import type { PatchedCommentAdminCreateUpdateRequest } from '../models';
 // @ts-ignore
-import { PatchedCrewMemberAdminCreateUpdateRequest } from '../models';
+import type { PatchedCrewMemberAdminCreateUpdateRequest } from '../models';
 // @ts-ignore
-import { PatchedProjectAdminWriteRequest } from '../models';
+import type { PatchedProjectAdminWriteRequest } from '../models';
 // @ts-ignore
-import { PatchedRatingAdminCreateUpdateRequest } from '../models';
+import type { PatchedRatingAdminCreateUpdateRequest } from '../models';
 // @ts-ignore
-import { PatchedRequestAdminUpdateRequest } from '../models';
+import type { PatchedRequestAdminUpdateRequest } from '../models';
 // @ts-ignore
-import { PatchedTodoAdminCreateUpdateRequest } from '../models';
+import type { PatchedTodoAdminCreateUpdateRequest } from '../models';
 // @ts-ignore
-import { PatchedUserAdminRetrieveUpdateRequest } from '../models';
+import type { PatchedUserAdminRetrieveUpdateRequest } from '../models';
 // @ts-ignore
-import { PatchedVideoAdminCreateUpdateRequest } from '../models';
+import type { PatchedVideoAdminCreateUpdateRequest } from '../models';
 // @ts-ignore
-import { ProjectAdminList } from '../models';
+import type { ProjectAdminList } from '../models';
 // @ts-ignore
-import { ProjectAdminRetrieve } from '../models';
+import type { ProjectAdminRetrieve } from '../models';
 // @ts-ignore
-import { ProjectAdminWriteRequest } from '../models';
+import type { ProjectAdminWriteRequest } from '../models';
 // @ts-ignore
-import { RatingAdminCreateUpdate } from '../models';
+import type { RatingAdminCreateUpdate } from '../models';
 // @ts-ignore
-import { RatingAdminCreateUpdateRequest } from '../models';
+import type { RatingAdminCreateUpdateRequest } from '../models';
 // @ts-ignore
-import { RatingAdminListRetrieve } from '../models';
+import type { RatingAdminListRetrieve } from '../models';
 // @ts-ignore
-import { ReportAdmin } from '../models';
+import type { ReportAdmin } from '../models';
 // @ts-ignore
-import { RequestAdminCreateRequest } from '../models';
+import type { RequestAdminCreateRequest } from '../models';
 // @ts-ignore
-import { RequestAdminRetrieve } from '../models';
+import type { RequestAdminRetrieve } from '../models';
 // @ts-ignore
-import { RequestAdminUpdateRequest } from '../models';
+import type { RequestAdminUpdateRequest } from '../models';
 // @ts-ignore
-import { TodoAdminCreateUpdateRequest } from '../models';
+import type { TodoAdminCreateUpdateRequest } from '../models';
 // @ts-ignore
-import { TodoAdminListRetrieve } from '../models';
+import type { TodoAdminListRetrieve } from '../models';
 // @ts-ignore
-import { UserAdminRetrieveUpdate } from '../models';
+import type { UserAdminRetrieveUpdate } from '../models';
 // @ts-ignore
-import { UserAdminRetrieveUpdateRequest } from '../models';
+import type { UserAdminRetrieveUpdateRequest } from '../models';
 // @ts-ignore
-import { UserAdminWorkedOn } from '../models';
+import type { UserAdminWorkedOn } from '../models';
 // @ts-ignore
-import { VideoAdminCreateUpdateRequest } from '../models';
+import type { VideoAdminCreateUpdateRequest } from '../models';
 // @ts-ignore
-import { VideoAdminList } from '../models';
+import type { VideoAdminList } from '../models';
 // @ts-ignore
-import { VideoAdminRetrieve } from '../models';
+import type { VideoAdminRetrieve } from '../models';
 /**
  * AdminApi - axios parameter creator
- * @export
  */
 export const AdminApiAxiosParamCreator = function (
   configuration?: Configuration,
@@ -129,7 +130,7 @@ export const AdminApiAxiosParamCreator = function (
      */
     adminProjectsCreate: async (
       projectAdminWriteRequest: ProjectAdminWriteRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'projectAdminWriteRequest' is not null or undefined
       assertParamExists(
@@ -163,6 +164,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -191,12 +193,12 @@ export const AdminApiAxiosParamCreator = function (
      */
     adminProjectsDestroy: async (
       id: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminProjectsDestroy', 'id', id);
       const localVarPath = `/api/v1/admin/projects/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -243,7 +245,7 @@ export const AdminApiAxiosParamCreator = function (
      * @throws {RequiredError}
      */
     adminProjectsList: async (
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/v1/admin/projects`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -270,6 +272,8 @@ export const AdminApiAxiosParamCreator = function (
 
       // authentication cookieAuth required
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -294,12 +298,12 @@ export const AdminApiAxiosParamCreator = function (
     adminProjectsPartialUpdate: async (
       id: number,
       patchedProjectAdminWriteRequest?: PatchedProjectAdminWriteRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminProjectsPartialUpdate', 'id', id);
       const localVarPath = `/api/v1/admin/projects/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -327,6 +331,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -355,12 +360,12 @@ export const AdminApiAxiosParamCreator = function (
      */
     adminProjectsRetrieve: async (
       id: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminProjectsRetrieve', 'id', id);
       const localVarPath = `/api/v1/admin/projects/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -387,6 +392,8 @@ export const AdminApiAxiosParamCreator = function (
 
       // authentication cookieAuth required
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -411,7 +418,7 @@ export const AdminApiAxiosParamCreator = function (
     adminProjectsUpdate: async (
       id: number,
       projectAdminWriteRequest: ProjectAdminWriteRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminProjectsUpdate', 'id', id);
@@ -422,7 +429,7 @@ export const AdminApiAxiosParamCreator = function (
         projectAdminWriteRequest,
       );
       const localVarPath = `/api/v1/admin/projects/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -450,6 +457,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -480,7 +488,7 @@ export const AdminApiAxiosParamCreator = function (
     adminReportRetrieve: async (
       dateAfter: string,
       dateBefore: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'dateAfter' is not null or undefined
       assertParamExists('adminReportRetrieve', 'dateAfter', dateAfter);
@@ -525,6 +533,8 @@ export const AdminApiAxiosParamCreator = function (
             : dateBefore;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -549,7 +559,7 @@ export const AdminApiAxiosParamCreator = function (
     adminRequestsCommentsCreate: async (
       requestId: number,
       commentAdminCreateUpdateRequest: CommentAdminCreateUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists('adminRequestsCommentsCreate', 'requestId', requestId);
@@ -561,7 +571,7 @@ export const AdminApiAxiosParamCreator = function (
       );
       const localVarPath =
         `/api/v1/admin/requests/{request_id}/comments`.replace(
-          `{${'request_id'}}`,
+          '{request_id}',
           encodeURIComponent(String(requestId)),
         );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -589,6 +599,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -619,15 +630,15 @@ export const AdminApiAxiosParamCreator = function (
     adminRequestsCommentsDestroy: async (
       id: number,
       requestId: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminRequestsCommentsDestroy', 'id', id);
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists('adminRequestsCommentsDestroy', 'requestId', requestId);
       const localVarPath = `/api/v1/admin/requests/{request_id}/comments/{id}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{request_id}', encodeURIComponent(String(requestId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -676,7 +687,7 @@ export const AdminApiAxiosParamCreator = function (
     adminRequestsCommentsHistoryList: async (
       id: number,
       requestId: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminRequestsCommentsHistoryList', 'id', id);
@@ -688,8 +699,8 @@ export const AdminApiAxiosParamCreator = function (
       );
       const localVarPath =
         `/api/v1/admin/requests/{request_id}/comments/{id}/history`
-          .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-          .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)));
+          .replace('{id}', encodeURIComponent(String(id)))
+          .replace('{request_id}', encodeURIComponent(String(requestId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -713,6 +724,8 @@ export const AdminApiAxiosParamCreator = function (
       );
 
       // authentication cookieAuth required
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -738,13 +751,13 @@ export const AdminApiAxiosParamCreator = function (
     adminRequestsCommentsList: async (
       requestId: number,
       ordering?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists('adminRequestsCommentsList', 'requestId', requestId);
       const localVarPath =
         `/api/v1/admin/requests/{request_id}/comments`.replace(
-          `{${'request_id'}}`,
+          '{request_id}',
           encodeURIComponent(String(requestId)),
         );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -775,6 +788,8 @@ export const AdminApiAxiosParamCreator = function (
         localVarQueryParameter['ordering'] = ordering;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -801,7 +816,7 @@ export const AdminApiAxiosParamCreator = function (
       id: number,
       requestId: number,
       patchedCommentAdminCreateUpdateRequest?: PatchedCommentAdminCreateUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminRequestsCommentsPartialUpdate', 'id', id);
@@ -812,8 +827,8 @@ export const AdminApiAxiosParamCreator = function (
         requestId,
       );
       const localVarPath = `/api/v1/admin/requests/{request_id}/comments/{id}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{request_id}', encodeURIComponent(String(requestId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -839,6 +854,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -869,7 +885,7 @@ export const AdminApiAxiosParamCreator = function (
     adminRequestsCommentsRetrieve: async (
       id: number,
       requestId: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminRequestsCommentsRetrieve', 'id', id);
@@ -880,8 +896,8 @@ export const AdminApiAxiosParamCreator = function (
         requestId,
       );
       const localVarPath = `/api/v1/admin/requests/{request_id}/comments/{id}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{request_id}', encodeURIComponent(String(requestId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -905,6 +921,8 @@ export const AdminApiAxiosParamCreator = function (
       );
 
       // authentication cookieAuth required
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -932,7 +950,7 @@ export const AdminApiAxiosParamCreator = function (
       id: number,
       requestId: number,
       commentAdminCreateUpdateRequest: CommentAdminCreateUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminRequestsCommentsUpdate', 'id', id);
@@ -945,8 +963,8 @@ export const AdminApiAxiosParamCreator = function (
         commentAdminCreateUpdateRequest,
       );
       const localVarPath = `/api/v1/admin/requests/{request_id}/comments/{id}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{request_id}', encodeURIComponent(String(requestId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -972,6 +990,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -1000,7 +1019,7 @@ export const AdminApiAxiosParamCreator = function (
      */
     adminRequestsCreate: async (
       requestAdminCreateRequest: RequestAdminCreateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestAdminCreateRequest' is not null or undefined
       assertParamExists(
@@ -1034,6 +1053,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -1064,7 +1084,7 @@ export const AdminApiAxiosParamCreator = function (
     adminRequestsCrewCreate: async (
       requestId: number,
       crewMemberAdminCreateUpdateRequest: CrewMemberAdminCreateUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists('adminRequestsCrewCreate', 'requestId', requestId);
@@ -1075,7 +1095,7 @@ export const AdminApiAxiosParamCreator = function (
         crewMemberAdminCreateUpdateRequest,
       );
       const localVarPath = `/api/v1/admin/requests/{request_id}/crew`.replace(
-        `{${'request_id'}}`,
+        '{request_id}',
         encodeURIComponent(String(requestId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1103,6 +1123,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -1133,15 +1154,15 @@ export const AdminApiAxiosParamCreator = function (
     adminRequestsCrewDestroy: async (
       id: number,
       requestId: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminRequestsCrewDestroy', 'id', id);
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists('adminRequestsCrewDestroy', 'requestId', requestId);
       const localVarPath = `/api/v1/admin/requests/{request_id}/crew/{id}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{request_id}', encodeURIComponent(String(requestId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -1190,12 +1211,12 @@ export const AdminApiAxiosParamCreator = function (
     adminRequestsCrewList: async (
       requestId: number,
       ordering?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists('adminRequestsCrewList', 'requestId', requestId);
       const localVarPath = `/api/v1/admin/requests/{request_id}/crew`.replace(
-        `{${'request_id'}}`,
+        '{request_id}',
         encodeURIComponent(String(requestId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1226,6 +1247,8 @@ export const AdminApiAxiosParamCreator = function (
         localVarQueryParameter['ordering'] = ordering;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1252,7 +1275,7 @@ export const AdminApiAxiosParamCreator = function (
       id: number,
       requestId: number,
       patchedCrewMemberAdminCreateUpdateRequest?: PatchedCrewMemberAdminCreateUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminRequestsCrewPartialUpdate', 'id', id);
@@ -1263,8 +1286,8 @@ export const AdminApiAxiosParamCreator = function (
         requestId,
       );
       const localVarPath = `/api/v1/admin/requests/{request_id}/crew/{id}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{request_id}', encodeURIComponent(String(requestId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -1290,6 +1313,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -1320,15 +1344,15 @@ export const AdminApiAxiosParamCreator = function (
     adminRequestsCrewRetrieve: async (
       id: number,
       requestId: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminRequestsCrewRetrieve', 'id', id);
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists('adminRequestsCrewRetrieve', 'requestId', requestId);
       const localVarPath = `/api/v1/admin/requests/{request_id}/crew/{id}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{request_id}', encodeURIComponent(String(requestId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -1352,6 +1376,8 @@ export const AdminApiAxiosParamCreator = function (
       );
 
       // authentication cookieAuth required
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -1379,7 +1405,7 @@ export const AdminApiAxiosParamCreator = function (
       id: number,
       requestId: number,
       crewMemberAdminCreateUpdateRequest: CrewMemberAdminCreateUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminRequestsCrewUpdate', 'id', id);
@@ -1392,8 +1418,8 @@ export const AdminApiAxiosParamCreator = function (
         crewMemberAdminCreateUpdateRequest,
       );
       const localVarPath = `/api/v1/admin/requests/{request_id}/crew/{id}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{request_id}', encodeURIComponent(String(requestId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -1419,6 +1445,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -1447,12 +1474,12 @@ export const AdminApiAxiosParamCreator = function (
      */
     adminRequestsDestroy: async (
       id: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminRequestsDestroy', 'id', id);
       const localVarPath = `/api/v1/admin/requests/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1501,12 +1528,12 @@ export const AdminApiAxiosParamCreator = function (
      */
     adminRequestsHistoryList: async (
       id: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminRequestsHistoryList', 'id', id);
       const localVarPath = `/api/v1/admin/requests/{id}/history`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1532,6 +1559,8 @@ export const AdminApiAxiosParamCreator = function (
       );
 
       // authentication cookieAuth required
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -1577,7 +1606,7 @@ export const AdminApiAxiosParamCreator = function (
       startDatetimeAfter?: string,
       startDatetimeBefore?: string,
       status?: Array<AdminRequestsListStatusEnum>,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/v1/admin/requests`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1664,6 +1693,8 @@ export const AdminApiAxiosParamCreator = function (
         localVarQueryParameter['status'] = status;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1688,12 +1719,12 @@ export const AdminApiAxiosParamCreator = function (
     adminRequestsPartialUpdate: async (
       id: number,
       patchedRequestAdminUpdateRequest?: PatchedRequestAdminUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminRequestsPartialUpdate', 'id', id);
       const localVarPath = `/api/v1/admin/requests/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1721,6 +1752,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -1749,12 +1781,12 @@ export const AdminApiAxiosParamCreator = function (
      */
     adminRequestsRetrieve: async (
       id: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminRequestsRetrieve', 'id', id);
       const localVarPath = `/api/v1/admin/requests/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1781,6 +1813,8 @@ export const AdminApiAxiosParamCreator = function (
 
       // authentication cookieAuth required
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1805,7 +1839,7 @@ export const AdminApiAxiosParamCreator = function (
     adminRequestsTodosCreate: async (
       requestId: number,
       todoAdminCreateUpdateRequest: TodoAdminCreateUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists('adminRequestsTodosCreate', 'requestId', requestId);
@@ -1816,7 +1850,7 @@ export const AdminApiAxiosParamCreator = function (
         todoAdminCreateUpdateRequest,
       );
       const localVarPath = `/api/v1/admin/requests/{request_id}/todos`.replace(
-        `{${'request_id'}}`,
+        '{request_id}',
         encodeURIComponent(String(requestId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1844,6 +1878,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -1874,12 +1909,12 @@ export const AdminApiAxiosParamCreator = function (
     adminRequestsTodosList: async (
       requestId: number,
       ordering?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists('adminRequestsTodosList', 'requestId', requestId);
       const localVarPath = `/api/v1/admin/requests/{request_id}/todos`.replace(
-        `{${'request_id'}}`,
+        '{request_id}',
         encodeURIComponent(String(requestId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1910,6 +1945,8 @@ export const AdminApiAxiosParamCreator = function (
         localVarQueryParameter['ordering'] = ordering;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -1934,7 +1971,7 @@ export const AdminApiAxiosParamCreator = function (
     adminRequestsUpdate: async (
       id: number,
       requestAdminUpdateRequest: RequestAdminUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminRequestsUpdate', 'id', id);
@@ -1945,7 +1982,7 @@ export const AdminApiAxiosParamCreator = function (
         requestAdminUpdateRequest,
       );
       const localVarPath = `/api/v1/admin/requests/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -1973,6 +2010,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -2003,7 +2041,7 @@ export const AdminApiAxiosParamCreator = function (
     adminRequestsVideosCreate: async (
       requestId: number,
       videoAdminCreateUpdateRequest: VideoAdminCreateUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists('adminRequestsVideosCreate', 'requestId', requestId);
@@ -2014,7 +2052,7 @@ export const AdminApiAxiosParamCreator = function (
         videoAdminCreateUpdateRequest,
       );
       const localVarPath = `/api/v1/admin/requests/{request_id}/videos`.replace(
-        `{${'request_id'}}`,
+        '{request_id}',
         encodeURIComponent(String(requestId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2042,6 +2080,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -2072,15 +2111,15 @@ export const AdminApiAxiosParamCreator = function (
     adminRequestsVideosDestroy: async (
       id: number,
       requestId: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminRequestsVideosDestroy', 'id', id);
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists('adminRequestsVideosDestroy', 'requestId', requestId);
       const localVarPath = `/api/v1/admin/requests/{request_id}/videos/{id}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{request_id}', encodeURIComponent(String(requestId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -2129,7 +2168,7 @@ export const AdminApiAxiosParamCreator = function (
     adminRequestsVideosHistoryList: async (
       id: number,
       requestId: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminRequestsVideosHistoryList', 'id', id);
@@ -2141,8 +2180,8 @@ export const AdminApiAxiosParamCreator = function (
       );
       const localVarPath =
         `/api/v1/admin/requests/{request_id}/videos/{id}/history`
-          .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-          .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)));
+          .replace('{id}', encodeURIComponent(String(id)))
+          .replace('{request_id}', encodeURIComponent(String(requestId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -2166,6 +2205,8 @@ export const AdminApiAxiosParamCreator = function (
       );
 
       // authentication cookieAuth required
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -2191,12 +2232,12 @@ export const AdminApiAxiosParamCreator = function (
     adminRequestsVideosList: async (
       requestId: number,
       ordering?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists('adminRequestsVideosList', 'requestId', requestId);
       const localVarPath = `/api/v1/admin/requests/{request_id}/videos`.replace(
-        `{${'request_id'}}`,
+        '{request_id}',
         encodeURIComponent(String(requestId)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -2227,6 +2268,8 @@ export const AdminApiAxiosParamCreator = function (
         localVarQueryParameter['ordering'] = ordering;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2253,7 +2296,7 @@ export const AdminApiAxiosParamCreator = function (
       id: number,
       requestId: number,
       patchedVideoAdminCreateUpdateRequest?: PatchedVideoAdminCreateUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminRequestsVideosPartialUpdate', 'id', id);
@@ -2264,8 +2307,8 @@ export const AdminApiAxiosParamCreator = function (
         requestId,
       );
       const localVarPath = `/api/v1/admin/requests/{request_id}/videos/{id}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{request_id}', encodeURIComponent(String(requestId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -2291,6 +2334,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -2323,7 +2367,7 @@ export const AdminApiAxiosParamCreator = function (
       requestId: number,
       videoId: number,
       ratingAdminCreateUpdateRequest: RatingAdminCreateUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists(
@@ -2341,8 +2385,8 @@ export const AdminApiAxiosParamCreator = function (
       );
       const localVarPath =
         `/api/v1/admin/requests/{request_id}/videos/{video_id}/ratings`
-          .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)))
-          .replace(`{${'video_id'}}`, encodeURIComponent(String(videoId)));
+          .replace('{request_id}', encodeURIComponent(String(requestId)))
+          .replace('{video_id}', encodeURIComponent(String(videoId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -2368,6 +2412,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -2400,7 +2445,7 @@ export const AdminApiAxiosParamCreator = function (
       id: number,
       requestId: number,
       videoId: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminRequestsVideosRatingsDestroy', 'id', id);
@@ -2418,9 +2463,9 @@ export const AdminApiAxiosParamCreator = function (
       );
       const localVarPath =
         `/api/v1/admin/requests/{request_id}/videos/{video_id}/ratings/{id}`
-          .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-          .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)))
-          .replace(`{${'video_id'}}`, encodeURIComponent(String(videoId)));
+          .replace('{id}', encodeURIComponent(String(id)))
+          .replace('{request_id}', encodeURIComponent(String(requestId)))
+          .replace('{video_id}', encodeURIComponent(String(videoId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -2471,7 +2516,7 @@ export const AdminApiAxiosParamCreator = function (
       id: number,
       requestId: number,
       videoId: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminRequestsVideosRatingsHistoryList', 'id', id);
@@ -2489,9 +2534,9 @@ export const AdminApiAxiosParamCreator = function (
       );
       const localVarPath =
         `/api/v1/admin/requests/{request_id}/videos/{video_id}/ratings/{id}/history`
-          .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-          .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)))
-          .replace(`{${'video_id'}}`, encodeURIComponent(String(videoId)));
+          .replace('{id}', encodeURIComponent(String(id)))
+          .replace('{request_id}', encodeURIComponent(String(requestId)))
+          .replace('{video_id}', encodeURIComponent(String(videoId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -2515,6 +2560,8 @@ export const AdminApiAxiosParamCreator = function (
       );
 
       // authentication cookieAuth required
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -2542,7 +2589,7 @@ export const AdminApiAxiosParamCreator = function (
       requestId: number,
       videoId: number,
       ordering?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists(
@@ -2554,8 +2601,8 @@ export const AdminApiAxiosParamCreator = function (
       assertParamExists('adminRequestsVideosRatingsList', 'videoId', videoId);
       const localVarPath =
         `/api/v1/admin/requests/{request_id}/videos/{video_id}/ratings`
-          .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)))
-          .replace(`{${'video_id'}}`, encodeURIComponent(String(videoId)));
+          .replace('{request_id}', encodeURIComponent(String(requestId)))
+          .replace('{video_id}', encodeURIComponent(String(videoId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -2584,6 +2631,8 @@ export const AdminApiAxiosParamCreator = function (
         localVarQueryParameter['ordering'] = ordering;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -2608,7 +2657,7 @@ export const AdminApiAxiosParamCreator = function (
     adminRequestsVideosRatingsOwnRetrieve: async (
       requestId: number,
       videoId: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists(
@@ -2624,8 +2673,8 @@ export const AdminApiAxiosParamCreator = function (
       );
       const localVarPath =
         `/api/v1/admin/requests/{request_id}/videos/{video_id}/ratings/own`
-          .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)))
-          .replace(`{${'video_id'}}`, encodeURIComponent(String(videoId)));
+          .replace('{request_id}', encodeURIComponent(String(requestId)))
+          .replace('{video_id}', encodeURIComponent(String(videoId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -2649,6 +2698,8 @@ export const AdminApiAxiosParamCreator = function (
       );
 
       // authentication cookieAuth required
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -2678,7 +2729,7 @@ export const AdminApiAxiosParamCreator = function (
       requestId: number,
       videoId: number,
       patchedRatingAdminCreateUpdateRequest?: PatchedRatingAdminCreateUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminRequestsVideosRatingsPartialUpdate', 'id', id);
@@ -2696,9 +2747,9 @@ export const AdminApiAxiosParamCreator = function (
       );
       const localVarPath =
         `/api/v1/admin/requests/{request_id}/videos/{video_id}/ratings/{id}`
-          .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-          .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)))
-          .replace(`{${'video_id'}}`, encodeURIComponent(String(videoId)));
+          .replace('{id}', encodeURIComponent(String(id)))
+          .replace('{request_id}', encodeURIComponent(String(requestId)))
+          .replace('{video_id}', encodeURIComponent(String(videoId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -2724,6 +2775,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -2756,7 +2808,7 @@ export const AdminApiAxiosParamCreator = function (
       id: number,
       requestId: number,
       videoId: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminRequestsVideosRatingsRetrieve', 'id', id);
@@ -2774,9 +2826,9 @@ export const AdminApiAxiosParamCreator = function (
       );
       const localVarPath =
         `/api/v1/admin/requests/{request_id}/videos/{video_id}/ratings/{id}`
-          .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-          .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)))
-          .replace(`{${'video_id'}}`, encodeURIComponent(String(videoId)));
+          .replace('{id}', encodeURIComponent(String(id)))
+          .replace('{request_id}', encodeURIComponent(String(requestId)))
+          .replace('{video_id}', encodeURIComponent(String(videoId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -2800,6 +2852,8 @@ export const AdminApiAxiosParamCreator = function (
       );
 
       // authentication cookieAuth required
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -2829,7 +2883,7 @@ export const AdminApiAxiosParamCreator = function (
       requestId: number,
       videoId: number,
       ratingAdminCreateUpdateRequest: RatingAdminCreateUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminRequestsVideosRatingsUpdate', 'id', id);
@@ -2849,9 +2903,9 @@ export const AdminApiAxiosParamCreator = function (
       );
       const localVarPath =
         `/api/v1/admin/requests/{request_id}/videos/{video_id}/ratings/{id}`
-          .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-          .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)))
-          .replace(`{${'video_id'}}`, encodeURIComponent(String(videoId)));
+          .replace('{id}', encodeURIComponent(String(id)))
+          .replace('{request_id}', encodeURIComponent(String(requestId)))
+          .replace('{video_id}', encodeURIComponent(String(videoId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -2877,6 +2931,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -2907,15 +2962,15 @@ export const AdminApiAxiosParamCreator = function (
     adminRequestsVideosRetrieve: async (
       id: number,
       requestId: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminRequestsVideosRetrieve', 'id', id);
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists('adminRequestsVideosRetrieve', 'requestId', requestId);
       const localVarPath = `/api/v1/admin/requests/{request_id}/videos/{id}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{request_id}', encodeURIComponent(String(requestId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -2939,6 +2994,8 @@ export const AdminApiAxiosParamCreator = function (
       );
 
       // authentication cookieAuth required
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -2966,7 +3023,7 @@ export const AdminApiAxiosParamCreator = function (
       requestId: number,
       videoId: number,
       todoAdminCreateUpdateRequest: TodoAdminCreateUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists(
@@ -2984,8 +3041,8 @@ export const AdminApiAxiosParamCreator = function (
       );
       const localVarPath =
         `/api/v1/admin/requests/{request_id}/videos/{video_id}/todos`
-          .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)))
-          .replace(`{${'video_id'}}`, encodeURIComponent(String(videoId)));
+          .replace('{request_id}', encodeURIComponent(String(requestId)))
+          .replace('{video_id}', encodeURIComponent(String(videoId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -3011,6 +3068,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -3043,7 +3101,7 @@ export const AdminApiAxiosParamCreator = function (
       requestId: number,
       videoId: number,
       ordering?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'requestId' is not null or undefined
       assertParamExists('adminRequestsVideosTodosList', 'requestId', requestId);
@@ -3051,8 +3109,8 @@ export const AdminApiAxiosParamCreator = function (
       assertParamExists('adminRequestsVideosTodosList', 'videoId', videoId);
       const localVarPath =
         `/api/v1/admin/requests/{request_id}/videos/{video_id}/todos`
-          .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)))
-          .replace(`{${'video_id'}}`, encodeURIComponent(String(videoId)));
+          .replace('{request_id}', encodeURIComponent(String(requestId)))
+          .replace('{video_id}', encodeURIComponent(String(videoId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -3081,6 +3139,8 @@ export const AdminApiAxiosParamCreator = function (
         localVarQueryParameter['ordering'] = ordering;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -3107,7 +3167,7 @@ export const AdminApiAxiosParamCreator = function (
       id: number,
       requestId: number,
       videoAdminCreateUpdateRequest: VideoAdminCreateUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminRequestsVideosUpdate', 'id', id);
@@ -3120,8 +3180,8 @@ export const AdminApiAxiosParamCreator = function (
         videoAdminCreateUpdateRequest,
       );
       const localVarPath = `/api/v1/admin/requests/{request_id}/videos/{id}`
-        .replace(`{${'id'}}`, encodeURIComponent(String(id)))
-        .replace(`{${'request_id'}}`, encodeURIComponent(String(requestId)));
+        .replace('{id}', encodeURIComponent(String(id)))
+        .replace('{request_id}', encodeURIComponent(String(requestId)));
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
       let baseOptions;
@@ -3147,6 +3207,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -3175,12 +3236,12 @@ export const AdminApiAxiosParamCreator = function (
      */
     adminTodosDestroy: async (
       id: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminTodosDestroy', 'id', id);
       const localVarPath = `/api/v1/admin/todos/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3239,7 +3300,7 @@ export const AdminApiAxiosParamCreator = function (
       pageSize?: number,
       pagination?: boolean,
       status?: Array<AdminTodosListStatusEnum>,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/v1/admin/todos`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3290,6 +3351,8 @@ export const AdminApiAxiosParamCreator = function (
         localVarQueryParameter['status'] = status;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -3314,12 +3377,12 @@ export const AdminApiAxiosParamCreator = function (
     adminTodosPartialUpdate: async (
       id: number,
       patchedTodoAdminCreateUpdateRequest?: PatchedTodoAdminCreateUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminTodosPartialUpdate', 'id', id);
       const localVarPath = `/api/v1/admin/todos/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3347,6 +3410,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -3375,12 +3439,12 @@ export const AdminApiAxiosParamCreator = function (
      */
     adminTodosRetrieve: async (
       id: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminTodosRetrieve', 'id', id);
       const localVarPath = `/api/v1/admin/todos/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3407,6 +3471,8 @@ export const AdminApiAxiosParamCreator = function (
 
       // authentication cookieAuth required
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -3431,7 +3497,7 @@ export const AdminApiAxiosParamCreator = function (
     adminTodosUpdate: async (
       id: number,
       todoAdminCreateUpdateRequest: TodoAdminCreateUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminTodosUpdate', 'id', id);
@@ -3442,7 +3508,7 @@ export const AdminApiAxiosParamCreator = function (
         todoAdminCreateUpdateRequest,
       );
       const localVarPath = `/api/v1/admin/todos/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3470,6 +3536,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -3500,12 +3567,12 @@ export const AdminApiAxiosParamCreator = function (
     adminUsersBanCreate: async (
       id: number,
       banUserRequest?: BanUserRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminUsersBanCreate', 'id', id);
       const localVarPath = `/api/v1/admin/users/{id}/ban`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3533,6 +3600,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -3561,12 +3629,12 @@ export const AdminApiAxiosParamCreator = function (
      */
     adminUsersBanDestroy: async (
       id: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminUsersBanDestroy', 'id', id);
       const localVarPath = `/api/v1/admin/users/{id}/ban`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3627,7 +3695,7 @@ export const AdminApiAxiosParamCreator = function (
       pageSize?: number,
       pagination?: boolean,
       search?: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/v1/admin/users`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3682,6 +3750,8 @@ export const AdminApiAxiosParamCreator = function (
         localVarQueryParameter['search'] = search;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -3706,12 +3776,12 @@ export const AdminApiAxiosParamCreator = function (
     adminUsersPartialUpdate: async (
       id: number,
       patchedUserAdminRetrieveUpdateRequest?: PatchedUserAdminRetrieveUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminUsersPartialUpdate', 'id', id);
       const localVarPath = `/api/v1/admin/users/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3739,6 +3809,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -3767,12 +3838,12 @@ export const AdminApiAxiosParamCreator = function (
      */
     adminUsersRetrieve: async (
       id: number,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminUsersRetrieve', 'id', id);
       const localVarPath = `/api/v1/admin/users/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3799,6 +3870,8 @@ export const AdminApiAxiosParamCreator = function (
 
       // authentication cookieAuth required
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -3823,12 +3896,12 @@ export const AdminApiAxiosParamCreator = function (
     adminUsersUpdate: async (
       id: number,
       userAdminRetrieveUpdateRequest?: UserAdminRetrieveUpdateRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminUsersUpdate', 'id', id);
       const localVarPath = `/api/v1/admin/users/{id}`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3856,6 +3929,7 @@ export const AdminApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -3890,12 +3964,12 @@ export const AdminApiAxiosParamCreator = function (
       dateAfter?: string,
       dateBefore?: string,
       isResponsible?: boolean,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'id' is not null or undefined
       assertParamExists('adminUsersWorkedOnList', 'id', id);
       const localVarPath = `/api/v1/admin/users/{id}/worked_on`.replace(
-        `{${'id'}}`,
+        '{id}',
         encodeURIComponent(String(id)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -3939,6 +4013,8 @@ export const AdminApiAxiosParamCreator = function (
       if (isResponsible !== undefined) {
         localVarQueryParameter['is_responsible'] = isResponsible;
       }
+
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -3986,7 +4062,7 @@ export const AdminApiAxiosParamCreator = function (
       requestStartDatetimeBefore?: string,
       search?: string,
       status?: Array<AdminVideosListStatusEnum>,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/v1/admin/videos`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -4080,6 +4156,8 @@ export const AdminApiAxiosParamCreator = function (
         localVarQueryParameter['status'] = status;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -4099,7 +4177,6 @@ export const AdminApiAxiosParamCreator = function (
 
 /**
  * AdminApi - functional programming interface
- * @export
  */
 export const AdminApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = AdminApiAxiosParamCreator(configuration);
@@ -4112,7 +4189,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
      */
     async adminProjectsCreate(
       projectAdminWriteRequest: ProjectAdminWriteRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -4124,12 +4201,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           projectAdminWriteRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminProjectsCreate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4139,18 +4222,24 @@ export const AdminApiFp = function (configuration?: Configuration) {
      */
     async adminProjectsDestroy(
       id: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.adminProjectsDestroy(id, options);
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminProjectsDestroy']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4158,7 +4247,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async adminProjectsList(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -4167,12 +4256,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.adminProjectsList(options);
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminProjectsList']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4184,7 +4279,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminProjectsPartialUpdate(
       id: number,
       patchedProjectAdminWriteRequest?: PatchedProjectAdminWriteRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -4197,12 +4292,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           patchedProjectAdminWriteRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminProjectsPartialUpdate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4212,7 +4313,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
      */
     async adminProjectsRetrieve(
       id: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -4221,12 +4322,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.adminProjectsRetrieve(id, options);
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminProjectsRetrieve']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4238,7 +4345,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminProjectsUpdate(
       id: number,
       projectAdminWriteRequest: ProjectAdminWriteRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -4251,12 +4358,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           projectAdminWriteRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminProjectsUpdate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4268,7 +4381,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminReportRetrieve(
       dateAfter: string,
       dateBefore: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<ReportAdmin>
     > {
@@ -4278,12 +4391,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           dateBefore,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminReportRetrieve']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4295,7 +4414,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminRequestsCommentsCreate(
       requestId: number,
       commentAdminCreateUpdateRequest: CommentAdminCreateUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -4308,12 +4427,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           commentAdminCreateUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsCommentsCreate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4325,7 +4450,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminRequestsCommentsDestroy(
       id: number,
       requestId: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
     > {
@@ -4335,12 +4460,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           requestId,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsCommentsDestroy']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4352,7 +4483,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminRequestsCommentsHistoryList(
       id: number,
       requestId: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<History>>
     > {
@@ -4362,12 +4493,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           requestId,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsCommentsHistoryList']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4379,7 +4516,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminRequestsCommentsList(
       requestId: number,
       ordering?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -4392,12 +4529,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           ordering,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsCommentsList']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4411,7 +4554,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
       id: number,
       requestId: number,
       patchedCommentAdminCreateUpdateRequest?: PatchedCommentAdminCreateUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -4425,12 +4568,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           patchedCommentAdminCreateUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsCommentsPartialUpdate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4442,7 +4591,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminRequestsCommentsRetrieve(
       id: number,
       requestId: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -4455,12 +4604,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           requestId,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsCommentsRetrieve']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4474,7 +4629,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
       id: number,
       requestId: number,
       commentAdminCreateUpdateRequest: CommentAdminCreateUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -4488,12 +4643,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           commentAdminCreateUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsCommentsUpdate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4503,7 +4664,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
      */
     async adminRequestsCreate(
       requestAdminCreateRequest: RequestAdminCreateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -4515,12 +4676,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           requestAdminCreateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsCreate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4532,7 +4699,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminRequestsCrewCreate(
       requestId: number,
       crewMemberAdminCreateUpdateRequest: CrewMemberAdminCreateUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -4545,12 +4712,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           crewMemberAdminCreateUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsCrewCreate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4562,7 +4735,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminRequestsCrewDestroy(
       id: number,
       requestId: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
     > {
@@ -4572,12 +4745,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           requestId,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsCrewDestroy']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4589,7 +4768,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminRequestsCrewList(
       requestId: number,
       ordering?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -4602,12 +4781,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           ordering,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsCrewList']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4621,7 +4806,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
       id: number,
       requestId: number,
       patchedCrewMemberAdminCreateUpdateRequest?: PatchedCrewMemberAdminCreateUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -4635,12 +4820,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           patchedCrewMemberAdminCreateUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsCrewPartialUpdate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4652,7 +4843,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminRequestsCrewRetrieve(
       id: number,
       requestId: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -4665,12 +4856,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           requestId,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsCrewRetrieve']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4684,7 +4881,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
       id: number,
       requestId: number,
       crewMemberAdminCreateUpdateRequest: CrewMemberAdminCreateUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -4698,12 +4895,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           crewMemberAdminCreateUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsCrewUpdate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4713,18 +4916,24 @@ export const AdminApiFp = function (configuration?: Configuration) {
      */
     async adminRequestsDestroy(
       id: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.adminRequestsDestroy(id, options);
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsDestroy']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4734,18 +4943,24 @@ export const AdminApiFp = function (configuration?: Configuration) {
      */
     async adminRequestsHistoryList(
       id: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<History>>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.adminRequestsHistoryList(id, options);
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsHistoryList']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4777,7 +4992,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
       startDatetimeAfter?: string,
       startDatetimeBefore?: string,
       status?: Array<AdminRequestsListStatusEnum>,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -4800,12 +5015,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           status,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsList']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4817,7 +5038,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminRequestsPartialUpdate(
       id: number,
       patchedRequestAdminUpdateRequest?: PatchedRequestAdminUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -4830,12 +5051,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           patchedRequestAdminUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsPartialUpdate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4845,7 +5072,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
      */
     async adminRequestsRetrieve(
       id: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -4854,12 +5081,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.adminRequestsRetrieve(id, options);
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsRetrieve']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4871,7 +5104,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminRequestsTodosCreate(
       requestId: number,
       todoAdminCreateUpdateRequest: TodoAdminCreateUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -4884,12 +5117,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           todoAdminCreateUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsTodosCreate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4901,7 +5140,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminRequestsTodosList(
       requestId: number,
       ordering?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -4914,12 +5153,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           ordering,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsTodosList']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4931,7 +5176,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminRequestsUpdate(
       id: number,
       requestAdminUpdateRequest: RequestAdminUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -4944,12 +5189,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           requestAdminUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsUpdate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4961,7 +5212,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminRequestsVideosCreate(
       requestId: number,
       videoAdminCreateUpdateRequest: VideoAdminCreateUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -4974,12 +5225,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           videoAdminCreateUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsVideosCreate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -4991,7 +5248,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminRequestsVideosDestroy(
       id: number,
       requestId: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
     > {
@@ -5001,12 +5258,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           requestId,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsVideosDestroy']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5018,7 +5281,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminRequestsVideosHistoryList(
       id: number,
       requestId: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<History>>
     > {
@@ -5028,12 +5291,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           requestId,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsVideosHistoryList']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5045,7 +5314,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminRequestsVideosList(
       requestId: number,
       ordering?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -5058,12 +5327,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           ordering,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsVideosList']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5077,7 +5352,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
       id: number,
       requestId: number,
       patchedVideoAdminCreateUpdateRequest?: PatchedVideoAdminCreateUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -5091,12 +5366,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           patchedVideoAdminCreateUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsVideosPartialUpdate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5110,7 +5391,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
       requestId: number,
       videoId: number,
       ratingAdminCreateUpdateRequest: RatingAdminCreateUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -5124,12 +5405,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           ratingAdminCreateUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsVideosRatingsCreate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5143,7 +5430,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
       id: number,
       requestId: number,
       videoId: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
     > {
@@ -5154,12 +5441,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           videoId,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsVideosRatingsDestroy']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5173,7 +5466,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
       id: number,
       requestId: number,
       videoId: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<History>>
     > {
@@ -5184,12 +5477,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           videoId,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsVideosRatingsHistoryList']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5203,7 +5502,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
       requestId: number,
       videoId: number,
       ordering?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -5217,12 +5516,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           ordering,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsVideosRatingsList']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5234,7 +5539,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminRequestsVideosRatingsOwnRetrieve(
       requestId: number,
       videoId: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -5247,12 +5552,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           videoId,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsVideosRatingsOwnRetrieve']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5268,7 +5579,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
       requestId: number,
       videoId: number,
       patchedRatingAdminCreateUpdateRequest?: PatchedRatingAdminCreateUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -5283,12 +5594,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           patchedRatingAdminCreateUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap[
+          'AdminApi.adminRequestsVideosRatingsPartialUpdate'
+        ]?.[localVarOperationServerIndex]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5302,7 +5619,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
       id: number,
       requestId: number,
       videoId: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -5316,12 +5633,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           videoId,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsVideosRatingsRetrieve']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5337,7 +5660,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
       requestId: number,
       videoId: number,
       ratingAdminCreateUpdateRequest: RatingAdminCreateUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -5352,12 +5675,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           ratingAdminCreateUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsVideosRatingsUpdate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5369,7 +5698,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminRequestsVideosRetrieve(
       id: number,
       requestId: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -5382,12 +5711,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           requestId,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsVideosRetrieve']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5401,7 +5736,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
       requestId: number,
       videoId: number,
       todoAdminCreateUpdateRequest: TodoAdminCreateUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -5415,12 +5750,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           todoAdminCreateUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsVideosTodosCreate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5434,7 +5775,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
       requestId: number,
       videoId: number,
       ordering?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -5448,12 +5789,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           ordering,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsVideosTodosList']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5467,7 +5814,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
       id: number,
       requestId: number,
       videoAdminCreateUpdateRequest: VideoAdminCreateUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -5481,12 +5828,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           videoAdminCreateUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminRequestsVideosUpdate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5496,18 +5849,24 @@ export const AdminApiFp = function (configuration?: Configuration) {
      */
     async adminTodosDestroy(
       id: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.adminTodosDestroy(id, options);
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminTodosDestroy']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5527,7 +5886,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
       pageSize?: number,
       pagination?: boolean,
       status?: Array<AdminTodosListStatusEnum>,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -5543,12 +5902,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
         status,
         options,
       );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminTodosList']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5560,7 +5925,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminTodosPartialUpdate(
       id: number,
       patchedTodoAdminCreateUpdateRequest?: PatchedTodoAdminCreateUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -5573,12 +5938,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           patchedTodoAdminCreateUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminTodosPartialUpdate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5588,7 +5959,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
      */
     async adminTodosRetrieve(
       id: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -5597,12 +5968,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.adminTodosRetrieve(id, options);
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminTodosRetrieve']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5614,7 +5991,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminTodosUpdate(
       id: number,
       todoAdminCreateUpdateRequest: TodoAdminCreateUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -5627,12 +6004,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           todoAdminCreateUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminTodosUpdate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5644,7 +6027,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminUsersBanCreate(
       id: number,
       banUserRequest?: BanUserRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<BanUser>
     > {
@@ -5654,12 +6037,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           banUserRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminUsersBanCreate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5669,18 +6058,24 @@ export const AdminApiFp = function (configuration?: Configuration) {
      */
     async adminUsersBanDestroy(
       id: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.adminUsersBanDestroy(id, options);
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminUsersBanDestroy']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5702,7 +6097,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
       pageSize?: number,
       pagination?: boolean,
       search?: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -5719,12 +6114,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
         search,
         options,
       );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminUsersList']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5736,7 +6137,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminUsersPartialUpdate(
       id: number,
       patchedUserAdminRetrieveUpdateRequest?: PatchedUserAdminRetrieveUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -5749,12 +6150,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           patchedUserAdminRetrieveUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminUsersPartialUpdate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5764,7 +6171,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
      */
     async adminUsersRetrieve(
       id: number,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -5773,12 +6180,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.adminUsersRetrieve(id, options);
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminUsersRetrieve']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5790,7 +6203,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
     async adminUsersUpdate(
       id: number,
       userAdminRetrieveUpdateRequest?: UserAdminRetrieveUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -5803,12 +6216,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           userAdminRetrieveUpdateRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminUsersUpdate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5824,7 +6243,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
       dateAfter?: string,
       dateBefore?: string,
       isResponsible?: boolean,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -5839,12 +6258,18 @@ export const AdminApiFp = function (configuration?: Configuration) {
           isResponsible,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminUsersWorkedOnList']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -5878,7 +6303,7 @@ export const AdminApiFp = function (configuration?: Configuration) {
       requestStartDatetimeBefore?: string,
       search?: string,
       status?: Array<AdminVideosListStatusEnum>,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -5901,19 +6326,24 @@ export const AdminApiFp = function (configuration?: Configuration) {
         status,
         options,
       );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['AdminApi.adminVideosList']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
   };
 };
 
 /**
  * AdminApi - factory interface
- * @export
  */
 export const AdminApiFactory = function (
   configuration?: Configuration,
@@ -5930,7 +6360,7 @@ export const AdminApiFactory = function (
      */
     adminProjectsCreate(
       requestParameters: AdminApiAdminProjectsCreateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ProjectAdminRetrieve> {
       return localVarFp
         .adminProjectsCreate(
@@ -5947,7 +6377,7 @@ export const AdminApiFactory = function (
      */
     adminProjectsDestroy(
       requestParameters: AdminApiAdminProjectsDestroyRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .adminProjectsDestroy(requestParameters.id, options)
@@ -5959,7 +6389,7 @@ export const AdminApiFactory = function (
      * @throws {RequiredError}
      */
     adminProjectsList(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Array<ProjectAdminList>> {
       return localVarFp
         .adminProjectsList(options)
@@ -5973,7 +6403,7 @@ export const AdminApiFactory = function (
      */
     adminProjectsPartialUpdate(
       requestParameters: AdminApiAdminProjectsPartialUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ProjectAdminRetrieve> {
       return localVarFp
         .adminProjectsPartialUpdate(
@@ -5991,7 +6421,7 @@ export const AdminApiFactory = function (
      */
     adminProjectsRetrieve(
       requestParameters: AdminApiAdminProjectsRetrieveRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ProjectAdminRetrieve> {
       return localVarFp
         .adminProjectsRetrieve(requestParameters.id, options)
@@ -6005,7 +6435,7 @@ export const AdminApiFactory = function (
      */
     adminProjectsUpdate(
       requestParameters: AdminApiAdminProjectsUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ProjectAdminRetrieve> {
       return localVarFp
         .adminProjectsUpdate(
@@ -6023,7 +6453,7 @@ export const AdminApiFactory = function (
      */
     adminReportRetrieve(
       requestParameters: AdminApiAdminReportRetrieveRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<ReportAdmin> {
       return localVarFp
         .adminReportRetrieve(
@@ -6041,7 +6471,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsCommentsCreate(
       requestParameters: AdminApiAdminRequestsCommentsCreateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<CommentAdminCreateUpdate> {
       return localVarFp
         .adminRequestsCommentsCreate(
@@ -6059,7 +6489,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsCommentsDestroy(
       requestParameters: AdminApiAdminRequestsCommentsDestroyRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .adminRequestsCommentsDestroy(
@@ -6077,7 +6507,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsCommentsHistoryList(
       requestParameters: AdminApiAdminRequestsCommentsHistoryListRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Array<History>> {
       return localVarFp
         .adminRequestsCommentsHistoryList(
@@ -6095,7 +6525,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsCommentsList(
       requestParameters: AdminApiAdminRequestsCommentsListRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Array<CommentAdminListRetrieve>> {
       return localVarFp
         .adminRequestsCommentsList(
@@ -6113,7 +6543,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsCommentsPartialUpdate(
       requestParameters: AdminApiAdminRequestsCommentsPartialUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<CommentAdminCreateUpdate> {
       return localVarFp
         .adminRequestsCommentsPartialUpdate(
@@ -6132,7 +6562,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsCommentsRetrieve(
       requestParameters: AdminApiAdminRequestsCommentsRetrieveRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<CommentAdminListRetrieve> {
       return localVarFp
         .adminRequestsCommentsRetrieve(
@@ -6150,7 +6580,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsCommentsUpdate(
       requestParameters: AdminApiAdminRequestsCommentsUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<CommentAdminCreateUpdate> {
       return localVarFp
         .adminRequestsCommentsUpdate(
@@ -6169,7 +6599,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsCreate(
       requestParameters: AdminApiAdminRequestsCreateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RequestAdminRetrieve> {
       return localVarFp
         .adminRequestsCreate(
@@ -6186,7 +6616,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsCrewCreate(
       requestParameters: AdminApiAdminRequestsCrewCreateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<CrewMemberAdminListRetrieve> {
       return localVarFp
         .adminRequestsCrewCreate(
@@ -6204,7 +6634,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsCrewDestroy(
       requestParameters: AdminApiAdminRequestsCrewDestroyRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .adminRequestsCrewDestroy(
@@ -6222,7 +6652,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsCrewList(
       requestParameters: AdminApiAdminRequestsCrewListRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Array<CrewMemberAdminListRetrieve>> {
       return localVarFp
         .adminRequestsCrewList(
@@ -6240,7 +6670,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsCrewPartialUpdate(
       requestParameters: AdminApiAdminRequestsCrewPartialUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<CrewMemberAdminListRetrieve> {
       return localVarFp
         .adminRequestsCrewPartialUpdate(
@@ -6259,7 +6689,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsCrewRetrieve(
       requestParameters: AdminApiAdminRequestsCrewRetrieveRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<CrewMemberAdminListRetrieve> {
       return localVarFp
         .adminRequestsCrewRetrieve(
@@ -6277,7 +6707,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsCrewUpdate(
       requestParameters: AdminApiAdminRequestsCrewUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<CrewMemberAdminListRetrieve> {
       return localVarFp
         .adminRequestsCrewUpdate(
@@ -6296,7 +6726,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsDestroy(
       requestParameters: AdminApiAdminRequestsDestroyRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .adminRequestsDestroy(requestParameters.id, options)
@@ -6310,7 +6740,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsHistoryList(
       requestParameters: AdminApiAdminRequestsHistoryListRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Array<History>> {
       return localVarFp
         .adminRequestsHistoryList(requestParameters.id, options)
@@ -6324,7 +6754,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsList(
       requestParameters: AdminApiAdminRequestsListRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<PaginatedRequestAdminListList> {
       return localVarFp
         .adminRequestsList(
@@ -6352,7 +6782,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsPartialUpdate(
       requestParameters: AdminApiAdminRequestsPartialUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RequestAdminRetrieve> {
       return localVarFp
         .adminRequestsPartialUpdate(
@@ -6370,7 +6800,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsRetrieve(
       requestParameters: AdminApiAdminRequestsRetrieveRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RequestAdminRetrieve> {
       return localVarFp
         .adminRequestsRetrieve(requestParameters.id, options)
@@ -6384,7 +6814,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsTodosCreate(
       requestParameters: AdminApiAdminRequestsTodosCreateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<TodoAdminListRetrieve> {
       return localVarFp
         .adminRequestsTodosCreate(
@@ -6402,7 +6832,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsTodosList(
       requestParameters: AdminApiAdminRequestsTodosListRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Array<TodoAdminListRetrieve>> {
       return localVarFp
         .adminRequestsTodosList(
@@ -6420,7 +6850,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsUpdate(
       requestParameters: AdminApiAdminRequestsUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RequestAdminRetrieve> {
       return localVarFp
         .adminRequestsUpdate(
@@ -6438,7 +6868,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsVideosCreate(
       requestParameters: AdminApiAdminRequestsVideosCreateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<VideoAdminRetrieve> {
       return localVarFp
         .adminRequestsVideosCreate(
@@ -6456,7 +6886,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsVideosDestroy(
       requestParameters: AdminApiAdminRequestsVideosDestroyRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .adminRequestsVideosDestroy(
@@ -6474,7 +6904,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsVideosHistoryList(
       requestParameters: AdminApiAdminRequestsVideosHistoryListRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Array<History>> {
       return localVarFp
         .adminRequestsVideosHistoryList(
@@ -6492,7 +6922,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsVideosList(
       requestParameters: AdminApiAdminRequestsVideosListRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Array<VideoAdminList>> {
       return localVarFp
         .adminRequestsVideosList(
@@ -6510,7 +6940,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsVideosPartialUpdate(
       requestParameters: AdminApiAdminRequestsVideosPartialUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<VideoAdminRetrieve> {
       return localVarFp
         .adminRequestsVideosPartialUpdate(
@@ -6529,7 +6959,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsVideosRatingsCreate(
       requestParameters: AdminApiAdminRequestsVideosRatingsCreateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RatingAdminCreateUpdate> {
       return localVarFp
         .adminRequestsVideosRatingsCreate(
@@ -6548,7 +6978,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsVideosRatingsDestroy(
       requestParameters: AdminApiAdminRequestsVideosRatingsDestroyRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .adminRequestsVideosRatingsDestroy(
@@ -6567,7 +6997,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsVideosRatingsHistoryList(
       requestParameters: AdminApiAdminRequestsVideosRatingsHistoryListRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Array<History>> {
       return localVarFp
         .adminRequestsVideosRatingsHistoryList(
@@ -6586,7 +7016,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsVideosRatingsList(
       requestParameters: AdminApiAdminRequestsVideosRatingsListRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Array<RatingAdminListRetrieve>> {
       return localVarFp
         .adminRequestsVideosRatingsList(
@@ -6605,7 +7035,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsVideosRatingsOwnRetrieve(
       requestParameters: AdminApiAdminRequestsVideosRatingsOwnRetrieveRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RatingAdminListRetrieve> {
       return localVarFp
         .adminRequestsVideosRatingsOwnRetrieve(
@@ -6623,7 +7053,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsVideosRatingsPartialUpdate(
       requestParameters: AdminApiAdminRequestsVideosRatingsPartialUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RatingAdminCreateUpdate> {
       return localVarFp
         .adminRequestsVideosRatingsPartialUpdate(
@@ -6643,7 +7073,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsVideosRatingsRetrieve(
       requestParameters: AdminApiAdminRequestsVideosRatingsRetrieveRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RatingAdminListRetrieve> {
       return localVarFp
         .adminRequestsVideosRatingsRetrieve(
@@ -6662,7 +7092,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsVideosRatingsUpdate(
       requestParameters: AdminApiAdminRequestsVideosRatingsUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<RatingAdminCreateUpdate> {
       return localVarFp
         .adminRequestsVideosRatingsUpdate(
@@ -6682,7 +7112,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsVideosRetrieve(
       requestParameters: AdminApiAdminRequestsVideosRetrieveRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<VideoAdminRetrieve> {
       return localVarFp
         .adminRequestsVideosRetrieve(
@@ -6700,7 +7130,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsVideosTodosCreate(
       requestParameters: AdminApiAdminRequestsVideosTodosCreateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<TodoAdminListRetrieve> {
       return localVarFp
         .adminRequestsVideosTodosCreate(
@@ -6719,7 +7149,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsVideosTodosList(
       requestParameters: AdminApiAdminRequestsVideosTodosListRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Array<TodoAdminListRetrieve>> {
       return localVarFp
         .adminRequestsVideosTodosList(
@@ -6738,7 +7168,7 @@ export const AdminApiFactory = function (
      */
     adminRequestsVideosUpdate(
       requestParameters: AdminApiAdminRequestsVideosUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<VideoAdminRetrieve> {
       return localVarFp
         .adminRequestsVideosUpdate(
@@ -6757,7 +7187,7 @@ export const AdminApiFactory = function (
      */
     adminTodosDestroy(
       requestParameters: AdminApiAdminTodosDestroyRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .adminTodosDestroy(requestParameters.id, options)
@@ -6771,7 +7201,7 @@ export const AdminApiFactory = function (
      */
     adminTodosList(
       requestParameters: AdminApiAdminTodosListRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<PaginatedTodoAdminListRetrieveList> {
       return localVarFp
         .adminTodosList(
@@ -6793,7 +7223,7 @@ export const AdminApiFactory = function (
      */
     adminTodosPartialUpdate(
       requestParameters: AdminApiAdminTodosPartialUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<TodoAdminListRetrieve> {
       return localVarFp
         .adminTodosPartialUpdate(
@@ -6811,7 +7241,7 @@ export const AdminApiFactory = function (
      */
     adminTodosRetrieve(
       requestParameters: AdminApiAdminTodosRetrieveRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<TodoAdminListRetrieve> {
       return localVarFp
         .adminTodosRetrieve(requestParameters.id, options)
@@ -6825,7 +7255,7 @@ export const AdminApiFactory = function (
      */
     adminTodosUpdate(
       requestParameters: AdminApiAdminTodosUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<TodoAdminListRetrieve> {
       return localVarFp
         .adminTodosUpdate(
@@ -6843,7 +7273,7 @@ export const AdminApiFactory = function (
      */
     adminUsersBanCreate(
       requestParameters: AdminApiAdminUsersBanCreateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<BanUser> {
       return localVarFp
         .adminUsersBanCreate(
@@ -6861,7 +7291,7 @@ export const AdminApiFactory = function (
      */
     adminUsersBanDestroy(
       requestParameters: AdminApiAdminUsersBanDestroyRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .adminUsersBanDestroy(requestParameters.id, options)
@@ -6875,7 +7305,7 @@ export const AdminApiFactory = function (
      */
     adminUsersList(
       requestParameters: AdminApiAdminUsersListRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<PaginatedUserAdminListList> {
       return localVarFp
         .adminUsersList(
@@ -6898,7 +7328,7 @@ export const AdminApiFactory = function (
      */
     adminUsersPartialUpdate(
       requestParameters: AdminApiAdminUsersPartialUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<UserAdminRetrieveUpdate> {
       return localVarFp
         .adminUsersPartialUpdate(
@@ -6916,7 +7346,7 @@ export const AdminApiFactory = function (
      */
     adminUsersRetrieve(
       requestParameters: AdminApiAdminUsersRetrieveRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<UserAdminRetrieveUpdate> {
       return localVarFp
         .adminUsersRetrieve(requestParameters.id, options)
@@ -6930,7 +7360,7 @@ export const AdminApiFactory = function (
      */
     adminUsersUpdate(
       requestParameters: AdminApiAdminUsersUpdateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<UserAdminRetrieveUpdate> {
       return localVarFp
         .adminUsersUpdate(
@@ -6948,7 +7378,7 @@ export const AdminApiFactory = function (
      */
     adminUsersWorkedOnList(
       requestParameters: AdminApiAdminUsersWorkedOnListRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Array<UserAdminWorkedOn>> {
       return localVarFp
         .adminUsersWorkedOnList(
@@ -6968,7 +7398,7 @@ export const AdminApiFactory = function (
      */
     adminVideosList(
       requestParameters: AdminApiAdminVideosListRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<PaginatedVideoAdminSearchList> {
       return localVarFp
         .adminVideosList(
@@ -6994,1493 +7424,811 @@ export const AdminApiFactory = function (
 
 /**
  * Request parameters for adminProjectsCreate operation in AdminApi.
- * @export
- * @interface AdminApiAdminProjectsCreateRequest
  */
 export interface AdminApiAdminProjectsCreateRequest {
-  /**
-   *
-   * @type {ProjectAdminWriteRequest}
-   * @memberof AdminApiAdminProjectsCreate
-   */
   readonly projectAdminWriteRequest: ProjectAdminWriteRequest;
 }
 
 /**
  * Request parameters for adminProjectsDestroy operation in AdminApi.
- * @export
- * @interface AdminApiAdminProjectsDestroyRequest
  */
 export interface AdminApiAdminProjectsDestroyRequest {
   /**
    * A unique integer value identifying this project.
-   * @type {number}
-   * @memberof AdminApiAdminProjectsDestroy
    */
   readonly id: number;
 }
 
 /**
  * Request parameters for adminProjectsPartialUpdate operation in AdminApi.
- * @export
- * @interface AdminApiAdminProjectsPartialUpdateRequest
  */
 export interface AdminApiAdminProjectsPartialUpdateRequest {
   /**
    * A unique integer value identifying this project.
-   * @type {number}
-   * @memberof AdminApiAdminProjectsPartialUpdate
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {PatchedProjectAdminWriteRequest}
-   * @memberof AdminApiAdminProjectsPartialUpdate
-   */
   readonly patchedProjectAdminWriteRequest?: PatchedProjectAdminWriteRequest;
 }
 
 /**
  * Request parameters for adminProjectsRetrieve operation in AdminApi.
- * @export
- * @interface AdminApiAdminProjectsRetrieveRequest
  */
 export interface AdminApiAdminProjectsRetrieveRequest {
   /**
    * A unique integer value identifying this project.
-   * @type {number}
-   * @memberof AdminApiAdminProjectsRetrieve
    */
   readonly id: number;
 }
 
 /**
  * Request parameters for adminProjectsUpdate operation in AdminApi.
- * @export
- * @interface AdminApiAdminProjectsUpdateRequest
  */
 export interface AdminApiAdminProjectsUpdateRequest {
   /**
    * A unique integer value identifying this project.
-   * @type {number}
-   * @memberof AdminApiAdminProjectsUpdate
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {ProjectAdminWriteRequest}
-   * @memberof AdminApiAdminProjectsUpdate
-   */
   readonly projectAdminWriteRequest: ProjectAdminWriteRequest;
 }
 
 /**
  * Request parameters for adminReportRetrieve operation in AdminApi.
- * @export
- * @interface AdminApiAdminReportRetrieveRequest
  */
 export interface AdminApiAdminReportRetrieveRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof AdminApiAdminReportRetrieve
-   */
   readonly dateAfter: string;
 
-  /**
-   *
-   * @type {string}
-   * @memberof AdminApiAdminReportRetrieve
-   */
   readonly dateBefore: string;
 }
 
 /**
  * Request parameters for adminRequestsCommentsCreate operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsCommentsCreateRequest
  */
 export interface AdminApiAdminRequestsCommentsCreateRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsCommentsCreate
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {CommentAdminCreateUpdateRequest}
-   * @memberof AdminApiAdminRequestsCommentsCreate
-   */
   readonly commentAdminCreateUpdateRequest: CommentAdminCreateUpdateRequest;
 }
 
 /**
  * Request parameters for adminRequestsCommentsDestroy operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsCommentsDestroyRequest
  */
 export interface AdminApiAdminRequestsCommentsDestroyRequest {
   /**
    * A unique integer value identifying this comment.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsCommentsDestroy
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsCommentsDestroy
-   */
   readonly requestId: number;
 }
 
 /**
  * Request parameters for adminRequestsCommentsHistoryList operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsCommentsHistoryListRequest
  */
 export interface AdminApiAdminRequestsCommentsHistoryListRequest {
   /**
    * A unique integer value identifying this comment.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsCommentsHistoryList
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsCommentsHistoryList
-   */
   readonly requestId: number;
 }
 
 /**
  * Request parameters for adminRequestsCommentsList operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsCommentsListRequest
  */
 export interface AdminApiAdminRequestsCommentsListRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsCommentsList
-   */
   readonly requestId: number;
 
   /**
    * Which field to use when ordering the results.
-   * @type {string}
-   * @memberof AdminApiAdminRequestsCommentsList
    */
   readonly ordering?: string;
 }
 
 /**
  * Request parameters for adminRequestsCommentsPartialUpdate operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsCommentsPartialUpdateRequest
  */
 export interface AdminApiAdminRequestsCommentsPartialUpdateRequest {
   /**
    * A unique integer value identifying this comment.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsCommentsPartialUpdate
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsCommentsPartialUpdate
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {PatchedCommentAdminCreateUpdateRequest}
-   * @memberof AdminApiAdminRequestsCommentsPartialUpdate
-   */
   readonly patchedCommentAdminCreateUpdateRequest?: PatchedCommentAdminCreateUpdateRequest;
 }
 
 /**
  * Request parameters for adminRequestsCommentsRetrieve operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsCommentsRetrieveRequest
  */
 export interface AdminApiAdminRequestsCommentsRetrieveRequest {
   /**
    * A unique integer value identifying this comment.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsCommentsRetrieve
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsCommentsRetrieve
-   */
   readonly requestId: number;
 }
 
 /**
  * Request parameters for adminRequestsCommentsUpdate operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsCommentsUpdateRequest
  */
 export interface AdminApiAdminRequestsCommentsUpdateRequest {
   /**
    * A unique integer value identifying this comment.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsCommentsUpdate
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsCommentsUpdate
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {CommentAdminCreateUpdateRequest}
-   * @memberof AdminApiAdminRequestsCommentsUpdate
-   */
   readonly commentAdminCreateUpdateRequest: CommentAdminCreateUpdateRequest;
 }
 
 /**
  * Request parameters for adminRequestsCreate operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsCreateRequest
  */
 export interface AdminApiAdminRequestsCreateRequest {
-  /**
-   *
-   * @type {RequestAdminCreateRequest}
-   * @memberof AdminApiAdminRequestsCreate
-   */
   readonly requestAdminCreateRequest: RequestAdminCreateRequest;
 }
 
 /**
  * Request parameters for adminRequestsCrewCreate operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsCrewCreateRequest
  */
 export interface AdminApiAdminRequestsCrewCreateRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsCrewCreate
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {CrewMemberAdminCreateUpdateRequest}
-   * @memberof AdminApiAdminRequestsCrewCreate
-   */
   readonly crewMemberAdminCreateUpdateRequest: CrewMemberAdminCreateUpdateRequest;
 }
 
 /**
  * Request parameters for adminRequestsCrewDestroy operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsCrewDestroyRequest
  */
 export interface AdminApiAdminRequestsCrewDestroyRequest {
   /**
    * A unique integer value identifying this crew member.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsCrewDestroy
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsCrewDestroy
-   */
   readonly requestId: number;
 }
 
 /**
  * Request parameters for adminRequestsCrewList operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsCrewListRequest
  */
 export interface AdminApiAdminRequestsCrewListRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsCrewList
-   */
   readonly requestId: number;
 
   /**
    * Which field to use when ordering the results.
-   * @type {string}
-   * @memberof AdminApiAdminRequestsCrewList
    */
   readonly ordering?: string;
 }
 
 /**
  * Request parameters for adminRequestsCrewPartialUpdate operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsCrewPartialUpdateRequest
  */
 export interface AdminApiAdminRequestsCrewPartialUpdateRequest {
   /**
    * A unique integer value identifying this crew member.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsCrewPartialUpdate
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsCrewPartialUpdate
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {PatchedCrewMemberAdminCreateUpdateRequest}
-   * @memberof AdminApiAdminRequestsCrewPartialUpdate
-   */
   readonly patchedCrewMemberAdminCreateUpdateRequest?: PatchedCrewMemberAdminCreateUpdateRequest;
 }
 
 /**
  * Request parameters for adminRequestsCrewRetrieve operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsCrewRetrieveRequest
  */
 export interface AdminApiAdminRequestsCrewRetrieveRequest {
   /**
    * A unique integer value identifying this crew member.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsCrewRetrieve
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsCrewRetrieve
-   */
   readonly requestId: number;
 }
 
 /**
  * Request parameters for adminRequestsCrewUpdate operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsCrewUpdateRequest
  */
 export interface AdminApiAdminRequestsCrewUpdateRequest {
   /**
    * A unique integer value identifying this crew member.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsCrewUpdate
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsCrewUpdate
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {CrewMemberAdminCreateUpdateRequest}
-   * @memberof AdminApiAdminRequestsCrewUpdate
-   */
   readonly crewMemberAdminCreateUpdateRequest: CrewMemberAdminCreateUpdateRequest;
 }
 
 /**
  * Request parameters for adminRequestsDestroy operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsDestroyRequest
  */
 export interface AdminApiAdminRequestsDestroyRequest {
   /**
    * A unique integer value identifying this request.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsDestroy
    */
   readonly id: number;
 }
 
 /**
  * Request parameters for adminRequestsHistoryList operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsHistoryListRequest
  */
 export interface AdminApiAdminRequestsHistoryListRequest {
   /**
    * A unique integer value identifying this request.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsHistoryList
    */
   readonly id: number;
 }
 
 /**
  * Request parameters for adminRequestsList operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsListRequest
  */
 export interface AdminApiAdminRequestsListRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof AdminApiAdminRequestsList
-   */
   readonly deadlineAfter?: string;
 
-  /**
-   *
-   * @type {string}
-   * @memberof AdminApiAdminRequestsList
-   */
   readonly deadlineBefore?: string;
 
-  /**
-   *
-   * @type {boolean}
-   * @memberof AdminApiAdminRequestsList
-   */
   readonly hasProject?: boolean;
 
   /**
    * Which field to use when ordering the results.
-   * @type {string}
-   * @memberof AdminApiAdminRequestsList
    */
   readonly ordering?: string;
 
   /**
    * A page number within the paginated result set.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsList
    */
   readonly page?: number;
 
   /**
    * Number of results to return per page.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsList
    */
   readonly pageSize?: number;
 
   /**
    * Return paginated response.
-   * @type {boolean}
-   * @memberof AdminApiAdminRequestsList
    */
   readonly pagination?: boolean;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsList
-   */
   readonly project?: number;
 
   /**
    * A search term.
-   * @type {string}
-   * @memberof AdminApiAdminRequestsList
    */
   readonly search?: string;
 
-  /**
-   *
-   * @type {string}
-   * @memberof AdminApiAdminRequestsList
-   */
   readonly startDatetimeAfter?: string;
 
-  /**
-   *
-   * @type {string}
-   * @memberof AdminApiAdminRequestsList
-   */
   readonly startDatetimeBefore?: string;
 
   /**
    * * &#x60;0&#x60; - Elutasítva * &#x60;1&#x60; - Felkérés * &#x60;2&#x60; - Elvállalva * &#x60;3&#x60; - Leforgatva * &#x60;4&#x60; - Beírva * &#x60;5&#x60; - Megvágva * &#x60;6&#x60; - Archiválva * &#x60;7&#x60; - Lezárva * &#x60;9&#x60; - Szervezők által lemondva * &#x60;10&#x60; - Meghiúsult
-   * @type {Array<0 | 1 | 10 | 2 | 3 | 4 | 5 | 6 | 7 | 9>}
-   * @memberof AdminApiAdminRequestsList
    */
   readonly status?: Array<AdminRequestsListStatusEnum>;
 }
 
 /**
  * Request parameters for adminRequestsPartialUpdate operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsPartialUpdateRequest
  */
 export interface AdminApiAdminRequestsPartialUpdateRequest {
   /**
    * A unique integer value identifying this request.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsPartialUpdate
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {PatchedRequestAdminUpdateRequest}
-   * @memberof AdminApiAdminRequestsPartialUpdate
-   */
   readonly patchedRequestAdminUpdateRequest?: PatchedRequestAdminUpdateRequest;
 }
 
 /**
  * Request parameters for adminRequestsRetrieve operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsRetrieveRequest
  */
 export interface AdminApiAdminRequestsRetrieveRequest {
   /**
    * A unique integer value identifying this request.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsRetrieve
    */
   readonly id: number;
 }
 
 /**
  * Request parameters for adminRequestsTodosCreate operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsTodosCreateRequest
  */
 export interface AdminApiAdminRequestsTodosCreateRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsTodosCreate
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {TodoAdminCreateUpdateRequest}
-   * @memberof AdminApiAdminRequestsTodosCreate
-   */
   readonly todoAdminCreateUpdateRequest: TodoAdminCreateUpdateRequest;
 }
 
 /**
  * Request parameters for adminRequestsTodosList operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsTodosListRequest
  */
 export interface AdminApiAdminRequestsTodosListRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsTodosList
-   */
   readonly requestId: number;
 
   /**
    * Which field to use when ordering the results.
-   * @type {string}
-   * @memberof AdminApiAdminRequestsTodosList
    */
   readonly ordering?: string;
 }
 
 /**
  * Request parameters for adminRequestsUpdate operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsUpdateRequest
  */
 export interface AdminApiAdminRequestsUpdateRequest {
   /**
    * A unique integer value identifying this request.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsUpdate
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {RequestAdminUpdateRequest}
-   * @memberof AdminApiAdminRequestsUpdate
-   */
   readonly requestAdminUpdateRequest: RequestAdminUpdateRequest;
 }
 
 /**
  * Request parameters for adminRequestsVideosCreate operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsVideosCreateRequest
  */
 export interface AdminApiAdminRequestsVideosCreateRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosCreate
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {VideoAdminCreateUpdateRequest}
-   * @memberof AdminApiAdminRequestsVideosCreate
-   */
   readonly videoAdminCreateUpdateRequest: VideoAdminCreateUpdateRequest;
 }
 
 /**
  * Request parameters for adminRequestsVideosDestroy operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsVideosDestroyRequest
  */
 export interface AdminApiAdminRequestsVideosDestroyRequest {
   /**
    * A unique integer value identifying this video.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosDestroy
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosDestroy
-   */
   readonly requestId: number;
 }
 
 /**
  * Request parameters for adminRequestsVideosHistoryList operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsVideosHistoryListRequest
  */
 export interface AdminApiAdminRequestsVideosHistoryListRequest {
   /**
    * A unique integer value identifying this video.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosHistoryList
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosHistoryList
-   */
   readonly requestId: number;
 }
 
 /**
  * Request parameters for adminRequestsVideosList operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsVideosListRequest
  */
 export interface AdminApiAdminRequestsVideosListRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosList
-   */
   readonly requestId: number;
 
   /**
    * Which field to use when ordering the results.
-   * @type {string}
-   * @memberof AdminApiAdminRequestsVideosList
    */
   readonly ordering?: string;
 }
 
 /**
  * Request parameters for adminRequestsVideosPartialUpdate operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsVideosPartialUpdateRequest
  */
 export interface AdminApiAdminRequestsVideosPartialUpdateRequest {
   /**
    * A unique integer value identifying this video.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosPartialUpdate
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosPartialUpdate
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {PatchedVideoAdminCreateUpdateRequest}
-   * @memberof AdminApiAdminRequestsVideosPartialUpdate
-   */
   readonly patchedVideoAdminCreateUpdateRequest?: PatchedVideoAdminCreateUpdateRequest;
 }
 
 /**
  * Request parameters for adminRequestsVideosRatingsCreate operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsVideosRatingsCreateRequest
  */
 export interface AdminApiAdminRequestsVideosRatingsCreateRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosRatingsCreate
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosRatingsCreate
-   */
   readonly videoId: number;
 
-  /**
-   *
-   * @type {RatingAdminCreateUpdateRequest}
-   * @memberof AdminApiAdminRequestsVideosRatingsCreate
-   */
   readonly ratingAdminCreateUpdateRequest: RatingAdminCreateUpdateRequest;
 }
 
 /**
  * Request parameters for adminRequestsVideosRatingsDestroy operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsVideosRatingsDestroyRequest
  */
 export interface AdminApiAdminRequestsVideosRatingsDestroyRequest {
   /**
    * A unique integer value identifying this rating.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosRatingsDestroy
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosRatingsDestroy
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosRatingsDestroy
-   */
   readonly videoId: number;
 }
 
 /**
  * Request parameters for adminRequestsVideosRatingsHistoryList operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsVideosRatingsHistoryListRequest
  */
 export interface AdminApiAdminRequestsVideosRatingsHistoryListRequest {
   /**
    * A unique integer value identifying this rating.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosRatingsHistoryList
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosRatingsHistoryList
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosRatingsHistoryList
-   */
   readonly videoId: number;
 }
 
 /**
  * Request parameters for adminRequestsVideosRatingsList operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsVideosRatingsListRequest
  */
 export interface AdminApiAdminRequestsVideosRatingsListRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosRatingsList
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosRatingsList
-   */
   readonly videoId: number;
 
   /**
    * Which field to use when ordering the results.
-   * @type {string}
-   * @memberof AdminApiAdminRequestsVideosRatingsList
    */
   readonly ordering?: string;
 }
 
 /**
  * Request parameters for adminRequestsVideosRatingsOwnRetrieve operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsVideosRatingsOwnRetrieveRequest
  */
 export interface AdminApiAdminRequestsVideosRatingsOwnRetrieveRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosRatingsOwnRetrieve
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosRatingsOwnRetrieve
-   */
   readonly videoId: number;
 }
 
 /**
  * Request parameters for adminRequestsVideosRatingsPartialUpdate operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsVideosRatingsPartialUpdateRequest
  */
 export interface AdminApiAdminRequestsVideosRatingsPartialUpdateRequest {
   /**
    * A unique integer value identifying this rating.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosRatingsPartialUpdate
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosRatingsPartialUpdate
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosRatingsPartialUpdate
-   */
   readonly videoId: number;
 
-  /**
-   *
-   * @type {PatchedRatingAdminCreateUpdateRequest}
-   * @memberof AdminApiAdminRequestsVideosRatingsPartialUpdate
-   */
   readonly patchedRatingAdminCreateUpdateRequest?: PatchedRatingAdminCreateUpdateRequest;
 }
 
 /**
  * Request parameters for adminRequestsVideosRatingsRetrieve operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsVideosRatingsRetrieveRequest
  */
 export interface AdminApiAdminRequestsVideosRatingsRetrieveRequest {
   /**
    * A unique integer value identifying this rating.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosRatingsRetrieve
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosRatingsRetrieve
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosRatingsRetrieve
-   */
   readonly videoId: number;
 }
 
 /**
  * Request parameters for adminRequestsVideosRatingsUpdate operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsVideosRatingsUpdateRequest
  */
 export interface AdminApiAdminRequestsVideosRatingsUpdateRequest {
   /**
    * A unique integer value identifying this rating.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosRatingsUpdate
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosRatingsUpdate
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosRatingsUpdate
-   */
   readonly videoId: number;
 
-  /**
-   *
-   * @type {RatingAdminCreateUpdateRequest}
-   * @memberof AdminApiAdminRequestsVideosRatingsUpdate
-   */
   readonly ratingAdminCreateUpdateRequest: RatingAdminCreateUpdateRequest;
 }
 
 /**
  * Request parameters for adminRequestsVideosRetrieve operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsVideosRetrieveRequest
  */
 export interface AdminApiAdminRequestsVideosRetrieveRequest {
   /**
    * A unique integer value identifying this video.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosRetrieve
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosRetrieve
-   */
   readonly requestId: number;
 }
 
 /**
  * Request parameters for adminRequestsVideosTodosCreate operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsVideosTodosCreateRequest
  */
 export interface AdminApiAdminRequestsVideosTodosCreateRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosTodosCreate
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosTodosCreate
-   */
   readonly videoId: number;
 
-  /**
-   *
-   * @type {TodoAdminCreateUpdateRequest}
-   * @memberof AdminApiAdminRequestsVideosTodosCreate
-   */
   readonly todoAdminCreateUpdateRequest: TodoAdminCreateUpdateRequest;
 }
 
 /**
  * Request parameters for adminRequestsVideosTodosList operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsVideosTodosListRequest
  */
 export interface AdminApiAdminRequestsVideosTodosListRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosTodosList
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosTodosList
-   */
   readonly videoId: number;
 
   /**
    * Which field to use when ordering the results.
-   * @type {string}
-   * @memberof AdminApiAdminRequestsVideosTodosList
    */
   readonly ordering?: string;
 }
 
 /**
  * Request parameters for adminRequestsVideosUpdate operation in AdminApi.
- * @export
- * @interface AdminApiAdminRequestsVideosUpdateRequest
  */
 export interface AdminApiAdminRequestsVideosUpdateRequest {
   /**
    * A unique integer value identifying this video.
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosUpdate
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminRequestsVideosUpdate
-   */
   readonly requestId: number;
 
-  /**
-   *
-   * @type {VideoAdminCreateUpdateRequest}
-   * @memberof AdminApiAdminRequestsVideosUpdate
-   */
   readonly videoAdminCreateUpdateRequest: VideoAdminCreateUpdateRequest;
 }
 
 /**
  * Request parameters for adminTodosDestroy operation in AdminApi.
- * @export
- * @interface AdminApiAdminTodosDestroyRequest
  */
 export interface AdminApiAdminTodosDestroyRequest {
   /**
    * A unique integer value identifying this todo.
-   * @type {number}
-   * @memberof AdminApiAdminTodosDestroy
    */
   readonly id: number;
 }
 
 /**
  * Request parameters for adminTodosList operation in AdminApi.
- * @export
- * @interface AdminApiAdminTodosListRequest
  */
 export interface AdminApiAdminTodosListRequest {
-  /**
-   *
-   * @type {Array<number>}
-   * @memberof AdminApiAdminTodosList
-   */
   readonly assignees?: Array<number>;
 
   /**
    * Which field to use when ordering the results.
-   * @type {string}
-   * @memberof AdminApiAdminTodosList
    */
   readonly ordering?: string;
 
   /**
    * A page number within the paginated result set.
-   * @type {number}
-   * @memberof AdminApiAdminTodosList
    */
   readonly page?: number;
 
   /**
    * Number of results to return per page.
-   * @type {number}
-   * @memberof AdminApiAdminTodosList
    */
   readonly pageSize?: number;
 
   /**
    * Return paginated response.
-   * @type {boolean}
-   * @memberof AdminApiAdminTodosList
    */
   readonly pagination?: boolean;
 
   /**
    * * &#x60;1&#x60; - Nyitva * &#x60;2&#x60; - Lezárva * &#x60;3&#x60; - Elvetve
-   * @type {Array<1 | 2 | 3>}
-   * @memberof AdminApiAdminTodosList
    */
   readonly status?: Array<AdminTodosListStatusEnum>;
 }
 
 /**
  * Request parameters for adminTodosPartialUpdate operation in AdminApi.
- * @export
- * @interface AdminApiAdminTodosPartialUpdateRequest
  */
 export interface AdminApiAdminTodosPartialUpdateRequest {
   /**
    * A unique integer value identifying this todo.
-   * @type {number}
-   * @memberof AdminApiAdminTodosPartialUpdate
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {PatchedTodoAdminCreateUpdateRequest}
-   * @memberof AdminApiAdminTodosPartialUpdate
-   */
   readonly patchedTodoAdminCreateUpdateRequest?: PatchedTodoAdminCreateUpdateRequest;
 }
 
 /**
  * Request parameters for adminTodosRetrieve operation in AdminApi.
- * @export
- * @interface AdminApiAdminTodosRetrieveRequest
  */
 export interface AdminApiAdminTodosRetrieveRequest {
   /**
    * A unique integer value identifying this todo.
-   * @type {number}
-   * @memberof AdminApiAdminTodosRetrieve
    */
   readonly id: number;
 }
 
 /**
  * Request parameters for adminTodosUpdate operation in AdminApi.
- * @export
- * @interface AdminApiAdminTodosUpdateRequest
  */
 export interface AdminApiAdminTodosUpdateRequest {
   /**
    * A unique integer value identifying this todo.
-   * @type {number}
-   * @memberof AdminApiAdminTodosUpdate
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {TodoAdminCreateUpdateRequest}
-   * @memberof AdminApiAdminTodosUpdate
-   */
   readonly todoAdminCreateUpdateRequest: TodoAdminCreateUpdateRequest;
 }
 
 /**
  * Request parameters for adminUsersBanCreate operation in AdminApi.
- * @export
- * @interface AdminApiAdminUsersBanCreateRequest
  */
 export interface AdminApiAdminUsersBanCreateRequest {
   /**
    * A unique integer value identifying this user.
-   * @type {number}
-   * @memberof AdminApiAdminUsersBanCreate
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {BanUserRequest}
-   * @memberof AdminApiAdminUsersBanCreate
-   */
   readonly banUserRequest?: BanUserRequest;
 }
 
 /**
  * Request parameters for adminUsersBanDestroy operation in AdminApi.
- * @export
- * @interface AdminApiAdminUsersBanDestroyRequest
  */
 export interface AdminApiAdminUsersBanDestroyRequest {
   /**
    * A unique integer value identifying this user.
-   * @type {number}
-   * @memberof AdminApiAdminUsersBanDestroy
    */
   readonly id: number;
 }
 
 /**
  * Request parameters for adminUsersList operation in AdminApi.
- * @export
- * @interface AdminApiAdminUsersListRequest
  */
 export interface AdminApiAdminUsersListRequest {
-  /**
-   *
-   * @type {boolean}
-   * @memberof AdminApiAdminUsersList
-   */
   readonly isAdmin?: boolean;
 
-  /**
-   *
-   * @type {boolean}
-   * @memberof AdminApiAdminUsersList
-   */
   readonly isStaff?: boolean;
 
   /**
    * Which field to use when ordering the results.
-   * @type {string}
-   * @memberof AdminApiAdminUsersList
    */
   readonly ordering?: string;
 
   /**
    * A page number within the paginated result set.
-   * @type {number}
-   * @memberof AdminApiAdminUsersList
    */
   readonly page?: number;
 
   /**
    * Number of results to return per page.
-   * @type {number}
-   * @memberof AdminApiAdminUsersList
    */
   readonly pageSize?: number;
 
   /**
    * Return paginated response.
-   * @type {boolean}
-   * @memberof AdminApiAdminUsersList
    */
   readonly pagination?: boolean;
 
   /**
    * A search term.
-   * @type {string}
-   * @memberof AdminApiAdminUsersList
    */
   readonly search?: string;
 }
 
 /**
  * Request parameters for adminUsersPartialUpdate operation in AdminApi.
- * @export
- * @interface AdminApiAdminUsersPartialUpdateRequest
  */
 export interface AdminApiAdminUsersPartialUpdateRequest {
   /**
    * A unique integer value identifying this user.
-   * @type {number}
-   * @memberof AdminApiAdminUsersPartialUpdate
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {PatchedUserAdminRetrieveUpdateRequest}
-   * @memberof AdminApiAdminUsersPartialUpdate
-   */
   readonly patchedUserAdminRetrieveUpdateRequest?: PatchedUserAdminRetrieveUpdateRequest;
 }
 
 /**
  * Request parameters for adminUsersRetrieve operation in AdminApi.
- * @export
- * @interface AdminApiAdminUsersRetrieveRequest
  */
 export interface AdminApiAdminUsersRetrieveRequest {
   /**
    * A unique integer value identifying this user.
-   * @type {number}
-   * @memberof AdminApiAdminUsersRetrieve
    */
   readonly id: number;
 }
 
 /**
  * Request parameters for adminUsersUpdate operation in AdminApi.
- * @export
- * @interface AdminApiAdminUsersUpdateRequest
  */
 export interface AdminApiAdminUsersUpdateRequest {
   /**
    * A unique integer value identifying this user.
-   * @type {number}
-   * @memberof AdminApiAdminUsersUpdate
    */
   readonly id: number;
 
-  /**
-   *
-   * @type {UserAdminRetrieveUpdateRequest}
-   * @memberof AdminApiAdminUsersUpdate
-   */
   readonly userAdminRetrieveUpdateRequest?: UserAdminRetrieveUpdateRequest;
 }
 
 /**
  * Request parameters for adminUsersWorkedOnList operation in AdminApi.
- * @export
- * @interface AdminApiAdminUsersWorkedOnListRequest
  */
 export interface AdminApiAdminUsersWorkedOnListRequest {
   /**
    * A unique integer value identifying this user.
-   * @type {number}
-   * @memberof AdminApiAdminUsersWorkedOnList
    */
   readonly id: number;
 
   /**
    * Default is 20 weeks before date_before.
-   * @type {string}
-   * @memberof AdminApiAdminUsersWorkedOnList
    */
   readonly dateAfter?: string;
 
   /**
    * Default is today.
-   * @type {string}
-   * @memberof AdminApiAdminUsersWorkedOnList
    */
   readonly dateBefore?: string;
 
   /**
    * Default is True.
-   * @type {boolean}
-   * @memberof AdminApiAdminUsersWorkedOnList
    */
   readonly isResponsible?: boolean;
 }
 
 /**
  * Request parameters for adminVideosList operation in AdminApi.
- * @export
- * @interface AdminApiAdminVideosListRequest
  */
 export interface AdminApiAdminVideosListRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof AdminApiAdminVideosList
-   */
   readonly editedAtAfter?: string;
 
-  /**
-   *
-   * @type {string}
-   * @memberof AdminApiAdminVideosList
-   */
   readonly editedAtBefore?: string;
 
-  /**
-   *
-   * @type {string}
-   * @memberof AdminApiAdminVideosList
-   */
   readonly lastAired?: string;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminVideosList
-   */
   readonly lengthMax?: number;
 
-  /**
-   *
-   * @type {number}
-   * @memberof AdminApiAdminVideosList
-   */
   readonly lengthMin?: number;
 
   /**
    * Which field to use when ordering the results.
-   * @type {string}
-   * @memberof AdminApiAdminVideosList
    */
   readonly ordering?: string;
 
   /**
    * A page number within the paginated result set.
-   * @type {number}
-   * @memberof AdminApiAdminVideosList
    */
   readonly page?: number;
 
   /**
    * Number of results to return per page.
-   * @type {number}
-   * @memberof AdminApiAdminVideosList
    */
   readonly pageSize?: number;
 
   /**
    * Return paginated response.
-   * @type {boolean}
-   * @memberof AdminApiAdminVideosList
    */
   readonly pagination?: boolean;
 
-  /**
-   *
-   * @type {string}
-   * @memberof AdminApiAdminVideosList
-   */
   readonly requestStartDatetimeAfter?: string;
 
-  /**
-   *
-   * @type {string}
-   * @memberof AdminApiAdminVideosList
-   */
   readonly requestStartDatetimeBefore?: string;
 
   /**
    * A search term.
-   * @type {string}
-   * @memberof AdminApiAdminVideosList
    */
   readonly search?: string;
 
   /**
    * * &#x60;1&#x60; - Vágásra vár * &#x60;2&#x60; - Vágás alatt * &#x60;3&#x60; - Megvágva * &#x60;4&#x60; - Kikódolva * &#x60;5&#x60; - Közzétéve * &#x60;6&#x60; - Lezárva
-   * @type {Array<1 | 2 | 3 | 4 | 5 | 6>}
-   * @memberof AdminApiAdminVideosList
    */
   readonly status?: Array<AdminVideosListStatusEnum>;
 }
 
 /**
  * AdminApi - object-oriented interface
- * @export
- * @class AdminApi
- * @extends {BaseAPI}
  */
 export class AdminApi extends BaseAPI {
   /**
@@ -8488,11 +8236,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminProjectsCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminProjectsCreate(
     requestParameters: AdminApiAdminProjectsCreateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminProjectsCreate(requestParameters.projectAdminWriteRequest, options)
@@ -8504,11 +8251,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminProjectsDestroyRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminProjectsDestroy(
     requestParameters: AdminApiAdminProjectsDestroyRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminProjectsDestroy(requestParameters.id, options)
@@ -8519,9 +8265,8 @@ export class AdminApi extends BaseAPI {
    *
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
-  public adminProjectsList(options?: AxiosRequestConfig) {
+  public adminProjectsList(options?: RawAxiosRequestConfig) {
     return AdminApiFp(this.configuration)
       .adminProjectsList(options)
       .then((request) => request(this.axios, this.basePath));
@@ -8532,11 +8277,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminProjectsPartialUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminProjectsPartialUpdate(
     requestParameters: AdminApiAdminProjectsPartialUpdateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminProjectsPartialUpdate(
@@ -8552,11 +8296,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminProjectsRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminProjectsRetrieve(
     requestParameters: AdminApiAdminProjectsRetrieveRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminProjectsRetrieve(requestParameters.id, options)
@@ -8568,11 +8311,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminProjectsUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminProjectsUpdate(
     requestParameters: AdminApiAdminProjectsUpdateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminProjectsUpdate(
@@ -8588,11 +8330,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminReportRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminReportRetrieve(
     requestParameters: AdminApiAdminReportRetrieveRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminReportRetrieve(
@@ -8608,11 +8349,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsCommentsCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsCommentsCreate(
     requestParameters: AdminApiAdminRequestsCommentsCreateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsCommentsCreate(
@@ -8628,11 +8368,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsCommentsDestroyRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsCommentsDestroy(
     requestParameters: AdminApiAdminRequestsCommentsDestroyRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsCommentsDestroy(
@@ -8648,11 +8387,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsCommentsHistoryListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsCommentsHistoryList(
     requestParameters: AdminApiAdminRequestsCommentsHistoryListRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsCommentsHistoryList(
@@ -8668,11 +8406,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsCommentsListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsCommentsList(
     requestParameters: AdminApiAdminRequestsCommentsListRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsCommentsList(
@@ -8688,11 +8425,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsCommentsPartialUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsCommentsPartialUpdate(
     requestParameters: AdminApiAdminRequestsCommentsPartialUpdateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsCommentsPartialUpdate(
@@ -8709,11 +8445,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsCommentsRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsCommentsRetrieve(
     requestParameters: AdminApiAdminRequestsCommentsRetrieveRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsCommentsRetrieve(
@@ -8729,11 +8464,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsCommentsUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsCommentsUpdate(
     requestParameters: AdminApiAdminRequestsCommentsUpdateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsCommentsUpdate(
@@ -8750,11 +8484,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsCreate(
     requestParameters: AdminApiAdminRequestsCreateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsCreate(requestParameters.requestAdminCreateRequest, options)
@@ -8766,11 +8499,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsCrewCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsCrewCreate(
     requestParameters: AdminApiAdminRequestsCrewCreateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsCrewCreate(
@@ -8786,11 +8518,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsCrewDestroyRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsCrewDestroy(
     requestParameters: AdminApiAdminRequestsCrewDestroyRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsCrewDestroy(
@@ -8806,11 +8537,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsCrewListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsCrewList(
     requestParameters: AdminApiAdminRequestsCrewListRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsCrewList(
@@ -8826,11 +8556,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsCrewPartialUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsCrewPartialUpdate(
     requestParameters: AdminApiAdminRequestsCrewPartialUpdateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsCrewPartialUpdate(
@@ -8847,11 +8576,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsCrewRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsCrewRetrieve(
     requestParameters: AdminApiAdminRequestsCrewRetrieveRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsCrewRetrieve(
@@ -8867,11 +8595,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsCrewUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsCrewUpdate(
     requestParameters: AdminApiAdminRequestsCrewUpdateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsCrewUpdate(
@@ -8888,11 +8615,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsDestroyRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsDestroy(
     requestParameters: AdminApiAdminRequestsDestroyRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsDestroy(requestParameters.id, options)
@@ -8904,11 +8630,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsHistoryListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsHistoryList(
     requestParameters: AdminApiAdminRequestsHistoryListRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsHistoryList(requestParameters.id, options)
@@ -8920,11 +8645,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsList(
     requestParameters: AdminApiAdminRequestsListRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsList(
@@ -8950,11 +8674,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsPartialUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsPartialUpdate(
     requestParameters: AdminApiAdminRequestsPartialUpdateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsPartialUpdate(
@@ -8970,11 +8693,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsRetrieve(
     requestParameters: AdminApiAdminRequestsRetrieveRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsRetrieve(requestParameters.id, options)
@@ -8986,11 +8708,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsTodosCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsTodosCreate(
     requestParameters: AdminApiAdminRequestsTodosCreateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsTodosCreate(
@@ -9006,11 +8727,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsTodosListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsTodosList(
     requestParameters: AdminApiAdminRequestsTodosListRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsTodosList(
@@ -9026,11 +8746,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsUpdate(
     requestParameters: AdminApiAdminRequestsUpdateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsUpdate(
@@ -9046,11 +8765,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsVideosCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsVideosCreate(
     requestParameters: AdminApiAdminRequestsVideosCreateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsVideosCreate(
@@ -9066,11 +8784,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsVideosDestroyRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsVideosDestroy(
     requestParameters: AdminApiAdminRequestsVideosDestroyRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsVideosDestroy(
@@ -9086,11 +8803,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsVideosHistoryListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsVideosHistoryList(
     requestParameters: AdminApiAdminRequestsVideosHistoryListRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsVideosHistoryList(
@@ -9106,11 +8822,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsVideosListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsVideosList(
     requestParameters: AdminApiAdminRequestsVideosListRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsVideosList(
@@ -9126,11 +8841,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsVideosPartialUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsVideosPartialUpdate(
     requestParameters: AdminApiAdminRequestsVideosPartialUpdateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsVideosPartialUpdate(
@@ -9147,11 +8861,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsVideosRatingsCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsVideosRatingsCreate(
     requestParameters: AdminApiAdminRequestsVideosRatingsCreateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsVideosRatingsCreate(
@@ -9168,11 +8881,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsVideosRatingsDestroyRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsVideosRatingsDestroy(
     requestParameters: AdminApiAdminRequestsVideosRatingsDestroyRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsVideosRatingsDestroy(
@@ -9189,11 +8901,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsVideosRatingsHistoryListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsVideosRatingsHistoryList(
     requestParameters: AdminApiAdminRequestsVideosRatingsHistoryListRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsVideosRatingsHistoryList(
@@ -9210,11 +8921,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsVideosRatingsListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsVideosRatingsList(
     requestParameters: AdminApiAdminRequestsVideosRatingsListRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsVideosRatingsList(
@@ -9231,11 +8941,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsVideosRatingsOwnRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsVideosRatingsOwnRetrieve(
     requestParameters: AdminApiAdminRequestsVideosRatingsOwnRetrieveRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsVideosRatingsOwnRetrieve(
@@ -9251,11 +8960,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsVideosRatingsPartialUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsVideosRatingsPartialUpdate(
     requestParameters: AdminApiAdminRequestsVideosRatingsPartialUpdateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsVideosRatingsPartialUpdate(
@@ -9273,11 +8981,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsVideosRatingsRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsVideosRatingsRetrieve(
     requestParameters: AdminApiAdminRequestsVideosRatingsRetrieveRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsVideosRatingsRetrieve(
@@ -9294,11 +9001,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsVideosRatingsUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsVideosRatingsUpdate(
     requestParameters: AdminApiAdminRequestsVideosRatingsUpdateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsVideosRatingsUpdate(
@@ -9316,11 +9022,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsVideosRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsVideosRetrieve(
     requestParameters: AdminApiAdminRequestsVideosRetrieveRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsVideosRetrieve(
@@ -9336,11 +9041,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsVideosTodosCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsVideosTodosCreate(
     requestParameters: AdminApiAdminRequestsVideosTodosCreateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsVideosTodosCreate(
@@ -9357,11 +9061,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsVideosTodosListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsVideosTodosList(
     requestParameters: AdminApiAdminRequestsVideosTodosListRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsVideosTodosList(
@@ -9378,11 +9081,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminRequestsVideosUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminRequestsVideosUpdate(
     requestParameters: AdminApiAdminRequestsVideosUpdateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsVideosUpdate(
@@ -9399,11 +9101,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminTodosDestroyRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminTodosDestroy(
     requestParameters: AdminApiAdminTodosDestroyRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminTodosDestroy(requestParameters.id, options)
@@ -9415,11 +9116,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminTodosListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminTodosList(
     requestParameters: AdminApiAdminTodosListRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminTodosList(
@@ -9439,11 +9139,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminTodosPartialUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminTodosPartialUpdate(
     requestParameters: AdminApiAdminTodosPartialUpdateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminTodosPartialUpdate(
@@ -9459,11 +9158,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminTodosRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminTodosRetrieve(
     requestParameters: AdminApiAdminTodosRetrieveRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminTodosRetrieve(requestParameters.id, options)
@@ -9475,11 +9173,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminTodosUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminTodosUpdate(
     requestParameters: AdminApiAdminTodosUpdateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminTodosUpdate(
@@ -9495,11 +9192,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminUsersBanCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminUsersBanCreate(
     requestParameters: AdminApiAdminUsersBanCreateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminUsersBanCreate(
@@ -9515,11 +9211,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminUsersBanDestroyRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminUsersBanDestroy(
     requestParameters: AdminApiAdminUsersBanDestroyRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminUsersBanDestroy(requestParameters.id, options)
@@ -9531,11 +9226,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminUsersListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminUsersList(
     requestParameters: AdminApiAdminUsersListRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminUsersList(
@@ -9556,11 +9250,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminUsersPartialUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminUsersPartialUpdate(
     requestParameters: AdminApiAdminUsersPartialUpdateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminUsersPartialUpdate(
@@ -9576,11 +9269,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminUsersRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminUsersRetrieve(
     requestParameters: AdminApiAdminUsersRetrieveRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminUsersRetrieve(requestParameters.id, options)
@@ -9592,11 +9284,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminUsersUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminUsersUpdate(
     requestParameters: AdminApiAdminUsersUpdateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminUsersUpdate(
@@ -9612,11 +9303,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminUsersWorkedOnListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminUsersWorkedOnList(
     requestParameters: AdminApiAdminUsersWorkedOnListRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminUsersWorkedOnList(
@@ -9634,11 +9324,10 @@ export class AdminApi extends BaseAPI {
    * @param {AdminApiAdminVideosListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof AdminApi
    */
   public adminVideosList(
     requestParameters: AdminApiAdminVideosListRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminVideosList(
@@ -9661,9 +9350,6 @@ export class AdminApi extends BaseAPI {
   }
 }
 
-/**
- * @export
- */
 export const AdminRequestsListStatusEnum = {
   NUMBER_0: 0,
   NUMBER_1: 1,
@@ -9678,9 +9364,6 @@ export const AdminRequestsListStatusEnum = {
 } as const;
 export type AdminRequestsListStatusEnum =
   (typeof AdminRequestsListStatusEnum)[keyof typeof AdminRequestsListStatusEnum];
-/**
- * @export
- */
 export const AdminTodosListStatusEnum = {
   NUMBER_1: 1,
   NUMBER_2: 2,
@@ -9688,9 +9371,6 @@ export const AdminTodosListStatusEnum = {
 } as const;
 export type AdminTodosListStatusEnum =
   (typeof AdminTodosListStatusEnum)[keyof typeof AdminTodosListStatusEnum];
-/**
- * @export
- */
 export const AdminVideosListStatusEnum = {
   NUMBER_1: 1,
   NUMBER_2: 2,

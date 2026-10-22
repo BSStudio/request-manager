@@ -12,58 +12,13 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ProjectRequest
- */
 export interface ProjectRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof ProjectRequest
-   */
   end_datetime: string;
-  /**
-   *
-   * @type {number}
-   * @memberof ProjectRequest
-   */
   id: number;
-  /**
-   *
-   * @type {string}
-   * @memberof ProjectRequest
-   */
   place: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ProjectRequest
-   */
   start_datetime: string;
-  /**
-   *
-   * @type {number}
-   * @memberof ProjectRequest
-   */
   status: number;
-  /**
-   *
-   * @type {boolean}
-   * @memberof ProjectRequest
-   */
   status_by_admin: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof ProjectRequest
-   */
   title: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ProjectRequest
-   */
   type: string;
 }

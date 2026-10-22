@@ -12,40 +12,10 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface SessionUser
- */
 export interface SessionUser {
-  /**
-   *
-   * @type {string}
-   * @memberof SessionUser
-   */
   avatar_url: string | null;
-  /**
-   *
-   * @type {Array<string>}
-   * @memberof SessionUser
-   */
   groups: Array<string>;
-  /**
-   *
-   * @type {number}
-   * @memberof SessionUser
-   */
   id: number;
-  /**
-   *
-   * @type {string}
-   * @memberof SessionUser
-   */
   name: string;
-  /**
-   *
-   * @type {string}
-   * @memberof SessionUser
-   */
   role: string;
 }

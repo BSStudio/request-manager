@@ -14,8 +14,6 @@
 
 /**
  * * `1` - Nyitva * `2` - Lezárva * `3` - Elvetve
- * @export
- * @enum {string}
  */
 
 export const StatusEnum = {

@@ -12,100 +12,20 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface RequestAdminUpdateRequest
- */
 export interface RequestAdminUpdateRequest {
-  /**
-   *
-   * @type {any}
-   * @memberof RequestAdminUpdateRequest
-   */
   additional_data?: any;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminUpdateRequest
-   */
   deadline?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminUpdateRequest
-   */
   end_datetime: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminUpdateRequest
-   */
   place: string;
-  /**
-   *
-   * @type {number}
-   * @memberof RequestAdminUpdateRequest
-   */
   project?: number | null;
-  /**
-   *
-   * @type {number}
-   * @memberof RequestAdminUpdateRequest
-   */
   requester?: number;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminUpdateRequest
-   */
   requester_email?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminUpdateRequest
-   */
   requester_first_name?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminUpdateRequest
-   */
   requester_last_name?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminUpdateRequest
-   */
   requester_mobile?: string;
-  /**
-   *
-   * @type {number}
-   * @memberof RequestAdminUpdateRequest
-   */
   responsible?: number | null;
-  /**
-   *
-   * @type {boolean}
-   * @memberof RequestAdminUpdateRequest
-   */
   send_notification?: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminUpdateRequest
-   */
   start_datetime: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminUpdateRequest
-   */
   title: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminUpdateRequest
-   */
   type: string;
 }

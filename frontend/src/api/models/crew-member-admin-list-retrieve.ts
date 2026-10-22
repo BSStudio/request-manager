@@ -14,30 +14,10 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { UserNestedList } from './user-nested-list';
+import type { UserNestedList } from './user-nested-list';
 
-/**
- *
- * @export
- * @interface CrewMemberAdminListRetrieve
- */
 export interface CrewMemberAdminListRetrieve {
-  /**
-   *
-   * @type {number}
-   * @memberof CrewMemberAdminListRetrieve
-   */
   id: number;
-  /**
-   *
-   * @type {UserNestedList}
-   * @memberof CrewMemberAdminListRetrieve
-   */
   member: UserNestedList;
-  /**
-   *
-   * @type {string}
-   * @memberof CrewMemberAdminListRetrieve
-   */
   position: string;
 }

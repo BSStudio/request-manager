@@ -14,39 +14,14 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { PaginatedRequestAdminListListLinks } from './paginated-request-admin-list-list-links';
+import type { PaginatedRequestAdminListListLinks } from './paginated-request-admin-list-list-links';
 // May contain unused imports in some cases
 // @ts-ignore
-import { UserAdminList } from './user-admin-list';
+import type { UserAdminList } from './user-admin-list';
 
-/**
- *
- * @export
- * @interface PaginatedUserAdminListList
- */
 export interface PaginatedUserAdminListList {
-  /**
-   *
-   * @type {number}
-   * @memberof PaginatedUserAdminListList
-   */
   count?: number;
-  /**
-   *
-   * @type {PaginatedRequestAdminListListLinks}
-   * @memberof PaginatedUserAdminListList
-   */
   links?: PaginatedRequestAdminListListLinks;
-  /**
-   *
-   * @type {Array<UserAdminList>}
-   * @memberof PaginatedUserAdminListList
-   */
   results?: Array<UserAdminList>;
-  /**
-   *
-   * @type {number}
-   * @memberof PaginatedUserAdminListList
-   */
   total_pages?: number;
 }

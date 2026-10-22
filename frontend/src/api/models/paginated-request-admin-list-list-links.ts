@@ -12,22 +12,7 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface PaginatedRequestAdminListListLinks
- */
 export interface PaginatedRequestAdminListListLinks {
-  /**
-   *
-   * @type {string}
-   * @memberof PaginatedRequestAdminListListLinks
-   */
   next?: string | null;
-  /**
-   *
-   * @type {string}
-   * @memberof PaginatedRequestAdminListListLinks
-   */
   previous?: string | null;
 }

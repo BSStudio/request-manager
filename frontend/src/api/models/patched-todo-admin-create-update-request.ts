@@ -14,30 +14,10 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { StatusEnum } from './status-enum';
+import type { StatusEnum } from './status-enum';
 
-/**
- *
- * @export
- * @interface PatchedTodoAdminCreateUpdateRequest
- */
 export interface PatchedTodoAdminCreateUpdateRequest {
-  /**
-   *
-   * @type {Array<number>}
-   * @memberof PatchedTodoAdminCreateUpdateRequest
-   */
   assignees?: Array<number>;
-  /**
-   *
-   * @type {string}
-   * @memberof PatchedTodoAdminCreateUpdateRequest
-   */
   description?: string;
-  /**
-   *
-   * @type {StatusEnum}
-   * @memberof PatchedTodoAdminCreateUpdateRequest
-   */
   status?: StatusEnum;
 }

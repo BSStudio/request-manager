@@ -12,22 +12,7 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface PatchedRatingAdminCreateUpdateRequest
- */
 export interface PatchedRatingAdminCreateUpdateRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof PatchedRatingAdminCreateUpdateRequest
-   */
   rating?: number;
-  /**
-   *
-   * @type {string}
-   * @memberof PatchedRatingAdminCreateUpdateRequest
-   */
   review?: string;
 }

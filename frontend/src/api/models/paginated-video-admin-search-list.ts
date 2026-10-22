@@ -14,39 +14,14 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { PaginatedRequestAdminListListLinks } from './paginated-request-admin-list-list-links';
+import type { PaginatedRequestAdminListListLinks } from './paginated-request-admin-list-list-links';
 // May contain unused imports in some cases
 // @ts-ignore
-import { VideoAdminSearch } from './video-admin-search';
+import type { VideoAdminSearch } from './video-admin-search';
 
-/**
- *
- * @export
- * @interface PaginatedVideoAdminSearchList
- */
 export interface PaginatedVideoAdminSearchList {
-  /**
-   *
-   * @type {number}
-   * @memberof PaginatedVideoAdminSearchList
-   */
   count?: number;
-  /**
-   *
-   * @type {PaginatedRequestAdminListListLinks}
-   * @memberof PaginatedVideoAdminSearchList
-   */
   links?: PaginatedRequestAdminListListLinks;
-  /**
-   *
-   * @type {Array<VideoAdminSearch>}
-   * @memberof PaginatedVideoAdminSearchList
-   */
   results?: Array<VideoAdminSearch>;
-  /**
-   *
-   * @type {number}
-   * @memberof PaginatedVideoAdminSearchList
-   */
   total_pages?: number;
 }

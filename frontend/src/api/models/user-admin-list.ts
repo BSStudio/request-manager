@@ -12,46 +12,11 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface UserAdminList
- */
 export interface UserAdminList {
-  /**
-   *
-   * @type {string}
-   * @memberof UserAdminList
-   */
   avatar_url: string;
-  /**
-   *
-   * @type {string}
-   * @memberof UserAdminList
-   */
   email: string;
-  /**
-   *
-   * @type {string}
-   * @memberof UserAdminList
-   */
   full_name: string;
-  /**
-   *
-   * @type {number}
-   * @memberof UserAdminList
-   */
   id: number;
-  /**
-   *
-   * @type {boolean}
-   * @memberof UserAdminList
-   */
   is_staff: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof UserAdminList
-   */
   phone_number: string;
 }

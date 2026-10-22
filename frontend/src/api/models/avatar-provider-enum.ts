@@ -14,8 +14,6 @@
 
 /**
  * * `bss-login` - BSS * `google-oauth2` - Google * `gravatar` - Gravatar * `microsoft-graph` - Microsoft
- * @export
- * @enum {string}
  */
 
 export const AvatarProviderEnum = {

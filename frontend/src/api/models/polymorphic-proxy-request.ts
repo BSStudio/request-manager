@@ -14,14 +14,13 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { RequestAnonymousCreateRequest } from './request-anonymous-create-request';
+import type { RequestAnonymousCreateRequest } from './request-anonymous-create-request';
 // May contain unused imports in some cases
 // @ts-ignore
-import { RequestCreateRequest } from './request-create-request';
+import type { RequestCreateRequest } from './request-create-request';
 
 /**
  * @type PolymorphicProxyRequest
- * @export
  */
 export type PolymorphicProxyRequest =
   RequestAnonymousCreateRequest | RequestCreateRequest;

@@ -14,30 +14,10 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { StatusEnum } from './status-enum';
+import type { StatusEnum } from './status-enum';
 
-/**
- *
- * @export
- * @interface TodoAdminCreateUpdateRequest
- */
 export interface TodoAdminCreateUpdateRequest {
-  /**
-   *
-   * @type {Array<number>}
-   * @memberof TodoAdminCreateUpdateRequest
-   */
   assignees?: Array<number>;
-  /**
-   *
-   * @type {string}
-   * @memberof TodoAdminCreateUpdateRequest
-   */
   description: string;
-  /**
-   *
-   * @type {StatusEnum}
-   * @memberof TodoAdminCreateUpdateRequest
-   */
   status?: StatusEnum;
 }

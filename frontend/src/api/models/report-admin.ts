@@ -14,24 +14,9 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ReportItem } from './report-item';
+import type { ReportItem } from './report-item';
 
-/**
- *
- * @export
- * @interface ReportAdmin
- */
 export interface ReportAdmin {
-  /**
-   *
-   * @type {Array<ReportItem>}
-   * @memberof ReportAdmin
-   */
   requests: Array<ReportItem>;
-  /**
-   *
-   * @type {Array<ReportItem>}
-   * @memberof ReportAdmin
-   */
   videos: Array<ReportItem>;
 }

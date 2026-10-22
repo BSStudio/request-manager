@@ -12,22 +12,7 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface TodoNestedRequestVideo
- */
 export interface TodoNestedRequestVideo {
-  /**
-   *
-   * @type {number}
-   * @memberof TodoNestedRequestVideo
-   */
   id: number;
-  /**
-   *
-   * @type {string}
-   * @memberof TodoNestedRequestVideo
-   */
   title: string;
 }

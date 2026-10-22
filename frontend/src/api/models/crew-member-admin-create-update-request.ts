@@ -12,22 +12,7 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface CrewMemberAdminCreateUpdateRequest
- */
 export interface CrewMemberAdminCreateUpdateRequest {
-  /**
-   *
-   * @type {number}
-   * @memberof CrewMemberAdminCreateUpdateRequest
-   */
   member: number;
-  /**
-   *
-   * @type {string}
-   * @memberof CrewMemberAdminCreateUpdateRequest
-   */
   position: string;
 }

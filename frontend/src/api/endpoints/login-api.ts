@@ -13,7 +13,7 @@
  */
 
 import type { Configuration } from '../configuration';
-import type { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios';
+import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
 import globalAxios from 'axios';
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -28,22 +28,23 @@ import {
   serializeDataIfNeeded,
   toPathString,
   createRequestFunction,
+  replaceWithSerializableTypeIfNeeded,
 } from '../common';
 // @ts-ignore
 import {
   BASE_PATH,
   COLLECTION_FORMATS,
-  RequestArgs,
+  type RequestArgs,
   BaseAPI,
   RequiredError,
+  operationServerMap,
 } from '../base';
 // @ts-ignore
-import { SessionUser } from '../models';
+import type { SessionUser } from '../models';
 // @ts-ignore
-import { SocialLoginRequest } from '../models';
+import type { SocialLoginRequest } from '../models';
 /**
  * LoginApi - axios parameter creator
- * @export
  */
 export const LoginApiAxiosParamCreator = function (
   configuration?: Configuration,
@@ -57,7 +58,7 @@ export const LoginApiAxiosParamCreator = function (
      */
     loginSocialCreate: async (
       socialLoginRequest: SocialLoginRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'socialLoginRequest' is not null or undefined
       assertParamExists(
@@ -82,6 +83,7 @@ export const LoginApiAxiosParamCreator = function (
       const localVarQueryParameter = {} as any;
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -107,7 +109,6 @@ export const LoginApiAxiosParamCreator = function (
 
 /**
  * LoginApi - functional programming interface
- * @export
  */
 export const LoginApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = LoginApiAxiosParamCreator(configuration);
@@ -120,7 +121,7 @@ export const LoginApiFp = function (configuration?: Configuration) {
      */
     async loginSocialCreate(
       socialLoginRequest: SocialLoginRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<SessionUser>
     > {
@@ -129,19 +130,24 @@ export const LoginApiFp = function (configuration?: Configuration) {
           socialLoginRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['LoginApi.loginSocialCreate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
   };
 };
 
 /**
  * LoginApi - factory interface
- * @export
  */
 export const LoginApiFactory = function (
   configuration?: Configuration,
@@ -158,7 +164,7 @@ export const LoginApiFactory = function (
      */
     loginSocialCreate(
       requestParameters: LoginApiLoginSocialCreateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<SessionUser> {
       return localVarFp
         .loginSocialCreate(requestParameters.socialLoginRequest, options)
@@ -169,23 +175,13 @@ export const LoginApiFactory = function (
 
 /**
  * Request parameters for loginSocialCreate operation in LoginApi.
- * @export
- * @interface LoginApiLoginSocialCreateRequest
  */
 export interface LoginApiLoginSocialCreateRequest {
-  /**
-   *
-   * @type {SocialLoginRequest}
-   * @memberof LoginApiLoginSocialCreate
-   */
   readonly socialLoginRequest: SocialLoginRequest;
 }
 
 /**
  * LoginApi - object-oriented interface
- * @export
- * @class LoginApi
- * @extends {BaseAPI}
  */
 export class LoginApi extends BaseAPI {
   /**
@@ -193,11 +189,10 @@ export class LoginApi extends BaseAPI {
    * @param {LoginApiLoginSocialCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof LoginApi
    */
   public loginSocialCreate(
     requestParameters: LoginApiLoginSocialCreateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return LoginApiFp(this.configuration)
       .loginSocialCreate(requestParameters.socialLoginRequest, options)

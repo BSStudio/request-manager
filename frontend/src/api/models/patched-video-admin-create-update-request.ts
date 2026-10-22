@@ -12,28 +12,8 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface PatchedVideoAdminCreateUpdateRequest
- */
 export interface PatchedVideoAdminCreateUpdateRequest {
-  /**
-   *
-   * @type {any}
-   * @memberof PatchedVideoAdminCreateUpdateRequest
-   */
   additional_data?: any;
-  /**
-   *
-   * @type {number}
-   * @memberof PatchedVideoAdminCreateUpdateRequest
-   */
   editor?: number | null;
-  /**
-   *
-   * @type {string}
-   * @memberof PatchedVideoAdminCreateUpdateRequest
-   */
   title?: string;
 }
