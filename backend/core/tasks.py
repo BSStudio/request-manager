@@ -1,9 +1,14 @@
+from datetime import timedelta
 from io import StringIO
 
 from celery import shared_task
 from django.apps import apps
 from django.conf import settings
 from django.core.management import call_command
+from django.utils import timezone
+
+from video_requests.models import Notification
+from video_requests.notifications import RETENTION_DAYS
 
 
 @shared_task
@@ -78,4 +83,8 @@ def scheduled_cleaning():
             history__in=HistoricalTodo.objects.all()
         ).delete()
         call_command("clearsessions", stdout=out)
+        deleted, _ = Notification.objects.filter(
+            created__lt=timezone.now() - timedelta(days=RETENTION_DAYS)
+        ).delete()
+        out.write(f"{deleted} old notifications deleted.\n")
         return out.getvalue()

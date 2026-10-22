@@ -190,6 +190,7 @@ CELERY_IMPORTS = [
     "core.tasks",
     "video_requests.emails",
     "video_requests.mattermost",
+    "video_requests.notifications",
     "video_requests.utilities",
 ]
 CELERY_TIMEZONE = config("TIME_ZONE", default="Europe/Budapest")

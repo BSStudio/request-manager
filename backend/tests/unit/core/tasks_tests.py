@@ -8,7 +8,7 @@ from model_bakery import baker
 
 from core.tasks import scheduled_cleaning
 from tests.factories import make_user
-from video_requests.models import CrewMember, Todo
+from video_requests.models import CrewMember, Notification, Todo
 
 pytestmark = pytest.mark.django_db
 
@@ -47,3 +47,15 @@ def test_cleaning_drops_expired_sessions():
     scheduled_cleaning()
 
     assert list(Session.objects.values_list("session_key", flat=True)) == ["active"]
+
+
+def test_cleaning_drops_notifications_older_than_30_days():
+    now = timezone.now()
+    old, recent = baker.make("video_requests.Notification", _quantity=2)
+    # created is auto_now_add, so it can only be moved after the insert.
+    Notification.objects.filter(pk=old.pk).update(created=now - timedelta(days=31))
+    Notification.objects.filter(pk=recent.pk).update(created=now - timedelta(days=29))
+
+    scheduled_cleaning()
+
+    assert list(Notification.objects.values_list("pk", flat=True)) == [recent.pk]
