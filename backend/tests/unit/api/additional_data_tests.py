@@ -238,6 +238,13 @@ class TestStatusByAdminStamp:
 
         assert cleaned["status_by_admin"]["admin_id"] == admin.id
 
+    def test_clearing_a_status_while_creating_is_dropped(self, admin):
+        cleaned = check_and_remove_unauthorized_additional_data(
+            self.forced(None), admin, None
+        )
+
+        assert "status_by_admin" not in cleaned
+
 
 class TestIsStatusByAdmin:
     def test_true_when_a_status_is_forced(self):

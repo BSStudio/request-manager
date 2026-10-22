@@ -134,6 +134,36 @@ class TestGuardsAreApplied:
             "admin_name": admin_user.get_full_name_eastern_order(),
         }
 
+    def test_an_admin_can_force_a_video_status_while_creating(
+        self, admin_user, api_client, video_request
+    ):
+        login(api_client, admin_user)
+
+        response = api_client.post(
+            reverse(
+                "api:v1:admin:requests:request:video-list",
+                kwargs={"request_pk": video_request.id},
+            ),
+            {
+                "title": "New video",
+                "additional_data": {
+                    "status_by_admin": {
+                        "status": Video.Statuses.PUBLISHED,
+                        "admin_id": 123,
+                        "admin_name": "Random Name",
+                    }
+                },
+            },
+        )
+
+        assert response.status_code == HTTP_201_CREATED
+        assert response.data["status"] == Video.Statuses.PUBLISHED
+        assert response.data["additional_data"]["status_by_admin"] == {
+            "status": Video.Statuses.PUBLISHED,
+            "admin_id": admin_user.id,
+            "admin_name": admin_user.get_full_name_eastern_order(),
+        }
+
 
 class TestForcedStatusOverSeveralRequests:
     """The stamp only moves when the forced status itself changes."""
