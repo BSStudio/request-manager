@@ -12,28 +12,8 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface RatingCreateUpdate
- */
 export interface RatingCreateUpdate {
-  /**
-   *
-   * @type {string}
-   * @memberof RatingCreateUpdate
-   */
   created: string;
-  /**
-   *
-   * @type {number}
-   * @memberof RatingCreateUpdate
-   */
   rating: number;
-  /**
-   *
-   * @type {string}
-   * @memberof RatingCreateUpdate
-   */
   review?: string;
 }

@@ -14,132 +14,32 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { ProjectNested } from './project-nested';
+import type { ProjectNested } from './project-nested';
 // May contain unused imports in some cases
 // @ts-ignore
-import { UserNestedDetail } from './user-nested-detail';
+import type { UserNestedDetail } from './user-nested-detail';
 // May contain unused imports in some cases
 // @ts-ignore
-import { UserNestedList } from './user-nested-list';
+import type { UserNestedList } from './user-nested-list';
 
-/**
- *
- * @export
- * @interface RequestAdminRetrieve
- */
 export interface RequestAdminRetrieve {
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminRetrieve
-   */
   created: string;
-  /**
-   *
-   * @type {Array<UserNestedList>}
-   * @memberof RequestAdminRetrieve
-   */
   crew: Array<UserNestedList>;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminRetrieve
-   */
   deadline: string;
-  /**
-   *
-   * @type {number}
-   * @memberof RequestAdminRetrieve
-   */
   id: number;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminRetrieve
-   */
   start_datetime: string;
-  /**
-   *
-   * @type {number}
-   * @memberof RequestAdminRetrieve
-   */
   status: number;
-  /**
-   *
-   * @type {boolean}
-   * @memberof RequestAdminRetrieve
-   */
   status_by_admin: boolean;
-  /**
-   *
-   * @type {UserNestedDetail}
-   * @memberof RequestAdminRetrieve
-   */
   responsible: UserNestedDetail;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminRetrieve
-   */
   title: string;
-  /**
-   *
-   * @type {number}
-   * @memberof RequestAdminRetrieve
-   */
   video_count: number;
-  /**
-   *
-   * @type {any}
-   * @memberof RequestAdminRetrieve
-   */
   additional_data: any;
-  /**
-   *
-   * @type {number}
-   * @memberof RequestAdminRetrieve
-   */
   comment_count: number;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminRetrieve
-   */
   end_datetime: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminRetrieve
-   */
   place: string;
-  /**
-   *
-   * @type {ProjectNested}
-   * @memberof RequestAdminRetrieve
-   */
   project: ProjectNested | null;
-  /**
-   *
-   * @type {UserNestedDetail}
-   * @memberof RequestAdminRetrieve
-   */
   requester: UserNestedDetail;
-  /**
-   *
-   * @type {UserNestedDetail}
-   * @memberof RequestAdminRetrieve
-   */
   requested_by: UserNestedDetail;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAdminRetrieve
-   */
   type: string;
-  /**
-   *
-   * @type {boolean}
-   * @memberof RequestAdminRetrieve
-   */
   videos_edited: boolean;
 }

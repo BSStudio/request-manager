@@ -14,78 +14,21 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { UserSocialAuth } from './user-social-auth';
+import type { UserSocialAuth } from './user-social-auth';
 
-/**
- *
- * @export
- * @interface User
- */
 export interface User {
-  /**
-   *
-   * @type {any}
-   * @memberof User
-   */
   avatar: any;
-  /**
-   *
-   * @type {string}
-   * @memberof User
-   */
   avatar_url: string | null;
-  /**
-   *
-   * @type {string}
-   * @memberof User
-   */
   email?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof User
-   */
   first_name?: string;
-  /**
-   *
-   * @type {Array<string>}
-   * @memberof User
-   */
   groups: Array<string>;
-  /**
-   *
-   * @type {number}
-   * @memberof User
-   */
   id: number;
-  /**
-   *
-   * @type {string}
-   * @memberof User
-   */
   last_name?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof User
-   */
   phone_number?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof User
-   */
   role: string;
-  /**
-   *
-   * @type {Array<UserSocialAuth>}
-   * @memberof User
-   */
   social_accounts: Array<UserSocialAuth>;
   /**
    * Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.
-   * @type {string}
-   * @memberof User
    */
   username: string;
 }

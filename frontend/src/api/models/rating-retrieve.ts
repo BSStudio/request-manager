@@ -12,28 +12,8 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface RatingRetrieve
- */
 export interface RatingRetrieve {
-  /**
-   *
-   * @type {string}
-   * @memberof RatingRetrieve
-   */
   created: string;
-  /**
-   *
-   * @type {number}
-   * @memberof RatingRetrieve
-   */
   rating: number;
-  /**
-   *
-   * @type {string}
-   * @memberof RatingRetrieve
-   */
   review: string;
 }

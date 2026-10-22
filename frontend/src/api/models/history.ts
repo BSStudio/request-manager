@@ -14,33 +14,13 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { HistoryChanges } from './history-changes';
+import type { HistoryChanges } from './history-changes';
 // May contain unused imports in some cases
 // @ts-ignore
-import { UserNestedList } from './user-nested-list';
+import type { UserNestedList } from './user-nested-list';
 
-/**
- *
- * @export
- * @interface History
- */
 export interface History {
-  /**
-   *
-   * @type {Array<HistoryChanges>}
-   * @memberof History
-   */
   changes: Array<HistoryChanges>;
-  /**
-   *
-   * @type {string}
-   * @memberof History
-   */
   date: string;
-  /**
-   *
-   * @type {UserNestedList}
-   * @memberof History
-   */
   user: UserNestedList;
 }

@@ -5,6 +5,16 @@
     "github>BSStudio/renovate-config:weekly",
     "github>BSStudio/renovate-config:approve-merges"
   ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "description": "The OpenAPI generator JAR that generates the frontend's API client.",
+      "managerFilePatterns": ["/^frontend/openapitools\\.json$/"],
+      "matchStrings": ["\"version\": \"(?<currentValue>[^\"]+)\""],
+      "datasourceTemplate": "maven",
+      "depNameTemplate": "org.openapitools:openapi-generator-cli"
+    }
+  ],
   "packageRules": [
     {
       "description": "Group all minor and patch updates together for uv in /backend.",
@@ -51,6 +61,13 @@
       "matchManagers": ["pep621"],
       "matchPackageNames": ["django"],
       "allowedVersions": "<6.1"
+    },
+    {
+      "description": "A new generator version changes the generated client, which no check regenerates.",
+      "matchDepNames": ["org.openapitools:openapi-generator-cli"],
+      "prBodyNotes": [
+        "Before approving, run `pnpm generate-client` in `frontend/` on this branch and commit the regenerated client."
+      ]
     }
   ]
 }

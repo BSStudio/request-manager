@@ -12,28 +12,8 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface VideoAdminCreateUpdateRequest
- */
 export interface VideoAdminCreateUpdateRequest {
-  /**
-   *
-   * @type {any}
-   * @memberof VideoAdminCreateUpdateRequest
-   */
   additional_data?: any;
-  /**
-   *
-   * @type {number}
-   * @memberof VideoAdminCreateUpdateRequest
-   */
   editor?: number | null;
-  /**
-   *
-   * @type {string}
-   * @memberof VideoAdminCreateUpdateRequest
-   */
   title: string;
 }

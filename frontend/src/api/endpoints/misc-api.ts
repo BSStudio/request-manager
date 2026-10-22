@@ -13,7 +13,7 @@
  */
 
 import type { Configuration } from '../configuration';
-import type { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios';
+import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
 import globalAxios from 'axios';
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -28,22 +28,23 @@ import {
   serializeDataIfNeeded,
   toPathString,
   createRequestFunction,
+  replaceWithSerializableTypeIfNeeded,
 } from '../common';
 // @ts-ignore
 import {
   BASE_PATH,
   COLLECTION_FORMATS,
-  RequestArgs,
+  type RequestArgs,
   BaseAPI,
   RequiredError,
+  operationServerMap,
 } from '../base';
 // @ts-ignore
-import { Contact } from '../models';
+import type { Contact } from '../models';
 // @ts-ignore
-import { ContactRequest } from '../models';
+import type { ContactRequest } from '../models';
 /**
  * MiscApi - axios parameter creator
- * @export
  */
 export const MiscApiAxiosParamCreator = function (
   configuration?: Configuration,
@@ -57,7 +58,7 @@ export const MiscApiAxiosParamCreator = function (
      */
     miscContactCreate: async (
       contactRequest: ContactRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'contactRequest' is not null or undefined
       assertParamExists('miscContactCreate', 'contactRequest', contactRequest);
@@ -87,6 +88,7 @@ export const MiscApiAxiosParamCreator = function (
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -112,7 +114,6 @@ export const MiscApiAxiosParamCreator = function (
 
 /**
  * MiscApi - functional programming interface
- * @export
  */
 export const MiscApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = MiscApiAxiosParamCreator(configuration);
@@ -125,7 +126,7 @@ export const MiscApiFp = function (configuration?: Configuration) {
      */
     async miscContactCreate(
       contactRequest: ContactRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<Contact>
     > {
@@ -134,19 +135,24 @@ export const MiscApiFp = function (configuration?: Configuration) {
           contactRequest,
           options,
         );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['MiscApi.miscContactCreate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
   };
 };
 
 /**
  * MiscApi - factory interface
- * @export
  */
 export const MiscApiFactory = function (
   configuration?: Configuration,
@@ -163,7 +169,7 @@ export const MiscApiFactory = function (
      */
     miscContactCreate(
       requestParameters: MiscApiMiscContactCreateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Contact> {
       return localVarFp
         .miscContactCreate(requestParameters.contactRequest, options)
@@ -174,23 +180,13 @@ export const MiscApiFactory = function (
 
 /**
  * Request parameters for miscContactCreate operation in MiscApi.
- * @export
- * @interface MiscApiMiscContactCreateRequest
  */
 export interface MiscApiMiscContactCreateRequest {
-  /**
-   *
-   * @type {ContactRequest}
-   * @memberof MiscApiMiscContactCreate
-   */
   readonly contactRequest: ContactRequest;
 }
 
 /**
  * MiscApi - object-oriented interface
- * @export
- * @class MiscApi
- * @extends {BaseAPI}
  */
 export class MiscApi extends BaseAPI {
   /**
@@ -198,11 +194,10 @@ export class MiscApi extends BaseAPI {
    * @param {MiscApiMiscContactCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof MiscApi
    */
   public miscContactCreate(
     requestParameters: MiscApiMiscContactCreateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return MiscApiFp(this.configuration)
       .miscContactCreate(requestParameters.contactRequest, options)

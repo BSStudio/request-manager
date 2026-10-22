@@ -12,34 +12,9 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface ContactRequest
- */
 export interface ContactRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof ContactRequest
-   */
   captcha: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ContactRequest
-   */
   email: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ContactRequest
-   */
   message: string;
-  /**
-   *
-   * @type {string}
-   * @memberof ContactRequest
-   */
   name: string;
 }

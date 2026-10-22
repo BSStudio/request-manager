@@ -13,7 +13,7 @@
  */
 
 import type { Configuration } from '../configuration';
-import type { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios';
+import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
 import globalAxios from 'axios';
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -28,18 +28,19 @@ import {
   serializeDataIfNeeded,
   toPathString,
   createRequestFunction,
+  replaceWithSerializableTypeIfNeeded,
 } from '../common';
 // @ts-ignore
 import {
   BASE_PATH,
   COLLECTION_FORMATS,
-  RequestArgs,
+  type RequestArgs,
   BaseAPI,
   RequiredError,
+  operationServerMap,
 } from '../base';
 /**
  * LogoutApi - axios parameter creator
- * @export
  */
 export const LogoutApiAxiosParamCreator = function (
   configuration?: Configuration,
@@ -51,7 +52,7 @@ export const LogoutApiAxiosParamCreator = function (
      * @throws {RequiredError}
      */
     logoutCreate: async (
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/v1/logout`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -97,7 +98,6 @@ export const LogoutApiAxiosParamCreator = function (
 
 /**
  * LogoutApi - functional programming interface
- * @export
  */
 export const LogoutApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = LogoutApiAxiosParamCreator(configuration);
@@ -108,25 +108,30 @@ export const LogoutApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async logoutCreate(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.logoutCreate(options);
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['LogoutApi.logoutCreate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
   };
 };
 
 /**
  * LogoutApi - factory interface
- * @export
  */
 export const LogoutApiFactory = function (
   configuration?: Configuration,
@@ -140,7 +145,7 @@ export const LogoutApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    logoutCreate(options?: AxiosRequestConfig): AxiosPromise<void> {
+    logoutCreate(options?: RawAxiosRequestConfig): AxiosPromise<void> {
       return localVarFp
         .logoutCreate(options)
         .then((request) => request(axios, basePath));
@@ -150,18 +155,14 @@ export const LogoutApiFactory = function (
 
 /**
  * LogoutApi - object-oriented interface
- * @export
- * @class LogoutApi
- * @extends {BaseAPI}
  */
 export class LogoutApi extends BaseAPI {
   /**
    *
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof LogoutApi
    */
-  public logoutCreate(options?: AxiosRequestConfig) {
+  public logoutCreate(options?: RawAxiosRequestConfig) {
     return LogoutApiFp(this.configuration)
       .logoutCreate(options)
       .then((request) => request(this.axios, this.basePath));

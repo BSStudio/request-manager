@@ -12,22 +12,7 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface OAuth2ConnectRequest
- */
 export interface OAuth2ConnectRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof OAuth2ConnectRequest
-   */
   code: string;
-  /**
-   *
-   * @type {string}
-   * @memberof OAuth2ConnectRequest
-   */
   nonce: string;
 }

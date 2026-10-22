@@ -12,28 +12,8 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface Contact
- */
 export interface Contact {
-  /**
-   *
-   * @type {string}
-   * @memberof Contact
-   */
   email: string;
-  /**
-   *
-   * @type {string}
-   * @memberof Contact
-   */
   message: string;
-  /**
-   *
-   * @type {string}
-   * @memberof Contact
-   */
   name: string;
 }

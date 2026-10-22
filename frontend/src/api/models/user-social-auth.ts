@@ -12,22 +12,7 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface UserSocialAuth
- */
 export interface UserSocialAuth {
-  /**
-   *
-   * @type {string}
-   * @memberof UserSocialAuth
-   */
   provider: string;
-  /**
-   *
-   * @type {string}
-   * @memberof UserSocialAuth
-   */
   uid: string;
 }

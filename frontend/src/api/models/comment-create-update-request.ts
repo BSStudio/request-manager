@@ -12,16 +12,6 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface CommentCreateUpdateRequest
- */
 export interface CommentCreateUpdateRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof CommentCreateUpdateRequest
-   */
   text: string;
 }

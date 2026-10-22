@@ -14,39 +14,14 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { PaginatedRequestAdminListListLinks } from './paginated-request-admin-list-list-links';
+import type { PaginatedRequestAdminListListLinks } from './paginated-request-admin-list-list-links';
 // May contain unused imports in some cases
 // @ts-ignore
-import { TodoAdminListRetrieve } from './todo-admin-list-retrieve';
+import type { TodoAdminListRetrieve } from './todo-admin-list-retrieve';
 
-/**
- *
- * @export
- * @interface PaginatedTodoAdminListRetrieveList
- */
 export interface PaginatedTodoAdminListRetrieveList {
-  /**
-   *
-   * @type {number}
-   * @memberof PaginatedTodoAdminListRetrieveList
-   */
   count?: number;
-  /**
-   *
-   * @type {PaginatedRequestAdminListListLinks}
-   * @memberof PaginatedTodoAdminListRetrieveList
-   */
   links?: PaginatedRequestAdminListListLinks;
-  /**
-   *
-   * @type {Array<TodoAdminListRetrieve>}
-   * @memberof PaginatedTodoAdminListRetrieveList
-   */
   results?: Array<TodoAdminListRetrieve>;
-  /**
-   *
-   * @type {number}
-   * @memberof PaginatedTodoAdminListRetrieveList
-   */
   total_pages?: number;
 }

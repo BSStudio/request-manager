@@ -12,76 +12,16 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface RequestAnonymousCreateRequest
- */
 export interface RequestAnonymousCreateRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAnonymousCreateRequest
-   */
   captcha: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAnonymousCreateRequest
-   */
   comment?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAnonymousCreateRequest
-   */
   end_datetime: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAnonymousCreateRequest
-   */
   place: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAnonymousCreateRequest
-   */
   requester_first_name: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAnonymousCreateRequest
-   */
   requester_email: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAnonymousCreateRequest
-   */
   requester_last_name: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAnonymousCreateRequest
-   */
   requester_mobile: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAnonymousCreateRequest
-   */
   start_datetime: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAnonymousCreateRequest
-   */
   title: string;
-  /**
-   *
-   * @type {string}
-   * @memberof RequestAnonymousCreateRequest
-   */
   type: string;
 }

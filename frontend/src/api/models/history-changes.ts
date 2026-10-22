@@ -12,28 +12,8 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface HistoryChanges
- */
 export interface HistoryChanges {
-  /**
-   *
-   * @type {string}
-   * @memberof HistoryChanges
-   */
   field: string;
-  /**
-   *
-   * @type {string}
-   * @memberof HistoryChanges
-   */
   new: string;
-  /**
-   *
-   * @type {string}
-   * @memberof HistoryChanges
-   */
   old: string;
 }

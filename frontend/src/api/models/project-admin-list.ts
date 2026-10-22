@@ -14,48 +14,13 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { UserNestedList } from './user-nested-list';
+import type { UserNestedList } from './user-nested-list';
 
-/**
- *
- * @export
- * @interface ProjectAdminList
- */
 export interface ProjectAdminList {
-  /**
-   *
-   * @type {string}
-   * @memberof ProjectAdminList
-   */
   first_start: string | null;
-  /**
-   *
-   * @type {number}
-   * @memberof ProjectAdminList
-   */
   id: number;
-  /**
-   *
-   * @type {string}
-   * @memberof ProjectAdminList
-   */
   last_end: string | null;
-  /**
-   *
-   * @type {string}
-   * @memberof ProjectAdminList
-   */
   name: string;
-  /**
-   *
-   * @type {number}
-   * @memberof ProjectAdminList
-   */
   request_count: number;
-  /**
-   *
-   * @type {UserNestedList}
-   * @memberof ProjectAdminList
-   */
   responsible: UserNestedList | null;
 }

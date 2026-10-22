@@ -14,36 +14,11 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { UserNestedList } from './user-nested-list';
+import type { UserNestedList } from './user-nested-list';
 
-/**
- *
- * @export
- * @interface CommentListRetrieve
- */
 export interface CommentListRetrieve {
-  /**
-   *
-   * @type {UserNestedList}
-   * @memberof CommentListRetrieve
-   */
   author: UserNestedList;
-  /**
-   *
-   * @type {string}
-   * @memberof CommentListRetrieve
-   */
   created: string;
-  /**
-   *
-   * @type {number}
-   * @memberof CommentListRetrieve
-   */
   id: number;
-  /**
-   *
-   * @type {string}
-   * @memberof CommentListRetrieve
-   */
   text: string;
 }

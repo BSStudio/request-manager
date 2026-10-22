@@ -12,46 +12,11 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface UserNestedDetail
- */
 export interface UserNestedDetail {
-  /**
-   *
-   * @type {string}
-   * @memberof UserNestedDetail
-   */
   avatar_url: string;
-  /**
-   *
-   * @type {string}
-   * @memberof UserNestedDetail
-   */
   email: string;
-  /**
-   *
-   * @type {string}
-   * @memberof UserNestedDetail
-   */
   full_name: string;
-  /**
-   *
-   * @type {number}
-   * @memberof UserNestedDetail
-   */
   id: number;
-  /**
-   *
-   * @type {boolean}
-   * @memberof UserNestedDetail
-   */
   is_staff: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof UserNestedDetail
-   */
   phone_number: string;
 }

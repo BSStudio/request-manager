@@ -12,100 +12,20 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface PatchedRequestAdminUpdateRequest
- */
 export interface PatchedRequestAdminUpdateRequest {
-  /**
-   *
-   * @type {any}
-   * @memberof PatchedRequestAdminUpdateRequest
-   */
   additional_data?: any;
-  /**
-   *
-   * @type {string}
-   * @memberof PatchedRequestAdminUpdateRequest
-   */
   deadline?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof PatchedRequestAdminUpdateRequest
-   */
   end_datetime?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof PatchedRequestAdminUpdateRequest
-   */
   place?: string;
-  /**
-   *
-   * @type {number}
-   * @memberof PatchedRequestAdminUpdateRequest
-   */
   project?: number | null;
-  /**
-   *
-   * @type {number}
-   * @memberof PatchedRequestAdminUpdateRequest
-   */
   requester?: number;
-  /**
-   *
-   * @type {string}
-   * @memberof PatchedRequestAdminUpdateRequest
-   */
   requester_email?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof PatchedRequestAdminUpdateRequest
-   */
   requester_first_name?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof PatchedRequestAdminUpdateRequest
-   */
   requester_last_name?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof PatchedRequestAdminUpdateRequest
-   */
   requester_mobile?: string;
-  /**
-   *
-   * @type {number}
-   * @memberof PatchedRequestAdminUpdateRequest
-   */
   responsible?: number | null;
-  /**
-   *
-   * @type {boolean}
-   * @memberof PatchedRequestAdminUpdateRequest
-   */
   send_notification?: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof PatchedRequestAdminUpdateRequest
-   */
   start_datetime?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof PatchedRequestAdminUpdateRequest
-   */
   title?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof PatchedRequestAdminUpdateRequest
-   */
   type?: string;
 }

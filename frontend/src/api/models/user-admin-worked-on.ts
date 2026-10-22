@@ -12,34 +12,9 @@
  * Do not edit the class manually.
  */
 
-/**
- *
- * @export
- * @interface UserAdminWorkedOn
- */
 export interface UserAdminWorkedOn {
-  /**
-   *
-   * @type {string}
-   * @memberof UserAdminWorkedOn
-   */
   date: string;
-  /**
-   *
-   * @type {number}
-   * @memberof UserAdminWorkedOn
-   */
   id: number;
-  /**
-   *
-   * @type {string}
-   * @memberof UserAdminWorkedOn
-   */
   position: string;
-  /**
-   *
-   * @type {string}
-   * @memberof UserAdminWorkedOn
-   */
   title: string;
 }

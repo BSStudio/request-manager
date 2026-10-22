@@ -14,78 +14,18 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { UserNestedList } from './user-nested-list';
+import type { UserNestedList } from './user-nested-list';
 
-/**
- *
- * @export
- * @interface VideoAdminSearch
- */
 export interface VideoAdminSearch {
-  /**
-   *
-   * @type {number}
-   * @memberof VideoAdminSearch
-   */
   avg_rating: number;
-  /**
-   *
-   * @type {string}
-   * @memberof VideoAdminSearch
-   */
   edited_at: string | null;
-  /**
-   *
-   * @type {UserNestedList}
-   * @memberof VideoAdminSearch
-   */
   editor: UserNestedList;
-  /**
-   *
-   * @type {number}
-   * @memberof VideoAdminSearch
-   */
   id: number;
-  /**
-   *
-   * @type {string}
-   * @memberof VideoAdminSearch
-   */
   last_aired: string;
-  /**
-   *
-   * @type {number}
-   * @memberof VideoAdminSearch
-   */
   length: number;
-  /**
-   *
-   * @type {number}
-   * @memberof VideoAdminSearch
-   */
   request_id: number;
-  /**
-   *
-   * @type {string}
-   * @memberof VideoAdminSearch
-   */
   request_start_datetime: string;
-  /**
-   *
-   * @type {number}
-   * @memberof VideoAdminSearch
-   */
   status: number;
-  /**
-   *
-   * @type {boolean}
-   * @memberof VideoAdminSearch
-   */
   status_by_admin: boolean;
-  /**
-   *
-   * @type {string}
-   * @memberof VideoAdminSearch
-   */
   title: string;
 }

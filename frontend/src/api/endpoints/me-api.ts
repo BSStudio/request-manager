@@ -13,7 +13,7 @@
  */
 
 import type { Configuration } from '../configuration';
-import type { AxiosPromise, AxiosInstance, AxiosRequestConfig } from 'axios';
+import type { AxiosPromise, AxiosInstance, RawAxiosRequestConfig } from 'axios';
 import globalAxios from 'axios';
 // Some imports not used depending on template conditions
 // @ts-ignore
@@ -28,28 +28,29 @@ import {
   serializeDataIfNeeded,
   toPathString,
   createRequestFunction,
+  replaceWithSerializableTypeIfNeeded,
 } from '../common';
 // @ts-ignore
 import {
   BASE_PATH,
   COLLECTION_FORMATS,
-  RequestArgs,
+  type RequestArgs,
   BaseAPI,
   RequiredError,
+  operationServerMap,
 } from '../base';
 // @ts-ignore
-import { OAuth2ConnectRequest } from '../models';
+import type { OAuth2ConnectRequest } from '../models';
 // @ts-ignore
-import { PatchedUserRequest } from '../models';
+import type { PatchedUserRequest } from '../models';
 // @ts-ignore
-import { User } from '../models';
+import type { User } from '../models';
 // @ts-ignore
-import { UserAdminWorkedOn } from '../models';
+import type { UserAdminWorkedOn } from '../models';
 // @ts-ignore
-import { UserRequest } from '../models';
+import type { UserRequest } from '../models';
 /**
  * MeApi - axios parameter creator
- * @export
  */
 export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
@@ -61,7 +62,7 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
      */
     mePartialUpdate: async (
       patchedUserRequest?: PatchedUserRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/v1/me`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -89,6 +90,7 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -115,7 +117,7 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     meRetrieve: async (
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/v1/me`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -142,6 +144,8 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
 
       // authentication cookieAuth required
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -166,7 +170,7 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
     meSocialCreate: async (
       provider: string,
       oAuth2ConnectRequest: OAuth2ConnectRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'provider' is not null or undefined
       assertParamExists('meSocialCreate', 'provider', provider);
@@ -177,7 +181,7 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
         oAuth2ConnectRequest,
       );
       const localVarPath = `/api/v1/me/social/{provider}`.replace(
-        `{${'provider'}}`,
+        '{provider}',
         encodeURIComponent(String(provider)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -233,12 +237,12 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
      */
     meSocialDestroy: async (
       provider: string,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       // verify required parameter 'provider' is not null or undefined
       assertParamExists('meSocialDestroy', 'provider', provider);
       const localVarPath = `/api/v1/me/social/{provider}`.replace(
-        `{${'provider'}}`,
+        '{provider}',
         encodeURIComponent(String(provider)),
       );
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -287,7 +291,7 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
      */
     meUpdate: async (
       userRequest?: UserRequest,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/v1/me`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -315,6 +319,7 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
       // authentication cookieAuth required
 
       localVarHeaderParameter['Content-Type'] = 'application/json';
+      localVarHeaderParameter['Accept'] = 'application/json';
 
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
@@ -347,7 +352,7 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
       dateAfter?: string,
       dateBefore?: string,
       isResponsible?: boolean,
-      options: AxiosRequestConfig = {},
+      options: RawAxiosRequestConfig = {},
     ): Promise<RequestArgs> => {
       const localVarPath = `/api/v1/me/worked_on`;
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -392,6 +397,8 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
         localVarQueryParameter['is_responsible'] = isResponsible;
       }
 
+      localVarHeaderParameter['Accept'] = 'application/json';
+
       setSearchParams(localVarUrlObj, localVarQueryParameter);
       let headersFromBaseOptions =
         baseOptions && baseOptions.headers ? baseOptions.headers : {};
@@ -411,7 +418,6 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
 
 /**
  * MeApi - functional programming interface
- * @export
  */
 export const MeApiFp = function (configuration?: Configuration) {
   const localVarAxiosParamCreator = MeApiAxiosParamCreator(configuration);
@@ -424,7 +430,7 @@ export const MeApiFp = function (configuration?: Configuration) {
      */
     async mePartialUpdate(
       patchedUserRequest?: PatchedUserRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>
     > {
@@ -432,12 +438,18 @@ export const MeApiFp = function (configuration?: Configuration) {
         patchedUserRequest,
         options,
       );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['MeApi.mePartialUpdate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -445,18 +457,23 @@ export const MeApiFp = function (configuration?: Configuration) {
      * @throws {RequiredError}
      */
     async meRetrieve(
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>
     > {
       const localVarAxiosArgs =
         await localVarAxiosParamCreator.meRetrieve(options);
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['MeApi.meRetrieve']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -468,7 +485,7 @@ export const MeApiFp = function (configuration?: Configuration) {
     async meSocialCreate(
       provider: string,
       oAuth2ConnectRequest: OAuth2ConnectRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
     > {
@@ -477,12 +494,18 @@ export const MeApiFp = function (configuration?: Configuration) {
         oAuth2ConnectRequest,
         options,
       );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['MeApi.meSocialCreate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -492,7 +515,7 @@ export const MeApiFp = function (configuration?: Configuration) {
      */
     async meSocialDestroy(
       provider: string,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
     > {
@@ -500,12 +523,18 @@ export const MeApiFp = function (configuration?: Configuration) {
         provider,
         options,
       );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['MeApi.meSocialDestroy']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -515,7 +544,7 @@ export const MeApiFp = function (configuration?: Configuration) {
      */
     async meUpdate(
       userRequest?: UserRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<User>
     > {
@@ -523,12 +552,17 @@ export const MeApiFp = function (configuration?: Configuration) {
         userRequest,
         options,
       );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['MeApi.meUpdate']?.[localVarOperationServerIndex]
+          ?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
     /**
      *
@@ -542,7 +576,7 @@ export const MeApiFp = function (configuration?: Configuration) {
       dateAfter?: string,
       dateBefore?: string,
       isResponsible?: boolean,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): Promise<
       (
         axios?: AxiosInstance,
@@ -555,19 +589,24 @@ export const MeApiFp = function (configuration?: Configuration) {
         isResponsible,
         options,
       );
-      return createRequestFunction(
-        localVarAxiosArgs,
-        globalAxios,
-        BASE_PATH,
-        configuration,
-      );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['MeApi.meWorkedOnList']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
     },
   };
 };
 
 /**
  * MeApi - factory interface
- * @export
  */
 export const MeApiFactory = function (
   configuration?: Configuration,
@@ -584,7 +623,7 @@ export const MeApiFactory = function (
      */
     mePartialUpdate(
       requestParameters: MeApiMePartialUpdateRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<User> {
       return localVarFp
         .mePartialUpdate(requestParameters.patchedUserRequest, options)
@@ -595,7 +634,7 @@ export const MeApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    meRetrieve(options?: AxiosRequestConfig): AxiosPromise<User> {
+    meRetrieve(options?: RawAxiosRequestConfig): AxiosPromise<User> {
       return localVarFp
         .meRetrieve(options)
         .then((request) => request(axios, basePath));
@@ -608,7 +647,7 @@ export const MeApiFactory = function (
      */
     meSocialCreate(
       requestParameters: MeApiMeSocialCreateRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .meSocialCreate(
@@ -626,7 +665,7 @@ export const MeApiFactory = function (
      */
     meSocialDestroy(
       requestParameters: MeApiMeSocialDestroyRequest,
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
         .meSocialDestroy(requestParameters.provider, options)
@@ -640,7 +679,7 @@ export const MeApiFactory = function (
      */
     meUpdate(
       requestParameters: MeApiMeUpdateRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<User> {
       return localVarFp
         .meUpdate(requestParameters.userRequest, options)
@@ -654,7 +693,7 @@ export const MeApiFactory = function (
      */
     meWorkedOnList(
       requestParameters: MeApiMeWorkedOnListRequest = {},
-      options?: AxiosRequestConfig,
+      options?: RawAxiosRequestConfig,
     ): AxiosPromise<Array<UserAdminWorkedOn>> {
       return localVarFp
         .meWorkedOnList(
@@ -670,100 +709,56 @@ export const MeApiFactory = function (
 
 /**
  * Request parameters for mePartialUpdate operation in MeApi.
- * @export
- * @interface MeApiMePartialUpdateRequest
  */
 export interface MeApiMePartialUpdateRequest {
-  /**
-   *
-   * @type {PatchedUserRequest}
-   * @memberof MeApiMePartialUpdate
-   */
   readonly patchedUserRequest?: PatchedUserRequest;
 }
 
 /**
  * Request parameters for meSocialCreate operation in MeApi.
- * @export
- * @interface MeApiMeSocialCreateRequest
  */
 export interface MeApiMeSocialCreateRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof MeApiMeSocialCreate
-   */
   readonly provider: string;
 
-  /**
-   *
-   * @type {OAuth2ConnectRequest}
-   * @memberof MeApiMeSocialCreate
-   */
   readonly oAuth2ConnectRequest: OAuth2ConnectRequest;
 }
 
 /**
  * Request parameters for meSocialDestroy operation in MeApi.
- * @export
- * @interface MeApiMeSocialDestroyRequest
  */
 export interface MeApiMeSocialDestroyRequest {
-  /**
-   *
-   * @type {string}
-   * @memberof MeApiMeSocialDestroy
-   */
   readonly provider: string;
 }
 
 /**
  * Request parameters for meUpdate operation in MeApi.
- * @export
- * @interface MeApiMeUpdateRequest
  */
 export interface MeApiMeUpdateRequest {
-  /**
-   *
-   * @type {UserRequest}
-   * @memberof MeApiMeUpdate
-   */
   readonly userRequest?: UserRequest;
 }
 
 /**
  * Request parameters for meWorkedOnList operation in MeApi.
- * @export
- * @interface MeApiMeWorkedOnListRequest
  */
 export interface MeApiMeWorkedOnListRequest {
   /**
    * Default is 20 weeks before date_before.
-   * @type {string}
-   * @memberof MeApiMeWorkedOnList
    */
   readonly dateAfter?: string;
 
   /**
    * Default is today.
-   * @type {string}
-   * @memberof MeApiMeWorkedOnList
    */
   readonly dateBefore?: string;
 
   /**
    * Default is True.
-   * @type {boolean}
-   * @memberof MeApiMeWorkedOnList
    */
   readonly isResponsible?: boolean;
 }
 
 /**
  * MeApi - object-oriented interface
- * @export
- * @class MeApi
- * @extends {BaseAPI}
  */
 export class MeApi extends BaseAPI {
   /**
@@ -771,11 +766,10 @@ export class MeApi extends BaseAPI {
    * @param {MeApiMePartialUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof MeApi
    */
   public mePartialUpdate(
     requestParameters: MeApiMePartialUpdateRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return MeApiFp(this.configuration)
       .mePartialUpdate(requestParameters.patchedUserRequest, options)
@@ -786,9 +780,8 @@ export class MeApi extends BaseAPI {
    *
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof MeApi
    */
-  public meRetrieve(options?: AxiosRequestConfig) {
+  public meRetrieve(options?: RawAxiosRequestConfig) {
     return MeApiFp(this.configuration)
       .meRetrieve(options)
       .then((request) => request(this.axios, this.basePath));
@@ -799,11 +792,10 @@ export class MeApi extends BaseAPI {
    * @param {MeApiMeSocialCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof MeApi
    */
   public meSocialCreate(
     requestParameters: MeApiMeSocialCreateRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return MeApiFp(this.configuration)
       .meSocialCreate(
@@ -819,11 +811,10 @@ export class MeApi extends BaseAPI {
    * @param {MeApiMeSocialDestroyRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof MeApi
    */
   public meSocialDestroy(
     requestParameters: MeApiMeSocialDestroyRequest,
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return MeApiFp(this.configuration)
       .meSocialDestroy(requestParameters.provider, options)
@@ -835,11 +826,10 @@ export class MeApi extends BaseAPI {
    * @param {MeApiMeUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof MeApi
    */
   public meUpdate(
     requestParameters: MeApiMeUpdateRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return MeApiFp(this.configuration)
       .meUpdate(requestParameters.userRequest, options)
@@ -851,11 +841,10 @@ export class MeApi extends BaseAPI {
    * @param {MeApiMeWorkedOnListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
-   * @memberof MeApi
    */
   public meWorkedOnList(
     requestParameters: MeApiMeWorkedOnListRequest = {},
-    options?: AxiosRequestConfig,
+    options?: RawAxiosRequestConfig,
   ) {
     return MeApiFp(this.configuration)
       .meWorkedOnList(

@@ -14,42 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { AvatarProviderEnum } from './avatar-provider-enum';
+import type { AvatarProviderEnum } from './avatar-provider-enum';
 
-/**
- *
- * @export
- * @interface UserAdminRetrieveUpdateRequest
- */
 export interface UserAdminRetrieveUpdateRequest {
-  /**
-   *
-   * @type {AvatarProviderEnum}
-   * @memberof UserAdminRetrieveUpdateRequest
-   */
   avatar_provider?: AvatarProviderEnum;
-  /**
-   *
-   * @type {string}
-   * @memberof UserAdminRetrieveUpdateRequest
-   */
   email?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof UserAdminRetrieveUpdateRequest
-   */
   first_name?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof UserAdminRetrieveUpdateRequest
-   */
   last_name?: string;
-  /**
-   *
-   * @type {string}
-   * @memberof UserAdminRetrieveUpdateRequest
-   */
   phone_number?: string;
 }

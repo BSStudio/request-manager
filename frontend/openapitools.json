@@ -13,10 +13,14 @@
         },
         "generatorName": "typescript-axios",
         "glob": "../backend/schema.yaml",
+        "globalProperty": {
+          "apiDocs": false,
+          "modelDocs": false
+        },
         "output": "./src/api/"
       }
     },
-    "version": "7.0.0"
+    "version": "7.26.0"
   },
   "spaces": 2
 }

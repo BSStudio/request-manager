@@ -14,42 +14,12 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { UserNestedList } from './user-nested-list';
+import type { UserNestedList } from './user-nested-list';
 
-/**
- *
- * @export
- * @interface RatingAdminCreateUpdate
- */
 export interface RatingAdminCreateUpdate {
-  /**
-   *
-   * @type {UserNestedList}
-   * @memberof RatingAdminCreateUpdate
-   */
   author: UserNestedList;
-  /**
-   *
-   * @type {string}
-   * @memberof RatingAdminCreateUpdate
-   */
   created: string;
-  /**
-   *
-   * @type {number}
-   * @memberof RatingAdminCreateUpdate
-   */
   id: number;
-  /**
-   *
-   * @type {number}
-   * @memberof RatingAdminCreateUpdate
-   */
   rating: number;
-  /**
-   *
-   * @type {string}
-   * @memberof RatingAdminCreateUpdate
-   */
   review?: string;
 }

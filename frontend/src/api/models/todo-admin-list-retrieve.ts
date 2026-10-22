@@ -14,63 +14,18 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import { TodoNestedRequestVideo } from './todo-nested-request-video';
+import type { TodoNestedRequestVideo } from './todo-nested-request-video';
 // May contain unused imports in some cases
 // @ts-ignore
-import { UserNestedList } from './user-nested-list';
+import type { UserNestedList } from './user-nested-list';
 
-/**
- *
- * @export
- * @interface TodoAdminListRetrieve
- */
 export interface TodoAdminListRetrieve {
-  /**
-   *
-   * @type {Array<UserNestedList>}
-   * @memberof TodoAdminListRetrieve
-   */
   assignees: Array<UserNestedList>;
-  /**
-   *
-   * @type {string}
-   * @memberof TodoAdminListRetrieve
-   */
   created: string;
-  /**
-   *
-   * @type {UserNestedList}
-   * @memberof TodoAdminListRetrieve
-   */
   creator: UserNestedList;
-  /**
-   *
-   * @type {string}
-   * @memberof TodoAdminListRetrieve
-   */
   description: string;
-  /**
-   *
-   * @type {number}
-   * @memberof TodoAdminListRetrieve
-   */
   id: number;
-  /**
-   *
-   * @type {TodoNestedRequestVideo}
-   * @memberof TodoAdminListRetrieve
-   */
   request: TodoNestedRequestVideo;
-  /**
-   *
-   * @type {number}
-   * @memberof TodoAdminListRetrieve
-   */
   status: number;
-  /**
-   *
-   * @type {TodoNestedRequestVideo}
-   * @memberof TodoAdminListRetrieve
-   */
   video: TodoNestedRequestVideo;
 }
