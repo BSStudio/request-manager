@@ -28,6 +28,22 @@ class SentryUserMiddleware:
         return event
 
 
+class PWASessionMiddleware:
+    def __init__(self, get_response):
+        self.get_response = get_response
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        # After the view, so logging in counts and logging out does not
+        # save the emptied session again.
+        if (
+            request.headers.get("X-Display-Mode") == "standalone"
+            and request.user.is_authenticated
+        ):
+            request.session.set_expiry(settings.PWA_SESSION_COOKIE_AGE)
+        return response
+
+
 class RequestLoggingMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response

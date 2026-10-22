@@ -1,4 +1,5 @@
 import pytest
+from django.conf import settings
 from rest_framework.reverse import reverse
 from rest_framework.status import (
     HTTP_200_OK,
@@ -16,14 +17,20 @@ from tests.helpers.oauth2_providers import ALL_PROVIDERS, GOOGLE
 pytestmark = pytest.mark.django_db
 
 ME_URL = reverse("api:v1:me:me-detail")
+INSTALLED_APP = {"X-Display-Mode": "standalone"}
 
 
-def log_in(client, mock_provider, provider=GOOGLE):
+def log_in(client, mock_provider, provider=GOOGLE, **extra):
     mocked = mock_provider(provider)
     return client.post(
         reverse("api:v1:login:social"),
         {"provider": mocked.name, "code": mocked.code(), "nonce": mocked.browser_nonce},
+        **extra,
     )
+
+
+def session_cookie_age(response):
+    return response.cookies[settings.SESSION_COOKIE_NAME]["max-age"]
 
 
 def logged_in_user():
@@ -99,16 +106,21 @@ def test_session_requests_need_a_csrf_token(csrf_client, mock_provider):
     assert response.status_code == HTTP_200_OK
 
 
-def test_logout_ends_the_session(csrf_client, mock_provider):
-    log_in(csrf_client, mock_provider)
+@pytest.mark.parametrize("headers", [{}, INSTALLED_APP], ids=["browser", "app"])
+def test_logout_ends_the_session(csrf_client, mock_provider, headers):
+    log_in(csrf_client, mock_provider, headers=headers)
 
     response = csrf_client.post(
         reverse("api:v1:login:logout"),
+        headers=headers,
         HTTP_X_CSRFTOKEN=csrf_client.cookies["csrftoken"].value,
     )
 
     assert response.status_code == HTTP_204_NO_CONTENT
-    assert csrf_client.get(ME_URL).status_code == HTTP_401_UNAUTHORIZED
+    assert session_cookie_age(response) == 0
+    assert csrf_client.get(ME_URL, headers=headers).status_code == (
+        HTTP_401_UNAUTHORIZED
+    )
 
 
 def test_logout_needs_a_session(api_client):
@@ -117,9 +129,41 @@ def test_logout_needs_a_session(api_client):
     assert response.status_code == HTTP_401_UNAUTHORIZED
 
 
-def test_a_ban_ends_the_session(api_client, mock_provider):
-    log_in(api_client, mock_provider)
+@pytest.mark.parametrize("headers", [{}, INSTALLED_APP], ids=["browser", "app"])
+def test_a_ban_ends_the_session(api_client, mock_provider, headers):
+    log_in(api_client, mock_provider, headers=headers)
 
     Ban.objects.create(creator=get_system_user(), receiver=logged_in_user())
 
-    assert api_client.get(ME_URL).status_code == HTTP_401_UNAUTHORIZED
+    assert api_client.get(ME_URL, headers=headers).status_code == (
+        HTTP_401_UNAUTHORIZED
+    )
+
+
+def test_browser_session_lasts_the_default_age(api_client, mock_provider):
+    response = log_in(api_client, mock_provider)
+
+    assert session_cookie_age(response) == settings.SESSION_COOKIE_AGE
+
+
+def test_installed_app_logs_in_for_longer(api_client, mock_provider):
+    response = log_in(api_client, mock_provider, headers=INSTALLED_APP)
+
+    assert session_cookie_age(response) == settings.PWA_SESSION_COOKIE_AGE
+
+
+def test_installed_app_lengthens_an_existing_session(api_client, basic_user):
+    api_client.force_login(basic_user)
+
+    response = api_client.get(ME_URL, headers=INSTALLED_APP)
+    assert session_cookie_age(response) == settings.PWA_SESSION_COOKIE_AGE
+
+    response = api_client.get(ME_URL)
+    assert session_cookie_age(response) == settings.PWA_SESSION_COOKIE_AGE
+
+
+def test_installed_app_starts_no_session_when_logged_out(api_client):
+    response = api_client.get(ME_URL, headers=INSTALLED_APP)
+
+    assert response.status_code == HTTP_401_UNAUTHORIZED
+    assert settings.SESSION_COOKIE_NAME not in response.cookies

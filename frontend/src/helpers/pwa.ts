@@ -23,6 +23,14 @@ function subscribe(listener: () => void) {
   return () => listeners.delete(listener);
 }
 
+export function isStandalone() {
+  return (
+    window.matchMedia('(display-mode: standalone)').matches ||
+    // Safari on iOS
+    ('standalone' in navigator && navigator.standalone === true)
+  );
+}
+
 export function useCanInstall() {
   return useSyncExternalStore(subscribe, () => installPrompt !== null);
 }

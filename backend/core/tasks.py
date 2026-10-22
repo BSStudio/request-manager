@@ -77,4 +77,5 @@ def scheduled_cleaning():
         apps.get_model("video_requests", "HistoricalTodo_assignees").objects.exclude(
             history__in=HistoricalTodo.objects.all()
         ).delete()
+        call_command("clearsessions", stdout=out)
         return out.getvalue()
