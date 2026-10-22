@@ -448,6 +448,9 @@ SPECTACULAR_SETTINGS = {
     },
     "DESCRIPTION": "REST API for Workflow Support System for managing video shooting, "
     "filming and live streaming requests of Budavári Schönherz Stúdió.",
+    "ENUM_NAME_OVERRIDES": {
+        "NotificationKindEnum": "video_requests.models.Notification.Kinds",
+    },
     "SCHEMA_COERCE_PATH_PK_SUFFIX": True,
     "SCHEMA_PATH_PREFIX": "/api/v[0-9]",
     "SERVE_INCLUDE_SCHEMA": False,

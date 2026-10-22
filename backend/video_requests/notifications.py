@@ -55,7 +55,7 @@ def notify_user_new_comment(comment_id):
     )
     requester = comment.request.requester
     rows = notify(
-        [] if requester.is_banned else [requester],
+        [] if comment.internal or requester.is_banned else [requester],
         kind=Notification.Kinds.STUDIO_MESSAGE,
         request=comment.request,
         body=comment_body(comment),

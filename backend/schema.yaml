@@ -3060,24 +3060,6 @@ components:
         - field
         - new
         - old
-    KindEnum:
-      enum:
-        - studio_message
-        - request_accepted
-        - video_published
-        - new_request
-        - requester_message
-        - internal_comment
-        - todo_assigned
-      type: string
-      description: |-
-        * `studio_message` - Új üzenet a BSS-től
-        * `request_accepted` - Elvállaltuk a felkérésed
-        * `video_published` - Közzétettük a videót
-        * `new_request` - Új felkérés
-        * `requester_message` - Új üzenet a felkérőtől
-        * `internal_comment` - Új belső megjegyzés
-        * `todo_assigned` - Feladatot rendeltek hozzád
     MarkNotificationsReadRequest:
       type: object
       properties:
@@ -3098,7 +3080,7 @@ components:
           readOnly: true
         kind:
           allOf:
-            - $ref: '#/components/schemas/KindEnum'
+            - $ref: '#/components/schemas/NotificationKindEnum'
           readOnly: true
         read_at:
           type: string
@@ -3123,6 +3105,24 @@ components:
         - request
         - title
         - url
+    NotificationKindEnum:
+      enum:
+        - studio_message
+        - request_accepted
+        - video_published
+        - new_request
+        - requester_message
+        - internal_comment
+        - todo_assigned
+      type: string
+      description: |-
+        * `studio_message` - Új üzenet a BSS-től
+        * `request_accepted` - Elvállaltuk a felkérésed
+        * `video_published` - Közzétettük a videót
+        * `new_request` - Új felkérés
+        * `requester_message` - Új üzenet a felkérőtől
+        * `internal_comment` - Új belső megjegyzés
+        * `todo_assigned` - Feladatot rendeltek hozzád
     OAuth2ConnectRequest:
       type: object
       properties:

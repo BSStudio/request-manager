@@ -74,6 +74,20 @@ class TestComments:
         )
         assert row.body == f"Gólyabál: {preview(comment.text)}"
 
+    def test_an_internal_comment_never_reaches_the_requester(
+        self, crewed_request, staff_user
+    ):
+        comment = baker.make(
+            "video_requests.Comment",
+            request=crewed_request,
+            author=staff_user,
+            internal=True,
+        )
+
+        notify_user_new_comment(comment.id)
+
+        assert not Notification.objects.exists()
+
     def test_a_banned_requester_gets_no_studio_message(self, staff_user):
         video_request = baker.make(
             "video_requests.Request", requester=make_user(banned=True)
