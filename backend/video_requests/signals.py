@@ -7,6 +7,7 @@ from simple_history.signals import pre_create_historical_m2m_records
 
 from video_requests.emails import email_staff_todo_assigned
 from video_requests.models import Todo, Video
+from video_requests.notifications import notify_staff_todo_assigned
 from video_requests.utilities import update_request_status
 
 
@@ -24,6 +25,7 @@ def send_notification_to_new_assignees(
         transaction.on_commit(
             partial(email_staff_todo_assigned.delay, instance.id, list(pk_set))
         )
+        notify_staff_todo_assigned.delay_on_commit(instance.id, list(pk_set))
 
 
 m2m_changed.connect(send_notification_to_new_assignees, sender=Todo.assignees.through)

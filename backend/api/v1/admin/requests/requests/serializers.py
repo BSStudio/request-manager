@@ -219,6 +219,7 @@ class RequestAdminCreateSerializer(RequestAdminUpdateSerializer):
         return create_request(
             comment=comment,
             comment_author=user,
+            created_by=user,
             send_confirmation=send_notification,
             **validated_data,
         )

@@ -279,8 +279,8 @@ def test_restoring_a_request_brings_back_what_was_deleted_with_it(
     assert response.status_code == HTTP_302_FOUND
     assert rows_without_created() == before
     assert list(Todo.objects.get().assignees.all()) == [admin]
-    # The assignee e-mail waits for the restore to commit.
-    assert len(callbacks) == 1
+    # The assignee e-mail and notification wait for the restore to commit.
+    assert len(callbacks) == 2
 
 
 @pytest.mark.django_db
