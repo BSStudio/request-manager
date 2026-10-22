@@ -3,6 +3,7 @@ from unittest.mock import ANY
 
 import pytest
 from django.apps import apps
+from django.core.exceptions import ValidationError
 from django.db import connection
 from django.test.utils import CaptureQueriesContext
 from django.urls import reverse
@@ -326,6 +327,31 @@ def test_deleting_projects_in_the_admin_unassigns_their_requests(client, bulk):
     assert response.status_code == HTTP_302_FOUND
     assert not Project.objects.exists()
     assert video_request.history.latest().project_id is None
+
+
+@pytest.mark.django_db
+def test_deleting_projects_in_the_admin_is_all_or_nothing(client):
+    admin = make_user(username="deleting_admin", is_admin=True, is_superuser=True)
+    # The admin goes newest first, so this one fails after the other is gone.
+    failing = baker.make("video_requests.Project")
+    legacy = baker.make("video_requests.Request", project=failing)
+    Request.objects.filter(pk=legacy.pk).update(
+        deadline=legacy.end_datetime.date() - timedelta(days=1)
+    )
+    deletable = baker.make("video_requests.Project")
+
+    client.force_login(admin)
+    with pytest.raises(ValidationError):
+        client.post(
+            reverse("admin:video_requests_project_changelist"),
+            {
+                "action": "delete_selected",
+                "_selected_action": [failing.pk, deletable.pk],
+                "post": "yes",
+            },
+        )
+
+    assert set(Project.objects.all()) == {failing, deletable}
 
 
 @pytest.mark.django_db

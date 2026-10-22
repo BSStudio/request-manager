@@ -4,6 +4,7 @@ import pytest
 from django.apps import apps
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from django.utils.timezone import now
 from model_bakery import baker
 
 from video_requests.models import Video
@@ -140,6 +141,18 @@ class TestRequestValidation:
             video_request.full_clean()
 
         assert error.value.messages[0] == "Must be later than the end of the event."
+
+    @pytest.mark.parametrize("field", ["end_datetime", "start_datetime"])
+    def test_a_missing_event_time_is_a_validation_error(self, field):
+        times = {"start_datetime": now(), "end_datetime": now() + timedelta(hours=2)}
+        video_request = baker.prepare(
+            "video_requests.Request", **(times | {field: None})
+        )
+
+        with pytest.raises(ValidationError) as error:
+            video_request.save()
+
+        assert field in error.value.message_dict
 
     def test_additional_data_is_schema_checked(self, video_request):
         video_request.additional_data = {"randomKey": "randomValue"}

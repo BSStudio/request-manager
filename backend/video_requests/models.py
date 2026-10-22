@@ -131,6 +131,9 @@ class Request(models.Model):
         return (localdate() - self.deadline).days
 
     def clean(self):
+        # Django runs clean() even after clean_fields() found a missing time.
+        if not self.start_datetime or not self.end_datetime:
+            return
         if self.start_datetime > self.end_datetime:
             raise ValidationError(
                 {"end_datetime": [_("Must be later than the start of the event.")]}
@@ -144,7 +147,7 @@ class Request(models.Model):
         return self.requester
 
     def save(self, *args, **kwargs):
-        if not self.deadline:
+        if not self.deadline and self.end_datetime:
             self.deadline = (self.end_datetime + timedelta(weeks=3)).date()
         self.full_clean(exclude=["additional_data"])
         super().save(*args, **kwargs)

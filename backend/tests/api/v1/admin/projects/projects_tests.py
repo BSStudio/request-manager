@@ -1,6 +1,8 @@
 from datetime import timedelta
 
 import pytest
+from django.db import connection
+from django.test.utils import CaptureQueriesContext
 from django.utils.dateparse import parse_datetime
 from django.utils.timezone import localtime
 from model_bakery import baker
@@ -309,6 +311,22 @@ def test_every_bad_row_is_reported(api_client, new_row, staff_user):
     assert not Request.objects.exists()
 
 
+@pytest.mark.parametrize("method", ["POST", "PATCH"])
+def test_new_rows_need_every_required_field(api_client, method, new_row, staff_user):
+    project = baker.make("video_requests.Project") if method == "PATCH" else None
+    row = new_row()
+    del row["end_datetime"]
+
+    login(api_client, staff_user)
+    response = save(
+        api_client, {"name": "Fizika 1 előadások", "new_requests": [row]}, project
+    )
+
+    assert response.status_code == HTTP_400_BAD_REQUEST
+    [error] = response.data["new_requests"][0]["end_datetime"]
+    assert error.code == "required"
+
+
 def test_one_bad_row_creates_no_project(api_client, new_row, staff_user):
     login(api_client, staff_user)
 
@@ -373,6 +391,24 @@ def test_membership_changes_are_in_each_requests_history(api_client, staff_user)
 
     save(api_client, {"remove_requests": [video_request.id]}, project)
     assert video_request.history.latest().project_id is None
+
+
+def test_a_save_loads_the_requests_once(api_client, staff_user):
+    project = baker.make("video_requests.Project")
+    make_request(project, 1)
+
+    login(api_client, staff_user)
+    with CaptureQueriesContext(connection) as queries:
+        response = save(api_client, {"name": "Új név"}, project)
+
+    assert response.status_code == HTTP_200_OK
+    loads = [
+        query["sql"]
+        for query in queries
+        if 'FROM "video_requests_request"' in query["sql"]
+        and '"project_id" IN' in query["sql"]
+    ]
+    assert len(loads) == 1
 
 
 def test_an_assignment_made_elsewhere_survives_a_save(api_client, staff_user):

@@ -71,8 +71,9 @@ class ProjectHistoryAdmin(SimpleHistoryAdmin):
         delete_project(obj)
 
     def delete_queryset(self, request, queryset):
-        for project in queryset:
-            delete_project(project)
+        with transaction.atomic():
+            for project in queryset:
+                delete_project(project)
 
     def view_on_site(self, obj):
         return obj.admin_url

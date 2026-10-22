@@ -73,6 +73,15 @@ class ProjectAdminWriteSerializer(ModelSerializer):
             "responsible",
         )
 
+    def __init__(self, *args, **kwargs):
+        # A partial serializer skips missing required fields in nested rows too,
+        # and a new request needs them all. Only the name may be left out of an
+        # update.
+        kwargs["partial"] = False
+        super().__init__(*args, **kwargs)
+        if self.instance is not None:
+            self.fields["name"].required = False
+
     def validate_add_requests(self, requests):
         project_id = self.instance.pk if self.instance else None
         for request in requests:

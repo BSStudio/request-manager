@@ -15,6 +15,12 @@ from video_requests.models import Project, Request
 from video_requests.services import delete_project
 
 
+def projects_with_requests():
+    return Project.objects.select_related("responsible").prefetch_related(
+        Prefetch("requests", queryset=Request.objects.order_by("start_datetime", "id"))
+    )
+
+
 class ProjectAdminViewSet(ModelViewSet):
     pagination_class = None
     permission_classes = [IsStaffUser]
@@ -30,11 +36,9 @@ class ProjectAdminViewSet(ModelViewSet):
                 )
                 .order_by(Coalesce("last_end", "created").desc(), "-id")
             )
-        return Project.objects.select_related("responsible").prefetch_related(
-            Prefetch(
-                "requests", queryset=Request.objects.order_by("start_datetime", "id")
-            )
-        )
+        if self.action == "retrieve":
+            return projects_with_requests()
+        return Project.objects.all()
 
     def get_serializer_class(self):
         if self.action == "list":
@@ -58,8 +62,7 @@ class ProjectAdminViewSet(ModelViewSet):
         return Response(status=HTTP_204_NO_CONTENT)
 
     def get_saved_data(self, project):
-        # Loaded anew: the save changed the requests after they were fetched.
-        project = self.get_queryset().get(pk=project.pk)
+        project = projects_with_requests().get(pk=project.pk)
         return ProjectAdminRetrieveSerializer(
             project, context=self.get_serializer_context()
         ).data
