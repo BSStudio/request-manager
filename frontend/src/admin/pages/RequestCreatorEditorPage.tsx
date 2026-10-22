@@ -28,7 +28,7 @@ import {
   requestCreateMutation,
   requestUpdateMutation,
 } from 'admin/api/mutations';
-import { requestRetrieveQuery } from 'admin/api/queries';
+import { projectsListQuery, requestRetrieveQuery } from 'admin/api/queries';
 import { queryKeys } from 'admin/api/queryKeys';
 import AutoCompleteStaff from 'admin/components/AutoCompleteStaff/AutoCompleteStaff';
 import FormField from 'admin/components/FormField/FormField';
@@ -60,6 +60,7 @@ export interface IRequestCreator extends RequesterValues {
   deadline: Date | null;
   end_datetime: Date | null;
   place: string;
+  project: number | null;
   responsible: UserNestedDetail | null;
   send_notification: boolean;
   start_datetime: Date | null;
@@ -85,6 +86,7 @@ const RequestCreatorEditorPage = () => {
       deadline: null,
       end_datetime: null,
       place: '',
+      project: null,
       requester: null,
       requester_email: '',
       requester_first_name: '',
@@ -119,6 +121,7 @@ const RequestCreatorEditorPage = () => {
     requestUpdateMutation(Number(requestId)),
   );
   const isPending = isCreating || isUpdating;
+  const { data: projects } = useQuery(projectsListQuery());
   const query = useQuery({
     ...requestRetrieveQuery(Number(requestId)),
     enabled: !!requestId,
@@ -148,6 +151,7 @@ const RequestCreatorEditorPage = () => {
         ...loaderData,
         deadline: parseISO(loaderData.deadline),
         end_datetime: new Date(loaderData.end_datetime),
+        project: loaderData.project?.id ?? null,
         start_datetime: new Date(loaderData.start_datetime),
       });
     }
@@ -220,6 +224,7 @@ const RequestCreatorEditorPage = () => {
       deadline: deadline,
       end_datetime: data.end_datetime.toISOString(),
       place: data.place,
+      project: data.project ?? null,
       responsible: data.responsible?.id || null,
       start_datetime: data.start_datetime.toISOString(),
       title: data.title,
@@ -247,6 +252,9 @@ const RequestCreatorEditorPage = () => {
           summary: 'Siker',
         });
 
+        await queryClient.invalidateQueries({
+          queryKey: queryKeys.projects(),
+        });
         if (requestId) {
           await queryClient.invalidateQueries({
             queryKey: queryKeys.request(requestId),
@@ -422,7 +430,7 @@ const RequestCreatorEditorPage = () => {
             </>
           )}
           <FormField
-            className="col-12 mb-4 md:col-6 md:mb-0"
+            className="col-12 mb-4 md:col-4 md:mb-0"
             control={control}
             disabled={isPending}
             inputId
@@ -432,7 +440,7 @@ const RequestCreatorEditorPage = () => {
             <AutoCompleteStaff />
           </FormField>
           <FormField
-            className="col-12 mb-0 md:col-6"
+            className="col-12 mb-4 md:col-4 md:mb-0"
             control={control}
             disabled={isPending}
             inputId
@@ -446,6 +454,23 @@ const RequestCreatorEditorPage = () => {
               }
               showIcon
               showOnFocus={false}
+            />
+          </FormField>
+          <FormField
+            className="col-12 mb-0 md:col-4"
+            control={control}
+            disabled={isPending}
+            inputId
+            label="Projekt"
+            name="project"
+          >
+            <Dropdown
+              filter
+              optionLabel="name"
+              optionValue="id"
+              options={projects ?? []}
+              placeholder="Nincs projekt"
+              showClear
             />
           </FormField>
           <Divider align="center" type="dashed">

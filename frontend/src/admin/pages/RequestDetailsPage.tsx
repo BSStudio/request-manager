@@ -564,6 +564,26 @@ const RequestDetailsPage = () => {
               }
               label="Felelős"
             />
+            {data.project && (
+              <DetailsRow
+                button={
+                  <LinkButton
+                    buttonProps={{
+                      className: 'p-button-sm p-button-text px-1 py-0',
+                      icon: 'pi pi-angle-right',
+                      label: 'Ugrás',
+                    }}
+                    linkProps={{
+                      to: href('/projects/:projectId', {
+                        projectId: data.project.id.toString(),
+                      }),
+                    }}
+                  />
+                }
+                content={data.project.name}
+                label="Projekt"
+              />
+            )}
             <DetailsRow
               button={
                 <JumpButton
