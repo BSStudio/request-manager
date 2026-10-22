@@ -10,7 +10,7 @@ import pytest
 from django.utils.timezone import localtime
 from model_bakery import baker
 from rest_framework.reverse import reverse
-from rest_framework.status import HTTP_200_OK, HTTP_400_BAD_REQUEST
+from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED, HTTP_400_BAD_REQUEST
 
 from tests.api.helpers import login
 from tests.factories import make_user
@@ -104,6 +104,35 @@ class TestGuardsAreApplied:
             stored["status_by_admin"]["admin_name"]
             == admin_user.get_full_name_eastern_order()
         )
+
+    def test_an_admin_can_force_a_status_while_creating(self, admin_user, api_client):
+        login(api_client, admin_user)
+
+        response = api_client.post(
+            reverse("api:v1:admin:requests:request-list"),
+            {
+                "title": "Test Request",
+                "start_datetime": localtime(),
+                "end_datetime": localtime() + timedelta(hours=4),
+                "place": "Test place",
+                "type": "Test type",
+                "additional_data": {
+                    "status_by_admin": {
+                        "status": Request.Statuses.ARCHIVED,
+                        "admin_id": 123,
+                        "admin_name": "Random Name",
+                    }
+                },
+            },
+        )
+
+        assert response.status_code == HTTP_201_CREATED
+        assert response.data["status"] == Request.Statuses.ARCHIVED
+        assert response.data["additional_data"]["status_by_admin"] == {
+            "status": Request.Statuses.ARCHIVED,
+            "admin_id": admin_user.id,
+            "admin_name": admin_user.get_full_name_eastern_order(),
+        }
 
 
 class TestForcedStatusOverSeveralRequests:

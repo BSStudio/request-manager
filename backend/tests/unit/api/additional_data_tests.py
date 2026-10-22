@@ -231,16 +231,6 @@ class TestStatusByAdminStamp:
 
         assert "status_by_admin" not in cleaned
 
-    @pytest.mark.xfail(
-        raises=AttributeError,
-        strict=True,
-        reason=(
-            "Bug: on create the serializer passes original_data=None, and the "
-            "second half of the condition dereferences it unconditionally. "
-            "POST /api/v1/admin/requests with additional_data.status_by_admin "
-            "answers 500."
-        ),
-    )
     def test_a_forced_status_may_be_set_while_creating(self, admin):
         cleaned = check_and_remove_unauthorized_additional_data(
             self.forced(Request.Statuses.ARCHIVED), admin, None
