@@ -344,3 +344,41 @@ class TestSchEventsNotification:
         update_request_status(video_request)
 
         notify.assert_not_called()
+
+
+class TestAcceptanceNotification:
+    """The requester hears about an acceptance once, however often it is saved."""
+
+    @pytest.fixture
+    def notify(self):
+        with patch(
+            "video_requests.utilities.notify_user_request_accepted.delay_on_commit"
+        ) as delay_on_commit:
+            yield delay_on_commit
+
+    def test_an_accepted_request_is_announced_once_however_often_it_is_updated(
+        self, notify
+    ):
+        video_request = make_request(additional_data={"accepted": True})
+
+        update_request_status(video_request)
+        update_request_status(video_request)
+
+        notify.assert_called_once_with(video_request.id)
+        video_request.refresh_from_db()
+        assert video_request.additional_data["accepted_notification_sent"] is True
+
+    def test_accepting_again_after_a_denial_is_not_announced_again(self, notify):
+        video_request = make_request(additional_data={"accepted": True})
+        update_request_status(video_request)
+        for accepted in (False, True):
+            video_request.additional_data["accepted"] = accepted
+            update_request_status(video_request)
+
+        notify.assert_called_once()
+
+    @pytest.mark.parametrize("additional_data", [{}, {"accepted": False}])
+    def test_a_request_not_accepted_is_not_announced(self, additional_data, notify):
+        update_request_status(make_request(additional_data=additional_data))
+
+        notify.assert_not_called()

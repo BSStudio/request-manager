@@ -193,7 +193,13 @@ class TestVideoPublished:
         ids=["outside_requester", "staff_requester"],
     )
     def test_republishing_neither_re_invites_nor_re_opens_the_task(
-        self, api_client, pr_responsible, requester_is_staff, staff_user, video
+        self,
+        api_client,
+        pr_responsible,
+        requester,
+        requester_is_staff,
+        staff_user,
+        video,
     ):
         login(api_client, staff_user)
         url = self.publish(api_client, video, url_only=True)
@@ -225,6 +231,10 @@ class TestVideoPublished:
 
         assert Todo.objects.filter(video=video).count() == 1
         assert len(mail.outbox) == sent
+        published = requester.notifications.filter(
+            kind=Notification.Kinds.VIDEO_PUBLISHED
+        )
+        assert published.count() == (0 if requester_is_staff else 1)
 
 
 class TestTodoAssignment:
@@ -706,3 +716,45 @@ class TestInbox:
         assert response.status_code == HTTP_201_CREATED
         assert self.kinds_for(staff) == [Notification.Kinds.TODO_ASSIGNED]
         assert self.kinds_for(outsider) == []
+
+    def test_accepting_notifies_the_requester_once(
+        self, admin_user, api_client, requester
+    ):
+        video_request = baker.make("video_requests.Request", requester=requester)
+        login(api_client, admin_user)
+
+        for accepted in (True, False, True):
+            response = api_client.patch(
+                reverse(
+                    "api:v1:admin:requests:request-detail",
+                    kwargs={"pk": video_request.id},
+                ),
+                {"additional_data": {"accepted": accepted}},
+                format="json",
+            )
+            assert response.status_code == HTTP_200_OK
+
+        assert self.kinds_for(requester) == [Notification.Kinds.REQUEST_ACCEPTED]
+
+    @pytest.mark.parametrize("send_notification", [True, False])
+    def test_a_request_created_accepted_is_announced_only_with_send_notification(
+        self, admin_user, api_client, request_data, send_notification
+    ):
+        login(api_client, admin_user)
+
+        response = api_client.post(
+            reverse("api:v1:admin:requests:request-list"),
+            request_data
+            | {
+                "additional_data": {"accepted": True},
+                "send_notification": send_notification,
+            },
+            format="json",
+        )
+
+        assert response.status_code == HTTP_201_CREATED
+        assert self.kinds_for(admin_user).count(
+            Notification.Kinds.REQUEST_ACCEPTED
+        ) == int(send_notification)
+        video_request = Request.objects.get(pk=response.data["id"])
+        assert video_request.additional_data["accepted_notification_sent"] is True

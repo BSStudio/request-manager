@@ -12,6 +12,10 @@ from common.utilities import get_pr_responsible
 from video_requests.emails import email_user_video_published
 from video_requests.mattermost import post_video_published_to_mattermost
 from video_requests.models import Request, Todo, Video
+from video_requests.notifications import (
+    notify_user_request_accepted,
+    notify_user_video_published,
+)
 
 
 def update_request_status(request: Request, called_from_video: bool = False) -> None:
@@ -125,6 +129,12 @@ def update_request_status(request: Request, called_from_video: bool = False) -> 
         # Set the request status to the final score
         request.status = status
 
+    # Once only: acceptance can be withdrawn and given again.
+    already_sent = request.additional_data.get("accepted_notification_sent")
+    if request.additional_data.get("accepted") is True and not already_sent:
+        request.additional_data["accepted_notification_sent"] = True
+        notify_user_request_accepted.delay_on_commit(request.id)
+
     request.save()
     if not called_from_video:
         for video in request.videos.all():
@@ -205,6 +215,11 @@ def update_video_status(
                     and not video.request.requester.is_staff
                 ):
                     email_user_video_published.delay(video.id)
+                if not video.additional_data["publishing"].get(
+                    "notification_sent_to_user", False
+                ):
+                    video.set_publishing_flag("notification_sent_to_user")
+                    notify_user_video_published.delay_on_commit(video.id)
                 if settings.MATTERMOST_WEBHOOK_URL and not video.additional_data[
                     "publishing"
                 ].get("posted_on_mattermost", False):

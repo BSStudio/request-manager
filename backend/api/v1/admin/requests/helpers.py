@@ -10,8 +10,10 @@ def check_and_remove_unauthorized_additional_data(
 ) -> dict:
     """Remove keys and values which are used by other functions and should be changed only by authorized users"""
     additional_data.pop("requester", None)
+    additional_data.pop("accepted_notification_sent", None)
     if "publishing" in additional_data:
         additional_data["publishing"].pop("email_sent_to_user", None)
+        additional_data["publishing"].pop("notification_sent_to_user", None)
         additional_data["publishing"].pop("posted_on_mattermost", None)
     if not user.is_admin:
         additional_data.pop("status_by_admin", None)

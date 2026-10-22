@@ -4,7 +4,10 @@ from common.models import User
 from common.utilities import create_calendar_event
 from video_requests.emails import email_user_new_request_confirmation
 from video_requests.models import Comment, Project, Request
-from video_requests.notifications import notify_staff_new_request
+from video_requests.notifications import (
+    notify_staff_new_request,
+    notify_user_request_accepted,
+)
 from video_requests.utilities import update_request_status
 
 
@@ -25,7 +28,12 @@ def create_request(
         create_comment(
             author=comment_author or request.requester, text=comment, request=request
         )
-    # Admins can create a request that is already accepted.
+    # Admins can create a request that is already accepted. Only the
+    # confirmation e-mail's checkbox decides whether the requester hears of it.
+    if request.additional_data.get("accepted") is True:
+        request.additional_data["accepted_notification_sent"] = True
+        if send_confirmation:
+            notify_user_request_accepted.delay_on_commit(request.id)
     update_request_status(request)
     create_calendar_event.delay_on_commit(request.id)
     if send_confirmation:

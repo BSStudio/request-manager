@@ -83,6 +83,7 @@ class TestFieldsNobodyMayWrite:
                 "publishing": {
                     "website": "https://example.com",
                     "email_sent_to_user": False,
+                    "notification_sent_to_user": False,
                     "posted_on_mattermost": False,
                 }
             },
@@ -91,6 +92,16 @@ class TestFieldsNobodyMayWrite:
         )
 
         assert cleaned == {"publishing": {"website": "https://example.com"}}
+
+    @pytest.mark.parametrize("is_admin", [True, False])
+    def test_the_acceptance_notification_flag_is_always_dropped(self, is_admin):
+        user = make_user(is_admin=is_admin, is_staff=not is_admin)
+
+        cleaned = check_and_remove_unauthorized_additional_data(
+            {"accepted_notification_sent": None}, user, None
+        )
+
+        assert cleaned == {}
 
 
 class TestFieldsOnlyAnAdminMayWrite:
