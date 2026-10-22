@@ -25,17 +25,16 @@ def check_and_remove_unauthorized_additional_data(
             Do not need to check whether other fields exists because validation schema makes
             both status and admin_id required at save.
             """
+            original_additional_data = (
+                original_data.additional_data if original_data else {}
+            )
             if (
-                original_data
-                and (
-                    "status_by_admin" in original_data.additional_data
-                    and original_data.additional_data["status_by_admin"].get("status")
-                    == additional_data["status_by_admin"].get("status")
-                )
-                or (
-                    "status_by_admin" not in original_data.additional_data
-                    and not additional_data["status_by_admin"].get("status")
-                )
+                "status_by_admin" in original_additional_data
+                and original_additional_data["status_by_admin"].get("status")
+                == additional_data["status_by_admin"].get("status")
+            ) or (
+                "status_by_admin" not in original_additional_data
+                and not additional_data["status_by_admin"].get("status")
             ):
                 additional_data.pop("status_by_admin")
             else:
