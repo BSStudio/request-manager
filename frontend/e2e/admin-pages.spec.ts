@@ -37,6 +37,12 @@ test('every page opens from the menu', async ({ page }) => {
   await expect(page).toHaveTitle(crumbs('Havi beszámoló', 'Felkérések'));
   await expect(page.getByRole('region', { name: 'Vágások' })).toBeVisible();
 
+  await menu.getByRole('link', { name: 'Projektek' }).click();
+  await expect(page).toHaveTitle(crumbs('Projektek'));
+  await expect(
+    page.getByRole('row').filter({ hasText: 'Kollégiumi hét' }),
+  ).toBeVisible();
+
   await menu.getByRole('link', { name: 'Feladatok' }).click();
   await expect(page).toHaveTitle(crumbs('Feladatok'));
   await expect(

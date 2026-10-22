@@ -4,6 +4,37 @@ import { queryKeys } from './queryKeys';
 import { AdminTodosListStatusEnum } from '../../api/endpoints/admin-api';
 import { adminApi } from '../../api/http';
 
+export const projectRequestsListQuery = (projectId: number) => ({
+  queryFn: async () => {
+    const requests = await adminApi.adminRequestsList({
+      ordering: 'start_datetime',
+      pageSize: 10000,
+      project: projectId,
+    });
+    return requests.data.results ?? [];
+  },
+  queryKey: queryKeys.projectRequests(projectId),
+});
+
+export const projectRetrieveQuery = (projectId: string | number) => ({
+  queryFn: async () => {
+    const project = await adminApi.adminProjectsRetrieve({
+      id: Number(projectId),
+    });
+    return project.data;
+  },
+  queryKey: queryKeys.project(projectId),
+});
+
+export const projectsListQuery = () => ({
+  queryFn: async () => {
+    const projects = await adminApi.adminProjectsList();
+    return projects.data;
+  },
+  queryKey: queryKeys.projects(),
+  refetchInterval: 1000 * 30,
+});
+
 export const reportQuery = (dateAfter: string, dateBefore: string) => ({
   queryFn: async () => {
     const report = await adminApi.adminReportRetrieve({

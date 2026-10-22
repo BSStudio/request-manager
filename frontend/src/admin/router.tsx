@@ -139,6 +139,13 @@ const router = sentryCreateBrowserRouter(
           ],
         },
         {
+          path: 'projects',
+          handle: { crumb: () => 'Projektek' },
+          children: [
+            { index: true, lazy: () => import('admin/pages/ProjectsListPage') },
+          ],
+        },
+        {
           path: 'search',
           handle: { crumb: () => 'Keresés' },
           lazy: () => import('admin/pages/SearchPage'),
