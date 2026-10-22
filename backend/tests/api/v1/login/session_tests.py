@@ -117,6 +117,7 @@ def test_logout_ends_the_session(csrf_client, mock_provider, headers):
     )
 
     assert response.status_code == HTTP_204_NO_CONTENT
+    assert session_cookie_age(response) == 0
     assert csrf_client.get(ME_URL, headers=headers).status_code == (
         HTTP_401_UNAUTHORIZED
     )
