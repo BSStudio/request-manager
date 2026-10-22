@@ -19,11 +19,13 @@ import {
   projectDeleteMutation,
   projectUpdateMutation,
 } from 'admin/api/mutations';
-import { projectRetrieveQuery } from 'admin/api/queries';
+import { projectRetrieveQuery, requestRetrieveQuery } from 'admin/api/queries';
 import { queryKeys } from 'admin/api/queryKeys';
 import AutoCompleteStaff from 'admin/components/AutoCompleteStaff/AutoCompleteStaff';
 import FormField from 'admin/components/FormField/FormField';
+import AddRequestsDialog from 'admin/components/ProjectEditor/AddRequestsDialog';
 import ProjectRequestsTable from 'admin/components/ProjectEditor/ProjectRequestsTable';
+import SeriesDialog from 'admin/components/ProjectEditor/SeriesDialog';
 import NewRequesterForm from 'admin/components/RequestCreator/NewRequesterForm';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
 import {
@@ -44,6 +46,7 @@ import type { LoadErrorState } from 'admin/pages/ErrorPage';
 import { useToast } from 'admin/providers/ToastProvider';
 import type {
   ProjectRequest,
+  RequestAdminList,
   RequestAdminRetrieve,
   UserNestedDetail,
 } from 'api/models';
@@ -113,6 +116,8 @@ const ProjectCreatorEditorPage = () => {
   });
   const newRows = useFieldArray({ control, name: 'new_requests' });
   const [existing, setExisting] = useState<ExistingRow[]>([]);
+  const [addVisible, setAddVisible] = useState(false);
+  const [seriesVisible, setSeriesVisible] = useState(false);
 
   const { data: project, error } = useQuery({
     ...projectRetrieveQuery(Number(projectId)),
@@ -188,6 +193,25 @@ const ProjectCreatorEditorPage = () => {
       type: '',
       ...nextRowTimes(rows.at(-1)),
     });
+  };
+
+  const onAddSeries = (
+    times: { end_datetime: Date; start_datetime: Date }[],
+  ) => {
+    newRows.append(
+      times.map((time) => ({ place: '', title: '', type: '', ...time })),
+    );
+  };
+
+  // The list has no end, type or place; a row shows them like the others.
+  const onAddExisting = async (requests: RequestAdminList[]) => {
+    const details = await Promise.all(
+      requests.map(({ id }) => queryClient.query(requestRetrieveQuery(id))),
+    );
+    setExisting((rows) => [
+      ...rows,
+      ...details.map((request) => ({ request, state: 'added' as const })),
+    ]);
   };
 
   const onSubmit: SubmitHandler<IProjectEditor> = async (values) => {
@@ -432,7 +456,36 @@ const ProjectCreatorEditorPage = () => {
                 tooltip="Új felkérés"
                 type="button"
               />
+              <Button
+                className="w-auto"
+                disabled={isPending}
+                icon="pi pi-calendar-plus"
+                label="Ismétlődő alkalmak…"
+                onClick={() => setSeriesVisible(true)}
+                outlined
+                type="button"
+              />
+              <Button
+                className="w-auto"
+                disabled={isPending}
+                icon="pi pi-link"
+                label="Meglévő felkérések hozzáadása…"
+                onClick={() => setAddVisible(true)}
+                outlined
+                type="button"
+              />
             </div>
+            <SeriesDialog
+              onAdd={onAddSeries}
+              onHide={() => setSeriesVisible(false)}
+              visible={seriesVisible}
+            />
+            <AddRequestsDialog
+              excludedIds={existing.map(({ request }) => request.id)}
+              onAdd={onAddExisting}
+              onHide={() => setAddVisible(false)}
+              visible={addVisible}
+            />
           </div>
           <Divider />
           <div className="align-items-center col-12 flex flex-wrap gap-2">

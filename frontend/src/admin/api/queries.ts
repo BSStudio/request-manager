@@ -232,6 +232,20 @@ export const requestsListQuery = (
   };
 };
 
+export const requestsWithoutProjectQuery = (search: string) => ({
+  enabled: search.trim().length >= 2,
+  queryFn: async () => {
+    const requests = await adminApi.adminRequestsList({
+      hasProject: false,
+      ordering: '-start_datetime',
+      pageSize: 50,
+      search: search.trim(),
+    });
+    return requests.data.results ?? [];
+  },
+  queryKey: queryKeys.requestsWithoutProject(search.trim()),
+});
+
 export const todosListQuery = (
   assignees: Array<number>,
   ordering: string,

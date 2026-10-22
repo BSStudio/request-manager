@@ -38,6 +38,11 @@ export const queryKeys = {
     page: number;
     pageSize: number;
   }) => ['requests', 'list', params],
+  requestsWithoutProject: (search: string) => [
+    'requests',
+    'without-project',
+    search,
+  ],
   todo: (todoId: Id) => ['todos', `id:${Number(todoId)}`],
   todos: () => ['todos'],
   user: (userId: Id) => ['users', Number(userId)],

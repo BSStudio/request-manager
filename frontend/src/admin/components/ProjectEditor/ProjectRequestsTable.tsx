@@ -234,6 +234,7 @@ const ProjectRequestsTable = ({
   return (
     <DataTable
       dataKey="key"
+      emptyMessage="Nem található felkérés."
       rowClassName={(tableRow: TableRow) => ({
         'line-through opacity-60':
           tableRow.kind === 'existing' && tableRow.row.state === 'removed',

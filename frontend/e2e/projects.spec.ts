@@ -1,4 +1,5 @@
 import type { Page } from '@playwright/test';
+import { format } from 'date-fns';
 
 import { expect, loginAs, test } from './fixtures';
 import { adminRequestPath, fillDateTime, inDays } from './helpers';
@@ -185,5 +186,100 @@ test.describe('as an admin', () => {
     ).toHaveCount(0);
     await page.goto(await adminRequestPath(page, 'Megmaradó'));
     await expect(projectRow(page)).toHaveCount(0);
+  });
+
+  test('creates a weekly lecture series, accepted', async ({ page }) => {
+    await page.goto('/admin/projects/new');
+    await page.getByLabel('Projekt neve').fill('Analízis 1 előadások');
+    await videoType(page, 'Videó típusa').fill('Élő közvetítés');
+    await page.getByLabel('Helyszín', { exact: true }).fill('Q épület');
+
+    await page.getByRole('button', { name: 'Ismétlődő alkalmak…' }).click();
+    const series = page.getByRole('dialog', { name: 'Ismétlődő alkalmak' });
+    await fillDateTime(page, 'Első alkalom kezdete', inDays(14, 10));
+    await fillDateTime(page, 'Első alkalom vége', inDays(14, 12));
+    const lastDay = series.getByLabel('Utolsó alkalom napja', { exact: true });
+    await lastDay.fill(format(inDays(35), 'yyyy.MM.dd'));
+    await lastDay.press('Tab');
+    await expect(series).toContainText('4 alkalom');
+    await series.getByRole('button', { name: 'Alkalmak hozzáadása' }).click();
+
+    await expect(
+      page.getByLabel('Kezdés, 4. új felkérés', { exact: true }),
+    ).toBeVisible();
+    await page.getByLabel('Új felkérések elfogadása').check();
+    await page.getByRole('button', { exact: true, name: 'Mentés' }).click();
+
+    await expect(page).toHaveURL(/\/admin\/projects$/);
+    await page
+      .getByRole('row')
+      .filter({ hasText: 'Analízis 1 előadások' })
+      .getByRole('button', { name: /^Kiterjed/ })
+      .click();
+    await expect(page.getByText('Elvállalva', { exact: true })).toHaveCount(4);
+  });
+
+  test('adds an existing request and removes another', async ({ page }) => {
+    await page.goto('/admin/projects');
+    await page
+      .getByRole('row')
+      .filter({ hasText: 'Fizika 1 előadások' })
+      .getByRole('link', { name: 'Projekt szerkesztése' })
+      .click();
+
+    await page
+      .getByRole('button', { name: 'Meglévő felkérések hozzáadása…' })
+      .click();
+    const dialog = page.getByRole('dialog', {
+      name: 'Meglévő felkérések hozzáadása',
+    });
+    const search = dialog.getByPlaceholder('Keresés a felkérések címében');
+    // Requests of a project are not offered.
+    await search.fill('Fizika 1');
+    await expect(
+      dialog.getByText('Nincs projekt nélküli felkérés ezzel a címmel.'),
+    ).toBeVisible();
+    await search.fill('Kari gólyabál');
+    await dialog.getByLabel('Kari gólyabál', { exact: true }).check();
+    await dialog.getByRole('button', { name: 'Hozzáadás' }).click();
+
+    const added = page.getByRole('row').filter({ hasText: 'Kari gólyabál' });
+    await expect(added).toContainText('Hozzáadva');
+    // Its details were loaded, as for the other rows.
+    await expect(added).toContainText('Schönherz Kollégium');
+
+    // Already in the table, so not offered again.
+    await page
+      .getByRole('button', { name: 'Meglévő felkérések hozzáadása…' })
+      .click();
+    await search.fill('Kari gólyabál');
+    await expect(
+      dialog.getByText('Nincs projekt nélküli felkérés ezzel a címmel.'),
+    ).toBeVisible();
+    await dialog.getByRole('button', { name: 'Mégsem' }).click();
+
+    await page
+      .getByRole('row')
+      .filter({ hasText: 'Fizika 1 előadás' })
+      .first()
+      .getByRole('button', { name: 'Eltávolítás a projektből' })
+      .click();
+    await expect(
+      page.getByText('Mentéskor: 1 hozzáadva, 1 eltávolítva a projektből'),
+    ).toBeVisible();
+    await page.getByRole('button', { exact: true, name: 'Mentés' }).click();
+
+    await expect(page).toHaveURL(/\/admin\/projects$/);
+    await page
+      .getByRole('row')
+      .filter({ hasText: 'Fizika 1 előadások' })
+      .getByRole('button', { name: /^Kiterjed/ })
+      .click();
+    await expect(
+      page.getByText('Kari gólyabál', { exact: true }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('cell', { exact: true, name: 'Fizika 1 előadás' }),
+    ).toHaveCount(3);
   });
 });
