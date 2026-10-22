@@ -239,6 +239,10 @@ test.describe('as an admin', () => {
     await expect(
       dialog.getByText('Nincs projekt nélküli felkérés ezzel a címmel.'),
     ).toBeVisible();
+    await search.fill('Kollégiumi hét');
+    await expect(
+      dialog.getByText('Nincs projekt nélküli felkérés ezzel a címmel.'),
+    ).toBeVisible();
     await search.fill('Kari gólyabál');
     await dialog.getByLabel('Kari gólyabál', { exact: true }).check();
     await dialog.getByRole('button', { name: 'Hozzáadás' }).click();
@@ -281,5 +285,93 @@ test.describe('as an admin', () => {
     await expect(
       page.getByRole('cell', { exact: true, name: 'Fizika 1 előadás' }),
     ).toHaveCount(3);
+  });
+
+  test('an empty time is required before saving', async ({ page }) => {
+    await page.goto('/admin/projects/new');
+    await page.getByLabel('Projekt neve').fill('Időtlen hét');
+    await page.getByRole('button', { name: 'Új felkérés' }).click();
+    await page.getByRole('button', { exact: true, name: 'Mentés' }).click();
+
+    const row = page.getByRole('row').filter({
+      has: page.getByLabel('Kezdés, 1. új felkérés', { exact: true }),
+    });
+    await expect(row.getByText('A mező kitöltése kötelező')).toHaveCount(2);
+    await expect(page).toHaveURL(/\/admin\/projects\/new$/);
+  });
+
+  test('an edit sends only the project fields that changed', async ({
+    page,
+  }) => {
+    await page.goto('/admin/projects/new');
+    await page.getByLabel('Projekt neve').fill('Részleges');
+    await videoType(page, 'Videó típusa').fill('Élő közvetítés');
+    await page.getByLabel('Helyszín', { exact: true }).fill('Aula');
+    await page.getByRole('button', { name: 'Új felkérés' }).click();
+    await page.getByLabel('Esemény neve, 1. új felkérés').fill('Egyedüli');
+    await fillDateTime(page, 'Kezdés, 1. új felkérés', inDays(45, 18));
+    await fillDateTime(page, 'Befejezés, 1. új felkérés', inDays(45, 20));
+    await page.getByRole('button', { exact: true, name: 'Mentés' }).click();
+    await expect(page).toHaveURL(/\/admin\/projects$/);
+
+    await page
+      .getByRole('row')
+      .filter({ hasText: 'Részleges' })
+      .getByRole('link', { name: 'Projekt szerkesztése' })
+      .click();
+    await page
+      .getByRole('row')
+      .filter({ hasText: 'Egyedüli' })
+      .getByRole('button', { name: 'Eltávolítás a projektből' })
+      .click();
+    const response = page.waitForResponse(
+      (response) => response.request().method() === 'PATCH',
+    );
+    await page.getByRole('button', { exact: true, name: 'Mentés' }).click();
+
+    expect((await response).ok()).toBe(true);
+    const fields = (await response).request().postDataJSON() as object;
+    // Another crew member may have renamed it or changed its responsible.
+    expect(fields).not.toHaveProperty('name');
+    expect(fields).not.toHaveProperty('responsible');
+    expect(fields).toMatchObject({ remove_requests: [expect.any(Number)] });
+  });
+
+  test('the editor shows a request moved in from its own page', async ({
+    page,
+  }) => {
+    await page.goto('/admin/projects/new');
+    await page.getByLabel('Projekt neve').fill('Frissülő');
+    await page.getByRole('button', { exact: true, name: 'Mentés' }).click();
+    await expect(page).toHaveURL(/\/admin\/projects$/);
+    // Opened once, so the project is cached when the editor opens again.
+    await page
+      .getByRole('row')
+      .filter({ hasText: 'Frissülő' })
+      .getByRole('link', { name: 'Projekt szerkesztése' })
+      .click();
+    await page.getByRole('button', { name: 'Mégsem' }).click();
+
+    // Within the app, so the cache stays.
+    await page
+      .getByRole('row')
+      .filter({ hasText: 'Kollégiumi hét' })
+      .getByRole('button', { name: /^Kiterjed/ })
+      .click();
+    // The expanded row holds the whole inner table, so start from the cell.
+    await page
+      .getByRole('cell', { exact: true, name: 'Kollégiumi hét – Koncert' })
+      .locator('..')
+      .getByRole('link', { name: 'Ugrás a felkéréshez' })
+      .click();
+    await page.getByRole('link', { name: 'Felkérés szerkesztése' }).click();
+    await chooseProject(page, 'Frissülő');
+    await page.getByRole('button', { exact: true, name: 'Mentés' }).click();
+    await expect(page).toHaveURL(/\/admin\/requests\/\d+$/);
+    await projectRow(page).getByRole('link', { name: 'Ugrás' }).click();
+
+    await expect(
+      page.getByRole('row').filter({ hasText: 'Kollégiumi hét – Koncert' }),
+    ).toBeVisible();
   });
 });

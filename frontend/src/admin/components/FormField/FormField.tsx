@@ -25,7 +25,7 @@ interface FormFieldProps<
   label: string;
 }
 
-const errorMessages: Record<string, string> = {
+export const errorMessages: Record<string, string> = {
   maxLength: 'A mező túl hosszú',
   required: 'A mező kitöltése kötelező',
   validate: 'A mező kitöltése kötelező',

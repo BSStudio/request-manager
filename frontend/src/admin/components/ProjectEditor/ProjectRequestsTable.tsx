@@ -9,6 +9,7 @@ import { classNames } from 'primereact/utils';
 import { Controller } from 'react-hook-form';
 import type { Control, FieldArrayWithId } from 'react-hook-form';
 
+import { errorMessages } from 'admin/components/FormField/FormField';
 import LinkButton from 'admin/components/LinkButton/LinkButton';
 import { RequestStatusTag } from 'admin/components/StatusTag/StatusTag';
 import { dateTimeToLocaleString } from 'admin/helpers/DateToLocaleStringCoverters';
@@ -111,6 +112,7 @@ const ProjectRequestsTable = ({
         control={control}
         disabled={disabled}
         name={`new_requests.${tableRow.index}.${name}`}
+        rules={{ required: errorMessages.required }}
         render={({ field, fieldState }) => (
           <>
             <Calendar

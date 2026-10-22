@@ -28,6 +28,7 @@ import ProjectRequestsTable from 'admin/components/ProjectEditor/ProjectRequests
 import SeriesDialog from 'admin/components/ProjectEditor/SeriesDialog';
 import NewRequesterForm from 'admin/components/RequestCreator/NewRequesterForm';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
+import { pickDirtyFields } from 'admin/helpers/pickDirtyFields';
 import {
   type NewRequestRow,
   newRequestPayloads,
@@ -110,7 +111,13 @@ const ProjectCreatorEditorPage = () => {
   const { showToast } = useToast();
   const isMobile = useMobile();
 
-  const { control, handleSubmit, reset, setError } = useForm<IProjectEditor>({
+  const {
+    control,
+    formState: { dirtyFields },
+    handleSubmit,
+    reset,
+    setError,
+  } = useForm<IProjectEditor>({
     defaultValues,
     mode: 'onChange',
   });
@@ -233,9 +240,9 @@ const ProjectCreatorEditorPage = () => {
         .filter((row) => row.state === state)
         .map((row) => row.request.id);
     const responsible = values.responsible?.id ?? null;
+    const projectFields = { name: values.name, responsible };
     const payload = {
       add_requests: idsIn('added'),
-      name: values.name,
       new_requests: newRequestPayloads(values.new_requests, {
         accepted: values.accepted,
         name: values.name,
@@ -245,11 +252,15 @@ const ProjectCreatorEditorPage = () => {
         type: values.type,
       }),
       remove_requests: idsIn('removed'),
-      responsible,
     };
 
     try {
-      await (projectId ? updateProject(payload) : createProject(payload));
+      await (projectId
+        ? updateProject({
+            ...payload,
+            ...pickDirtyFields(projectFields, dirtyFields),
+          })
+        : createProject({ ...payload, ...projectFields }));
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 400) {
         const { fields, other } = projectSaveErrors(error.response.data);
