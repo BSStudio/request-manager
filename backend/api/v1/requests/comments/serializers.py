@@ -4,6 +4,7 @@ from rest_framework.serializers import ModelSerializer, Serializer
 from api.v1.admin.users.serializers import UserNestedListSerializer
 from video_requests.emails import email_crew_new_comment
 from video_requests.models import Comment
+from video_requests.notifications import notify_crew_new_comment
 
 
 class CommentListRetrieveSerializer(Serializer):
@@ -24,4 +25,5 @@ class CommentCreateUpdateSerializer(ModelSerializer):
     def create(self, validated_data):
         comment = super().create(validated_data)
         email_crew_new_comment.delay(comment.id)
+        notify_crew_new_comment.delay_on_commit(comment.id)
         return comment

@@ -19,7 +19,7 @@ from rest_framework.status import HTTP_200_OK, HTTP_201_CREATED
 from common.models import User, get_system_user
 from tests.api.helpers import login
 from tests.factories import make_user
-from video_requests.models import Request, Todo, Video
+from video_requests.models import Notification, Request, Todo, Video
 
 pytestmark = [pytest.mark.django_db, pytest.mark.emails]
 
@@ -193,7 +193,13 @@ class TestVideoPublished:
         ids=["outside_requester", "staff_requester"],
     )
     def test_republishing_neither_re_invites_nor_re_opens_the_task(
-        self, api_client, pr_responsible, requester_is_staff, staff_user, video
+        self,
+        api_client,
+        pr_responsible,
+        requester,
+        requester_is_staff,
+        staff_user,
+        video,
     ):
         login(api_client, staff_user)
         url = self.publish(api_client, video, url_only=True)
@@ -225,6 +231,10 @@ class TestVideoPublished:
 
         assert Todo.objects.filter(video=video).count() == 1
         assert len(mail.outbox) == sent
+        published = requester.notifications.filter(
+            kind=Notification.Kinds.VIDEO_PUBLISHED
+        )
+        assert published.count() == (0 if requester_is_staff else 1)
 
 
 class TestTodoAssignment:
@@ -611,3 +621,140 @@ class TestWhichChangesAreWorthAnEmail:
                 "previous": video_request.type,
             },
         ]
+
+
+class TestInbox:
+    """Which API action leaves which rows in the notification inbox."""
+
+    @staticmethod
+    def kinds_for(user):
+        return sorted(user.notifications.values_list("kind", flat=True))
+
+    @staticmethod
+    def comment(api_client, video_request, author, internal=False, site=False):
+        login(api_client, author)
+        namespace = "api:v1:requests" if site else "api:v1:admin:requests"
+        data = {"text": "Lorem ipsum"} | ({} if site else {"internal": internal})
+        response = api_client.post(
+            reverse(
+                f"{namespace}:request:comment-list",
+                kwargs={"request_pk": video_request.id},
+            ),
+            data,
+        )
+        assert response.status_code == HTTP_201_CREATED
+
+    def test_a_public_comment_notifies_the_requester_only(
+        self, api_client, editor_in_chief, requester, staff_user
+    ):
+        video_request = baker.make("video_requests.Request", requester=requester)
+
+        self.comment(api_client, video_request, staff_user)
+
+        assert self.kinds_for(requester) == [Notification.Kinds.STUDIO_MESSAGE]
+        assert self.kinds_for(editor_in_chief) == []
+
+    def test_an_internal_comment_notifies_the_crew_only(
+        self, api_client, editor_in_chief, requester, staff_user
+    ):
+        video_request = baker.make("video_requests.Request", requester=requester)
+
+        self.comment(api_client, video_request, staff_user, internal=True)
+
+        assert self.kinds_for(requester) == []
+        assert self.kinds_for(editor_in_chief) == [Notification.Kinds.INTERNAL_COMMENT]
+
+    def test_a_requester_message_notifies_the_crew(
+        self, api_client, editor_in_chief, requester
+    ):
+        video_request = baker.make("video_requests.Request", requester=requester)
+
+        self.comment(api_client, video_request, requester, site=True)
+
+        assert self.kinds_for(editor_in_chief) == [Notification.Kinds.REQUESTER_MESSAGE]
+        assert self.kinds_for(requester) == []
+
+    def test_a_new_request_notifies_the_editor_in_chief(
+        self, api_client, basic_user, editor_in_chief, request_data
+    ):
+        login(api_client, basic_user)
+
+        response = api_client.post(
+            reverse("api:v1:requests:request-list"), request_data
+        )
+
+        assert response.status_code == HTTP_201_CREATED
+        assert self.kinds_for(editor_in_chief) == [Notification.Kinds.NEW_REQUEST]
+
+    def test_the_editor_in_chief_filing_a_request_is_not_told_of_it(
+        self, api_client, editor_in_chief, request_data
+    ):
+        login(api_client, editor_in_chief)
+
+        response = api_client.post(
+            reverse("api:v1:admin:requests:request-list"), request_data
+        )
+
+        assert response.status_code == HTTP_201_CREATED
+        assert self.kinds_for(editor_in_chief) == []
+
+    def test_assigning_a_todo_notifies_the_staff_assignees(
+        self, api_client, staff_user
+    ):
+        video_request = baker.make("video_requests.Request")
+        staff, outsider = make_user(is_staff=True), make_user()
+        login(api_client, staff_user)
+
+        response = api_client.post(
+            reverse(
+                "api:v1:admin:requests:request:todo-list",
+                kwargs={"request_pk": video_request.id},
+            ),
+            {"assignees": [staff.id, outsider.id], "description": "Streamkulcs"},
+        )
+
+        assert response.status_code == HTTP_201_CREATED
+        assert self.kinds_for(staff) == [Notification.Kinds.TODO_ASSIGNED]
+        assert self.kinds_for(outsider) == []
+
+    def test_accepting_notifies_the_requester_once(
+        self, admin_user, api_client, requester
+    ):
+        video_request = baker.make("video_requests.Request", requester=requester)
+        login(api_client, admin_user)
+
+        for accepted in (True, False, True):
+            response = api_client.patch(
+                reverse(
+                    "api:v1:admin:requests:request-detail",
+                    kwargs={"pk": video_request.id},
+                ),
+                {"additional_data": {"accepted": accepted}},
+                format="json",
+            )
+            assert response.status_code == HTTP_200_OK
+
+        assert self.kinds_for(requester) == [Notification.Kinds.REQUEST_ACCEPTED]
+
+    @pytest.mark.parametrize("send_notification", [True, False])
+    def test_a_request_created_accepted_is_announced_only_with_send_notification(
+        self, admin_user, api_client, request_data, send_notification
+    ):
+        login(api_client, admin_user)
+
+        response = api_client.post(
+            reverse("api:v1:admin:requests:request-list"),
+            request_data
+            | {
+                "additional_data": {"accepted": True},
+                "send_notification": send_notification,
+            },
+            format="json",
+        )
+
+        assert response.status_code == HTTP_201_CREATED
+        assert self.kinds_for(admin_user).count(
+            Notification.Kinds.REQUEST_ACCEPTED
+        ) == int(send_notification)
+        video_request = Request.objects.get(pk=response.data["id"])
+        assert video_request.additional_data["accepted_notification_sent"] is True

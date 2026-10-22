@@ -7,7 +7,7 @@ from django.core.exceptions import ValidationError
 from django.utils.timezone import now
 from model_bakery import baker
 
-from video_requests.models import Video
+from video_requests.models import Notification, Video
 
 pytestmark = pytest.mark.django_db
 
@@ -303,3 +303,29 @@ class TestHistory:
         history = model.history.filter(id=obj_id)
 
         assert [record.history_type for record in history] == ["-", "~", "+"]
+
+
+class TestNotification:
+    @pytest.mark.parametrize(
+        "kind,app_path",
+        [
+            (Notification.Kinds.STUDIO_MESSAGE, "/my-requests"),
+            (Notification.Kinds.REQUEST_ACCEPTED, "/my-requests"),
+            (Notification.Kinds.VIDEO_PUBLISHED, "/my-requests"),
+            (Notification.Kinds.NEW_REQUEST, "/admin/requests"),
+            (Notification.Kinds.REQUESTER_MESSAGE, "/admin/requests"),
+            (Notification.Kinds.INTERNAL_COMMENT, "/admin/requests"),
+            (Notification.Kinds.TODO_ASSIGNED, "/admin/requests"),
+        ],
+    )
+    def test_it_opens_its_request_in_the_app_of_its_kind(self, kind, app_path):
+        notification = baker.make("video_requests.Notification", kind=kind)
+
+        assert notification.url == f"{app_path}/{notification.request_id}"
+
+    def test_it_is_titled_by_its_kind(self):
+        notification = baker.make(
+            "video_requests.Notification", kind=Notification.Kinds.REQUEST_ACCEPTED
+        )
+
+        assert notification.title == "Elvállaltuk a felkérésed"

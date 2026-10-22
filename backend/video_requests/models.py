@@ -299,3 +299,53 @@ class Todo(AbstractTodo):
 
     def __str__(self):
         return f"Todo || {self.request.title} - {self.description[0:25]}[...]"
+
+
+class Notification(models.Model):
+    class Kinds(models.TextChoices):
+        STUDIO_MESSAGE = "studio_message", _("Új üzenet a BSS-től")
+        REQUEST_ACCEPTED = "request_accepted", _("Elvállaltuk a felkérésed")
+        VIDEO_PUBLISHED = "video_published", _("Közzétettük a videót")
+        NEW_REQUEST = "new_request", _("Új felkérés")
+        REQUESTER_MESSAGE = "requester_message", _("Új üzenet a felkérőtől")
+        INTERNAL_COMMENT = "internal_comment", _("Új belső megjegyzés")
+        TODO_ASSIGNED = "todo_assigned", _("Feladatot rendeltek hozzád")
+
+    STAFF_KINDS = frozenset(
+        {
+            Kinds.NEW_REQUEST,
+            Kinds.REQUESTER_MESSAGE,
+            Kinds.INTERNAL_COMMENT,
+            Kinds.TODO_ASSIGNED,
+        }
+    )
+
+    recipient = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="notifications",
+    )
+    kind = models.CharField(max_length=32, choices=Kinds)
+    request = models.ForeignKey(
+        Request, on_delete=models.CASCADE, related_name="notifications"
+    )
+    body = models.TextField()
+    created = models.DateTimeField(auto_now_add=True)
+    read_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["-created", "-id"]
+        indexes = [models.Index(fields=["recipient", "read_at"])]
+
+    @property
+    def title(self) -> str:
+        return self.get_kind_display()
+
+    @property
+    def url(self) -> str:
+        if self.kind in self.STAFF_KINDS:
+            return f"/admin/requests/{self.request_id}"
+        return f"/my-requests/{self.request_id}"
+
+    def __str__(self):
+        return f"{self.title} || {self.recipient} - {self.request.title}"

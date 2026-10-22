@@ -91,8 +91,10 @@ class TestGuardsAreApplied:
 
         assert response.status_code == HTTP_200_OK
         stored = response.data["additional_data"]
+        # The flag comes from the status update, because the payload accepts.
         assert set(stored) == {
             "accepted",
+            "accepted_notification_sent",
             "calendar_id",
             "canceled",
             "failed",
@@ -411,6 +413,7 @@ class TestRequesterChangesAndAdditionalData:
                 }
             }
             | {"requester": self.EXPECTED_SNAPSHOT}
+            | {"accepted_notification_sent": True}
         )
 
     def test_stored_additional_data_survives(

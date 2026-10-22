@@ -11,6 +11,7 @@ REQUEST_ADDITIONAL_DATA_SCHEMA = {
             "additionalProperties": False,
         },
         "accepted": {"type": ["boolean", "null"]},
+        "accepted_notification_sent": {"type": "boolean"},
         "canceled": {"type": ["boolean", "null"]},
         "failed": {"type": ["boolean", "null"]},
         "recording": {
@@ -68,6 +69,7 @@ VIDEO_ADDITIONAL_DATA_SCHEMA = {
             "properties": {
                 "website": {"type": "string"},
                 "email_sent_to_user": {"type": "boolean"},
+                "notification_sent_to_user": {"type": "boolean"},
                 "posted_on_mattermost": {"type": "boolean"},
             },
             "additionalProperties": False,

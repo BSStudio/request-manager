@@ -1,12 +1,13 @@
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, ChoiceField, EmailField
+from rest_framework.fields import CharField, ChoiceField, EmailField, IntegerField
 from rest_framework.relations import SlugRelatedField
 from rest_framework.serializers import ModelSerializer, Serializer
 from social_django.models import UserSocialAuth
 
 from common.models import User
+from video_requests.models import Notification
 
 
 class OAuth2ConnectSerializer(Serializer):
@@ -83,3 +84,21 @@ class UserSerializer(ModelSerializer):
         if avatar_provider:
             instance.avatar["provider"] = avatar_provider
         return super().update(instance, validated_data)
+
+
+class NotificationSerializer(ModelSerializer):
+    title = CharField(read_only=True)
+    url = CharField(read_only=True)
+
+    class Meta:
+        model = Notification
+        fields = ("body", "created", "id", "kind", "read_at", "request", "title", "url")
+        read_only_fields = fields
+
+
+class UnreadCountSerializer(Serializer):
+    count = IntegerField()
+
+
+class MarkNotificationsReadSerializer(Serializer):
+    request = IntegerField(required=False)

@@ -235,8 +235,9 @@ def test_new_requests_send_no_confirmation(
         )
 
     assert response.status_code == HTTP_201_CREATED
-    # One calendar event per request, and no confirmation e-mail.
-    assert len(callbacks) == 2
+    # A calendar event and a new request notification per request, and no
+    # confirmation e-mail.
+    assert len(callbacks) == 4
 
 
 @pytest.mark.parametrize(
