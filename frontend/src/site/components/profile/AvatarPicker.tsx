@@ -20,7 +20,11 @@ export default function AvatarPicker({ user }: { user: User }) {
 
   const select = useMutation({
     mutationFn: async (provider: AvatarProvider) =>
-      (await meApi.mePartialUpdate({ avatar_provider: provider })).data,
+      (
+        await meApi.mePartialUpdate({
+          patchedUserRequest: { avatar_provider: provider },
+        })
+      ).data,
     onError: (error) =>
       toast.error('Nem sikerült beállítani a profilképet.', {
         description: getApiErrorMessage(error),

@@ -86,7 +86,7 @@ export default function LoginMethods({ user }: { user: User }) {
       provider,
       ...request
     }: OAuth2ConnectRequest & { provider: OAuthProvider }) =>
-      meApi.meSocialCreate(provider, request),
+      meApi.meSocialCreate({ oAuth2ConnectRequest: request, provider }),
     onError: (error) =>
       toast.error('Nem sikerült összekapcsolni a fiókot.', {
         description: getApiErrorMessage(error),
@@ -100,7 +100,8 @@ export default function LoginMethods({ user }: { user: User }) {
   });
 
   const disconnect = useMutation({
-    mutationFn: (target: OAuthProvider) => meApi.meSocialDestroy(target),
+    mutationFn: (target: OAuthProvider) =>
+      meApi.meSocialDestroy({ provider: target }),
     onError: (error) =>
       toast.error('Nem sikerült leválasztani a fiókot.', {
         description: getApiErrorMessage(error),

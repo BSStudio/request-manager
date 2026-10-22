@@ -157,20 +157,34 @@ export const MiscApiFactory = function (
   return {
     /**
      *
-     * @param {ContactRequest} contactRequest
+     * @param {MiscApiMiscContactCreateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     miscContactCreate(
-      contactRequest: ContactRequest,
-      options?: any,
+      requestParameters: MiscApiMiscContactCreateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<Contact> {
       return localVarFp
-        .miscContactCreate(contactRequest, options)
+        .miscContactCreate(requestParameters.contactRequest, options)
         .then((request) => request(axios, basePath));
     },
   };
 };
+
+/**
+ * Request parameters for miscContactCreate operation in MiscApi.
+ * @export
+ * @interface MiscApiMiscContactCreateRequest
+ */
+export interface MiscApiMiscContactCreateRequest {
+  /**
+   *
+   * @type {ContactRequest}
+   * @memberof MiscApiMiscContactCreate
+   */
+  readonly contactRequest: ContactRequest;
+}
 
 /**
  * MiscApi - object-oriented interface
@@ -181,17 +195,17 @@ export const MiscApiFactory = function (
 export class MiscApi extends BaseAPI {
   /**
    *
-   * @param {ContactRequest} contactRequest
+   * @param {MiscApiMiscContactCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof MiscApi
    */
   public miscContactCreate(
-    contactRequest: ContactRequest,
+    requestParameters: MiscApiMiscContactCreateRequest,
     options?: AxiosRequestConfig,
   ) {
     return MiscApiFp(this.configuration)
-      .miscContactCreate(contactRequest, options)
+      .miscContactCreate(requestParameters.contactRequest, options)
       .then((request) => request(this.axios, this.basePath));
   }
 }

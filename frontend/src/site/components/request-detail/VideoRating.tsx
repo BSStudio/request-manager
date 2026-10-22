@@ -49,16 +49,16 @@ export default function VideoRating({ requestId, video }: VideoRatingProps) {
   const save = useMutation({
     mutationFn: async (values: Draft) => {
       const { data } = rating
-        ? await requestsApi.requestsVideosRatingPartialUpdate(
+        ? await requestsApi.requestsVideosRatingPartialUpdate({
+            patchedRatingCreateUpdateRequest: values,
             requestId,
-            video.id,
-            values,
-          )
-        : await requestsApi.requestsVideosRatingCreate(
+            videoId: video.id,
+          })
+        : await requestsApi.requestsVideosRatingCreate({
+            ratingCreateUpdateRequest: values,
             requestId,
-            video.id,
-            values,
-          );
+            videoId: video.id,
+          });
       return { created: !rating, data };
     },
     onError: (error) =>
@@ -74,7 +74,7 @@ export default function VideoRating({ requestId, video }: VideoRatingProps) {
 
   const remove = useMutation({
     mutationFn: () =>
-      requestsApi.requestsVideosRatingDestroy(requestId, video.id),
+      requestsApi.requestsVideosRatingDestroy({ requestId, videoId: video.id }),
     onError: (error) =>
       toast.error('Nem sikerült törölni az értékelést.', {
         description: getApiErrorMessage(error),
