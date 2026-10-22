@@ -8,6 +8,7 @@
           "disallowAdditionalPropertiesIfNotPresent": false,
           "legacyDiscriminatorBehavior": false,
           "modelPackage": "models",
+          "useSingleRequestParameter": true,
           "withSeparateModelsAndApi": true
         },
         "generatorName": "typescript-axios",

@@ -107,21 +107,18 @@ const VideoSearchForm = ({ setVideoSearchResults }: VideoSearchFormProps) => {
       : undefined;
 
     await adminApi
-      .adminVideosList(
-        edited_at_after,
-        edited_at_before,
-        last_aired,
-        length_max,
-        length_min,
-        undefined,
-        undefined,
-        10000,
-        undefined,
-        start_datetime_after,
-        start_datetime_before,
-        title,
-        status as AdminVideosListStatusEnum[],
-      )
+      .adminVideosList({
+        editedAtAfter: edited_at_after,
+        editedAtBefore: edited_at_before,
+        lastAired: last_aired,
+        lengthMax: length_max,
+        lengthMin: length_min,
+        pageSize: 10000,
+        requestStartDatetimeAfter: start_datetime_after,
+        requestStartDatetimeBefore: start_datetime_before,
+        search: title,
+        status: status as AdminVideosListStatusEnum[],
+      })
       .then((response) => {
         setVideoSearchResults(response.data.results || []);
       })

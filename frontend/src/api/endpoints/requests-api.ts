@@ -1605,296 +1605,672 @@ export const RequestsApiFactory = function (
   return {
     /**
      *
-     * @param {number} requestId
-     * @param {CommentCreateUpdateRequest} commentCreateUpdateRequest
+     * @param {RequestsApiRequestsCommentsCreateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     requestsCommentsCreate(
-      requestId: number,
-      commentCreateUpdateRequest: CommentCreateUpdateRequest,
-      options?: any,
+      requestParameters: RequestsApiRequestsCommentsCreateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<CommentCreateUpdate> {
       return localVarFp
-        .requestsCommentsCreate(requestId, commentCreateUpdateRequest, options)
+        .requestsCommentsCreate(
+          requestParameters.requestId,
+          requestParameters.commentCreateUpdateRequest,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this comment.
-     * @param {number} requestId
+     * @param {RequestsApiRequestsCommentsDestroyRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     requestsCommentsDestroy(
-      id: number,
-      requestId: number,
-      options?: any,
+      requestParameters: RequestsApiRequestsCommentsDestroyRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
-        .requestsCommentsDestroy(id, requestId, options)
+        .requestsCommentsDestroy(
+          requestParameters.id,
+          requestParameters.requestId,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} requestId
-     * @param {string} [ordering] Which field to use when ordering the results.
+     * @param {RequestsApiRequestsCommentsListRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     requestsCommentsList(
-      requestId: number,
-      ordering?: string,
-      options?: any,
+      requestParameters: RequestsApiRequestsCommentsListRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<Array<CommentListRetrieve>> {
       return localVarFp
-        .requestsCommentsList(requestId, ordering, options)
+        .requestsCommentsList(
+          requestParameters.requestId,
+          requestParameters.ordering,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this comment.
-     * @param {number} requestId
-     * @param {PatchedCommentCreateUpdateRequest} [patchedCommentCreateUpdateRequest]
+     * @param {RequestsApiRequestsCommentsPartialUpdateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     requestsCommentsPartialUpdate(
-      id: number,
-      requestId: number,
-      patchedCommentCreateUpdateRequest?: PatchedCommentCreateUpdateRequest,
-      options?: any,
+      requestParameters: RequestsApiRequestsCommentsPartialUpdateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<CommentCreateUpdate> {
       return localVarFp
         .requestsCommentsPartialUpdate(
-          id,
-          requestId,
-          patchedCommentCreateUpdateRequest,
+          requestParameters.id,
+          requestParameters.requestId,
+          requestParameters.patchedCommentCreateUpdateRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this comment.
-     * @param {number} requestId
+     * @param {RequestsApiRequestsCommentsRetrieveRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     requestsCommentsRetrieve(
-      id: number,
-      requestId: number,
-      options?: any,
+      requestParameters: RequestsApiRequestsCommentsRetrieveRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<CommentListRetrieve> {
       return localVarFp
-        .requestsCommentsRetrieve(id, requestId, options)
+        .requestsCommentsRetrieve(
+          requestParameters.id,
+          requestParameters.requestId,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this comment.
-     * @param {number} requestId
-     * @param {CommentCreateUpdateRequest} commentCreateUpdateRequest
+     * @param {RequestsApiRequestsCommentsUpdateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     requestsCommentsUpdate(
-      id: number,
-      requestId: number,
-      commentCreateUpdateRequest: CommentCreateUpdateRequest,
-      options?: any,
+      requestParameters: RequestsApiRequestsCommentsUpdateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<CommentCreateUpdate> {
       return localVarFp
         .requestsCommentsUpdate(
-          id,
-          requestId,
-          commentCreateUpdateRequest,
+          requestParameters.id,
+          requestParameters.requestId,
+          requestParameters.commentCreateUpdateRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {PolymorphicProxyRequest} [polymorphicProxyRequest]
+     * @param {RequestsApiRequestsCreateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     requestsCreate(
-      polymorphicProxyRequest?: PolymorphicProxyRequest,
-      options?: any,
+      requestParameters: RequestsApiRequestsCreateRequest = {},
+      options?: AxiosRequestConfig,
     ): AxiosPromise<RequestRetrieve> {
       return localVarFp
-        .requestsCreate(polymorphicProxyRequest, options)
+        .requestsCreate(requestParameters.polymorphicProxyRequest, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {string} [ordering] Which field to use when ordering the results.
-     * @param {number} [page] A page number within the paginated result set.
-     * @param {number} [pageSize] Number of results to return per page.
-     * @param {boolean} [pagination] Return paginated response.
-     * @param {string} [search] A search term.
+     * @param {RequestsApiRequestsListRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     requestsList(
-      ordering?: string,
-      page?: number,
-      pageSize?: number,
-      pagination?: boolean,
-      search?: string,
-      options?: any,
+      requestParameters: RequestsApiRequestsListRequest = {},
+      options?: AxiosRequestConfig,
     ): AxiosPromise<PaginatedRequestListList> {
       return localVarFp
-        .requestsList(ordering, page, pageSize, pagination, search, options)
+        .requestsList(
+          requestParameters.ordering,
+          requestParameters.page,
+          requestParameters.pageSize,
+          requestParameters.pagination,
+          requestParameters.search,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this request.
+     * @param {RequestsApiRequestsRetrieveRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    requestsRetrieve(id: number, options?: any): AxiosPromise<RequestRetrieve> {
+    requestsRetrieve(
+      requestParameters: RequestsApiRequestsRetrieveRequest,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<RequestRetrieve> {
       return localVarFp
-        .requestsRetrieve(id, options)
+        .requestsRetrieve(requestParameters.id, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} requestId
-     * @param {string} [ordering] Which field to use when ordering the results.
+     * @param {RequestsApiRequestsVideosListRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     requestsVideosList(
-      requestId: number,
-      ordering?: string,
-      options?: any,
+      requestParameters: RequestsApiRequestsVideosListRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<Array<VideoListRetrieve>> {
       return localVarFp
-        .requestsVideosList(requestId, ordering, options)
+        .requestsVideosList(
+          requestParameters.requestId,
+          requestParameters.ordering,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} requestId
-     * @param {number} videoId
-     * @param {RatingCreateUpdateRequest} ratingCreateUpdateRequest
+     * @param {RequestsApiRequestsVideosRatingCreateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     requestsVideosRatingCreate(
-      requestId: number,
-      videoId: number,
-      ratingCreateUpdateRequest: RatingCreateUpdateRequest,
-      options?: any,
+      requestParameters: RequestsApiRequestsVideosRatingCreateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<RatingCreateUpdate> {
       return localVarFp
         .requestsVideosRatingCreate(
-          requestId,
-          videoId,
-          ratingCreateUpdateRequest,
+          requestParameters.requestId,
+          requestParameters.videoId,
+          requestParameters.ratingCreateUpdateRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} requestId
-     * @param {number} videoId
+     * @param {RequestsApiRequestsVideosRatingDestroyRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     requestsVideosRatingDestroy(
-      requestId: number,
-      videoId: number,
-      options?: any,
+      requestParameters: RequestsApiRequestsVideosRatingDestroyRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
-        .requestsVideosRatingDestroy(requestId, videoId, options)
+        .requestsVideosRatingDestroy(
+          requestParameters.requestId,
+          requestParameters.videoId,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} requestId
-     * @param {number} videoId
-     * @param {PatchedRatingCreateUpdateRequest} [patchedRatingCreateUpdateRequest]
+     * @param {RequestsApiRequestsVideosRatingPartialUpdateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     requestsVideosRatingPartialUpdate(
-      requestId: number,
-      videoId: number,
-      patchedRatingCreateUpdateRequest?: PatchedRatingCreateUpdateRequest,
-      options?: any,
+      requestParameters: RequestsApiRequestsVideosRatingPartialUpdateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<RatingCreateUpdate> {
       return localVarFp
         .requestsVideosRatingPartialUpdate(
-          requestId,
-          videoId,
-          patchedRatingCreateUpdateRequest,
+          requestParameters.requestId,
+          requestParameters.videoId,
+          requestParameters.patchedRatingCreateUpdateRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} requestId
-     * @param {number} videoId
+     * @param {RequestsApiRequestsVideosRatingRetrieveRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     requestsVideosRatingRetrieve(
-      requestId: number,
-      videoId: number,
-      options?: any,
+      requestParameters: RequestsApiRequestsVideosRatingRetrieveRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<RatingRetrieve> {
       return localVarFp
-        .requestsVideosRatingRetrieve(requestId, videoId, options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {number} requestId
-     * @param {number} videoId
-     * @param {RatingCreateUpdateRequest} ratingCreateUpdateRequest
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    requestsVideosRatingUpdate(
-      requestId: number,
-      videoId: number,
-      ratingCreateUpdateRequest: RatingCreateUpdateRequest,
-      options?: any,
-    ): AxiosPromise<RatingCreateUpdate> {
-      return localVarFp
-        .requestsVideosRatingUpdate(
-          requestId,
-          videoId,
-          ratingCreateUpdateRequest,
+        .requestsVideosRatingRetrieve(
+          requestParameters.requestId,
+          requestParameters.videoId,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this video.
-     * @param {number} requestId
+     * @param {RequestsApiRequestsVideosRatingUpdateRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    requestsVideosRatingUpdate(
+      requestParameters: RequestsApiRequestsVideosRatingUpdateRequest,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<RatingCreateUpdate> {
+      return localVarFp
+        .requestsVideosRatingUpdate(
+          requestParameters.requestId,
+          requestParameters.videoId,
+          requestParameters.ratingCreateUpdateRequest,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {RequestsApiRequestsVideosRetrieveRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     requestsVideosRetrieve(
-      id: number,
-      requestId: number,
-      options?: any,
+      requestParameters: RequestsApiRequestsVideosRetrieveRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<VideoListRetrieve> {
       return localVarFp
-        .requestsVideosRetrieve(id, requestId, options)
+        .requestsVideosRetrieve(
+          requestParameters.id,
+          requestParameters.requestId,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
   };
 };
+
+/**
+ * Request parameters for requestsCommentsCreate operation in RequestsApi.
+ * @export
+ * @interface RequestsApiRequestsCommentsCreateRequest
+ */
+export interface RequestsApiRequestsCommentsCreateRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof RequestsApiRequestsCommentsCreate
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {CommentCreateUpdateRequest}
+   * @memberof RequestsApiRequestsCommentsCreate
+   */
+  readonly commentCreateUpdateRequest: CommentCreateUpdateRequest;
+}
+
+/**
+ * Request parameters for requestsCommentsDestroy operation in RequestsApi.
+ * @export
+ * @interface RequestsApiRequestsCommentsDestroyRequest
+ */
+export interface RequestsApiRequestsCommentsDestroyRequest {
+  /**
+   * A unique integer value identifying this comment.
+   * @type {number}
+   * @memberof RequestsApiRequestsCommentsDestroy
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof RequestsApiRequestsCommentsDestroy
+   */
+  readonly requestId: number;
+}
+
+/**
+ * Request parameters for requestsCommentsList operation in RequestsApi.
+ * @export
+ * @interface RequestsApiRequestsCommentsListRequest
+ */
+export interface RequestsApiRequestsCommentsListRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof RequestsApiRequestsCommentsList
+   */
+  readonly requestId: number;
+
+  /**
+   * Which field to use when ordering the results.
+   * @type {string}
+   * @memberof RequestsApiRequestsCommentsList
+   */
+  readonly ordering?: string;
+}
+
+/**
+ * Request parameters for requestsCommentsPartialUpdate operation in RequestsApi.
+ * @export
+ * @interface RequestsApiRequestsCommentsPartialUpdateRequest
+ */
+export interface RequestsApiRequestsCommentsPartialUpdateRequest {
+  /**
+   * A unique integer value identifying this comment.
+   * @type {number}
+   * @memberof RequestsApiRequestsCommentsPartialUpdate
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof RequestsApiRequestsCommentsPartialUpdate
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {PatchedCommentCreateUpdateRequest}
+   * @memberof RequestsApiRequestsCommentsPartialUpdate
+   */
+  readonly patchedCommentCreateUpdateRequest?: PatchedCommentCreateUpdateRequest;
+}
+
+/**
+ * Request parameters for requestsCommentsRetrieve operation in RequestsApi.
+ * @export
+ * @interface RequestsApiRequestsCommentsRetrieveRequest
+ */
+export interface RequestsApiRequestsCommentsRetrieveRequest {
+  /**
+   * A unique integer value identifying this comment.
+   * @type {number}
+   * @memberof RequestsApiRequestsCommentsRetrieve
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof RequestsApiRequestsCommentsRetrieve
+   */
+  readonly requestId: number;
+}
+
+/**
+ * Request parameters for requestsCommentsUpdate operation in RequestsApi.
+ * @export
+ * @interface RequestsApiRequestsCommentsUpdateRequest
+ */
+export interface RequestsApiRequestsCommentsUpdateRequest {
+  /**
+   * A unique integer value identifying this comment.
+   * @type {number}
+   * @memberof RequestsApiRequestsCommentsUpdate
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof RequestsApiRequestsCommentsUpdate
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {CommentCreateUpdateRequest}
+   * @memberof RequestsApiRequestsCommentsUpdate
+   */
+  readonly commentCreateUpdateRequest: CommentCreateUpdateRequest;
+}
+
+/**
+ * Request parameters for requestsCreate operation in RequestsApi.
+ * @export
+ * @interface RequestsApiRequestsCreateRequest
+ */
+export interface RequestsApiRequestsCreateRequest {
+  /**
+   *
+   * @type {PolymorphicProxyRequest}
+   * @memberof RequestsApiRequestsCreate
+   */
+  readonly polymorphicProxyRequest?: PolymorphicProxyRequest;
+}
+
+/**
+ * Request parameters for requestsList operation in RequestsApi.
+ * @export
+ * @interface RequestsApiRequestsListRequest
+ */
+export interface RequestsApiRequestsListRequest {
+  /**
+   * Which field to use when ordering the results.
+   * @type {string}
+   * @memberof RequestsApiRequestsList
+   */
+  readonly ordering?: string;
+
+  /**
+   * A page number within the paginated result set.
+   * @type {number}
+   * @memberof RequestsApiRequestsList
+   */
+  readonly page?: number;
+
+  /**
+   * Number of results to return per page.
+   * @type {number}
+   * @memberof RequestsApiRequestsList
+   */
+  readonly pageSize?: number;
+
+  /**
+   * Return paginated response.
+   * @type {boolean}
+   * @memberof RequestsApiRequestsList
+   */
+  readonly pagination?: boolean;
+
+  /**
+   * A search term.
+   * @type {string}
+   * @memberof RequestsApiRequestsList
+   */
+  readonly search?: string;
+}
+
+/**
+ * Request parameters for requestsRetrieve operation in RequestsApi.
+ * @export
+ * @interface RequestsApiRequestsRetrieveRequest
+ */
+export interface RequestsApiRequestsRetrieveRequest {
+  /**
+   * A unique integer value identifying this request.
+   * @type {number}
+   * @memberof RequestsApiRequestsRetrieve
+   */
+  readonly id: number;
+}
+
+/**
+ * Request parameters for requestsVideosList operation in RequestsApi.
+ * @export
+ * @interface RequestsApiRequestsVideosListRequest
+ */
+export interface RequestsApiRequestsVideosListRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof RequestsApiRequestsVideosList
+   */
+  readonly requestId: number;
+
+  /**
+   * Which field to use when ordering the results.
+   * @type {string}
+   * @memberof RequestsApiRequestsVideosList
+   */
+  readonly ordering?: string;
+}
+
+/**
+ * Request parameters for requestsVideosRatingCreate operation in RequestsApi.
+ * @export
+ * @interface RequestsApiRequestsVideosRatingCreateRequest
+ */
+export interface RequestsApiRequestsVideosRatingCreateRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof RequestsApiRequestsVideosRatingCreate
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof RequestsApiRequestsVideosRatingCreate
+   */
+  readonly videoId: number;
+
+  /**
+   *
+   * @type {RatingCreateUpdateRequest}
+   * @memberof RequestsApiRequestsVideosRatingCreate
+   */
+  readonly ratingCreateUpdateRequest: RatingCreateUpdateRequest;
+}
+
+/**
+ * Request parameters for requestsVideosRatingDestroy operation in RequestsApi.
+ * @export
+ * @interface RequestsApiRequestsVideosRatingDestroyRequest
+ */
+export interface RequestsApiRequestsVideosRatingDestroyRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof RequestsApiRequestsVideosRatingDestroy
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof RequestsApiRequestsVideosRatingDestroy
+   */
+  readonly videoId: number;
+}
+
+/**
+ * Request parameters for requestsVideosRatingPartialUpdate operation in RequestsApi.
+ * @export
+ * @interface RequestsApiRequestsVideosRatingPartialUpdateRequest
+ */
+export interface RequestsApiRequestsVideosRatingPartialUpdateRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof RequestsApiRequestsVideosRatingPartialUpdate
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof RequestsApiRequestsVideosRatingPartialUpdate
+   */
+  readonly videoId: number;
+
+  /**
+   *
+   * @type {PatchedRatingCreateUpdateRequest}
+   * @memberof RequestsApiRequestsVideosRatingPartialUpdate
+   */
+  readonly patchedRatingCreateUpdateRequest?: PatchedRatingCreateUpdateRequest;
+}
+
+/**
+ * Request parameters for requestsVideosRatingRetrieve operation in RequestsApi.
+ * @export
+ * @interface RequestsApiRequestsVideosRatingRetrieveRequest
+ */
+export interface RequestsApiRequestsVideosRatingRetrieveRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof RequestsApiRequestsVideosRatingRetrieve
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof RequestsApiRequestsVideosRatingRetrieve
+   */
+  readonly videoId: number;
+}
+
+/**
+ * Request parameters for requestsVideosRatingUpdate operation in RequestsApi.
+ * @export
+ * @interface RequestsApiRequestsVideosRatingUpdateRequest
+ */
+export interface RequestsApiRequestsVideosRatingUpdateRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof RequestsApiRequestsVideosRatingUpdate
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof RequestsApiRequestsVideosRatingUpdate
+   */
+  readonly videoId: number;
+
+  /**
+   *
+   * @type {RatingCreateUpdateRequest}
+   * @memberof RequestsApiRequestsVideosRatingUpdate
+   */
+  readonly ratingCreateUpdateRequest: RatingCreateUpdateRequest;
+}
+
+/**
+ * Request parameters for requestsVideosRetrieve operation in RequestsApi.
+ * @export
+ * @interface RequestsApiRequestsVideosRetrieveRequest
+ */
+export interface RequestsApiRequestsVideosRetrieveRequest {
+  /**
+   * A unique integer value identifying this video.
+   * @type {number}
+   * @memberof RequestsApiRequestsVideosRetrieve
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof RequestsApiRequestsVideosRetrieve
+   */
+  readonly requestId: number;
+}
 
 /**
  * RequestsApi - object-oriented interface
@@ -1905,78 +2281,80 @@ export const RequestsApiFactory = function (
 export class RequestsApi extends BaseAPI {
   /**
    *
-   * @param {number} requestId
-   * @param {CommentCreateUpdateRequest} commentCreateUpdateRequest
+   * @param {RequestsApiRequestsCommentsCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof RequestsApi
    */
   public requestsCommentsCreate(
-    requestId: number,
-    commentCreateUpdateRequest: CommentCreateUpdateRequest,
+    requestParameters: RequestsApiRequestsCommentsCreateRequest,
     options?: AxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
-      .requestsCommentsCreate(requestId, commentCreateUpdateRequest, options)
+      .requestsCommentsCreate(
+        requestParameters.requestId,
+        requestParameters.commentCreateUpdateRequest,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this comment.
-   * @param {number} requestId
+   * @param {RequestsApiRequestsCommentsDestroyRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof RequestsApi
    */
   public requestsCommentsDestroy(
-    id: number,
-    requestId: number,
+    requestParameters: RequestsApiRequestsCommentsDestroyRequest,
     options?: AxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
-      .requestsCommentsDestroy(id, requestId, options)
+      .requestsCommentsDestroy(
+        requestParameters.id,
+        requestParameters.requestId,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} requestId
-   * @param {string} [ordering] Which field to use when ordering the results.
+   * @param {RequestsApiRequestsCommentsListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof RequestsApi
    */
   public requestsCommentsList(
-    requestId: number,
-    ordering?: string,
+    requestParameters: RequestsApiRequestsCommentsListRequest,
     options?: AxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
-      .requestsCommentsList(requestId, ordering, options)
+      .requestsCommentsList(
+        requestParameters.requestId,
+        requestParameters.ordering,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this comment.
-   * @param {number} requestId
-   * @param {PatchedCommentCreateUpdateRequest} [patchedCommentCreateUpdateRequest]
+   * @param {RequestsApiRequestsCommentsPartialUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof RequestsApi
    */
   public requestsCommentsPartialUpdate(
-    id: number,
-    requestId: number,
-    patchedCommentCreateUpdateRequest?: PatchedCommentCreateUpdateRequest,
+    requestParameters: RequestsApiRequestsCommentsPartialUpdateRequest,
     options?: AxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
       .requestsCommentsPartialUpdate(
-        id,
-        requestId,
-        patchedCommentCreateUpdateRequest,
+        requestParameters.id,
+        requestParameters.requestId,
+        requestParameters.patchedCommentCreateUpdateRequest,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -1984,42 +2362,40 @@ export class RequestsApi extends BaseAPI {
 
   /**
    *
-   * @param {number} id A unique integer value identifying this comment.
-   * @param {number} requestId
+   * @param {RequestsApiRequestsCommentsRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof RequestsApi
    */
   public requestsCommentsRetrieve(
-    id: number,
-    requestId: number,
+    requestParameters: RequestsApiRequestsCommentsRetrieveRequest,
     options?: AxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
-      .requestsCommentsRetrieve(id, requestId, options)
+      .requestsCommentsRetrieve(
+        requestParameters.id,
+        requestParameters.requestId,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this comment.
-   * @param {number} requestId
-   * @param {CommentCreateUpdateRequest} commentCreateUpdateRequest
+   * @param {RequestsApiRequestsCommentsUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof RequestsApi
    */
   public requestsCommentsUpdate(
-    id: number,
-    requestId: number,
-    commentCreateUpdateRequest: CommentCreateUpdateRequest,
+    requestParameters: RequestsApiRequestsCommentsUpdateRequest,
     options?: AxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
       .requestsCommentsUpdate(
-        id,
-        requestId,
-        commentCreateUpdateRequest,
+        requestParameters.id,
+        requestParameters.requestId,
+        requestParameters.commentCreateUpdateRequest,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -2027,95 +2403,95 @@ export class RequestsApi extends BaseAPI {
 
   /**
    *
-   * @param {PolymorphicProxyRequest} [polymorphicProxyRequest]
+   * @param {RequestsApiRequestsCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof RequestsApi
    */
   public requestsCreate(
-    polymorphicProxyRequest?: PolymorphicProxyRequest,
+    requestParameters: RequestsApiRequestsCreateRequest = {},
     options?: AxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
-      .requestsCreate(polymorphicProxyRequest, options)
+      .requestsCreate(requestParameters.polymorphicProxyRequest, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {string} [ordering] Which field to use when ordering the results.
-   * @param {number} [page] A page number within the paginated result set.
-   * @param {number} [pageSize] Number of results to return per page.
-   * @param {boolean} [pagination] Return paginated response.
-   * @param {string} [search] A search term.
+   * @param {RequestsApiRequestsListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof RequestsApi
    */
   public requestsList(
-    ordering?: string,
-    page?: number,
-    pageSize?: number,
-    pagination?: boolean,
-    search?: string,
+    requestParameters: RequestsApiRequestsListRequest = {},
     options?: AxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
-      .requestsList(ordering, page, pageSize, pagination, search, options)
+      .requestsList(
+        requestParameters.ordering,
+        requestParameters.page,
+        requestParameters.pageSize,
+        requestParameters.pagination,
+        requestParameters.search,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this request.
+   * @param {RequestsApiRequestsRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof RequestsApi
    */
-  public requestsRetrieve(id: number, options?: AxiosRequestConfig) {
+  public requestsRetrieve(
+    requestParameters: RequestsApiRequestsRetrieveRequest,
+    options?: AxiosRequestConfig,
+  ) {
     return RequestsApiFp(this.configuration)
-      .requestsRetrieve(id, options)
+      .requestsRetrieve(requestParameters.id, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} requestId
-   * @param {string} [ordering] Which field to use when ordering the results.
+   * @param {RequestsApiRequestsVideosListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof RequestsApi
    */
   public requestsVideosList(
-    requestId: number,
-    ordering?: string,
+    requestParameters: RequestsApiRequestsVideosListRequest,
     options?: AxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
-      .requestsVideosList(requestId, ordering, options)
+      .requestsVideosList(
+        requestParameters.requestId,
+        requestParameters.ordering,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} requestId
-   * @param {number} videoId
-   * @param {RatingCreateUpdateRequest} ratingCreateUpdateRequest
+   * @param {RequestsApiRequestsVideosRatingCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof RequestsApi
    */
   public requestsVideosRatingCreate(
-    requestId: number,
-    videoId: number,
-    ratingCreateUpdateRequest: RatingCreateUpdateRequest,
+    requestParameters: RequestsApiRequestsVideosRatingCreateRequest,
     options?: AxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
       .requestsVideosRatingCreate(
-        requestId,
-        videoId,
-        ratingCreateUpdateRequest,
+        requestParameters.requestId,
+        requestParameters.videoId,
+        requestParameters.ratingCreateUpdateRequest,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -2123,42 +2499,40 @@ export class RequestsApi extends BaseAPI {
 
   /**
    *
-   * @param {number} requestId
-   * @param {number} videoId
+   * @param {RequestsApiRequestsVideosRatingDestroyRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof RequestsApi
    */
   public requestsVideosRatingDestroy(
-    requestId: number,
-    videoId: number,
+    requestParameters: RequestsApiRequestsVideosRatingDestroyRequest,
     options?: AxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
-      .requestsVideosRatingDestroy(requestId, videoId, options)
+      .requestsVideosRatingDestroy(
+        requestParameters.requestId,
+        requestParameters.videoId,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} requestId
-   * @param {number} videoId
-   * @param {PatchedRatingCreateUpdateRequest} [patchedRatingCreateUpdateRequest]
+   * @param {RequestsApiRequestsVideosRatingPartialUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof RequestsApi
    */
   public requestsVideosRatingPartialUpdate(
-    requestId: number,
-    videoId: number,
-    patchedRatingCreateUpdateRequest?: PatchedRatingCreateUpdateRequest,
+    requestParameters: RequestsApiRequestsVideosRatingPartialUpdateRequest,
     options?: AxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
       .requestsVideosRatingPartialUpdate(
-        requestId,
-        videoId,
-        patchedRatingCreateUpdateRequest,
+        requestParameters.requestId,
+        requestParameters.videoId,
+        requestParameters.patchedRatingCreateUpdateRequest,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -2166,42 +2540,19 @@ export class RequestsApi extends BaseAPI {
 
   /**
    *
-   * @param {number} requestId
-   * @param {number} videoId
+   * @param {RequestsApiRequestsVideosRatingRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof RequestsApi
    */
   public requestsVideosRatingRetrieve(
-    requestId: number,
-    videoId: number,
+    requestParameters: RequestsApiRequestsVideosRatingRetrieveRequest,
     options?: AxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
-      .requestsVideosRatingRetrieve(requestId, videoId, options)
-      .then((request) => request(this.axios, this.basePath));
-  }
-
-  /**
-   *
-   * @param {number} requestId
-   * @param {number} videoId
-   * @param {RatingCreateUpdateRequest} ratingCreateUpdateRequest
-   * @param {*} [options] Override http request option.
-   * @throws {RequiredError}
-   * @memberof RequestsApi
-   */
-  public requestsVideosRatingUpdate(
-    requestId: number,
-    videoId: number,
-    ratingCreateUpdateRequest: RatingCreateUpdateRequest,
-    options?: AxiosRequestConfig,
-  ) {
-    return RequestsApiFp(this.configuration)
-      .requestsVideosRatingUpdate(
-        requestId,
-        videoId,
-        ratingCreateUpdateRequest,
+      .requestsVideosRatingRetrieve(
+        requestParameters.requestId,
+        requestParameters.videoId,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -2209,19 +2560,42 @@ export class RequestsApi extends BaseAPI {
 
   /**
    *
-   * @param {number} id A unique integer value identifying this video.
-   * @param {number} requestId
+   * @param {RequestsApiRequestsVideosRatingUpdateRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   * @memberof RequestsApi
+   */
+  public requestsVideosRatingUpdate(
+    requestParameters: RequestsApiRequestsVideosRatingUpdateRequest,
+    options?: AxiosRequestConfig,
+  ) {
+    return RequestsApiFp(this.configuration)
+      .requestsVideosRatingUpdate(
+        requestParameters.requestId,
+        requestParameters.videoId,
+        requestParameters.ratingCreateUpdateRequest,
+        options,
+      )
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {RequestsApiRequestsVideosRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof RequestsApi
    */
   public requestsVideosRetrieve(
-    id: number,
-    requestId: number,
+    requestParameters: RequestsApiRequestsVideosRetrieveRequest,
     options?: AxiosRequestConfig,
   ) {
     return RequestsApiFp(this.configuration)
-      .requestsVideosRetrieve(id, requestId, options)
+      .requestsVideosRetrieve(
+        requestParameters.id,
+        requestParameters.requestId,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 }

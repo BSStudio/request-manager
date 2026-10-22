@@ -152,20 +152,34 @@ export const LoginApiFactory = function (
   return {
     /**
      *
-     * @param {SocialLoginRequest} socialLoginRequest
+     * @param {LoginApiLoginSocialCreateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     loginSocialCreate(
-      socialLoginRequest: SocialLoginRequest,
-      options?: any,
+      requestParameters: LoginApiLoginSocialCreateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<SessionUser> {
       return localVarFp
-        .loginSocialCreate(socialLoginRequest, options)
+        .loginSocialCreate(requestParameters.socialLoginRequest, options)
         .then((request) => request(axios, basePath));
     },
   };
 };
+
+/**
+ * Request parameters for loginSocialCreate operation in LoginApi.
+ * @export
+ * @interface LoginApiLoginSocialCreateRequest
+ */
+export interface LoginApiLoginSocialCreateRequest {
+  /**
+   *
+   * @type {SocialLoginRequest}
+   * @memberof LoginApiLoginSocialCreate
+   */
+  readonly socialLoginRequest: SocialLoginRequest;
+}
 
 /**
  * LoginApi - object-oriented interface
@@ -176,17 +190,17 @@ export const LoginApiFactory = function (
 export class LoginApi extends BaseAPI {
   /**
    *
-   * @param {SocialLoginRequest} socialLoginRequest
+   * @param {LoginApiLoginSocialCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof LoginApi
    */
   public loginSocialCreate(
-    socialLoginRequest: SocialLoginRequest,
+    requestParameters: LoginApiLoginSocialCreateRequest,
     options?: AxiosRequestConfig,
   ) {
     return LoginApiFp(this.configuration)
-      .loginSocialCreate(socialLoginRequest, options)
+      .loginSocialCreate(requestParameters.socialLoginRequest, options)
       .then((request) => request(this.axios, this.basePath));
   }
 }

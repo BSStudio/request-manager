@@ -90,8 +90,10 @@ function OwnMessage({ message, requestId }: OwnMessageProps) {
   const save = useMutation({
     mutationFn: async (text: string) =>
       (
-        await requestsApi.requestsCommentsPartialUpdate(message.id, requestId, {
-          text,
+        await requestsApi.requestsCommentsPartialUpdate({
+          id: message.id,
+          patchedCommentCreateUpdateRequest: { text },
+          requestId,
         })
       ).data,
     onError: (error) =>
@@ -108,7 +110,7 @@ function OwnMessage({ message, requestId }: OwnMessageProps) {
 
   const remove = useMutation({
     mutationFn: () =>
-      requestsApi.requestsCommentsDestroy(message.id, requestId),
+      requestsApi.requestsCommentsDestroy({ id: message.id, requestId }),
     onError: (error) =>
       toast.error('Nem sikerült törölni az üzenetet.', {
         description: getApiErrorMessage(error),

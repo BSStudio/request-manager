@@ -104,12 +104,12 @@ const WorkedOnSection = ({ userId }: WorkedOnSectionProps) => {
       : undefined;
 
     await adminApi
-      .adminUsersWorkedOnList(
-        userId,
-        date_after,
-        date_before,
-        data.is_responsible,
-      )
+      .adminUsersWorkedOnList({
+        dateAfter: date_after,
+        dateBefore: date_before,
+        id: userId,
+        isResponsible: data.is_responsible,
+      })
       .then((response) => {
         setWorkedOnResults(response.data);
       })

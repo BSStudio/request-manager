@@ -80,20 +80,13 @@ const RequestSearchForm = ({
       : undefined;
 
     await adminApi
-      .adminRequestsList(
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        10000,
-        undefined,
-        undefined,
-        title,
-        start_datetime_after,
-        start_datetime_before,
-        status as AdminRequestsListStatusEnum[],
-      )
+      .adminRequestsList({
+        pageSize: 10000,
+        search: title,
+        startDatetimeAfter: start_datetime_after,
+        startDatetimeBefore: start_datetime_before,
+        status: status as AdminRequestsListStatusEnum[],
+      })
       .then((response) => {
         setRequestSearchResults(response.data.results || []);
       })

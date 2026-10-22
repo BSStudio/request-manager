@@ -45,20 +45,10 @@ const LandingPage = () => {
 
   const { data: notAnsweredData, isLoading: notAnsweredLoading } = useQuery({
     queryFn: async () => {
-      const requests = await adminApi.adminRequestsList(
-        undefined,
-        undefined,
-        undefined,
-        'start_datetime',
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        [RequestStatus.REQUESTED],
-      );
+      const requests = await adminApi.adminRequestsList({
+        ordering: 'start_datetime',
+        status: [RequestStatus.REQUESTED],
+      });
       return requests.data.results || [];
     },
     queryKey: ['requests', 'status', '1'],
@@ -67,20 +57,12 @@ const LandingPage = () => {
   const { data: upcomingRecordingData, isLoading: upcomingRecordingLoading } =
     useQuery({
       queryFn: async () => {
-        const requests = await adminApi.adminRequestsList(
-          undefined,
-          undefined,
-          undefined,
-          'start_datetime',
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          currentDate,
-          twoWeeksLaterDate,
-          [RequestStatus.REQUESTED, RequestStatus.ACCEPTED],
-        );
+        const requests = await adminApi.adminRequestsList({
+          ordering: 'start_datetime',
+          startDatetimeAfter: currentDate,
+          startDatetimeBefore: twoWeeksLaterDate,
+          status: [RequestStatus.REQUESTED, RequestStatus.ACCEPTED],
+        });
         return requests.data.results || [];
       },
       queryKey: ['requests', `${currentDate}/${twoWeeksLaterDate}`],
@@ -89,20 +71,11 @@ const LandingPage = () => {
   const { data: upcomingDeadlineData, isLoading: upcomingDeadlingLoading } =
     useQuery({
       queryFn: async () => {
-        const requests = await adminApi.adminRequestsList(
-          undefined,
-          oneWeekLaterDate,
-          undefined,
-          'deadline',
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          [3, 4, 5],
-        );
+        const requests = await adminApi.adminRequestsList({
+          deadlineBefore: oneWeekLaterDate,
+          ordering: 'deadline',
+          status: [3, 4, 5],
+        });
         return requests.data.results || [];
       },
       queryKey: ['requests', 'deadline', oneWeekLaterDate],
@@ -113,20 +86,10 @@ const LandingPage = () => {
     isLoading: requestsWithoutVideosLoading,
   } = useQuery({
     queryFn: async () => {
-      const requests = await adminApi.adminRequestsList(
-        undefined,
-        undefined,
-        undefined,
-        'start_datetime',
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        undefined,
-        [3, 4],
-      );
+      const requests = await adminApi.adminRequestsList({
+        ordering: 'start_datetime',
+        status: [3, 4],
+      });
       return (
         requests.data.results?.filter((request) => request.video_count == 0) ||
         []
@@ -138,21 +101,10 @@ const LandingPage = () => {
   const { data: notEditedVideosData, isLoading: notEditedVideosLoading } =
     useQuery({
       queryFn: async () => {
-        const requests = await adminApi.adminVideosList(
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          'request__start_datetime',
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          undefined,
-          [VideoStatus.PENDING, VideoStatus.IN_PROGRESS],
-        );
+        const requests = await adminApi.adminVideosList({
+          ordering: 'request__start_datetime',
+          status: [VideoStatus.PENDING, VideoStatus.IN_PROGRESS],
+        });
         return requests.data.results || [];
       },
       queryKey: ['videos', 'status', '1,2'],

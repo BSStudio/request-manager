@@ -5924,27 +5924,33 @@ export const AdminApiFactory = function (
   return {
     /**
      *
-     * @param {ProjectAdminWriteRequest} projectAdminWriteRequest
+     * @param {AdminApiAdminProjectsCreateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminProjectsCreate(
-      projectAdminWriteRequest: ProjectAdminWriteRequest,
-      options?: any,
+      requestParameters: AdminApiAdminProjectsCreateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<ProjectAdminRetrieve> {
       return localVarFp
-        .adminProjectsCreate(projectAdminWriteRequest, options)
+        .adminProjectsCreate(
+          requestParameters.projectAdminWriteRequest,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this project.
+     * @param {AdminApiAdminProjectsDestroyRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    adminProjectsDestroy(id: number, options?: any): AxiosPromise<void> {
+    adminProjectsDestroy(
+      requestParameters: AdminApiAdminProjectsDestroyRequest,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<void> {
       return localVarFp
-        .adminProjectsDestroy(id, options)
+        .adminProjectsDestroy(requestParameters.id, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -5952,1116 +5958,2523 @@ export const AdminApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    adminProjectsList(options?: any): AxiosPromise<Array<ProjectAdminList>> {
+    adminProjectsList(
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<Array<ProjectAdminList>> {
       return localVarFp
         .adminProjectsList(options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this project.
-     * @param {PatchedProjectAdminWriteRequest} [patchedProjectAdminWriteRequest]
+     * @param {AdminApiAdminProjectsPartialUpdateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminProjectsPartialUpdate(
-      id: number,
-      patchedProjectAdminWriteRequest?: PatchedProjectAdminWriteRequest,
-      options?: any,
+      requestParameters: AdminApiAdminProjectsPartialUpdateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<ProjectAdminRetrieve> {
       return localVarFp
         .adminProjectsPartialUpdate(
-          id,
-          patchedProjectAdminWriteRequest,
+          requestParameters.id,
+          requestParameters.patchedProjectAdminWriteRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this project.
+     * @param {AdminApiAdminProjectsRetrieveRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminProjectsRetrieve(
-      id: number,
-      options?: any,
+      requestParameters: AdminApiAdminProjectsRetrieveRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<ProjectAdminRetrieve> {
       return localVarFp
-        .adminProjectsRetrieve(id, options)
+        .adminProjectsRetrieve(requestParameters.id, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this project.
-     * @param {ProjectAdminWriteRequest} projectAdminWriteRequest
+     * @param {AdminApiAdminProjectsUpdateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminProjectsUpdate(
-      id: number,
-      projectAdminWriteRequest: ProjectAdminWriteRequest,
-      options?: any,
+      requestParameters: AdminApiAdminProjectsUpdateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<ProjectAdminRetrieve> {
       return localVarFp
-        .adminProjectsUpdate(id, projectAdminWriteRequest, options)
+        .adminProjectsUpdate(
+          requestParameters.id,
+          requestParameters.projectAdminWriteRequest,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {string} dateAfter
-     * @param {string} dateBefore
+     * @param {AdminApiAdminReportRetrieveRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminReportRetrieve(
-      dateAfter: string,
-      dateBefore: string,
-      options?: any,
+      requestParameters: AdminApiAdminReportRetrieveRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<ReportAdmin> {
       return localVarFp
-        .adminReportRetrieve(dateAfter, dateBefore, options)
+        .adminReportRetrieve(
+          requestParameters.dateAfter,
+          requestParameters.dateBefore,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} requestId
-     * @param {CommentAdminCreateUpdateRequest} commentAdminCreateUpdateRequest
+     * @param {AdminApiAdminRequestsCommentsCreateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsCommentsCreate(
-      requestId: number,
-      commentAdminCreateUpdateRequest: CommentAdminCreateUpdateRequest,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsCommentsCreateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<CommentAdminCreateUpdate> {
       return localVarFp
         .adminRequestsCommentsCreate(
-          requestId,
-          commentAdminCreateUpdateRequest,
+          requestParameters.requestId,
+          requestParameters.commentAdminCreateUpdateRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this comment.
-     * @param {number} requestId
+     * @param {AdminApiAdminRequestsCommentsDestroyRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsCommentsDestroy(
-      id: number,
-      requestId: number,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsCommentsDestroyRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
-        .adminRequestsCommentsDestroy(id, requestId, options)
+        .adminRequestsCommentsDestroy(
+          requestParameters.id,
+          requestParameters.requestId,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this comment.
-     * @param {number} requestId
+     * @param {AdminApiAdminRequestsCommentsHistoryListRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsCommentsHistoryList(
-      id: number,
-      requestId: number,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsCommentsHistoryListRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<Array<History>> {
       return localVarFp
-        .adminRequestsCommentsHistoryList(id, requestId, options)
+        .adminRequestsCommentsHistoryList(
+          requestParameters.id,
+          requestParameters.requestId,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} requestId
-     * @param {string} [ordering] Which field to use when ordering the results.
+     * @param {AdminApiAdminRequestsCommentsListRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsCommentsList(
-      requestId: number,
-      ordering?: string,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsCommentsListRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<Array<CommentAdminListRetrieve>> {
       return localVarFp
-        .adminRequestsCommentsList(requestId, ordering, options)
+        .adminRequestsCommentsList(
+          requestParameters.requestId,
+          requestParameters.ordering,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this comment.
-     * @param {number} requestId
-     * @param {PatchedCommentAdminCreateUpdateRequest} [patchedCommentAdminCreateUpdateRequest]
+     * @param {AdminApiAdminRequestsCommentsPartialUpdateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsCommentsPartialUpdate(
-      id: number,
-      requestId: number,
-      patchedCommentAdminCreateUpdateRequest?: PatchedCommentAdminCreateUpdateRequest,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsCommentsPartialUpdateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<CommentAdminCreateUpdate> {
       return localVarFp
         .adminRequestsCommentsPartialUpdate(
-          id,
-          requestId,
-          patchedCommentAdminCreateUpdateRequest,
+          requestParameters.id,
+          requestParameters.requestId,
+          requestParameters.patchedCommentAdminCreateUpdateRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this comment.
-     * @param {number} requestId
+     * @param {AdminApiAdminRequestsCommentsRetrieveRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsCommentsRetrieve(
-      id: number,
-      requestId: number,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsCommentsRetrieveRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<CommentAdminListRetrieve> {
       return localVarFp
-        .adminRequestsCommentsRetrieve(id, requestId, options)
+        .adminRequestsCommentsRetrieve(
+          requestParameters.id,
+          requestParameters.requestId,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this comment.
-     * @param {number} requestId
-     * @param {CommentAdminCreateUpdateRequest} commentAdminCreateUpdateRequest
+     * @param {AdminApiAdminRequestsCommentsUpdateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsCommentsUpdate(
-      id: number,
-      requestId: number,
-      commentAdminCreateUpdateRequest: CommentAdminCreateUpdateRequest,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsCommentsUpdateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<CommentAdminCreateUpdate> {
       return localVarFp
         .adminRequestsCommentsUpdate(
-          id,
-          requestId,
-          commentAdminCreateUpdateRequest,
+          requestParameters.id,
+          requestParameters.requestId,
+          requestParameters.commentAdminCreateUpdateRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {RequestAdminCreateRequest} requestAdminCreateRequest
+     * @param {AdminApiAdminRequestsCreateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsCreate(
-      requestAdminCreateRequest: RequestAdminCreateRequest,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsCreateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<RequestAdminRetrieve> {
       return localVarFp
-        .adminRequestsCreate(requestAdminCreateRequest, options)
+        .adminRequestsCreate(
+          requestParameters.requestAdminCreateRequest,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} requestId
-     * @param {CrewMemberAdminCreateUpdateRequest} crewMemberAdminCreateUpdateRequest
+     * @param {AdminApiAdminRequestsCrewCreateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsCrewCreate(
-      requestId: number,
-      crewMemberAdminCreateUpdateRequest: CrewMemberAdminCreateUpdateRequest,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsCrewCreateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<CrewMemberAdminListRetrieve> {
       return localVarFp
         .adminRequestsCrewCreate(
-          requestId,
-          crewMemberAdminCreateUpdateRequest,
+          requestParameters.requestId,
+          requestParameters.crewMemberAdminCreateUpdateRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this crew member.
-     * @param {number} requestId
+     * @param {AdminApiAdminRequestsCrewDestroyRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsCrewDestroy(
-      id: number,
-      requestId: number,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsCrewDestroyRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
-        .adminRequestsCrewDestroy(id, requestId, options)
+        .adminRequestsCrewDestroy(
+          requestParameters.id,
+          requestParameters.requestId,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} requestId
-     * @param {string} [ordering] Which field to use when ordering the results.
+     * @param {AdminApiAdminRequestsCrewListRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsCrewList(
-      requestId: number,
-      ordering?: string,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsCrewListRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<Array<CrewMemberAdminListRetrieve>> {
       return localVarFp
-        .adminRequestsCrewList(requestId, ordering, options)
+        .adminRequestsCrewList(
+          requestParameters.requestId,
+          requestParameters.ordering,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this crew member.
-     * @param {number} requestId
-     * @param {PatchedCrewMemberAdminCreateUpdateRequest} [patchedCrewMemberAdminCreateUpdateRequest]
+     * @param {AdminApiAdminRequestsCrewPartialUpdateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsCrewPartialUpdate(
-      id: number,
-      requestId: number,
-      patchedCrewMemberAdminCreateUpdateRequest?: PatchedCrewMemberAdminCreateUpdateRequest,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsCrewPartialUpdateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<CrewMemberAdminListRetrieve> {
       return localVarFp
         .adminRequestsCrewPartialUpdate(
-          id,
-          requestId,
-          patchedCrewMemberAdminCreateUpdateRequest,
+          requestParameters.id,
+          requestParameters.requestId,
+          requestParameters.patchedCrewMemberAdminCreateUpdateRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this crew member.
-     * @param {number} requestId
+     * @param {AdminApiAdminRequestsCrewRetrieveRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsCrewRetrieve(
-      id: number,
-      requestId: number,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsCrewRetrieveRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<CrewMemberAdminListRetrieve> {
       return localVarFp
-        .adminRequestsCrewRetrieve(id, requestId, options)
+        .adminRequestsCrewRetrieve(
+          requestParameters.id,
+          requestParameters.requestId,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this crew member.
-     * @param {number} requestId
-     * @param {CrewMemberAdminCreateUpdateRequest} crewMemberAdminCreateUpdateRequest
+     * @param {AdminApiAdminRequestsCrewUpdateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsCrewUpdate(
-      id: number,
-      requestId: number,
-      crewMemberAdminCreateUpdateRequest: CrewMemberAdminCreateUpdateRequest,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsCrewUpdateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<CrewMemberAdminListRetrieve> {
       return localVarFp
         .adminRequestsCrewUpdate(
-          id,
-          requestId,
-          crewMemberAdminCreateUpdateRequest,
+          requestParameters.id,
+          requestParameters.requestId,
+          requestParameters.crewMemberAdminCreateUpdateRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this request.
+     * @param {AdminApiAdminRequestsDestroyRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    adminRequestsDestroy(id: number, options?: any): AxiosPromise<void> {
+    adminRequestsDestroy(
+      requestParameters: AdminApiAdminRequestsDestroyRequest,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<void> {
       return localVarFp
-        .adminRequestsDestroy(id, options)
+        .adminRequestsDestroy(requestParameters.id, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this request.
+     * @param {AdminApiAdminRequestsHistoryListRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsHistoryList(
-      id: number,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsHistoryListRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<Array<History>> {
       return localVarFp
-        .adminRequestsHistoryList(id, options)
+        .adminRequestsHistoryList(requestParameters.id, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {string} [deadlineAfter]
-     * @param {string} [deadlineBefore]
-     * @param {boolean} [hasProject]
-     * @param {string} [ordering] Which field to use when ordering the results.
-     * @param {number} [page] A page number within the paginated result set.
-     * @param {number} [pageSize] Number of results to return per page.
-     * @param {boolean} [pagination] Return paginated response.
-     * @param {number} [project]
-     * @param {string} [search] A search term.
-     * @param {string} [startDatetimeAfter]
-     * @param {string} [startDatetimeBefore]
-     * @param {Array<AdminRequestsListStatusEnum>} [status] * &#x60;0&#x60; - Elutasítva * &#x60;1&#x60; - Felkérés * &#x60;2&#x60; - Elvállalva * &#x60;3&#x60; - Leforgatva * &#x60;4&#x60; - Beírva * &#x60;5&#x60; - Megvágva * &#x60;6&#x60; - Archiválva * &#x60;7&#x60; - Lezárva * &#x60;9&#x60; - Szervezők által lemondva * &#x60;10&#x60; - Meghiúsult
+     * @param {AdminApiAdminRequestsListRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsList(
-      deadlineAfter?: string,
-      deadlineBefore?: string,
-      hasProject?: boolean,
-      ordering?: string,
-      page?: number,
-      pageSize?: number,
-      pagination?: boolean,
-      project?: number,
-      search?: string,
-      startDatetimeAfter?: string,
-      startDatetimeBefore?: string,
-      status?: Array<AdminRequestsListStatusEnum>,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsListRequest = {},
+      options?: AxiosRequestConfig,
     ): AxiosPromise<PaginatedRequestAdminListList> {
       return localVarFp
         .adminRequestsList(
-          deadlineAfter,
-          deadlineBefore,
-          hasProject,
-          ordering,
-          page,
-          pageSize,
-          pagination,
-          project,
-          search,
-          startDatetimeAfter,
-          startDatetimeBefore,
-          status,
+          requestParameters.deadlineAfter,
+          requestParameters.deadlineBefore,
+          requestParameters.hasProject,
+          requestParameters.ordering,
+          requestParameters.page,
+          requestParameters.pageSize,
+          requestParameters.pagination,
+          requestParameters.project,
+          requestParameters.search,
+          requestParameters.startDatetimeAfter,
+          requestParameters.startDatetimeBefore,
+          requestParameters.status,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this request.
-     * @param {PatchedRequestAdminUpdateRequest} [patchedRequestAdminUpdateRequest]
+     * @param {AdminApiAdminRequestsPartialUpdateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsPartialUpdate(
-      id: number,
-      patchedRequestAdminUpdateRequest?: PatchedRequestAdminUpdateRequest,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsPartialUpdateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<RequestAdminRetrieve> {
       return localVarFp
         .adminRequestsPartialUpdate(
-          id,
-          patchedRequestAdminUpdateRequest,
+          requestParameters.id,
+          requestParameters.patchedRequestAdminUpdateRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this request.
+     * @param {AdminApiAdminRequestsRetrieveRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsRetrieve(
-      id: number,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsRetrieveRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<RequestAdminRetrieve> {
       return localVarFp
-        .adminRequestsRetrieve(id, options)
+        .adminRequestsRetrieve(requestParameters.id, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} requestId
-     * @param {TodoAdminCreateUpdateRequest} todoAdminCreateUpdateRequest
+     * @param {AdminApiAdminRequestsTodosCreateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsTodosCreate(
-      requestId: number,
-      todoAdminCreateUpdateRequest: TodoAdminCreateUpdateRequest,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsTodosCreateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<TodoAdminListRetrieve> {
       return localVarFp
         .adminRequestsTodosCreate(
-          requestId,
-          todoAdminCreateUpdateRequest,
+          requestParameters.requestId,
+          requestParameters.todoAdminCreateUpdateRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} requestId
-     * @param {string} [ordering] Which field to use when ordering the results.
+     * @param {AdminApiAdminRequestsTodosListRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsTodosList(
-      requestId: number,
-      ordering?: string,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsTodosListRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<Array<TodoAdminListRetrieve>> {
       return localVarFp
-        .adminRequestsTodosList(requestId, ordering, options)
+        .adminRequestsTodosList(
+          requestParameters.requestId,
+          requestParameters.ordering,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this request.
-     * @param {RequestAdminUpdateRequest} requestAdminUpdateRequest
+     * @param {AdminApiAdminRequestsUpdateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsUpdate(
-      id: number,
-      requestAdminUpdateRequest: RequestAdminUpdateRequest,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsUpdateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<RequestAdminRetrieve> {
       return localVarFp
-        .adminRequestsUpdate(id, requestAdminUpdateRequest, options)
+        .adminRequestsUpdate(
+          requestParameters.id,
+          requestParameters.requestAdminUpdateRequest,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} requestId
-     * @param {VideoAdminCreateUpdateRequest} videoAdminCreateUpdateRequest
+     * @param {AdminApiAdminRequestsVideosCreateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsVideosCreate(
-      requestId: number,
-      videoAdminCreateUpdateRequest: VideoAdminCreateUpdateRequest,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsVideosCreateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<VideoAdminRetrieve> {
       return localVarFp
         .adminRequestsVideosCreate(
-          requestId,
-          videoAdminCreateUpdateRequest,
+          requestParameters.requestId,
+          requestParameters.videoAdminCreateUpdateRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this video.
-     * @param {number} requestId
+     * @param {AdminApiAdminRequestsVideosDestroyRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsVideosDestroy(
-      id: number,
-      requestId: number,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsVideosDestroyRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
-        .adminRequestsVideosDestroy(id, requestId, options)
+        .adminRequestsVideosDestroy(
+          requestParameters.id,
+          requestParameters.requestId,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this video.
-     * @param {number} requestId
+     * @param {AdminApiAdminRequestsVideosHistoryListRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsVideosHistoryList(
-      id: number,
-      requestId: number,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsVideosHistoryListRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<Array<History>> {
       return localVarFp
-        .adminRequestsVideosHistoryList(id, requestId, options)
+        .adminRequestsVideosHistoryList(
+          requestParameters.id,
+          requestParameters.requestId,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} requestId
-     * @param {string} [ordering] Which field to use when ordering the results.
+     * @param {AdminApiAdminRequestsVideosListRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsVideosList(
-      requestId: number,
-      ordering?: string,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsVideosListRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<Array<VideoAdminList>> {
       return localVarFp
-        .adminRequestsVideosList(requestId, ordering, options)
+        .adminRequestsVideosList(
+          requestParameters.requestId,
+          requestParameters.ordering,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this video.
-     * @param {number} requestId
-     * @param {PatchedVideoAdminCreateUpdateRequest} [patchedVideoAdminCreateUpdateRequest]
+     * @param {AdminApiAdminRequestsVideosPartialUpdateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsVideosPartialUpdate(
-      id: number,
-      requestId: number,
-      patchedVideoAdminCreateUpdateRequest?: PatchedVideoAdminCreateUpdateRequest,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsVideosPartialUpdateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<VideoAdminRetrieve> {
       return localVarFp
         .adminRequestsVideosPartialUpdate(
-          id,
-          requestId,
-          patchedVideoAdminCreateUpdateRequest,
+          requestParameters.id,
+          requestParameters.requestId,
+          requestParameters.patchedVideoAdminCreateUpdateRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} requestId
-     * @param {number} videoId
-     * @param {RatingAdminCreateUpdateRequest} ratingAdminCreateUpdateRequest
+     * @param {AdminApiAdminRequestsVideosRatingsCreateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsVideosRatingsCreate(
-      requestId: number,
-      videoId: number,
-      ratingAdminCreateUpdateRequest: RatingAdminCreateUpdateRequest,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsVideosRatingsCreateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<RatingAdminCreateUpdate> {
       return localVarFp
         .adminRequestsVideosRatingsCreate(
-          requestId,
-          videoId,
-          ratingAdminCreateUpdateRequest,
+          requestParameters.requestId,
+          requestParameters.videoId,
+          requestParameters.ratingAdminCreateUpdateRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this rating.
-     * @param {number} requestId
-     * @param {number} videoId
+     * @param {AdminApiAdminRequestsVideosRatingsDestroyRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsVideosRatingsDestroy(
-      id: number,
-      requestId: number,
-      videoId: number,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsVideosRatingsDestroyRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
-        .adminRequestsVideosRatingsDestroy(id, requestId, videoId, options)
+        .adminRequestsVideosRatingsDestroy(
+          requestParameters.id,
+          requestParameters.requestId,
+          requestParameters.videoId,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this rating.
-     * @param {number} requestId
-     * @param {number} videoId
+     * @param {AdminApiAdminRequestsVideosRatingsHistoryListRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsVideosRatingsHistoryList(
-      id: number,
-      requestId: number,
-      videoId: number,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsVideosRatingsHistoryListRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<Array<History>> {
       return localVarFp
-        .adminRequestsVideosRatingsHistoryList(id, requestId, videoId, options)
+        .adminRequestsVideosRatingsHistoryList(
+          requestParameters.id,
+          requestParameters.requestId,
+          requestParameters.videoId,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} requestId
-     * @param {number} videoId
-     * @param {string} [ordering] Which field to use when ordering the results.
+     * @param {AdminApiAdminRequestsVideosRatingsListRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsVideosRatingsList(
-      requestId: number,
-      videoId: number,
-      ordering?: string,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsVideosRatingsListRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<Array<RatingAdminListRetrieve>> {
       return localVarFp
-        .adminRequestsVideosRatingsList(requestId, videoId, ordering, options)
+        .adminRequestsVideosRatingsList(
+          requestParameters.requestId,
+          requestParameters.videoId,
+          requestParameters.ordering,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} requestId
-     * @param {number} videoId
+     * @param {AdminApiAdminRequestsVideosRatingsOwnRetrieveRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsVideosRatingsOwnRetrieve(
-      requestId: number,
-      videoId: number,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsVideosRatingsOwnRetrieveRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<RatingAdminListRetrieve> {
       return localVarFp
-        .adminRequestsVideosRatingsOwnRetrieve(requestId, videoId, options)
+        .adminRequestsVideosRatingsOwnRetrieve(
+          requestParameters.requestId,
+          requestParameters.videoId,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this rating.
-     * @param {number} requestId
-     * @param {number} videoId
-     * @param {PatchedRatingAdminCreateUpdateRequest} [patchedRatingAdminCreateUpdateRequest]
+     * @param {AdminApiAdminRequestsVideosRatingsPartialUpdateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsVideosRatingsPartialUpdate(
-      id: number,
-      requestId: number,
-      videoId: number,
-      patchedRatingAdminCreateUpdateRequest?: PatchedRatingAdminCreateUpdateRequest,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsVideosRatingsPartialUpdateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<RatingAdminCreateUpdate> {
       return localVarFp
         .adminRequestsVideosRatingsPartialUpdate(
-          id,
-          requestId,
-          videoId,
-          patchedRatingAdminCreateUpdateRequest,
+          requestParameters.id,
+          requestParameters.requestId,
+          requestParameters.videoId,
+          requestParameters.patchedRatingAdminCreateUpdateRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this rating.
-     * @param {number} requestId
-     * @param {number} videoId
+     * @param {AdminApiAdminRequestsVideosRatingsRetrieveRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsVideosRatingsRetrieve(
-      id: number,
-      requestId: number,
-      videoId: number,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsVideosRatingsRetrieveRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<RatingAdminListRetrieve> {
       return localVarFp
-        .adminRequestsVideosRatingsRetrieve(id, requestId, videoId, options)
+        .adminRequestsVideosRatingsRetrieve(
+          requestParameters.id,
+          requestParameters.requestId,
+          requestParameters.videoId,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this rating.
-     * @param {number} requestId
-     * @param {number} videoId
-     * @param {RatingAdminCreateUpdateRequest} ratingAdminCreateUpdateRequest
+     * @param {AdminApiAdminRequestsVideosRatingsUpdateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsVideosRatingsUpdate(
-      id: number,
-      requestId: number,
-      videoId: number,
-      ratingAdminCreateUpdateRequest: RatingAdminCreateUpdateRequest,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsVideosRatingsUpdateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<RatingAdminCreateUpdate> {
       return localVarFp
         .adminRequestsVideosRatingsUpdate(
-          id,
-          requestId,
-          videoId,
-          ratingAdminCreateUpdateRequest,
+          requestParameters.id,
+          requestParameters.requestId,
+          requestParameters.videoId,
+          requestParameters.ratingAdminCreateUpdateRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this video.
-     * @param {number} requestId
+     * @param {AdminApiAdminRequestsVideosRetrieveRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsVideosRetrieve(
-      id: number,
-      requestId: number,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsVideosRetrieveRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<VideoAdminRetrieve> {
       return localVarFp
-        .adminRequestsVideosRetrieve(id, requestId, options)
+        .adminRequestsVideosRetrieve(
+          requestParameters.id,
+          requestParameters.requestId,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} requestId
-     * @param {number} videoId
-     * @param {TodoAdminCreateUpdateRequest} todoAdminCreateUpdateRequest
+     * @param {AdminApiAdminRequestsVideosTodosCreateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsVideosTodosCreate(
-      requestId: number,
-      videoId: number,
-      todoAdminCreateUpdateRequest: TodoAdminCreateUpdateRequest,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsVideosTodosCreateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<TodoAdminListRetrieve> {
       return localVarFp
         .adminRequestsVideosTodosCreate(
-          requestId,
-          videoId,
-          todoAdminCreateUpdateRequest,
+          requestParameters.requestId,
+          requestParameters.videoId,
+          requestParameters.todoAdminCreateUpdateRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} requestId
-     * @param {number} videoId
-     * @param {string} [ordering] Which field to use when ordering the results.
+     * @param {AdminApiAdminRequestsVideosTodosListRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsVideosTodosList(
-      requestId: number,
-      videoId: number,
-      ordering?: string,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsVideosTodosListRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<Array<TodoAdminListRetrieve>> {
       return localVarFp
-        .adminRequestsVideosTodosList(requestId, videoId, ordering, options)
+        .adminRequestsVideosTodosList(
+          requestParameters.requestId,
+          requestParameters.videoId,
+          requestParameters.ordering,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this video.
-     * @param {number} requestId
-     * @param {VideoAdminCreateUpdateRequest} videoAdminCreateUpdateRequest
+     * @param {AdminApiAdminRequestsVideosUpdateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminRequestsVideosUpdate(
-      id: number,
-      requestId: number,
-      videoAdminCreateUpdateRequest: VideoAdminCreateUpdateRequest,
-      options?: any,
+      requestParameters: AdminApiAdminRequestsVideosUpdateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<VideoAdminRetrieve> {
       return localVarFp
         .adminRequestsVideosUpdate(
-          id,
-          requestId,
-          videoAdminCreateUpdateRequest,
+          requestParameters.id,
+          requestParameters.requestId,
+          requestParameters.videoAdminCreateUpdateRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this todo.
+     * @param {AdminApiAdminTodosDestroyRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    adminTodosDestroy(id: number, options?: any): AxiosPromise<void> {
+    adminTodosDestroy(
+      requestParameters: AdminApiAdminTodosDestroyRequest,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<void> {
       return localVarFp
-        .adminTodosDestroy(id, options)
+        .adminTodosDestroy(requestParameters.id, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {Array<number>} [assignees]
-     * @param {string} [ordering] Which field to use when ordering the results.
-     * @param {number} [page] A page number within the paginated result set.
-     * @param {number} [pageSize] Number of results to return per page.
-     * @param {boolean} [pagination] Return paginated response.
-     * @param {Array<AdminTodosListStatusEnum>} [status] * &#x60;1&#x60; - Nyitva * &#x60;2&#x60; - Lezárva * &#x60;3&#x60; - Elvetve
+     * @param {AdminApiAdminTodosListRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminTodosList(
-      assignees?: Array<number>,
-      ordering?: string,
-      page?: number,
-      pageSize?: number,
-      pagination?: boolean,
-      status?: Array<AdminTodosListStatusEnum>,
-      options?: any,
+      requestParameters: AdminApiAdminTodosListRequest = {},
+      options?: AxiosRequestConfig,
     ): AxiosPromise<PaginatedTodoAdminListRetrieveList> {
       return localVarFp
         .adminTodosList(
-          assignees,
-          ordering,
-          page,
-          pageSize,
-          pagination,
-          status,
+          requestParameters.assignees,
+          requestParameters.ordering,
+          requestParameters.page,
+          requestParameters.pageSize,
+          requestParameters.pagination,
+          requestParameters.status,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this todo.
-     * @param {PatchedTodoAdminCreateUpdateRequest} [patchedTodoAdminCreateUpdateRequest]
+     * @param {AdminApiAdminTodosPartialUpdateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminTodosPartialUpdate(
-      id: number,
-      patchedTodoAdminCreateUpdateRequest?: PatchedTodoAdminCreateUpdateRequest,
-      options?: any,
+      requestParameters: AdminApiAdminTodosPartialUpdateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<TodoAdminListRetrieve> {
       return localVarFp
         .adminTodosPartialUpdate(
-          id,
-          patchedTodoAdminCreateUpdateRequest,
+          requestParameters.id,
+          requestParameters.patchedTodoAdminCreateUpdateRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this todo.
+     * @param {AdminApiAdminTodosRetrieveRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminTodosRetrieve(
-      id: number,
-      options?: any,
+      requestParameters: AdminApiAdminTodosRetrieveRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<TodoAdminListRetrieve> {
       return localVarFp
-        .adminTodosRetrieve(id, options)
+        .adminTodosRetrieve(requestParameters.id, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this todo.
-     * @param {TodoAdminCreateUpdateRequest} todoAdminCreateUpdateRequest
+     * @param {AdminApiAdminTodosUpdateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminTodosUpdate(
-      id: number,
-      todoAdminCreateUpdateRequest: TodoAdminCreateUpdateRequest,
-      options?: any,
+      requestParameters: AdminApiAdminTodosUpdateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<TodoAdminListRetrieve> {
       return localVarFp
-        .adminTodosUpdate(id, todoAdminCreateUpdateRequest, options)
+        .adminTodosUpdate(
+          requestParameters.id,
+          requestParameters.todoAdminCreateUpdateRequest,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this user.
-     * @param {BanUserRequest} [banUserRequest]
+     * @param {AdminApiAdminUsersBanCreateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminUsersBanCreate(
-      id: number,
-      banUserRequest?: BanUserRequest,
-      options?: any,
+      requestParameters: AdminApiAdminUsersBanCreateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<BanUser> {
       return localVarFp
-        .adminUsersBanCreate(id, banUserRequest, options)
+        .adminUsersBanCreate(
+          requestParameters.id,
+          requestParameters.banUserRequest,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this user.
+     * @param {AdminApiAdminUsersBanDestroyRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    adminUsersBanDestroy(id: number, options?: any): AxiosPromise<void> {
+    adminUsersBanDestroy(
+      requestParameters: AdminApiAdminUsersBanDestroyRequest,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<void> {
       return localVarFp
-        .adminUsersBanDestroy(id, options)
+        .adminUsersBanDestroy(requestParameters.id, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {boolean} [isAdmin]
-     * @param {boolean} [isStaff]
-     * @param {string} [ordering] Which field to use when ordering the results.
-     * @param {number} [page] A page number within the paginated result set.
-     * @param {number} [pageSize] Number of results to return per page.
-     * @param {boolean} [pagination] Return paginated response.
-     * @param {string} [search] A search term.
+     * @param {AdminApiAdminUsersListRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminUsersList(
-      isAdmin?: boolean,
-      isStaff?: boolean,
-      ordering?: string,
-      page?: number,
-      pageSize?: number,
-      pagination?: boolean,
-      search?: string,
-      options?: any,
+      requestParameters: AdminApiAdminUsersListRequest = {},
+      options?: AxiosRequestConfig,
     ): AxiosPromise<PaginatedUserAdminListList> {
       return localVarFp
         .adminUsersList(
-          isAdmin,
-          isStaff,
-          ordering,
-          page,
-          pageSize,
-          pagination,
-          search,
+          requestParameters.isAdmin,
+          requestParameters.isStaff,
+          requestParameters.ordering,
+          requestParameters.page,
+          requestParameters.pageSize,
+          requestParameters.pagination,
+          requestParameters.search,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this user.
-     * @param {PatchedUserAdminRetrieveUpdateRequest} [patchedUserAdminRetrieveUpdateRequest]
+     * @param {AdminApiAdminUsersPartialUpdateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminUsersPartialUpdate(
-      id: number,
-      patchedUserAdminRetrieveUpdateRequest?: PatchedUserAdminRetrieveUpdateRequest,
-      options?: any,
+      requestParameters: AdminApiAdminUsersPartialUpdateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<UserAdminRetrieveUpdate> {
       return localVarFp
         .adminUsersPartialUpdate(
-          id,
-          patchedUserAdminRetrieveUpdateRequest,
+          requestParameters.id,
+          requestParameters.patchedUserAdminRetrieveUpdateRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this user.
+     * @param {AdminApiAdminUsersRetrieveRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminUsersRetrieve(
-      id: number,
-      options?: any,
+      requestParameters: AdminApiAdminUsersRetrieveRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<UserAdminRetrieveUpdate> {
       return localVarFp
-        .adminUsersRetrieve(id, options)
+        .adminUsersRetrieve(requestParameters.id, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id A unique integer value identifying this user.
-     * @param {UserAdminRetrieveUpdateRequest} [userAdminRetrieveUpdateRequest]
+     * @param {AdminApiAdminUsersUpdateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminUsersUpdate(
-      id: number,
-      userAdminRetrieveUpdateRequest?: UserAdminRetrieveUpdateRequest,
-      options?: any,
+      requestParameters: AdminApiAdminUsersUpdateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<UserAdminRetrieveUpdate> {
       return localVarFp
-        .adminUsersUpdate(id, userAdminRetrieveUpdateRequest, options)
-        .then((request) => request(axios, basePath));
-    },
-    /**
-     *
-     * @param {number} id A unique integer value identifying this user.
-     * @param {string} [dateAfter] Default is 20 weeks before date_before.
-     * @param {string} [dateBefore] Default is today.
-     * @param {boolean} [isResponsible] Default is True.
-     * @param {*} [options] Override http request option.
-     * @throws {RequiredError}
-     */
-    adminUsersWorkedOnList(
-      id: number,
-      dateAfter?: string,
-      dateBefore?: string,
-      isResponsible?: boolean,
-      options?: any,
-    ): AxiosPromise<Array<UserAdminWorkedOn>> {
-      return localVarFp
-        .adminUsersWorkedOnList(
-          id,
-          dateAfter,
-          dateBefore,
-          isResponsible,
+        .adminUsersUpdate(
+          requestParameters.id,
+          requestParameters.userAdminRetrieveUpdateRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {string} [editedAtAfter]
-     * @param {string} [editedAtBefore]
-     * @param {string} [lastAired]
-     * @param {number} [lengthMax]
-     * @param {number} [lengthMin]
-     * @param {string} [ordering] Which field to use when ordering the results.
-     * @param {number} [page] A page number within the paginated result set.
-     * @param {number} [pageSize] Number of results to return per page.
-     * @param {boolean} [pagination] Return paginated response.
-     * @param {string} [requestStartDatetimeAfter]
-     * @param {string} [requestStartDatetimeBefore]
-     * @param {string} [search] A search term.
-     * @param {Array<AdminVideosListStatusEnum>} [status] * &#x60;1&#x60; - Vágásra vár * &#x60;2&#x60; - Vágás alatt * &#x60;3&#x60; - Megvágva * &#x60;4&#x60; - Kikódolva * &#x60;5&#x60; - Közzétéve * &#x60;6&#x60; - Lezárva
+     * @param {AdminApiAdminUsersWorkedOnListRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    adminUsersWorkedOnList(
+      requestParameters: AdminApiAdminUsersWorkedOnListRequest,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<Array<UserAdminWorkedOn>> {
+      return localVarFp
+        .adminUsersWorkedOnList(
+          requestParameters.id,
+          requestParameters.dateAfter,
+          requestParameters.dateBefore,
+          requestParameters.isResponsible,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {AdminApiAdminVideosListRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     adminVideosList(
-      editedAtAfter?: string,
-      editedAtBefore?: string,
-      lastAired?: string,
-      lengthMax?: number,
-      lengthMin?: number,
-      ordering?: string,
-      page?: number,
-      pageSize?: number,
-      pagination?: boolean,
-      requestStartDatetimeAfter?: string,
-      requestStartDatetimeBefore?: string,
-      search?: string,
-      status?: Array<AdminVideosListStatusEnum>,
-      options?: any,
+      requestParameters: AdminApiAdminVideosListRequest = {},
+      options?: AxiosRequestConfig,
     ): AxiosPromise<PaginatedVideoAdminSearchList> {
       return localVarFp
         .adminVideosList(
-          editedAtAfter,
-          editedAtBefore,
-          lastAired,
-          lengthMax,
-          lengthMin,
-          ordering,
-          page,
-          pageSize,
-          pagination,
-          requestStartDatetimeAfter,
-          requestStartDatetimeBefore,
-          search,
-          status,
+          requestParameters.editedAtAfter,
+          requestParameters.editedAtBefore,
+          requestParameters.lastAired,
+          requestParameters.lengthMax,
+          requestParameters.lengthMin,
+          requestParameters.ordering,
+          requestParameters.page,
+          requestParameters.pageSize,
+          requestParameters.pagination,
+          requestParameters.requestStartDatetimeAfter,
+          requestParameters.requestStartDatetimeBefore,
+          requestParameters.search,
+          requestParameters.status,
           options,
         )
         .then((request) => request(axios, basePath));
     },
   };
 };
+
+/**
+ * Request parameters for adminProjectsCreate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminProjectsCreateRequest
+ */
+export interface AdminApiAdminProjectsCreateRequest {
+  /**
+   *
+   * @type {ProjectAdminWriteRequest}
+   * @memberof AdminApiAdminProjectsCreate
+   */
+  readonly projectAdminWriteRequest: ProjectAdminWriteRequest;
+}
+
+/**
+ * Request parameters for adminProjectsDestroy operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminProjectsDestroyRequest
+ */
+export interface AdminApiAdminProjectsDestroyRequest {
+  /**
+   * A unique integer value identifying this project.
+   * @type {number}
+   * @memberof AdminApiAdminProjectsDestroy
+   */
+  readonly id: number;
+}
+
+/**
+ * Request parameters for adminProjectsPartialUpdate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminProjectsPartialUpdateRequest
+ */
+export interface AdminApiAdminProjectsPartialUpdateRequest {
+  /**
+   * A unique integer value identifying this project.
+   * @type {number}
+   * @memberof AdminApiAdminProjectsPartialUpdate
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {PatchedProjectAdminWriteRequest}
+   * @memberof AdminApiAdminProjectsPartialUpdate
+   */
+  readonly patchedProjectAdminWriteRequest?: PatchedProjectAdminWriteRequest;
+}
+
+/**
+ * Request parameters for adminProjectsRetrieve operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminProjectsRetrieveRequest
+ */
+export interface AdminApiAdminProjectsRetrieveRequest {
+  /**
+   * A unique integer value identifying this project.
+   * @type {number}
+   * @memberof AdminApiAdminProjectsRetrieve
+   */
+  readonly id: number;
+}
+
+/**
+ * Request parameters for adminProjectsUpdate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminProjectsUpdateRequest
+ */
+export interface AdminApiAdminProjectsUpdateRequest {
+  /**
+   * A unique integer value identifying this project.
+   * @type {number}
+   * @memberof AdminApiAdminProjectsUpdate
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {ProjectAdminWriteRequest}
+   * @memberof AdminApiAdminProjectsUpdate
+   */
+  readonly projectAdminWriteRequest: ProjectAdminWriteRequest;
+}
+
+/**
+ * Request parameters for adminReportRetrieve operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminReportRetrieveRequest
+ */
+export interface AdminApiAdminReportRetrieveRequest {
+  /**
+   *
+   * @type {string}
+   * @memberof AdminApiAdminReportRetrieve
+   */
+  readonly dateAfter: string;
+
+  /**
+   *
+   * @type {string}
+   * @memberof AdminApiAdminReportRetrieve
+   */
+  readonly dateBefore: string;
+}
+
+/**
+ * Request parameters for adminRequestsCommentsCreate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsCommentsCreateRequest
+ */
+export interface AdminApiAdminRequestsCommentsCreateRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsCommentsCreate
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {CommentAdminCreateUpdateRequest}
+   * @memberof AdminApiAdminRequestsCommentsCreate
+   */
+  readonly commentAdminCreateUpdateRequest: CommentAdminCreateUpdateRequest;
+}
+
+/**
+ * Request parameters for adminRequestsCommentsDestroy operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsCommentsDestroyRequest
+ */
+export interface AdminApiAdminRequestsCommentsDestroyRequest {
+  /**
+   * A unique integer value identifying this comment.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsCommentsDestroy
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsCommentsDestroy
+   */
+  readonly requestId: number;
+}
+
+/**
+ * Request parameters for adminRequestsCommentsHistoryList operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsCommentsHistoryListRequest
+ */
+export interface AdminApiAdminRequestsCommentsHistoryListRequest {
+  /**
+   * A unique integer value identifying this comment.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsCommentsHistoryList
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsCommentsHistoryList
+   */
+  readonly requestId: number;
+}
+
+/**
+ * Request parameters for adminRequestsCommentsList operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsCommentsListRequest
+ */
+export interface AdminApiAdminRequestsCommentsListRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsCommentsList
+   */
+  readonly requestId: number;
+
+  /**
+   * Which field to use when ordering the results.
+   * @type {string}
+   * @memberof AdminApiAdminRequestsCommentsList
+   */
+  readonly ordering?: string;
+}
+
+/**
+ * Request parameters for adminRequestsCommentsPartialUpdate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsCommentsPartialUpdateRequest
+ */
+export interface AdminApiAdminRequestsCommentsPartialUpdateRequest {
+  /**
+   * A unique integer value identifying this comment.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsCommentsPartialUpdate
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsCommentsPartialUpdate
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {PatchedCommentAdminCreateUpdateRequest}
+   * @memberof AdminApiAdminRequestsCommentsPartialUpdate
+   */
+  readonly patchedCommentAdminCreateUpdateRequest?: PatchedCommentAdminCreateUpdateRequest;
+}
+
+/**
+ * Request parameters for adminRequestsCommentsRetrieve operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsCommentsRetrieveRequest
+ */
+export interface AdminApiAdminRequestsCommentsRetrieveRequest {
+  /**
+   * A unique integer value identifying this comment.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsCommentsRetrieve
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsCommentsRetrieve
+   */
+  readonly requestId: number;
+}
+
+/**
+ * Request parameters for adminRequestsCommentsUpdate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsCommentsUpdateRequest
+ */
+export interface AdminApiAdminRequestsCommentsUpdateRequest {
+  /**
+   * A unique integer value identifying this comment.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsCommentsUpdate
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsCommentsUpdate
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {CommentAdminCreateUpdateRequest}
+   * @memberof AdminApiAdminRequestsCommentsUpdate
+   */
+  readonly commentAdminCreateUpdateRequest: CommentAdminCreateUpdateRequest;
+}
+
+/**
+ * Request parameters for adminRequestsCreate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsCreateRequest
+ */
+export interface AdminApiAdminRequestsCreateRequest {
+  /**
+   *
+   * @type {RequestAdminCreateRequest}
+   * @memberof AdminApiAdminRequestsCreate
+   */
+  readonly requestAdminCreateRequest: RequestAdminCreateRequest;
+}
+
+/**
+ * Request parameters for adminRequestsCrewCreate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsCrewCreateRequest
+ */
+export interface AdminApiAdminRequestsCrewCreateRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsCrewCreate
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {CrewMemberAdminCreateUpdateRequest}
+   * @memberof AdminApiAdminRequestsCrewCreate
+   */
+  readonly crewMemberAdminCreateUpdateRequest: CrewMemberAdminCreateUpdateRequest;
+}
+
+/**
+ * Request parameters for adminRequestsCrewDestroy operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsCrewDestroyRequest
+ */
+export interface AdminApiAdminRequestsCrewDestroyRequest {
+  /**
+   * A unique integer value identifying this crew member.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsCrewDestroy
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsCrewDestroy
+   */
+  readonly requestId: number;
+}
+
+/**
+ * Request parameters for adminRequestsCrewList operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsCrewListRequest
+ */
+export interface AdminApiAdminRequestsCrewListRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsCrewList
+   */
+  readonly requestId: number;
+
+  /**
+   * Which field to use when ordering the results.
+   * @type {string}
+   * @memberof AdminApiAdminRequestsCrewList
+   */
+  readonly ordering?: string;
+}
+
+/**
+ * Request parameters for adminRequestsCrewPartialUpdate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsCrewPartialUpdateRequest
+ */
+export interface AdminApiAdminRequestsCrewPartialUpdateRequest {
+  /**
+   * A unique integer value identifying this crew member.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsCrewPartialUpdate
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsCrewPartialUpdate
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {PatchedCrewMemberAdminCreateUpdateRequest}
+   * @memberof AdminApiAdminRequestsCrewPartialUpdate
+   */
+  readonly patchedCrewMemberAdminCreateUpdateRequest?: PatchedCrewMemberAdminCreateUpdateRequest;
+}
+
+/**
+ * Request parameters for adminRequestsCrewRetrieve operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsCrewRetrieveRequest
+ */
+export interface AdminApiAdminRequestsCrewRetrieveRequest {
+  /**
+   * A unique integer value identifying this crew member.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsCrewRetrieve
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsCrewRetrieve
+   */
+  readonly requestId: number;
+}
+
+/**
+ * Request parameters for adminRequestsCrewUpdate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsCrewUpdateRequest
+ */
+export interface AdminApiAdminRequestsCrewUpdateRequest {
+  /**
+   * A unique integer value identifying this crew member.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsCrewUpdate
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsCrewUpdate
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {CrewMemberAdminCreateUpdateRequest}
+   * @memberof AdminApiAdminRequestsCrewUpdate
+   */
+  readonly crewMemberAdminCreateUpdateRequest: CrewMemberAdminCreateUpdateRequest;
+}
+
+/**
+ * Request parameters for adminRequestsDestroy operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsDestroyRequest
+ */
+export interface AdminApiAdminRequestsDestroyRequest {
+  /**
+   * A unique integer value identifying this request.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsDestroy
+   */
+  readonly id: number;
+}
+
+/**
+ * Request parameters for adminRequestsHistoryList operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsHistoryListRequest
+ */
+export interface AdminApiAdminRequestsHistoryListRequest {
+  /**
+   * A unique integer value identifying this request.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsHistoryList
+   */
+  readonly id: number;
+}
+
+/**
+ * Request parameters for adminRequestsList operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsListRequest
+ */
+export interface AdminApiAdminRequestsListRequest {
+  /**
+   *
+   * @type {string}
+   * @memberof AdminApiAdminRequestsList
+   */
+  readonly deadlineAfter?: string;
+
+  /**
+   *
+   * @type {string}
+   * @memberof AdminApiAdminRequestsList
+   */
+  readonly deadlineBefore?: string;
+
+  /**
+   *
+   * @type {boolean}
+   * @memberof AdminApiAdminRequestsList
+   */
+  readonly hasProject?: boolean;
+
+  /**
+   * Which field to use when ordering the results.
+   * @type {string}
+   * @memberof AdminApiAdminRequestsList
+   */
+  readonly ordering?: string;
+
+  /**
+   * A page number within the paginated result set.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsList
+   */
+  readonly page?: number;
+
+  /**
+   * Number of results to return per page.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsList
+   */
+  readonly pageSize?: number;
+
+  /**
+   * Return paginated response.
+   * @type {boolean}
+   * @memberof AdminApiAdminRequestsList
+   */
+  readonly pagination?: boolean;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsList
+   */
+  readonly project?: number;
+
+  /**
+   * A search term.
+   * @type {string}
+   * @memberof AdminApiAdminRequestsList
+   */
+  readonly search?: string;
+
+  /**
+   *
+   * @type {string}
+   * @memberof AdminApiAdminRequestsList
+   */
+  readonly startDatetimeAfter?: string;
+
+  /**
+   *
+   * @type {string}
+   * @memberof AdminApiAdminRequestsList
+   */
+  readonly startDatetimeBefore?: string;
+
+  /**
+   * * &#x60;0&#x60; - Elutasítva * &#x60;1&#x60; - Felkérés * &#x60;2&#x60; - Elvállalva * &#x60;3&#x60; - Leforgatva * &#x60;4&#x60; - Beírva * &#x60;5&#x60; - Megvágva * &#x60;6&#x60; - Archiválva * &#x60;7&#x60; - Lezárva * &#x60;9&#x60; - Szervezők által lemondva * &#x60;10&#x60; - Meghiúsult
+   * @type {Array<0 | 1 | 10 | 2 | 3 | 4 | 5 | 6 | 7 | 9>}
+   * @memberof AdminApiAdminRequestsList
+   */
+  readonly status?: Array<AdminRequestsListStatusEnum>;
+}
+
+/**
+ * Request parameters for adminRequestsPartialUpdate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsPartialUpdateRequest
+ */
+export interface AdminApiAdminRequestsPartialUpdateRequest {
+  /**
+   * A unique integer value identifying this request.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsPartialUpdate
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {PatchedRequestAdminUpdateRequest}
+   * @memberof AdminApiAdminRequestsPartialUpdate
+   */
+  readonly patchedRequestAdminUpdateRequest?: PatchedRequestAdminUpdateRequest;
+}
+
+/**
+ * Request parameters for adminRequestsRetrieve operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsRetrieveRequest
+ */
+export interface AdminApiAdminRequestsRetrieveRequest {
+  /**
+   * A unique integer value identifying this request.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsRetrieve
+   */
+  readonly id: number;
+}
+
+/**
+ * Request parameters for adminRequestsTodosCreate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsTodosCreateRequest
+ */
+export interface AdminApiAdminRequestsTodosCreateRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsTodosCreate
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {TodoAdminCreateUpdateRequest}
+   * @memberof AdminApiAdminRequestsTodosCreate
+   */
+  readonly todoAdminCreateUpdateRequest: TodoAdminCreateUpdateRequest;
+}
+
+/**
+ * Request parameters for adminRequestsTodosList operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsTodosListRequest
+ */
+export interface AdminApiAdminRequestsTodosListRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsTodosList
+   */
+  readonly requestId: number;
+
+  /**
+   * Which field to use when ordering the results.
+   * @type {string}
+   * @memberof AdminApiAdminRequestsTodosList
+   */
+  readonly ordering?: string;
+}
+
+/**
+ * Request parameters for adminRequestsUpdate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsUpdateRequest
+ */
+export interface AdminApiAdminRequestsUpdateRequest {
+  /**
+   * A unique integer value identifying this request.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsUpdate
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {RequestAdminUpdateRequest}
+   * @memberof AdminApiAdminRequestsUpdate
+   */
+  readonly requestAdminUpdateRequest: RequestAdminUpdateRequest;
+}
+
+/**
+ * Request parameters for adminRequestsVideosCreate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsVideosCreateRequest
+ */
+export interface AdminApiAdminRequestsVideosCreateRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosCreate
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {VideoAdminCreateUpdateRequest}
+   * @memberof AdminApiAdminRequestsVideosCreate
+   */
+  readonly videoAdminCreateUpdateRequest: VideoAdminCreateUpdateRequest;
+}
+
+/**
+ * Request parameters for adminRequestsVideosDestroy operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsVideosDestroyRequest
+ */
+export interface AdminApiAdminRequestsVideosDestroyRequest {
+  /**
+   * A unique integer value identifying this video.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosDestroy
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosDestroy
+   */
+  readonly requestId: number;
+}
+
+/**
+ * Request parameters for adminRequestsVideosHistoryList operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsVideosHistoryListRequest
+ */
+export interface AdminApiAdminRequestsVideosHistoryListRequest {
+  /**
+   * A unique integer value identifying this video.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosHistoryList
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosHistoryList
+   */
+  readonly requestId: number;
+}
+
+/**
+ * Request parameters for adminRequestsVideosList operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsVideosListRequest
+ */
+export interface AdminApiAdminRequestsVideosListRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosList
+   */
+  readonly requestId: number;
+
+  /**
+   * Which field to use when ordering the results.
+   * @type {string}
+   * @memberof AdminApiAdminRequestsVideosList
+   */
+  readonly ordering?: string;
+}
+
+/**
+ * Request parameters for adminRequestsVideosPartialUpdate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsVideosPartialUpdateRequest
+ */
+export interface AdminApiAdminRequestsVideosPartialUpdateRequest {
+  /**
+   * A unique integer value identifying this video.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosPartialUpdate
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosPartialUpdate
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {PatchedVideoAdminCreateUpdateRequest}
+   * @memberof AdminApiAdminRequestsVideosPartialUpdate
+   */
+  readonly patchedVideoAdminCreateUpdateRequest?: PatchedVideoAdminCreateUpdateRequest;
+}
+
+/**
+ * Request parameters for adminRequestsVideosRatingsCreate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsVideosRatingsCreateRequest
+ */
+export interface AdminApiAdminRequestsVideosRatingsCreateRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosRatingsCreate
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosRatingsCreate
+   */
+  readonly videoId: number;
+
+  /**
+   *
+   * @type {RatingAdminCreateUpdateRequest}
+   * @memberof AdminApiAdminRequestsVideosRatingsCreate
+   */
+  readonly ratingAdminCreateUpdateRequest: RatingAdminCreateUpdateRequest;
+}
+
+/**
+ * Request parameters for adminRequestsVideosRatingsDestroy operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsVideosRatingsDestroyRequest
+ */
+export interface AdminApiAdminRequestsVideosRatingsDestroyRequest {
+  /**
+   * A unique integer value identifying this rating.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosRatingsDestroy
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosRatingsDestroy
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosRatingsDestroy
+   */
+  readonly videoId: number;
+}
+
+/**
+ * Request parameters for adminRequestsVideosRatingsHistoryList operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsVideosRatingsHistoryListRequest
+ */
+export interface AdminApiAdminRequestsVideosRatingsHistoryListRequest {
+  /**
+   * A unique integer value identifying this rating.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosRatingsHistoryList
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosRatingsHistoryList
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosRatingsHistoryList
+   */
+  readonly videoId: number;
+}
+
+/**
+ * Request parameters for adminRequestsVideosRatingsList operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsVideosRatingsListRequest
+ */
+export interface AdminApiAdminRequestsVideosRatingsListRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosRatingsList
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosRatingsList
+   */
+  readonly videoId: number;
+
+  /**
+   * Which field to use when ordering the results.
+   * @type {string}
+   * @memberof AdminApiAdminRequestsVideosRatingsList
+   */
+  readonly ordering?: string;
+}
+
+/**
+ * Request parameters for adminRequestsVideosRatingsOwnRetrieve operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsVideosRatingsOwnRetrieveRequest
+ */
+export interface AdminApiAdminRequestsVideosRatingsOwnRetrieveRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosRatingsOwnRetrieve
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosRatingsOwnRetrieve
+   */
+  readonly videoId: number;
+}
+
+/**
+ * Request parameters for adminRequestsVideosRatingsPartialUpdate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsVideosRatingsPartialUpdateRequest
+ */
+export interface AdminApiAdminRequestsVideosRatingsPartialUpdateRequest {
+  /**
+   * A unique integer value identifying this rating.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosRatingsPartialUpdate
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosRatingsPartialUpdate
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosRatingsPartialUpdate
+   */
+  readonly videoId: number;
+
+  /**
+   *
+   * @type {PatchedRatingAdminCreateUpdateRequest}
+   * @memberof AdminApiAdminRequestsVideosRatingsPartialUpdate
+   */
+  readonly patchedRatingAdminCreateUpdateRequest?: PatchedRatingAdminCreateUpdateRequest;
+}
+
+/**
+ * Request parameters for adminRequestsVideosRatingsRetrieve operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsVideosRatingsRetrieveRequest
+ */
+export interface AdminApiAdminRequestsVideosRatingsRetrieveRequest {
+  /**
+   * A unique integer value identifying this rating.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosRatingsRetrieve
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosRatingsRetrieve
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosRatingsRetrieve
+   */
+  readonly videoId: number;
+}
+
+/**
+ * Request parameters for adminRequestsVideosRatingsUpdate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsVideosRatingsUpdateRequest
+ */
+export interface AdminApiAdminRequestsVideosRatingsUpdateRequest {
+  /**
+   * A unique integer value identifying this rating.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosRatingsUpdate
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosRatingsUpdate
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosRatingsUpdate
+   */
+  readonly videoId: number;
+
+  /**
+   *
+   * @type {RatingAdminCreateUpdateRequest}
+   * @memberof AdminApiAdminRequestsVideosRatingsUpdate
+   */
+  readonly ratingAdminCreateUpdateRequest: RatingAdminCreateUpdateRequest;
+}
+
+/**
+ * Request parameters for adminRequestsVideosRetrieve operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsVideosRetrieveRequest
+ */
+export interface AdminApiAdminRequestsVideosRetrieveRequest {
+  /**
+   * A unique integer value identifying this video.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosRetrieve
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosRetrieve
+   */
+  readonly requestId: number;
+}
+
+/**
+ * Request parameters for adminRequestsVideosTodosCreate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsVideosTodosCreateRequest
+ */
+export interface AdminApiAdminRequestsVideosTodosCreateRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosTodosCreate
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosTodosCreate
+   */
+  readonly videoId: number;
+
+  /**
+   *
+   * @type {TodoAdminCreateUpdateRequest}
+   * @memberof AdminApiAdminRequestsVideosTodosCreate
+   */
+  readonly todoAdminCreateUpdateRequest: TodoAdminCreateUpdateRequest;
+}
+
+/**
+ * Request parameters for adminRequestsVideosTodosList operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsVideosTodosListRequest
+ */
+export interface AdminApiAdminRequestsVideosTodosListRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosTodosList
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosTodosList
+   */
+  readonly videoId: number;
+
+  /**
+   * Which field to use when ordering the results.
+   * @type {string}
+   * @memberof AdminApiAdminRequestsVideosTodosList
+   */
+  readonly ordering?: string;
+}
+
+/**
+ * Request parameters for adminRequestsVideosUpdate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminRequestsVideosUpdateRequest
+ */
+export interface AdminApiAdminRequestsVideosUpdateRequest {
+  /**
+   * A unique integer value identifying this video.
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosUpdate
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminRequestsVideosUpdate
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {VideoAdminCreateUpdateRequest}
+   * @memberof AdminApiAdminRequestsVideosUpdate
+   */
+  readonly videoAdminCreateUpdateRequest: VideoAdminCreateUpdateRequest;
+}
+
+/**
+ * Request parameters for adminTodosDestroy operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminTodosDestroyRequest
+ */
+export interface AdminApiAdminTodosDestroyRequest {
+  /**
+   * A unique integer value identifying this todo.
+   * @type {number}
+   * @memberof AdminApiAdminTodosDestroy
+   */
+  readonly id: number;
+}
+
+/**
+ * Request parameters for adminTodosList operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminTodosListRequest
+ */
+export interface AdminApiAdminTodosListRequest {
+  /**
+   *
+   * @type {Array<number>}
+   * @memberof AdminApiAdminTodosList
+   */
+  readonly assignees?: Array<number>;
+
+  /**
+   * Which field to use when ordering the results.
+   * @type {string}
+   * @memberof AdminApiAdminTodosList
+   */
+  readonly ordering?: string;
+
+  /**
+   * A page number within the paginated result set.
+   * @type {number}
+   * @memberof AdminApiAdminTodosList
+   */
+  readonly page?: number;
+
+  /**
+   * Number of results to return per page.
+   * @type {number}
+   * @memberof AdminApiAdminTodosList
+   */
+  readonly pageSize?: number;
+
+  /**
+   * Return paginated response.
+   * @type {boolean}
+   * @memberof AdminApiAdminTodosList
+   */
+  readonly pagination?: boolean;
+
+  /**
+   * * &#x60;1&#x60; - Nyitva * &#x60;2&#x60; - Lezárva * &#x60;3&#x60; - Elvetve
+   * @type {Array<1 | 2 | 3>}
+   * @memberof AdminApiAdminTodosList
+   */
+  readonly status?: Array<AdminTodosListStatusEnum>;
+}
+
+/**
+ * Request parameters for adminTodosPartialUpdate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminTodosPartialUpdateRequest
+ */
+export interface AdminApiAdminTodosPartialUpdateRequest {
+  /**
+   * A unique integer value identifying this todo.
+   * @type {number}
+   * @memberof AdminApiAdminTodosPartialUpdate
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {PatchedTodoAdminCreateUpdateRequest}
+   * @memberof AdminApiAdminTodosPartialUpdate
+   */
+  readonly patchedTodoAdminCreateUpdateRequest?: PatchedTodoAdminCreateUpdateRequest;
+}
+
+/**
+ * Request parameters for adminTodosRetrieve operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminTodosRetrieveRequest
+ */
+export interface AdminApiAdminTodosRetrieveRequest {
+  /**
+   * A unique integer value identifying this todo.
+   * @type {number}
+   * @memberof AdminApiAdminTodosRetrieve
+   */
+  readonly id: number;
+}
+
+/**
+ * Request parameters for adminTodosUpdate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminTodosUpdateRequest
+ */
+export interface AdminApiAdminTodosUpdateRequest {
+  /**
+   * A unique integer value identifying this todo.
+   * @type {number}
+   * @memberof AdminApiAdminTodosUpdate
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {TodoAdminCreateUpdateRequest}
+   * @memberof AdminApiAdminTodosUpdate
+   */
+  readonly todoAdminCreateUpdateRequest: TodoAdminCreateUpdateRequest;
+}
+
+/**
+ * Request parameters for adminUsersBanCreate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminUsersBanCreateRequest
+ */
+export interface AdminApiAdminUsersBanCreateRequest {
+  /**
+   * A unique integer value identifying this user.
+   * @type {number}
+   * @memberof AdminApiAdminUsersBanCreate
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {BanUserRequest}
+   * @memberof AdminApiAdminUsersBanCreate
+   */
+  readonly banUserRequest?: BanUserRequest;
+}
+
+/**
+ * Request parameters for adminUsersBanDestroy operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminUsersBanDestroyRequest
+ */
+export interface AdminApiAdminUsersBanDestroyRequest {
+  /**
+   * A unique integer value identifying this user.
+   * @type {number}
+   * @memberof AdminApiAdminUsersBanDestroy
+   */
+  readonly id: number;
+}
+
+/**
+ * Request parameters for adminUsersList operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminUsersListRequest
+ */
+export interface AdminApiAdminUsersListRequest {
+  /**
+   *
+   * @type {boolean}
+   * @memberof AdminApiAdminUsersList
+   */
+  readonly isAdmin?: boolean;
+
+  /**
+   *
+   * @type {boolean}
+   * @memberof AdminApiAdminUsersList
+   */
+  readonly isStaff?: boolean;
+
+  /**
+   * Which field to use when ordering the results.
+   * @type {string}
+   * @memberof AdminApiAdminUsersList
+   */
+  readonly ordering?: string;
+
+  /**
+   * A page number within the paginated result set.
+   * @type {number}
+   * @memberof AdminApiAdminUsersList
+   */
+  readonly page?: number;
+
+  /**
+   * Number of results to return per page.
+   * @type {number}
+   * @memberof AdminApiAdminUsersList
+   */
+  readonly pageSize?: number;
+
+  /**
+   * Return paginated response.
+   * @type {boolean}
+   * @memberof AdminApiAdminUsersList
+   */
+  readonly pagination?: boolean;
+
+  /**
+   * A search term.
+   * @type {string}
+   * @memberof AdminApiAdminUsersList
+   */
+  readonly search?: string;
+}
+
+/**
+ * Request parameters for adminUsersPartialUpdate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminUsersPartialUpdateRequest
+ */
+export interface AdminApiAdminUsersPartialUpdateRequest {
+  /**
+   * A unique integer value identifying this user.
+   * @type {number}
+   * @memberof AdminApiAdminUsersPartialUpdate
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {PatchedUserAdminRetrieveUpdateRequest}
+   * @memberof AdminApiAdminUsersPartialUpdate
+   */
+  readonly patchedUserAdminRetrieveUpdateRequest?: PatchedUserAdminRetrieveUpdateRequest;
+}
+
+/**
+ * Request parameters for adminUsersRetrieve operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminUsersRetrieveRequest
+ */
+export interface AdminApiAdminUsersRetrieveRequest {
+  /**
+   * A unique integer value identifying this user.
+   * @type {number}
+   * @memberof AdminApiAdminUsersRetrieve
+   */
+  readonly id: number;
+}
+
+/**
+ * Request parameters for adminUsersUpdate operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminUsersUpdateRequest
+ */
+export interface AdminApiAdminUsersUpdateRequest {
+  /**
+   * A unique integer value identifying this user.
+   * @type {number}
+   * @memberof AdminApiAdminUsersUpdate
+   */
+  readonly id: number;
+
+  /**
+   *
+   * @type {UserAdminRetrieveUpdateRequest}
+   * @memberof AdminApiAdminUsersUpdate
+   */
+  readonly userAdminRetrieveUpdateRequest?: UserAdminRetrieveUpdateRequest;
+}
+
+/**
+ * Request parameters for adminUsersWorkedOnList operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminUsersWorkedOnListRequest
+ */
+export interface AdminApiAdminUsersWorkedOnListRequest {
+  /**
+   * A unique integer value identifying this user.
+   * @type {number}
+   * @memberof AdminApiAdminUsersWorkedOnList
+   */
+  readonly id: number;
+
+  /**
+   * Default is 20 weeks before date_before.
+   * @type {string}
+   * @memberof AdminApiAdminUsersWorkedOnList
+   */
+  readonly dateAfter?: string;
+
+  /**
+   * Default is today.
+   * @type {string}
+   * @memberof AdminApiAdminUsersWorkedOnList
+   */
+  readonly dateBefore?: string;
+
+  /**
+   * Default is True.
+   * @type {boolean}
+   * @memberof AdminApiAdminUsersWorkedOnList
+   */
+  readonly isResponsible?: boolean;
+}
+
+/**
+ * Request parameters for adminVideosList operation in AdminApi.
+ * @export
+ * @interface AdminApiAdminVideosListRequest
+ */
+export interface AdminApiAdminVideosListRequest {
+  /**
+   *
+   * @type {string}
+   * @memberof AdminApiAdminVideosList
+   */
+  readonly editedAtAfter?: string;
+
+  /**
+   *
+   * @type {string}
+   * @memberof AdminApiAdminVideosList
+   */
+  readonly editedAtBefore?: string;
+
+  /**
+   *
+   * @type {string}
+   * @memberof AdminApiAdminVideosList
+   */
+  readonly lastAired?: string;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminVideosList
+   */
+  readonly lengthMax?: number;
+
+  /**
+   *
+   * @type {number}
+   * @memberof AdminApiAdminVideosList
+   */
+  readonly lengthMin?: number;
+
+  /**
+   * Which field to use when ordering the results.
+   * @type {string}
+   * @memberof AdminApiAdminVideosList
+   */
+  readonly ordering?: string;
+
+  /**
+   * A page number within the paginated result set.
+   * @type {number}
+   * @memberof AdminApiAdminVideosList
+   */
+  readonly page?: number;
+
+  /**
+   * Number of results to return per page.
+   * @type {number}
+   * @memberof AdminApiAdminVideosList
+   */
+  readonly pageSize?: number;
+
+  /**
+   * Return paginated response.
+   * @type {boolean}
+   * @memberof AdminApiAdminVideosList
+   */
+  readonly pagination?: boolean;
+
+  /**
+   *
+   * @type {string}
+   * @memberof AdminApiAdminVideosList
+   */
+  readonly requestStartDatetimeAfter?: string;
+
+  /**
+   *
+   * @type {string}
+   * @memberof AdminApiAdminVideosList
+   */
+  readonly requestStartDatetimeBefore?: string;
+
+  /**
+   * A search term.
+   * @type {string}
+   * @memberof AdminApiAdminVideosList
+   */
+  readonly search?: string;
+
+  /**
+   * * &#x60;1&#x60; - Vágásra vár * &#x60;2&#x60; - Vágás alatt * &#x60;3&#x60; - Megvágva * &#x60;4&#x60; - Kikódolva * &#x60;5&#x60; - Közzétéve * &#x60;6&#x60; - Lezárva
+   * @type {Array<1 | 2 | 3 | 4 | 5 | 6>}
+   * @memberof AdminApiAdminVideosList
+   */
+  readonly status?: Array<AdminVideosListStatusEnum>;
+}
 
 /**
  * AdminApi - object-oriented interface
@@ -7072,30 +8485,33 @@ export const AdminApiFactory = function (
 export class AdminApi extends BaseAPI {
   /**
    *
-   * @param {ProjectAdminWriteRequest} projectAdminWriteRequest
+   * @param {AdminApiAdminProjectsCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminProjectsCreate(
-    projectAdminWriteRequest: ProjectAdminWriteRequest,
+    requestParameters: AdminApiAdminProjectsCreateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminProjectsCreate(projectAdminWriteRequest, options)
+      .adminProjectsCreate(requestParameters.projectAdminWriteRequest, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this project.
+   * @param {AdminApiAdminProjectsDestroyRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
-  public adminProjectsDestroy(id: number, options?: AxiosRequestConfig) {
+  public adminProjectsDestroy(
+    requestParameters: AdminApiAdminProjectsDestroyRequest,
+    options?: AxiosRequestConfig,
+  ) {
     return AdminApiFp(this.configuration)
-      .adminProjectsDestroy(id, options)
+      .adminProjectsDestroy(requestParameters.id, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -7113,88 +8529,95 @@ export class AdminApi extends BaseAPI {
 
   /**
    *
-   * @param {number} id A unique integer value identifying this project.
-   * @param {PatchedProjectAdminWriteRequest} [patchedProjectAdminWriteRequest]
+   * @param {AdminApiAdminProjectsPartialUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminProjectsPartialUpdate(
-    id: number,
-    patchedProjectAdminWriteRequest?: PatchedProjectAdminWriteRequest,
+    requestParameters: AdminApiAdminProjectsPartialUpdateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminProjectsPartialUpdate(id, patchedProjectAdminWriteRequest, options)
+      .adminProjectsPartialUpdate(
+        requestParameters.id,
+        requestParameters.patchedProjectAdminWriteRequest,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this project.
+   * @param {AdminApiAdminProjectsRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
-  public adminProjectsRetrieve(id: number, options?: AxiosRequestConfig) {
+  public adminProjectsRetrieve(
+    requestParameters: AdminApiAdminProjectsRetrieveRequest,
+    options?: AxiosRequestConfig,
+  ) {
     return AdminApiFp(this.configuration)
-      .adminProjectsRetrieve(id, options)
+      .adminProjectsRetrieve(requestParameters.id, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this project.
-   * @param {ProjectAdminWriteRequest} projectAdminWriteRequest
+   * @param {AdminApiAdminProjectsUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminProjectsUpdate(
-    id: number,
-    projectAdminWriteRequest: ProjectAdminWriteRequest,
+    requestParameters: AdminApiAdminProjectsUpdateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminProjectsUpdate(id, projectAdminWriteRequest, options)
+      .adminProjectsUpdate(
+        requestParameters.id,
+        requestParameters.projectAdminWriteRequest,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {string} dateAfter
-   * @param {string} dateBefore
+   * @param {AdminApiAdminReportRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminReportRetrieve(
-    dateAfter: string,
-    dateBefore: string,
+    requestParameters: AdminApiAdminReportRetrieveRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminReportRetrieve(dateAfter, dateBefore, options)
+      .adminReportRetrieve(
+        requestParameters.dateAfter,
+        requestParameters.dateBefore,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} requestId
-   * @param {CommentAdminCreateUpdateRequest} commentAdminCreateUpdateRequest
+   * @param {AdminApiAdminRequestsCommentsCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsCommentsCreate(
-    requestId: number,
-    commentAdminCreateUpdateRequest: CommentAdminCreateUpdateRequest,
+    requestParameters: AdminApiAdminRequestsCommentsCreateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsCommentsCreate(
-        requestId,
-        commentAdminCreateUpdateRequest,
+        requestParameters.requestId,
+        requestParameters.commentAdminCreateUpdateRequest,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -7202,78 +8625,80 @@ export class AdminApi extends BaseAPI {
 
   /**
    *
-   * @param {number} id A unique integer value identifying this comment.
-   * @param {number} requestId
+   * @param {AdminApiAdminRequestsCommentsDestroyRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsCommentsDestroy(
-    id: number,
-    requestId: number,
+    requestParameters: AdminApiAdminRequestsCommentsDestroyRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminRequestsCommentsDestroy(id, requestId, options)
+      .adminRequestsCommentsDestroy(
+        requestParameters.id,
+        requestParameters.requestId,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this comment.
-   * @param {number} requestId
+   * @param {AdminApiAdminRequestsCommentsHistoryListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsCommentsHistoryList(
-    id: number,
-    requestId: number,
+    requestParameters: AdminApiAdminRequestsCommentsHistoryListRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminRequestsCommentsHistoryList(id, requestId, options)
+      .adminRequestsCommentsHistoryList(
+        requestParameters.id,
+        requestParameters.requestId,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} requestId
-   * @param {string} [ordering] Which field to use when ordering the results.
+   * @param {AdminApiAdminRequestsCommentsListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsCommentsList(
-    requestId: number,
-    ordering?: string,
+    requestParameters: AdminApiAdminRequestsCommentsListRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminRequestsCommentsList(requestId, ordering, options)
+      .adminRequestsCommentsList(
+        requestParameters.requestId,
+        requestParameters.ordering,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this comment.
-   * @param {number} requestId
-   * @param {PatchedCommentAdminCreateUpdateRequest} [patchedCommentAdminCreateUpdateRequest]
+   * @param {AdminApiAdminRequestsCommentsPartialUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsCommentsPartialUpdate(
-    id: number,
-    requestId: number,
-    patchedCommentAdminCreateUpdateRequest?: PatchedCommentAdminCreateUpdateRequest,
+    requestParameters: AdminApiAdminRequestsCommentsPartialUpdateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsCommentsPartialUpdate(
-        id,
-        requestId,
-        patchedCommentAdminCreateUpdateRequest,
+        requestParameters.id,
+        requestParameters.requestId,
+        requestParameters.patchedCommentAdminCreateUpdateRequest,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -7281,42 +8706,40 @@ export class AdminApi extends BaseAPI {
 
   /**
    *
-   * @param {number} id A unique integer value identifying this comment.
-   * @param {number} requestId
+   * @param {AdminApiAdminRequestsCommentsRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsCommentsRetrieve(
-    id: number,
-    requestId: number,
+    requestParameters: AdminApiAdminRequestsCommentsRetrieveRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminRequestsCommentsRetrieve(id, requestId, options)
+      .adminRequestsCommentsRetrieve(
+        requestParameters.id,
+        requestParameters.requestId,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this comment.
-   * @param {number} requestId
-   * @param {CommentAdminCreateUpdateRequest} commentAdminCreateUpdateRequest
+   * @param {AdminApiAdminRequestsCommentsUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsCommentsUpdate(
-    id: number,
-    requestId: number,
-    commentAdminCreateUpdateRequest: CommentAdminCreateUpdateRequest,
+    requestParameters: AdminApiAdminRequestsCommentsUpdateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsCommentsUpdate(
-        id,
-        requestId,
-        commentAdminCreateUpdateRequest,
+        requestParameters.id,
+        requestParameters.requestId,
+        requestParameters.commentAdminCreateUpdateRequest,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -7324,37 +8747,35 @@ export class AdminApi extends BaseAPI {
 
   /**
    *
-   * @param {RequestAdminCreateRequest} requestAdminCreateRequest
+   * @param {AdminApiAdminRequestsCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsCreate(
-    requestAdminCreateRequest: RequestAdminCreateRequest,
+    requestParameters: AdminApiAdminRequestsCreateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminRequestsCreate(requestAdminCreateRequest, options)
+      .adminRequestsCreate(requestParameters.requestAdminCreateRequest, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} requestId
-   * @param {CrewMemberAdminCreateUpdateRequest} crewMemberAdminCreateUpdateRequest
+   * @param {AdminApiAdminRequestsCrewCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsCrewCreate(
-    requestId: number,
-    crewMemberAdminCreateUpdateRequest: CrewMemberAdminCreateUpdateRequest,
+    requestParameters: AdminApiAdminRequestsCrewCreateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsCrewCreate(
-        requestId,
-        crewMemberAdminCreateUpdateRequest,
+        requestParameters.requestId,
+        requestParameters.crewMemberAdminCreateUpdateRequest,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -7362,60 +8783,60 @@ export class AdminApi extends BaseAPI {
 
   /**
    *
-   * @param {number} id A unique integer value identifying this crew member.
-   * @param {number} requestId
+   * @param {AdminApiAdminRequestsCrewDestroyRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsCrewDestroy(
-    id: number,
-    requestId: number,
+    requestParameters: AdminApiAdminRequestsCrewDestroyRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminRequestsCrewDestroy(id, requestId, options)
+      .adminRequestsCrewDestroy(
+        requestParameters.id,
+        requestParameters.requestId,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} requestId
-   * @param {string} [ordering] Which field to use when ordering the results.
+   * @param {AdminApiAdminRequestsCrewListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsCrewList(
-    requestId: number,
-    ordering?: string,
+    requestParameters: AdminApiAdminRequestsCrewListRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminRequestsCrewList(requestId, ordering, options)
+      .adminRequestsCrewList(
+        requestParameters.requestId,
+        requestParameters.ordering,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this crew member.
-   * @param {number} requestId
-   * @param {PatchedCrewMemberAdminCreateUpdateRequest} [patchedCrewMemberAdminCreateUpdateRequest]
+   * @param {AdminApiAdminRequestsCrewPartialUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsCrewPartialUpdate(
-    id: number,
-    requestId: number,
-    patchedCrewMemberAdminCreateUpdateRequest?: PatchedCrewMemberAdminCreateUpdateRequest,
+    requestParameters: AdminApiAdminRequestsCrewPartialUpdateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsCrewPartialUpdate(
-        id,
-        requestId,
-        patchedCrewMemberAdminCreateUpdateRequest,
+        requestParameters.id,
+        requestParameters.requestId,
+        requestParameters.patchedCrewMemberAdminCreateUpdateRequest,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -7423,42 +8844,40 @@ export class AdminApi extends BaseAPI {
 
   /**
    *
-   * @param {number} id A unique integer value identifying this crew member.
-   * @param {number} requestId
+   * @param {AdminApiAdminRequestsCrewRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsCrewRetrieve(
-    id: number,
-    requestId: number,
+    requestParameters: AdminApiAdminRequestsCrewRetrieveRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminRequestsCrewRetrieve(id, requestId, options)
+      .adminRequestsCrewRetrieve(
+        requestParameters.id,
+        requestParameters.requestId,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this crew member.
-   * @param {number} requestId
-   * @param {CrewMemberAdminCreateUpdateRequest} crewMemberAdminCreateUpdateRequest
+   * @param {AdminApiAdminRequestsCrewUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsCrewUpdate(
-    id: number,
-    requestId: number,
-    crewMemberAdminCreateUpdateRequest: CrewMemberAdminCreateUpdateRequest,
+    requestParameters: AdminApiAdminRequestsCrewUpdateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsCrewUpdate(
-        id,
-        requestId,
-        crewMemberAdminCreateUpdateRequest,
+        requestParameters.id,
+        requestParameters.requestId,
+        requestParameters.crewMemberAdminCreateUpdateRequest,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -7466,77 +8885,61 @@ export class AdminApi extends BaseAPI {
 
   /**
    *
-   * @param {number} id A unique integer value identifying this request.
+   * @param {AdminApiAdminRequestsDestroyRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
-  public adminRequestsDestroy(id: number, options?: AxiosRequestConfig) {
+  public adminRequestsDestroy(
+    requestParameters: AdminApiAdminRequestsDestroyRequest,
+    options?: AxiosRequestConfig,
+  ) {
     return AdminApiFp(this.configuration)
-      .adminRequestsDestroy(id, options)
+      .adminRequestsDestroy(requestParameters.id, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this request.
+   * @param {AdminApiAdminRequestsHistoryListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
-  public adminRequestsHistoryList(id: number, options?: AxiosRequestConfig) {
+  public adminRequestsHistoryList(
+    requestParameters: AdminApiAdminRequestsHistoryListRequest,
+    options?: AxiosRequestConfig,
+  ) {
     return AdminApiFp(this.configuration)
-      .adminRequestsHistoryList(id, options)
+      .adminRequestsHistoryList(requestParameters.id, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {string} [deadlineAfter]
-   * @param {string} [deadlineBefore]
-   * @param {boolean} [hasProject]
-   * @param {string} [ordering] Which field to use when ordering the results.
-   * @param {number} [page] A page number within the paginated result set.
-   * @param {number} [pageSize] Number of results to return per page.
-   * @param {boolean} [pagination] Return paginated response.
-   * @param {number} [project]
-   * @param {string} [search] A search term.
-   * @param {string} [startDatetimeAfter]
-   * @param {string} [startDatetimeBefore]
-   * @param {Array<AdminRequestsListStatusEnum>} [status] * &#x60;0&#x60; - Elutasítva * &#x60;1&#x60; - Felkérés * &#x60;2&#x60; - Elvállalva * &#x60;3&#x60; - Leforgatva * &#x60;4&#x60; - Beírva * &#x60;5&#x60; - Megvágva * &#x60;6&#x60; - Archiválva * &#x60;7&#x60; - Lezárva * &#x60;9&#x60; - Szervezők által lemondva * &#x60;10&#x60; - Meghiúsult
+   * @param {AdminApiAdminRequestsListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsList(
-    deadlineAfter?: string,
-    deadlineBefore?: string,
-    hasProject?: boolean,
-    ordering?: string,
-    page?: number,
-    pageSize?: number,
-    pagination?: boolean,
-    project?: number,
-    search?: string,
-    startDatetimeAfter?: string,
-    startDatetimeBefore?: string,
-    status?: Array<AdminRequestsListStatusEnum>,
+    requestParameters: AdminApiAdminRequestsListRequest = {},
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsList(
-        deadlineAfter,
-        deadlineBefore,
-        hasProject,
-        ordering,
-        page,
-        pageSize,
-        pagination,
-        project,
-        search,
-        startDatetimeAfter,
-        startDatetimeBefore,
-        status,
+        requestParameters.deadlineAfter,
+        requestParameters.deadlineBefore,
+        requestParameters.hasProject,
+        requestParameters.ordering,
+        requestParameters.page,
+        requestParameters.pageSize,
+        requestParameters.pagination,
+        requestParameters.project,
+        requestParameters.search,
+        requestParameters.startDatetimeAfter,
+        requestParameters.startDatetimeBefore,
+        requestParameters.status,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -7544,52 +8947,55 @@ export class AdminApi extends BaseAPI {
 
   /**
    *
-   * @param {number} id A unique integer value identifying this request.
-   * @param {PatchedRequestAdminUpdateRequest} [patchedRequestAdminUpdateRequest]
+   * @param {AdminApiAdminRequestsPartialUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsPartialUpdate(
-    id: number,
-    patchedRequestAdminUpdateRequest?: PatchedRequestAdminUpdateRequest,
+    requestParameters: AdminApiAdminRequestsPartialUpdateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminRequestsPartialUpdate(id, patchedRequestAdminUpdateRequest, options)
+      .adminRequestsPartialUpdate(
+        requestParameters.id,
+        requestParameters.patchedRequestAdminUpdateRequest,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this request.
+   * @param {AdminApiAdminRequestsRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
-  public adminRequestsRetrieve(id: number, options?: AxiosRequestConfig) {
+  public adminRequestsRetrieve(
+    requestParameters: AdminApiAdminRequestsRetrieveRequest,
+    options?: AxiosRequestConfig,
+  ) {
     return AdminApiFp(this.configuration)
-      .adminRequestsRetrieve(id, options)
+      .adminRequestsRetrieve(requestParameters.id, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} requestId
-   * @param {TodoAdminCreateUpdateRequest} todoAdminCreateUpdateRequest
+   * @param {AdminApiAdminRequestsTodosCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsTodosCreate(
-    requestId: number,
-    todoAdminCreateUpdateRequest: TodoAdminCreateUpdateRequest,
+    requestParameters: AdminApiAdminRequestsTodosCreateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsTodosCreate(
-        requestId,
-        todoAdminCreateUpdateRequest,
+        requestParameters.requestId,
+        requestParameters.todoAdminCreateUpdateRequest,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -7597,57 +9003,59 @@ export class AdminApi extends BaseAPI {
 
   /**
    *
-   * @param {number} requestId
-   * @param {string} [ordering] Which field to use when ordering the results.
+   * @param {AdminApiAdminRequestsTodosListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsTodosList(
-    requestId: number,
-    ordering?: string,
+    requestParameters: AdminApiAdminRequestsTodosListRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminRequestsTodosList(requestId, ordering, options)
+      .adminRequestsTodosList(
+        requestParameters.requestId,
+        requestParameters.ordering,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this request.
-   * @param {RequestAdminUpdateRequest} requestAdminUpdateRequest
+   * @param {AdminApiAdminRequestsUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsUpdate(
-    id: number,
-    requestAdminUpdateRequest: RequestAdminUpdateRequest,
+    requestParameters: AdminApiAdminRequestsUpdateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminRequestsUpdate(id, requestAdminUpdateRequest, options)
+      .adminRequestsUpdate(
+        requestParameters.id,
+        requestParameters.requestAdminUpdateRequest,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} requestId
-   * @param {VideoAdminCreateUpdateRequest} videoAdminCreateUpdateRequest
+   * @param {AdminApiAdminRequestsVideosCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsVideosCreate(
-    requestId: number,
-    videoAdminCreateUpdateRequest: VideoAdminCreateUpdateRequest,
+    requestParameters: AdminApiAdminRequestsVideosCreateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsVideosCreate(
-        requestId,
-        videoAdminCreateUpdateRequest,
+        requestParameters.requestId,
+        requestParameters.videoAdminCreateUpdateRequest,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -7655,78 +9063,80 @@ export class AdminApi extends BaseAPI {
 
   /**
    *
-   * @param {number} id A unique integer value identifying this video.
-   * @param {number} requestId
+   * @param {AdminApiAdminRequestsVideosDestroyRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsVideosDestroy(
-    id: number,
-    requestId: number,
+    requestParameters: AdminApiAdminRequestsVideosDestroyRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminRequestsVideosDestroy(id, requestId, options)
+      .adminRequestsVideosDestroy(
+        requestParameters.id,
+        requestParameters.requestId,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this video.
-   * @param {number} requestId
+   * @param {AdminApiAdminRequestsVideosHistoryListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsVideosHistoryList(
-    id: number,
-    requestId: number,
+    requestParameters: AdminApiAdminRequestsVideosHistoryListRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminRequestsVideosHistoryList(id, requestId, options)
+      .adminRequestsVideosHistoryList(
+        requestParameters.id,
+        requestParameters.requestId,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} requestId
-   * @param {string} [ordering] Which field to use when ordering the results.
+   * @param {AdminApiAdminRequestsVideosListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsVideosList(
-    requestId: number,
-    ordering?: string,
+    requestParameters: AdminApiAdminRequestsVideosListRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminRequestsVideosList(requestId, ordering, options)
+      .adminRequestsVideosList(
+        requestParameters.requestId,
+        requestParameters.ordering,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this video.
-   * @param {number} requestId
-   * @param {PatchedVideoAdminCreateUpdateRequest} [patchedVideoAdminCreateUpdateRequest]
+   * @param {AdminApiAdminRequestsVideosPartialUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsVideosPartialUpdate(
-    id: number,
-    requestId: number,
-    patchedVideoAdminCreateUpdateRequest?: PatchedVideoAdminCreateUpdateRequest,
+    requestParameters: AdminApiAdminRequestsVideosPartialUpdateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsVideosPartialUpdate(
-        id,
-        requestId,
-        patchedVideoAdminCreateUpdateRequest,
+        requestParameters.id,
+        requestParameters.requestId,
+        requestParameters.patchedVideoAdminCreateUpdateRequest,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -7734,24 +9144,20 @@ export class AdminApi extends BaseAPI {
 
   /**
    *
-   * @param {number} requestId
-   * @param {number} videoId
-   * @param {RatingAdminCreateUpdateRequest} ratingAdminCreateUpdateRequest
+   * @param {AdminApiAdminRequestsVideosRatingsCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsVideosRatingsCreate(
-    requestId: number,
-    videoId: number,
-    ratingAdminCreateUpdateRequest: RatingAdminCreateUpdateRequest,
+    requestParameters: AdminApiAdminRequestsVideosRatingsCreateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsVideosRatingsCreate(
-        requestId,
-        videoId,
-        ratingAdminCreateUpdateRequest,
+        requestParameters.requestId,
+        requestParameters.videoId,
+        requestParameters.ratingAdminCreateUpdateRequest,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -7759,105 +9165,104 @@ export class AdminApi extends BaseAPI {
 
   /**
    *
-   * @param {number} id A unique integer value identifying this rating.
-   * @param {number} requestId
-   * @param {number} videoId
+   * @param {AdminApiAdminRequestsVideosRatingsDestroyRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsVideosRatingsDestroy(
-    id: number,
-    requestId: number,
-    videoId: number,
+    requestParameters: AdminApiAdminRequestsVideosRatingsDestroyRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminRequestsVideosRatingsDestroy(id, requestId, videoId, options)
+      .adminRequestsVideosRatingsDestroy(
+        requestParameters.id,
+        requestParameters.requestId,
+        requestParameters.videoId,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this rating.
-   * @param {number} requestId
-   * @param {number} videoId
+   * @param {AdminApiAdminRequestsVideosRatingsHistoryListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsVideosRatingsHistoryList(
-    id: number,
-    requestId: number,
-    videoId: number,
+    requestParameters: AdminApiAdminRequestsVideosRatingsHistoryListRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminRequestsVideosRatingsHistoryList(id, requestId, videoId, options)
+      .adminRequestsVideosRatingsHistoryList(
+        requestParameters.id,
+        requestParameters.requestId,
+        requestParameters.videoId,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} requestId
-   * @param {number} videoId
-   * @param {string} [ordering] Which field to use when ordering the results.
+   * @param {AdminApiAdminRequestsVideosRatingsListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsVideosRatingsList(
-    requestId: number,
-    videoId: number,
-    ordering?: string,
+    requestParameters: AdminApiAdminRequestsVideosRatingsListRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminRequestsVideosRatingsList(requestId, videoId, ordering, options)
+      .adminRequestsVideosRatingsList(
+        requestParameters.requestId,
+        requestParameters.videoId,
+        requestParameters.ordering,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} requestId
-   * @param {number} videoId
+   * @param {AdminApiAdminRequestsVideosRatingsOwnRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsVideosRatingsOwnRetrieve(
-    requestId: number,
-    videoId: number,
+    requestParameters: AdminApiAdminRequestsVideosRatingsOwnRetrieveRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminRequestsVideosRatingsOwnRetrieve(requestId, videoId, options)
+      .adminRequestsVideosRatingsOwnRetrieve(
+        requestParameters.requestId,
+        requestParameters.videoId,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this rating.
-   * @param {number} requestId
-   * @param {number} videoId
-   * @param {PatchedRatingAdminCreateUpdateRequest} [patchedRatingAdminCreateUpdateRequest]
+   * @param {AdminApiAdminRequestsVideosRatingsPartialUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsVideosRatingsPartialUpdate(
-    id: number,
-    requestId: number,
-    videoId: number,
-    patchedRatingAdminCreateUpdateRequest?: PatchedRatingAdminCreateUpdateRequest,
+    requestParameters: AdminApiAdminRequestsVideosRatingsPartialUpdateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsVideosRatingsPartialUpdate(
-        id,
-        requestId,
-        videoId,
-        patchedRatingAdminCreateUpdateRequest,
+        requestParameters.id,
+        requestParameters.requestId,
+        requestParameters.videoId,
+        requestParameters.patchedRatingAdminCreateUpdateRequest,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -7865,47 +9270,42 @@ export class AdminApi extends BaseAPI {
 
   /**
    *
-   * @param {number} id A unique integer value identifying this rating.
-   * @param {number} requestId
-   * @param {number} videoId
+   * @param {AdminApiAdminRequestsVideosRatingsRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsVideosRatingsRetrieve(
-    id: number,
-    requestId: number,
-    videoId: number,
+    requestParameters: AdminApiAdminRequestsVideosRatingsRetrieveRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminRequestsVideosRatingsRetrieve(id, requestId, videoId, options)
+      .adminRequestsVideosRatingsRetrieve(
+        requestParameters.id,
+        requestParameters.requestId,
+        requestParameters.videoId,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this rating.
-   * @param {number} requestId
-   * @param {number} videoId
-   * @param {RatingAdminCreateUpdateRequest} ratingAdminCreateUpdateRequest
+   * @param {AdminApiAdminRequestsVideosRatingsUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsVideosRatingsUpdate(
-    id: number,
-    requestId: number,
-    videoId: number,
-    ratingAdminCreateUpdateRequest: RatingAdminCreateUpdateRequest,
+    requestParameters: AdminApiAdminRequestsVideosRatingsUpdateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsVideosRatingsUpdate(
-        id,
-        requestId,
-        videoId,
-        ratingAdminCreateUpdateRequest,
+        requestParameters.id,
+        requestParameters.requestId,
+        requestParameters.videoId,
+        requestParameters.ratingAdminCreateUpdateRequest,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -7913,42 +9313,40 @@ export class AdminApi extends BaseAPI {
 
   /**
    *
-   * @param {number} id A unique integer value identifying this video.
-   * @param {number} requestId
+   * @param {AdminApiAdminRequestsVideosRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsVideosRetrieve(
-    id: number,
-    requestId: number,
+    requestParameters: AdminApiAdminRequestsVideosRetrieveRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminRequestsVideosRetrieve(id, requestId, options)
+      .adminRequestsVideosRetrieve(
+        requestParameters.id,
+        requestParameters.requestId,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} requestId
-   * @param {number} videoId
-   * @param {TodoAdminCreateUpdateRequest} todoAdminCreateUpdateRequest
+   * @param {AdminApiAdminRequestsVideosTodosCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsVideosTodosCreate(
-    requestId: number,
-    videoId: number,
-    todoAdminCreateUpdateRequest: TodoAdminCreateUpdateRequest,
+    requestParameters: AdminApiAdminRequestsVideosTodosCreateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsVideosTodosCreate(
-        requestId,
-        videoId,
-        todoAdminCreateUpdateRequest,
+        requestParameters.requestId,
+        requestParameters.videoId,
+        requestParameters.todoAdminCreateUpdateRequest,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -7956,44 +9354,41 @@ export class AdminApi extends BaseAPI {
 
   /**
    *
-   * @param {number} requestId
-   * @param {number} videoId
-   * @param {string} [ordering] Which field to use when ordering the results.
+   * @param {AdminApiAdminRequestsVideosTodosListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsVideosTodosList(
-    requestId: number,
-    videoId: number,
-    ordering?: string,
+    requestParameters: AdminApiAdminRequestsVideosTodosListRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminRequestsVideosTodosList(requestId, videoId, ordering, options)
+      .adminRequestsVideosTodosList(
+        requestParameters.requestId,
+        requestParameters.videoId,
+        requestParameters.ordering,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this video.
-   * @param {number} requestId
-   * @param {VideoAdminCreateUpdateRequest} videoAdminCreateUpdateRequest
+   * @param {AdminApiAdminRequestsVideosUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminRequestsVideosUpdate(
-    id: number,
-    requestId: number,
-    videoAdminCreateUpdateRequest: VideoAdminCreateUpdateRequest,
+    requestParameters: AdminApiAdminRequestsVideosUpdateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminRequestsVideosUpdate(
-        id,
-        requestId,
-        videoAdminCreateUpdateRequest,
+        requestParameters.id,
+        requestParameters.requestId,
+        requestParameters.videoAdminCreateUpdateRequest,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -8001,46 +9396,39 @@ export class AdminApi extends BaseAPI {
 
   /**
    *
-   * @param {number} id A unique integer value identifying this todo.
+   * @param {AdminApiAdminTodosDestroyRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
-  public adminTodosDestroy(id: number, options?: AxiosRequestConfig) {
+  public adminTodosDestroy(
+    requestParameters: AdminApiAdminTodosDestroyRequest,
+    options?: AxiosRequestConfig,
+  ) {
     return AdminApiFp(this.configuration)
-      .adminTodosDestroy(id, options)
+      .adminTodosDestroy(requestParameters.id, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {Array<number>} [assignees]
-   * @param {string} [ordering] Which field to use when ordering the results.
-   * @param {number} [page] A page number within the paginated result set.
-   * @param {number} [pageSize] Number of results to return per page.
-   * @param {boolean} [pagination] Return paginated response.
-   * @param {Array<AdminTodosListStatusEnum>} [status] * &#x60;1&#x60; - Nyitva * &#x60;2&#x60; - Lezárva * &#x60;3&#x60; - Elvetve
+   * @param {AdminApiAdminTodosListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminTodosList(
-    assignees?: Array<number>,
-    ordering?: string,
-    page?: number,
-    pageSize?: number,
-    pagination?: boolean,
-    status?: Array<AdminTodosListStatusEnum>,
+    requestParameters: AdminApiAdminTodosListRequest = {},
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminTodosList(
-        assignees,
-        ordering,
-        page,
-        pageSize,
-        pagination,
-        status,
+        requestParameters.assignees,
+        requestParameters.ordering,
+        requestParameters.page,
+        requestParameters.pageSize,
+        requestParameters.pagination,
+        requestParameters.status,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -8048,116 +9436,116 @@ export class AdminApi extends BaseAPI {
 
   /**
    *
-   * @param {number} id A unique integer value identifying this todo.
-   * @param {PatchedTodoAdminCreateUpdateRequest} [patchedTodoAdminCreateUpdateRequest]
+   * @param {AdminApiAdminTodosPartialUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminTodosPartialUpdate(
-    id: number,
-    patchedTodoAdminCreateUpdateRequest?: PatchedTodoAdminCreateUpdateRequest,
+    requestParameters: AdminApiAdminTodosPartialUpdateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminTodosPartialUpdate(id, patchedTodoAdminCreateUpdateRequest, options)
+      .adminTodosPartialUpdate(
+        requestParameters.id,
+        requestParameters.patchedTodoAdminCreateUpdateRequest,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this todo.
+   * @param {AdminApiAdminTodosRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
-  public adminTodosRetrieve(id: number, options?: AxiosRequestConfig) {
+  public adminTodosRetrieve(
+    requestParameters: AdminApiAdminTodosRetrieveRequest,
+    options?: AxiosRequestConfig,
+  ) {
     return AdminApiFp(this.configuration)
-      .adminTodosRetrieve(id, options)
+      .adminTodosRetrieve(requestParameters.id, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this todo.
-   * @param {TodoAdminCreateUpdateRequest} todoAdminCreateUpdateRequest
+   * @param {AdminApiAdminTodosUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminTodosUpdate(
-    id: number,
-    todoAdminCreateUpdateRequest: TodoAdminCreateUpdateRequest,
+    requestParameters: AdminApiAdminTodosUpdateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminTodosUpdate(id, todoAdminCreateUpdateRequest, options)
+      .adminTodosUpdate(
+        requestParameters.id,
+        requestParameters.todoAdminCreateUpdateRequest,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this user.
-   * @param {BanUserRequest} [banUserRequest]
+   * @param {AdminApiAdminUsersBanCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminUsersBanCreate(
-    id: number,
-    banUserRequest?: BanUserRequest,
+    requestParameters: AdminApiAdminUsersBanCreateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminUsersBanCreate(id, banUserRequest, options)
+      .adminUsersBanCreate(
+        requestParameters.id,
+        requestParameters.banUserRequest,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this user.
+   * @param {AdminApiAdminUsersBanDestroyRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
-  public adminUsersBanDestroy(id: number, options?: AxiosRequestConfig) {
+  public adminUsersBanDestroy(
+    requestParameters: AdminApiAdminUsersBanDestroyRequest,
+    options?: AxiosRequestConfig,
+  ) {
     return AdminApiFp(this.configuration)
-      .adminUsersBanDestroy(id, options)
+      .adminUsersBanDestroy(requestParameters.id, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {boolean} [isAdmin]
-   * @param {boolean} [isStaff]
-   * @param {string} [ordering] Which field to use when ordering the results.
-   * @param {number} [page] A page number within the paginated result set.
-   * @param {number} [pageSize] Number of results to return per page.
-   * @param {boolean} [pagination] Return paginated response.
-   * @param {string} [search] A search term.
+   * @param {AdminApiAdminUsersListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminUsersList(
-    isAdmin?: boolean,
-    isStaff?: boolean,
-    ordering?: string,
-    page?: number,
-    pageSize?: number,
-    pagination?: boolean,
-    search?: string,
+    requestParameters: AdminApiAdminUsersListRequest = {},
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminUsersList(
-        isAdmin,
-        isStaff,
-        ordering,
-        page,
-        pageSize,
-        pagination,
-        search,
+        requestParameters.isAdmin,
+        requestParameters.isStaff,
+        requestParameters.ordering,
+        requestParameters.page,
+        requestParameters.pageSize,
+        requestParameters.pagination,
+        requestParameters.search,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -8165,21 +9553,19 @@ export class AdminApi extends BaseAPI {
 
   /**
    *
-   * @param {number} id A unique integer value identifying this user.
-   * @param {PatchedUserAdminRetrieveUpdateRequest} [patchedUserAdminRetrieveUpdateRequest]
+   * @param {AdminApiAdminUsersPartialUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminUsersPartialUpdate(
-    id: number,
-    patchedUserAdminRetrieveUpdateRequest?: PatchedUserAdminRetrieveUpdateRequest,
+    requestParameters: AdminApiAdminUsersPartialUpdateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminUsersPartialUpdate(
-        id,
-        patchedUserAdminRetrieveUpdateRequest,
+        requestParameters.id,
+        requestParameters.patchedUserAdminRetrieveUpdateRequest,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -8187,107 +9573,88 @@ export class AdminApi extends BaseAPI {
 
   /**
    *
-   * @param {number} id A unique integer value identifying this user.
+   * @param {AdminApiAdminUsersRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
-  public adminUsersRetrieve(id: number, options?: AxiosRequestConfig) {
+  public adminUsersRetrieve(
+    requestParameters: AdminApiAdminUsersRetrieveRequest,
+    options?: AxiosRequestConfig,
+  ) {
     return AdminApiFp(this.configuration)
-      .adminUsersRetrieve(id, options)
+      .adminUsersRetrieve(requestParameters.id, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this user.
-   * @param {UserAdminRetrieveUpdateRequest} [userAdminRetrieveUpdateRequest]
+   * @param {AdminApiAdminUsersUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminUsersUpdate(
-    id: number,
-    userAdminRetrieveUpdateRequest?: UserAdminRetrieveUpdateRequest,
+    requestParameters: AdminApiAdminUsersUpdateRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminUsersUpdate(id, userAdminRetrieveUpdateRequest, options)
+      .adminUsersUpdate(
+        requestParameters.id,
+        requestParameters.userAdminRetrieveUpdateRequest,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {number} id A unique integer value identifying this user.
-   * @param {string} [dateAfter] Default is 20 weeks before date_before.
-   * @param {string} [dateBefore] Default is today.
-   * @param {boolean} [isResponsible] Default is True.
+   * @param {AdminApiAdminUsersWorkedOnListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminUsersWorkedOnList(
-    id: number,
-    dateAfter?: string,
-    dateBefore?: string,
-    isResponsible?: boolean,
+    requestParameters: AdminApiAdminUsersWorkedOnListRequest,
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
-      .adminUsersWorkedOnList(id, dateAfter, dateBefore, isResponsible, options)
+      .adminUsersWorkedOnList(
+        requestParameters.id,
+        requestParameters.dateAfter,
+        requestParameters.dateBefore,
+        requestParameters.isResponsible,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {string} [editedAtAfter]
-   * @param {string} [editedAtBefore]
-   * @param {string} [lastAired]
-   * @param {number} [lengthMax]
-   * @param {number} [lengthMin]
-   * @param {string} [ordering] Which field to use when ordering the results.
-   * @param {number} [page] A page number within the paginated result set.
-   * @param {number} [pageSize] Number of results to return per page.
-   * @param {boolean} [pagination] Return paginated response.
-   * @param {string} [requestStartDatetimeAfter]
-   * @param {string} [requestStartDatetimeBefore]
-   * @param {string} [search] A search term.
-   * @param {Array<AdminVideosListStatusEnum>} [status] * &#x60;1&#x60; - Vágásra vár * &#x60;2&#x60; - Vágás alatt * &#x60;3&#x60; - Megvágva * &#x60;4&#x60; - Kikódolva * &#x60;5&#x60; - Közzétéve * &#x60;6&#x60; - Lezárva
+   * @param {AdminApiAdminVideosListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof AdminApi
    */
   public adminVideosList(
-    editedAtAfter?: string,
-    editedAtBefore?: string,
-    lastAired?: string,
-    lengthMax?: number,
-    lengthMin?: number,
-    ordering?: string,
-    page?: number,
-    pageSize?: number,
-    pagination?: boolean,
-    requestStartDatetimeAfter?: string,
-    requestStartDatetimeBefore?: string,
-    search?: string,
-    status?: Array<AdminVideosListStatusEnum>,
+    requestParameters: AdminApiAdminVideosListRequest = {},
     options?: AxiosRequestConfig,
   ) {
     return AdminApiFp(this.configuration)
       .adminVideosList(
-        editedAtAfter,
-        editedAtBefore,
-        lastAired,
-        lengthMax,
-        lengthMin,
-        ordering,
-        page,
-        pageSize,
-        pagination,
-        requestStartDatetimeAfter,
-        requestStartDatetimeBefore,
-        search,
-        status,
+        requestParameters.editedAtAfter,
+        requestParameters.editedAtBefore,
+        requestParameters.lastAired,
+        requestParameters.lengthMax,
+        requestParameters.lengthMin,
+        requestParameters.ordering,
+        requestParameters.page,
+        requestParameters.pageSize,
+        requestParameters.pagination,
+        requestParameters.requestStartDatetimeAfter,
+        requestParameters.requestStartDatetimeBefore,
+        requestParameters.search,
+        requestParameters.status,
         options,
       )
       .then((request) => request(this.axios, this.basePath));

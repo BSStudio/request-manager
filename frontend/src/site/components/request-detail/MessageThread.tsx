@@ -25,8 +25,12 @@ export default function MessageThread({ requestId }: { requestId: number }) {
 
   const send = useMutation({
     mutationFn: async (message: string) =>
-      (await requestsApi.requestsCommentsCreate(requestId, { text: message }))
-        .data,
+      (
+        await requestsApi.requestsCommentsCreate({
+          commentCreateUpdateRequest: { text: message },
+          requestId,
+        })
+      ).data,
     onError: (error) =>
       toast.error('Nem sikerült elküldeni az üzenetet.', {
         description: isRateLimited(error)

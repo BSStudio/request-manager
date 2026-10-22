@@ -140,7 +140,7 @@ export const LogoutApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    logoutCreate(options?: any): AxiosPromise<void> {
+    logoutCreate(options?: AxiosRequestConfig): AxiosPromise<void> {
       return localVarFp
         .logoutCreate(options)
         .then((request) => request(axios, basePath));

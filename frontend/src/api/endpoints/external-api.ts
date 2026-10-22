@@ -353,57 +353,104 @@ export const ExternalApiFactory = function (
   return {
     /**
      *
-     * @param {number} requestId
-     * @param {CommentCreateUpdateRequest} commentCreateUpdateRequest
+     * @param {ExternalApiExternalSchEventsRequestsCommentsCreateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     externalSchEventsRequestsCommentsCreate(
-      requestId: number,
-      commentCreateUpdateRequest: CommentCreateUpdateRequest,
-      options?: any,
+      requestParameters: ExternalApiExternalSchEventsRequestsCommentsCreateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<CommentCreateUpdate> {
       return localVarFp
         .externalSchEventsRequestsCommentsCreate(
-          requestId,
-          commentCreateUpdateRequest,
+          requestParameters.requestId,
+          requestParameters.commentCreateUpdateRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {RequestExternalSchEventsCreateRequest} requestExternalSchEventsCreateRequest
+     * @param {ExternalApiExternalSchEventsRequestsCreateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     externalSchEventsRequestsCreate(
-      requestExternalSchEventsCreateRequest: RequestExternalSchEventsCreateRequest,
-      options?: any,
+      requestParameters: ExternalApiExternalSchEventsRequestsCreateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<RequestRetrieve> {
       return localVarFp
         .externalSchEventsRequestsCreate(
-          requestExternalSchEventsCreateRequest,
+          requestParameters.requestExternalSchEventsCreateRequest,
           options,
         )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {number} id
+     * @param {ExternalApiExternalSchEventsRequestsRetrieveRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     externalSchEventsRequestsRetrieve(
-      id: number,
-      options?: any,
+      requestParameters: ExternalApiExternalSchEventsRequestsRetrieveRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<RequestRetrieve> {
       return localVarFp
-        .externalSchEventsRequestsRetrieve(id, options)
+        .externalSchEventsRequestsRetrieve(requestParameters.id, options)
         .then((request) => request(axios, basePath));
     },
   };
 };
+
+/**
+ * Request parameters for externalSchEventsRequestsCommentsCreate operation in ExternalApi.
+ * @export
+ * @interface ExternalApiExternalSchEventsRequestsCommentsCreateRequest
+ */
+export interface ExternalApiExternalSchEventsRequestsCommentsCreateRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof ExternalApiExternalSchEventsRequestsCommentsCreate
+   */
+  readonly requestId: number;
+
+  /**
+   *
+   * @type {CommentCreateUpdateRequest}
+   * @memberof ExternalApiExternalSchEventsRequestsCommentsCreate
+   */
+  readonly commentCreateUpdateRequest: CommentCreateUpdateRequest;
+}
+
+/**
+ * Request parameters for externalSchEventsRequestsCreate operation in ExternalApi.
+ * @export
+ * @interface ExternalApiExternalSchEventsRequestsCreateRequest
+ */
+export interface ExternalApiExternalSchEventsRequestsCreateRequest {
+  /**
+   *
+   * @type {RequestExternalSchEventsCreateRequest}
+   * @memberof ExternalApiExternalSchEventsRequestsCreate
+   */
+  readonly requestExternalSchEventsCreateRequest: RequestExternalSchEventsCreateRequest;
+}
+
+/**
+ * Request parameters for externalSchEventsRequestsRetrieve operation in ExternalApi.
+ * @export
+ * @interface ExternalApiExternalSchEventsRequestsRetrieveRequest
+ */
+export interface ExternalApiExternalSchEventsRequestsRetrieveRequest {
+  /**
+   *
+   * @type {number}
+   * @memberof ExternalApiExternalSchEventsRequestsRetrieve
+   */
+  readonly id: number;
+}
 
 /**
  * ExternalApi - object-oriented interface
@@ -414,21 +461,19 @@ export const ExternalApiFactory = function (
 export class ExternalApi extends BaseAPI {
   /**
    *
-   * @param {number} requestId
-   * @param {CommentCreateUpdateRequest} commentCreateUpdateRequest
+   * @param {ExternalApiExternalSchEventsRequestsCommentsCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ExternalApi
    */
   public externalSchEventsRequestsCommentsCreate(
-    requestId: number,
-    commentCreateUpdateRequest: CommentCreateUpdateRequest,
+    requestParameters: ExternalApiExternalSchEventsRequestsCommentsCreateRequest,
     options?: AxiosRequestConfig,
   ) {
     return ExternalApiFp(this.configuration)
       .externalSchEventsRequestsCommentsCreate(
-        requestId,
-        commentCreateUpdateRequest,
+        requestParameters.requestId,
+        requestParameters.commentCreateUpdateRequest,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -436,18 +481,18 @@ export class ExternalApi extends BaseAPI {
 
   /**
    *
-   * @param {RequestExternalSchEventsCreateRequest} requestExternalSchEventsCreateRequest
+   * @param {ExternalApiExternalSchEventsRequestsCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ExternalApi
    */
   public externalSchEventsRequestsCreate(
-    requestExternalSchEventsCreateRequest: RequestExternalSchEventsCreateRequest,
+    requestParameters: ExternalApiExternalSchEventsRequestsCreateRequest,
     options?: AxiosRequestConfig,
   ) {
     return ExternalApiFp(this.configuration)
       .externalSchEventsRequestsCreate(
-        requestExternalSchEventsCreateRequest,
+        requestParameters.requestExternalSchEventsCreateRequest,
         options,
       )
       .then((request) => request(this.axios, this.basePath));
@@ -455,17 +500,17 @@ export class ExternalApi extends BaseAPI {
 
   /**
    *
-   * @param {number} id
+   * @param {ExternalApiExternalSchEventsRequestsRetrieveRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof ExternalApi
    */
   public externalSchEventsRequestsRetrieve(
-    id: number,
+    requestParameters: ExternalApiExternalSchEventsRequestsRetrieveRequest,
     options?: AxiosRequestConfig,
   ) {
     return ExternalApiFp(this.configuration)
-      .externalSchEventsRequestsRetrieve(id, options)
+      .externalSchEventsRequestsRetrieve(requestParameters.id, options)
       .then((request) => request(this.axios, this.basePath));
   }
 }

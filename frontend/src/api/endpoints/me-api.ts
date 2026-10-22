@@ -578,16 +578,16 @@ export const MeApiFactory = function (
   return {
     /**
      *
-     * @param {PatchedUserRequest} [patchedUserRequest]
+     * @param {MeApiMePartialUpdateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     mePartialUpdate(
-      patchedUserRequest?: PatchedUserRequest,
-      options?: any,
+      requestParameters: MeApiMePartialUpdateRequest = {},
+      options?: AxiosRequestConfig,
     ): AxiosPromise<User> {
       return localVarFp
-        .mePartialUpdate(patchedUserRequest, options)
+        .mePartialUpdate(requestParameters.patchedUserRequest, options)
         .then((request) => request(axios, basePath));
     },
     /**
@@ -595,69 +595,169 @@ export const MeApiFactory = function (
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    meRetrieve(options?: any): AxiosPromise<User> {
+    meRetrieve(options?: AxiosRequestConfig): AxiosPromise<User> {
       return localVarFp
         .meRetrieve(options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {string} provider
-     * @param {OAuth2ConnectRequest} oAuth2ConnectRequest
+     * @param {MeApiMeSocialCreateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     meSocialCreate(
-      provider: string,
-      oAuth2ConnectRequest: OAuth2ConnectRequest,
-      options?: any,
+      requestParameters: MeApiMeSocialCreateRequest,
+      options?: AxiosRequestConfig,
     ): AxiosPromise<void> {
       return localVarFp
-        .meSocialCreate(provider, oAuth2ConnectRequest, options)
+        .meSocialCreate(
+          requestParameters.provider,
+          requestParameters.oAuth2ConnectRequest,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {string} provider
+     * @param {MeApiMeSocialDestroyRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    meSocialDestroy(provider: string, options?: any): AxiosPromise<void> {
+    meSocialDestroy(
+      requestParameters: MeApiMeSocialDestroyRequest,
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<void> {
       return localVarFp
-        .meSocialDestroy(provider, options)
+        .meSocialDestroy(requestParameters.provider, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {UserRequest} [userRequest]
+     * @param {MeApiMeUpdateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    meUpdate(userRequest?: UserRequest, options?: any): AxiosPromise<User> {
+    meUpdate(
+      requestParameters: MeApiMeUpdateRequest = {},
+      options?: AxiosRequestConfig,
+    ): AxiosPromise<User> {
       return localVarFp
-        .meUpdate(userRequest, options)
+        .meUpdate(requestParameters.userRequest, options)
         .then((request) => request(axios, basePath));
     },
     /**
      *
-     * @param {string} [dateAfter] Default is 20 weeks before date_before.
-     * @param {string} [dateBefore] Default is today.
-     * @param {boolean} [isResponsible] Default is True.
+     * @param {MeApiMeWorkedOnListRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     meWorkedOnList(
-      dateAfter?: string,
-      dateBefore?: string,
-      isResponsible?: boolean,
-      options?: any,
+      requestParameters: MeApiMeWorkedOnListRequest = {},
+      options?: AxiosRequestConfig,
     ): AxiosPromise<Array<UserAdminWorkedOn>> {
       return localVarFp
-        .meWorkedOnList(dateAfter, dateBefore, isResponsible, options)
+        .meWorkedOnList(
+          requestParameters.dateAfter,
+          requestParameters.dateBefore,
+          requestParameters.isResponsible,
+          options,
+        )
         .then((request) => request(axios, basePath));
     },
   };
 };
+
+/**
+ * Request parameters for mePartialUpdate operation in MeApi.
+ * @export
+ * @interface MeApiMePartialUpdateRequest
+ */
+export interface MeApiMePartialUpdateRequest {
+  /**
+   *
+   * @type {PatchedUserRequest}
+   * @memberof MeApiMePartialUpdate
+   */
+  readonly patchedUserRequest?: PatchedUserRequest;
+}
+
+/**
+ * Request parameters for meSocialCreate operation in MeApi.
+ * @export
+ * @interface MeApiMeSocialCreateRequest
+ */
+export interface MeApiMeSocialCreateRequest {
+  /**
+   *
+   * @type {string}
+   * @memberof MeApiMeSocialCreate
+   */
+  readonly provider: string;
+
+  /**
+   *
+   * @type {OAuth2ConnectRequest}
+   * @memberof MeApiMeSocialCreate
+   */
+  readonly oAuth2ConnectRequest: OAuth2ConnectRequest;
+}
+
+/**
+ * Request parameters for meSocialDestroy operation in MeApi.
+ * @export
+ * @interface MeApiMeSocialDestroyRequest
+ */
+export interface MeApiMeSocialDestroyRequest {
+  /**
+   *
+   * @type {string}
+   * @memberof MeApiMeSocialDestroy
+   */
+  readonly provider: string;
+}
+
+/**
+ * Request parameters for meUpdate operation in MeApi.
+ * @export
+ * @interface MeApiMeUpdateRequest
+ */
+export interface MeApiMeUpdateRequest {
+  /**
+   *
+   * @type {UserRequest}
+   * @memberof MeApiMeUpdate
+   */
+  readonly userRequest?: UserRequest;
+}
+
+/**
+ * Request parameters for meWorkedOnList operation in MeApi.
+ * @export
+ * @interface MeApiMeWorkedOnListRequest
+ */
+export interface MeApiMeWorkedOnListRequest {
+  /**
+   * Default is 20 weeks before date_before.
+   * @type {string}
+   * @memberof MeApiMeWorkedOnList
+   */
+  readonly dateAfter?: string;
+
+  /**
+   * Default is today.
+   * @type {string}
+   * @memberof MeApiMeWorkedOnList
+   */
+  readonly dateBefore?: string;
+
+  /**
+   * Default is True.
+   * @type {boolean}
+   * @memberof MeApiMeWorkedOnList
+   */
+  readonly isResponsible?: boolean;
+}
 
 /**
  * MeApi - object-oriented interface
@@ -668,17 +768,17 @@ export const MeApiFactory = function (
 export class MeApi extends BaseAPI {
   /**
    *
-   * @param {PatchedUserRequest} [patchedUserRequest]
+   * @param {MeApiMePartialUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof MeApi
    */
   public mePartialUpdate(
-    patchedUserRequest?: PatchedUserRequest,
+    requestParameters: MeApiMePartialUpdateRequest = {},
     options?: AxiosRequestConfig,
   ) {
     return MeApiFp(this.configuration)
-      .mePartialUpdate(patchedUserRequest, options)
+      .mePartialUpdate(requestParameters.patchedUserRequest, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
@@ -696,65 +796,74 @@ export class MeApi extends BaseAPI {
 
   /**
    *
-   * @param {string} provider
-   * @param {OAuth2ConnectRequest} oAuth2ConnectRequest
+   * @param {MeApiMeSocialCreateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof MeApi
    */
   public meSocialCreate(
-    provider: string,
-    oAuth2ConnectRequest: OAuth2ConnectRequest,
+    requestParameters: MeApiMeSocialCreateRequest,
     options?: AxiosRequestConfig,
   ) {
     return MeApiFp(this.configuration)
-      .meSocialCreate(provider, oAuth2ConnectRequest, options)
+      .meSocialCreate(
+        requestParameters.provider,
+        requestParameters.oAuth2ConnectRequest,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {string} provider
+   * @param {MeApiMeSocialDestroyRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof MeApi
    */
-  public meSocialDestroy(provider: string, options?: AxiosRequestConfig) {
+  public meSocialDestroy(
+    requestParameters: MeApiMeSocialDestroyRequest,
+    options?: AxiosRequestConfig,
+  ) {
     return MeApiFp(this.configuration)
-      .meSocialDestroy(provider, options)
+      .meSocialDestroy(requestParameters.provider, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {UserRequest} [userRequest]
+   * @param {MeApiMeUpdateRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof MeApi
    */
-  public meUpdate(userRequest?: UserRequest, options?: AxiosRequestConfig) {
+  public meUpdate(
+    requestParameters: MeApiMeUpdateRequest = {},
+    options?: AxiosRequestConfig,
+  ) {
     return MeApiFp(this.configuration)
-      .meUpdate(userRequest, options)
+      .meUpdate(requestParameters.userRequest, options)
       .then((request) => request(this.axios, this.basePath));
   }
 
   /**
    *
-   * @param {string} [dateAfter] Default is 20 weeks before date_before.
-   * @param {string} [dateBefore] Default is today.
-   * @param {boolean} [isResponsible] Default is True.
+   * @param {MeApiMeWorkedOnListRequest} requestParameters Request parameters.
    * @param {*} [options] Override http request option.
    * @throws {RequiredError}
    * @memberof MeApi
    */
   public meWorkedOnList(
-    dateAfter?: string,
-    dateBefore?: string,
-    isResponsible?: boolean,
+    requestParameters: MeApiMeWorkedOnListRequest = {},
     options?: AxiosRequestConfig,
   ) {
     return MeApiFp(this.configuration)
-      .meWorkedOnList(dateAfter, dateBefore, isResponsible, options)
+      .meWorkedOnList(
+        requestParameters.dateAfter,
+        requestParameters.dateBefore,
+        requestParameters.isResponsible,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 }

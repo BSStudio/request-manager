@@ -215,20 +215,22 @@ function NewRequestPage() {
     }
     try {
       const { data } = await requestsApi.requestsCreate({
-        comment: values.comment.trim(),
-        end_datetime: end.toISOString(),
-        place: values.place.trim(),
-        start_datetime: start.toISOString(),
-        title: values.title.trim(),
-        type:
-          values.type === OTHER_TYPE ? values.typeOther.trim() : values.type,
-        ...(!user && {
-          captcha,
-          requester_email: values.requesterEmail.trim(),
-          requester_first_name: values.requesterFirstName.trim(),
-          requester_last_name: values.requesterLastName.trim(),
-          requester_mobile: toE164(values.requesterMobile),
-        }),
+        polymorphicProxyRequest: {
+          comment: values.comment.trim(),
+          end_datetime: end.toISOString(),
+          place: values.place.trim(),
+          start_datetime: start.toISOString(),
+          title: values.title.trim(),
+          type:
+            values.type === OTHER_TYPE ? values.typeOther.trim() : values.type,
+          ...(!user && {
+            captcha,
+            requester_email: values.requesterEmail.trim(),
+            requester_first_name: values.requesterFirstName.trim(),
+            requester_last_name: values.requesterLastName.trim(),
+            requester_mobile: toE164(values.requesterMobile),
+          }),
+        },
       });
       sessionStorage.removeItem(DRAFT_KEY);
       setCreatedId(data.id);

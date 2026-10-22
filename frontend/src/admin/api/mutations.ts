@@ -18,7 +18,10 @@ import {
 
 export const requestCommentCreateMutation = (requestId: number) => ({
   mutationFn: (newComment: CommentAdminCreateUpdateRequest) => {
-    return adminApi.adminRequestsCommentsCreate(requestId, newComment);
+    return adminApi.adminRequestsCommentsCreate({
+      commentAdminCreateUpdateRequest: newComment,
+      requestId,
+    });
   },
 });
 
@@ -27,41 +30,55 @@ export const requestCommentUpdateMutation = (
   commentId: number,
 ) => ({
   mutationFn: (updateComment: PatchedCommentAdminCreateUpdateRequest) => {
-    return adminApi.adminRequestsCommentsPartialUpdate(
-      commentId,
+    return adminApi.adminRequestsCommentsPartialUpdate({
+      id: commentId,
+      patchedCommentAdminCreateUpdateRequest: updateComment,
       requestId,
-      updateComment,
-    );
+    });
   },
 });
 
 export const requestCreateMutation = () => ({
   mutationFn: (newRequest: RequestAdminCreateRequest) => {
-    return adminApi.adminRequestsCreate(newRequest);
+    return adminApi.adminRequestsCreate({
+      requestAdminCreateRequest: newRequest,
+    });
   },
 });
 
 export const requestCrewCreateMutation = (requestId: number) => ({
   mutationFn: (newCrewMember: CrewMemberAdminCreateUpdateRequest) => {
-    return adminApi.adminRequestsCrewCreate(requestId, newCrewMember);
+    return adminApi.adminRequestsCrewCreate({
+      crewMemberAdminCreateUpdateRequest: newCrewMember,
+      requestId,
+    });
   },
 });
 
 export const requestTodoCreateMutation = (requestId: number) => ({
   mutationFn: (newTodo: TodoAdminCreateUpdateRequest) => {
-    return adminApi.adminRequestsTodosCreate(requestId, newTodo);
+    return adminApi.adminRequestsTodosCreate({
+      requestId,
+      todoAdminCreateUpdateRequest: newTodo,
+    });
   },
 });
 
 export const requestUpdateMutation = (requestId: number) => ({
   mutationFn: (updateRequest: PatchedRequestAdminUpdateRequest) => {
-    return adminApi.adminRequestsPartialUpdate(requestId, updateRequest);
+    return adminApi.adminRequestsPartialUpdate({
+      id: requestId,
+      patchedRequestAdminUpdateRequest: updateRequest,
+    });
   },
 });
 
 export const requestVideoCreateMutation = (requestId: number) => ({
   mutationFn: (createVideo: VideoAdminCreateUpdateRequest) => {
-    return adminApi.adminRequestsVideosCreate(requestId, createVideo);
+    return adminApi.adminRequestsVideosCreate({
+      requestId,
+      videoAdminCreateUpdateRequest: createVideo,
+    });
   },
 });
 
@@ -70,11 +87,11 @@ export const requestVideoRatingCreateMutation = (
   videoId: number,
 ) => ({
   mutationFn: (newRating: RatingAdminCreateUpdateRequest) => {
-    return adminApi.adminRequestsVideosRatingsCreate(
+    return adminApi.adminRequestsVideosRatingsCreate({
+      ratingAdminCreateUpdateRequest: newRating,
       requestId,
       videoId,
-      newRating,
-    );
+    });
   },
 });
 
@@ -84,12 +101,12 @@ export const requestVideoRatingUpdateMutation = (
   ratingId: number,
 ) => ({
   mutationFn: (updateRating: PatchedRatingAdminCreateUpdateRequest) => {
-    return adminApi.adminRequestsVideosRatingsPartialUpdate(
-      ratingId,
+    return adminApi.adminRequestsVideosRatingsPartialUpdate({
+      id: ratingId,
+      patchedRatingAdminCreateUpdateRequest: updateRating,
       requestId,
       videoId,
-      updateRating,
-    );
+    });
   },
 });
 
@@ -98,7 +115,11 @@ export const requestVideoTodoCreateMutation = (
   videoId: number,
 ) => ({
   mutationFn: (newTodo: TodoAdminCreateUpdateRequest) => {
-    return adminApi.adminRequestsVideosTodosCreate(requestId, videoId, newTodo);
+    return adminApi.adminRequestsVideosTodosCreate({
+      requestId,
+      todoAdminCreateUpdateRequest: newTodo,
+      videoId,
+    });
   },
 });
 
@@ -107,29 +128,35 @@ export const requestVideoUpdateMutation = (
   videoId: number,
 ) => ({
   mutationFn: (updateVideo: PatchedVideoAdminCreateUpdateRequest) => {
-    return adminApi.adminRequestsVideosPartialUpdate(
-      videoId,
+    return adminApi.adminRequestsVideosPartialUpdate({
+      id: videoId,
+      patchedVideoAdminCreateUpdateRequest: updateVideo,
       requestId,
-      updateVideo,
-    );
+    });
   },
 });
 
 export const todoUpdateMutation = (todoId: number) => ({
   mutationFn: (updateTodo: PatchedTodoAdminCreateUpdateRequest) => {
-    return adminApi.adminTodosPartialUpdate(todoId, updateTodo);
+    return adminApi.adminTodosPartialUpdate({
+      id: todoId,
+      patchedTodoAdminCreateUpdateRequest: updateTodo,
+    });
   },
 });
 
 export const userUpdateMutation = (userId: number) => ({
   mutationFn: (updateUser: PatchedUserAdminRetrieveUpdateRequest) => {
-    return adminApi.adminUsersPartialUpdate(userId, updateUser);
+    return adminApi.adminUsersPartialUpdate({
+      id: userId,
+      patchedUserAdminRetrieveUpdateRequest: updateUser,
+    });
   },
 });
 
 export const requestDeleteMutation = (requestId: number) => ({
   mutationFn: () => {
-    return adminApi.adminRequestsDestroy(requestId);
+    return adminApi.adminRequestsDestroy({ id: requestId });
   },
 });
 
@@ -138,13 +165,13 @@ export const requestCommentDeleteMutation = (
   commentId: number,
 ) => ({
   mutationFn: () => {
-    return adminApi.adminRequestsCommentsDestroy(commentId, requestId);
+    return adminApi.adminRequestsCommentsDestroy({ id: commentId, requestId });
   },
 });
 
 export const requestCrewDeleteMutation = (requestId: number) => ({
   mutationFn: (crewId: number) => {
-    return adminApi.adminRequestsCrewDestroy(crewId, requestId);
+    return adminApi.adminRequestsCrewDestroy({ id: crewId, requestId });
   },
 });
 
@@ -153,11 +180,11 @@ export const requestCrewUpdateMutation = (requestId: number) => ({
     crewId: number;
     crewMember: PatchedCrewMemberAdminCreateUpdateRequest;
   }) => {
-    return adminApi.adminRequestsCrewPartialUpdate(
-      variables.crewId,
+    return adminApi.adminRequestsCrewPartialUpdate({
+      id: variables.crewId,
+      patchedCrewMemberAdminCreateUpdateRequest: variables.crewMember,
       requestId,
-      variables.crewMember,
-    );
+    });
   },
 });
 
@@ -166,7 +193,7 @@ export const requestVideoDeleteMutation = (
   videoId: number,
 ) => ({
   mutationFn: () => {
-    return adminApi.adminRequestsVideosDestroy(videoId, requestId);
+    return adminApi.adminRequestsVideosDestroy({ id: videoId, requestId });
   },
 });
 
@@ -176,28 +203,28 @@ export const requestVideoRatingDeleteMutation = (
   ratingId: number,
 ) => ({
   mutationFn: () => {
-    return adminApi.adminRequestsVideosRatingsDestroy(
-      ratingId,
+    return adminApi.adminRequestsVideosRatingsDestroy({
+      id: ratingId,
       requestId,
       videoId,
-    );
+    });
   },
 });
 
 export const todoDeleteMutation = (todoId: number) => ({
   mutationFn: () => {
-    return adminApi.adminTodosDestroy(todoId);
+    return adminApi.adminTodosDestroy({ id: todoId });
   },
 });
 
 export const userBanCreateMutation = (userId: number) => ({
   mutationFn: (ban: BanUserRequest) => {
-    return adminApi.adminUsersBanCreate(userId, ban);
+    return adminApi.adminUsersBanCreate({ banUserRequest: ban, id: userId });
   },
 });
 
 export const userBanDeleteMutation = (userId: number) => ({
   mutationFn: () => {
-    return adminApi.adminUsersBanDestroy(userId);
+    return adminApi.adminUsersBanDestroy({ id: userId });
   },
 });

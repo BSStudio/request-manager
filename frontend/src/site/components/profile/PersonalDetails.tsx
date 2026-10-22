@@ -107,10 +107,12 @@ export default function PersonalDetails({ user }: { user: User }) {
   const onSubmit = async (values: ProfileValues) => {
     try {
       const { data } = await meApi.mePartialUpdate({
-        email: values.email,
-        first_name: values.first_name,
-        last_name: values.last_name,
-        phone_number: toE164(values.phone_number),
+        patchedUserRequest: {
+          email: values.email,
+          first_name: values.first_name,
+          last_name: values.last_name,
+          phone_number: toE164(values.phone_number),
+        },
       });
       cacheUser(data);
       reset(toValues(data));

@@ -56,7 +56,9 @@ function ContactForm() {
       return;
     }
     try {
-      await miscApi.miscContactCreate({ ...values, captcha });
+      await miscApi.miscContactCreate({
+        contactRequest: { ...values, captcha },
+      });
       toast.success('Köszönjük, megkaptuk az üzeneted!');
       reset();
     } catch (error) {
