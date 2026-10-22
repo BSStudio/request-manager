@@ -248,33 +248,33 @@ const ProjectRequestsTable = ({
           textCell(tableRow, 'title', 'Esemény neve', placeholders.title)
         }
         header="Esemény neve"
-        style={{ minWidth: '14rem' }}
+        style={{ minWidth: '12rem' }}
       />
       <Column
         body={(tableRow: TableRow) =>
           timeCell(tableRow, 'start_datetime', 'Kezdés')
         }
         header="Kezdés"
-        style={{ minWidth: '15rem' }}
+        style={{ minWidth: '14rem' }}
       />
       <Column
         body={(tableRow: TableRow) =>
           timeCell(tableRow, 'end_datetime', 'Befejezés')
         }
         header="Befejezés"
-        style={{ minWidth: '15rem' }}
+        style={{ minWidth: '14rem' }}
       />
       <Column
         body={typeCell}
         header="Videó típusa"
-        style={{ minWidth: '14rem' }}
+        style={{ minWidth: '12rem' }}
       />
       <Column
         body={(tableRow: TableRow) =>
           textCell(tableRow, 'place', 'Helyszín', placeholders.place)
         }
         header="Helyszín"
-        style={{ minWidth: '12rem' }}
+        style={{ minWidth: '11rem' }}
       />
       <Column body={statusCell} header="Állapot" />
       <Column body={actionCell} style={{ width: '7rem' }} />
