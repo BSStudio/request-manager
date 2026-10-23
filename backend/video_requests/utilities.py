@@ -19,7 +19,7 @@ from video_requests.notifications import (
 
 
 def is_status_by_admin(obj: Request | Video) -> bool:
-    status = obj.additional_data.get("status_by_admin", {}).get("status")
+    status = (obj.additional_data.get("status_by_admin") or {}).get("status")
     return isinstance(status, int) and not isinstance(status, bool)
 
 

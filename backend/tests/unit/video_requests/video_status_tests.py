@@ -86,11 +86,20 @@ class TestStatusSetByAdmin:
         "extra,forced",
         [
             ({}, False),
+            ({"status_by_admin": None}, False),
+            ({"status_by_admin": {}}, False),
             ({"status_by_admin": {"status": None}}, False),
             ({"status_by_admin": {"status": True}}, False),
             ({"status_by_admin": {"status": Video.Statuses.PENDING}}, True),
         ],
-        ids=["nothing_forced", "status_cleared", "bool", "pending"],
+        ids=[
+            "nothing_forced",
+            "null_stamp",
+            "no_status_key",
+            "status_cleared",
+            "bool",
+            "pending",
+        ],
     )
     def test_is_status_by_admin_agrees_with_the_status(self, extra, forced):
         # Everything else here says EDITED.

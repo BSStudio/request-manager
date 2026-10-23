@@ -88,6 +88,7 @@ class TestStatusSetByAdmin:
         "extra,forced",
         [
             ({}, False),
+            ({"status_by_admin": None}, False),
             ({"status_by_admin": {}}, False),
             ({"status_by_admin": {"status": None}}, False),
             ({"status_by_admin": {"status": True}}, False),
@@ -96,6 +97,7 @@ class TestStatusSetByAdmin:
         ],
         ids=[
             "nothing_forced",
+            "null_stamp",
             "no_status_key",
             "status_cleared",
             "bool",
