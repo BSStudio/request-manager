@@ -7,6 +7,7 @@ import AvatarButton from './Button/AvatarButton';
 import Button from './Button/Button';
 import DropdownButton from './Button/DropdownButton';
 import IconButton from './Button/IconButton';
+import NotificationButton from './Button/NotificationButton';
 import Logo from './Logo';
 import SandwichMenu from './SandwichMenu';
 
@@ -72,6 +73,7 @@ const Menubar = () => {
               onClick={() => void promptInstall()}
             />
           )}
+          <NotificationButton />
           <AvatarButton />
         </ul>
       </div>

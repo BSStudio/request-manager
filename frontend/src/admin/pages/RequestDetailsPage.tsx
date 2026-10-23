@@ -51,6 +51,7 @@ import { isNotFound } from 'api/errors';
 import { RequestAdminRetrieve } from 'api/models';
 import { queryClient } from 'api/queryClient';
 import { getUserId, isAdmin } from 'helpers/LocalStorageHelper';
+import { markRequestRead } from 'helpers/notifications';
 
 const AcceptRejectDialog = lazy(
   () => import('admin/components/Details/Request/AcceptRejectDialog'),
@@ -366,6 +367,8 @@ const RequestDetailsPage = () => {
     // Workaround for: https://github.com/primefaces/primereact/issues/4034
     window.scrollTo(0, 0);
   }, []);
+
+  useEffect(() => markRequestRead(Number(requestId)), [requestId]);
 
   return (
     <>

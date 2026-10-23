@@ -31,6 +31,12 @@ export async function markNotificationsRead(request?: number) {
   await queryClient.invalidateQueries({ queryKey: notificationsKey });
 }
 
+// For opening a request's page: not worth an error for the reader, the next
+// visit tries again.
+export function markRequestRead(request: number) {
+  markNotificationsRead(request).catch(() => {});
+}
+
 type DayLabel = 'Korábban' | 'Ma' | 'Tegnap';
 
 export function groupByDay(notifications: ApiNotification[], now = new Date()) {
