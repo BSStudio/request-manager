@@ -207,9 +207,9 @@ class TestVideoEditedAt:
 
         assert video.edited_at is None
 
-    def test_skipping_the_edit_stamps_no_day(self, video):
+    def test_skipping_the_edit_clears_the_day(self, video, time_machine):
+        self.cut(video, time_machine, self.FIRST_CUT)
         video.additional_data["editing_skipped"] = True
-        video.status = Video.Statuses.EDITED
         video.save()
 
         assert video.edited_at is None

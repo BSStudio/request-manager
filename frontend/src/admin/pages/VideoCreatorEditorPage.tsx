@@ -96,12 +96,14 @@ const VideoCreatorEditorPage = () => {
     handleSubmit,
     reset,
     setError,
+    setValue,
   } = useForm<IVideoCreator>({
     defaultValues,
     mode: 'onChange',
   });
   // Disables the editor and the cut on their inputs only: react-hook-form
-  // leaves disabled fields out of the submitted data.
+  // leaves disabled fields out of the submitted data, so their clearing would
+  // not be saved.
   const editingSkipped = useWatch({
     control,
     name: 'additional_data.editing_skipped',
@@ -291,6 +293,12 @@ const VideoCreatorEditorPage = () => {
                     inputId={field.name}
                     onChange={(e) => {
                       field.onChange(e.checked);
+                      if (e.checked) {
+                        setValue('editor', null, { shouldDirty: true });
+                        setValue('additional_data.editing_done', false, {
+                          shouldDirty: true,
+                        });
+                      }
                     }}
                   />
                   <label htmlFor={field.name}>Nem kell vágni</label>
