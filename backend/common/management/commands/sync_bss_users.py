@@ -67,6 +67,8 @@ class Command(BaseCommand):
                     result["username"],
                     stack_info=True,
                 )
+                # Counted as found: the collision is no reason to demote them.
+                users_found.append(result["username"])
                 continue
 
             # These columns are NOT NULL, so the entry cannot be written.

@@ -133,6 +133,19 @@ def test_sync_does_not_demote_a_user_with_missing_attributes():
 
 @pytest.mark.django_db
 @responses.activate
+def test_sync_does_not_demote_a_user_whose_email_another_user_holds():
+    user = make_user(username="member", email="old@example.com", is_staff=True)
+    make_user(username="email_owner", email="member@example.com")
+    mock_directory(directory_user("member", COMPLETE_ATTRIBUTES))
+
+    call_command("sync_bss_users")
+
+    user.refresh_from_db()
+    assert user.is_staff
+
+
+@pytest.mark.django_db
+@responses.activate
 def test_sync_reports_conflicts_without_a_fabricated_traceback(caplog):
     make_user(username="taken_username")
     email_owner = make_user(username="email_owner")
