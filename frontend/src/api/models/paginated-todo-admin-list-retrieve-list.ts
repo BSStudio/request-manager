@@ -14,14 +14,14 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { PaginatedRequestAdminListListLinks } from './paginated-request-admin-list-list-links';
+import type { PaginatedNotificationListLinks } from './paginated-notification-list-links';
 // May contain unused imports in some cases
 // @ts-ignore
 import type { TodoAdminListRetrieve } from './todo-admin-list-retrieve';
 
 export interface PaginatedTodoAdminListRetrieveList {
   count?: number;
-  links?: PaginatedRequestAdminListListLinks;
+  links?: PaginatedNotificationListLinks;
   results?: Array<TodoAdminListRetrieve>;
   total_pages?: number;
 }
