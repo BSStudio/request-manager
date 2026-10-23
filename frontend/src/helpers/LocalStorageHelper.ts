@@ -1,4 +1,5 @@
 import type { SessionUser } from 'api/models';
+import { setAppBadge } from 'helpers/pwa';
 
 export const SESSION_CHANGE_EVENT = 'session-change';
 
@@ -7,6 +8,7 @@ const sessionKeys = ['avatar', 'groups', 'name', 'role', 'user_id'];
 
 export function clearSession() {
   sessionKeys.forEach((key) => localStorage.removeItem(key));
+  setAppBadge(0);
   window.dispatchEvent(new Event(SESSION_CHANGE_EVENT));
 }
 

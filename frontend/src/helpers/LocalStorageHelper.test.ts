@@ -83,6 +83,17 @@ describe('session', () => {
     expect(listener).toHaveBeenCalledTimes(2);
     window.removeEventListener(SESSION_CHANGE_EVENT, listener);
   });
+
+  it('clears the unread count from the app icon', () => {
+    const clear = vi.fn(() => Promise.resolve());
+    Object.assign(navigator, { clearAppBadge: clear, setAppBadge: vi.fn() });
+
+    clearSession();
+
+    expect(clear).toHaveBeenCalledOnce();
+    delete (navigator as Partial<Navigator>).setAppBadge;
+    delete (navigator as Partial<Navigator>).clearAppBadge;
+  });
 });
 
 describe('popRedirectedFrom', () => {
