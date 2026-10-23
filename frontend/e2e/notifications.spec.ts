@@ -56,6 +56,33 @@ test.describe('staff', () => {
     ).toBeVisible();
   });
 
+  test('the bell opens from the keyboard', async ({ page }) => {
+    await page.goto('/admin');
+    await page.getByRole('button', { name: /^Értesítések/ }).focus();
+    await page.keyboard.press('Enter');
+
+    await expect(
+      page.getByRole('link', { name: /Éjszakai kosármeccs: Kár/ }),
+    ).toBeVisible();
+  });
+
+  test('says when the notifications fail to load', async ({ page }) => {
+    const isList = (url: URL) => url.pathname === '/api/v1/me/notifications';
+    await page.route(isList, (route) =>
+      route.fulfill({ body: 'Server Error', status: 500 }),
+    );
+    await page.goto('/admin/notifications');
+    await expect(
+      page.getByText('Nem sikerült betölteni az értesítéseket.'),
+    ).toBeVisible();
+
+    await page.unroute(isList);
+    await page.getByRole('button', { name: 'Újratöltés' }).click();
+    await expect(
+      page.getByText(/Éjszakai kosármeccs: Kár/).filter({ visible: true }),
+    ).toBeVisible();
+  });
+
   test('marks everything read on the notifications page', async ({ page }) => {
     await page.goto('/admin/notifications');
     // The menubar's closed dropdown holds the same row.

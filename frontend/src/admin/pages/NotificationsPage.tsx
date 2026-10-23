@@ -1,50 +1,24 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { Button } from 'primereact/button';
 import { ProgressBar } from 'primereact/progressbar';
+import { Ripple } from 'primereact/ripple';
 
-import LinkButton from 'admin/components/LinkButton/LinkButton';
+import NotificationLink from 'admin/components/Notifications/NotificationLink';
 import NotificationText, {
   noNotificationsText,
 } from 'admin/components/Notifications/NotificationText';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
-import type { Notification as ApiNotification } from 'api/models';
-import { isAdminPath } from 'helpers/isAdminPath';
 import {
-  adminRouterPath,
   groupByDay,
   markNotificationsRead,
   notificationsQuery,
 } from 'helpers/notifications';
 import { useUnreadCount } from 'hooks/useUnreadCount';
 
-const jumpLabel = 'Ugrás a felkéréshez';
-const jumpClassName = 'p-button-outlined';
-const jumpIcon = 'pi pi-sign-in';
-
-const JumpButton = ({ notification }: { notification: ApiNotification }) =>
-  isAdminPath(notification.url) ? (
-    <LinkButton
-      buttonProps={{
-        'aria-label': jumpLabel,
-        className: jumpClassName,
-        icon: jumpIcon,
-      }}
-      linkProps={{ to: adminRouterPath(notification.url) }}
-    />
-  ) : (
-    // The site is the other app, so its links load the page.
-    <a
-      aria-label={jumpLabel}
-      className={`no-underline p-button p-button-icon-only p-component ${jumpClassName}`}
-      href={notification.url}
-    >
-      <span className={`p-button-icon ${jumpIcon}`} />
-    </a>
-  );
-
 const NotificationsPage = () => {
   const count = useUnreadCount();
-  const { data, isLoading } = useQuery(notificationsQuery());
+  const { data, isError, isLoading, isRefetching, refetch } =
+    useQuery(notificationsQuery());
   const markAll = useMutation({
     mutationFn: () => markNotificationsRead(),
     onError: (error) => showErrorToast(error),
@@ -64,6 +38,20 @@ const NotificationsPage = () => {
       </div>
       <div className="border-round p-3 shadow-2 sm:p-4 surface-card">
         {isLoading && <ProgressBar mode="indeterminate" />}
+        {isError && (
+          <div className="align-items-center flex flex-wrap gap-3">
+            <span className="text-600">
+              Nem sikerült betölteni az értesítéseket.
+            </span>
+            <Button
+              label="Újratöltés"
+              loading={isRefetching}
+              onClick={() => void refetch()}
+              outlined
+              size="small"
+            />
+          </div>
+        )}
         {data?.length === 0 && (
           <p className="m-0 text-600">{noNotificationsText}</p>
         )}
@@ -79,7 +67,15 @@ const NotificationsPage = () => {
                   key={notification.id}
                 >
                   <NotificationText notification={notification} />
-                  <JumpButton notification={notification} />
+                  <NotificationLink
+                    aria-label="Ugrás a felkéréshez"
+                    className="no-underline p-button p-button-icon-only p-button-outlined p-component p-ripple"
+                    notification={notification}
+                  >
+                    <span className="p-button-icon p-c pi pi-sign-in" />
+                    <span className="p-button-label p-c">&nbsp;</span>
+                    <Ripple />
+                  </NotificationLink>
                 </li>
               ))}
             </ul>

@@ -51,7 +51,6 @@ export default function NotificationItem({
     </>
   );
 
-  // The admin is the other app, so its links load the page.
   return isAdminPath(notification.url) ? (
     <a className={className} href={notification.url} onClick={onOpen}>
       {content}

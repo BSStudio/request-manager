@@ -53,6 +53,8 @@ export function groupByDay(notifications: ApiNotification[], now = new Date()) {
     .filter((group) => group.notifications.length > 0);
 }
 
+// The site and the admin are separate apps: a notification for the other one
+// is a plain link that loads the page, one for the same app a router link.
 export function adminRouterPath(url: string) {
   return url.replace(/^\/admin/, '');
 }

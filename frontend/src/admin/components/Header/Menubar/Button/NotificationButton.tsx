@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
 import { Badge } from 'primereact/badge';
@@ -6,15 +6,11 @@ import { Ripple } from 'primereact/ripple';
 import { StyleClass } from 'primereact/styleclass';
 import { Link } from 'react-router';
 
+import NotificationLink from 'admin/components/Notifications/NotificationLink';
 import NotificationText, {
   noNotificationsText,
 } from 'admin/components/Notifications/NotificationText';
-import { isAdminPath } from 'helpers/isAdminPath';
-import {
-  adminRouterPath,
-  notificationsQuery,
-  unreadLabel,
-} from 'helpers/notifications';
+import { notificationsQuery, unreadLabel } from 'helpers/notifications';
 import { useUnreadCount } from 'hooks/useUnreadCount';
 
 const latest = 5;
@@ -25,7 +21,9 @@ const itemClassName =
 const NotificationButton = () => {
   const btnRef = useRef(null);
   const count = useUnreadCount();
-  const { data } = useQuery(notificationsQuery());
+  // Loaded once the dropdown is first opened; StyleClass keeps no open state.
+  const [opened, setOpened] = useState(false);
+  const { data } = useQuery({ ...notificationsQuery(), enabled: opened });
 
   const close = () => (btnRef.current as HTMLAnchorElement | null)?.click();
 
@@ -43,8 +41,16 @@ const NotificationButton = () => {
         <a
           aria-label={unreadLabel(count)}
           className="align-items-center border-left-2 border-transparent cursor-pointer flex font-medium h-full hover:border-primary hover:text-900 lg:border-bottom-2 lg:border-left-none lg:px-3 lg:py-2 p-3 p-ripple px-6 text-600 transition-colors transition-duration-150"
+          onClick={() => setOpened(true)}
+          onKeyDown={(event) => {
+            if (event.key === 'Enter' || event.key === ' ') {
+              event.preventDefault();
+              event.currentTarget.click();
+            }
+          }}
           ref={btnRef}
           role="button"
+          tabIndex={0}
         >
           <i className="lg:mr-0 lg:text-2xl mr-2 p-overlay-badge pi pi-bell text-base">
             {count > 0 && (
@@ -80,20 +86,13 @@ const NotificationButton = () => {
               className="border-bottom-1 surface-border"
               key={notification.id}
             >
-              {/* The site is the other app, so its links load the page. */}
-              {isAdminPath(notification.url) ? (
-                <Link
-                  className={itemClassName}
-                  onClick={close}
-                  to={adminRouterPath(notification.url)}
-                >
-                  <NotificationText notification={notification} oneLine />
-                </Link>
-              ) : (
-                <a className={itemClassName} href={notification.url}>
-                  <NotificationText notification={notification} oneLine />
-                </a>
-              )}
+              <NotificationLink
+                className={itemClassName}
+                notification={notification}
+                onClick={close}
+              >
+                <NotificationText notification={notification} oneLine />
+              </NotificationLink>
             </li>
           ))}
         </ul>
