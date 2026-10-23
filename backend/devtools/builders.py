@@ -5,7 +5,15 @@ from django.utils import timezone
 from django.utils.text import slugify
 
 from common.models import User
-from video_requests.models import Comment, CrewMember, Rating, Request, Todo, Video
+from video_requests.models import (
+    Comment,
+    CrewMember,
+    Notification,
+    Rating,
+    Request,
+    Todo,
+    Video,
+)
 
 
 def at(days: int, hour: int) -> datetime:
@@ -28,6 +36,10 @@ def create_request(
     created: datetime | None = None,
 ) -> Request:
     """Without ``created``, submitted three weeks before the event, or now."""
+    additional_data = additional_data or {}
+    if additional_data.get("accepted") is True:
+        # Seeding announces nothing, as the migration did for real requests.
+        additional_data["accepted_notification_sent"] = True
     request = Request.objects.create(
         title=title,
         start_datetime=start,
@@ -37,13 +49,13 @@ def create_request(
         requester=requester,
         requested_by=requested_by or requester,
         responsible=responsible,
-        additional_data=additional_data or {},
+        additional_data=additional_data,
     )
     _backdate(request, created or min(timezone.now(), start - timedelta(weeks=3)))
     return request
 
 
-def _backdate(instance: Request | Comment, created: datetime) -> None:
+def _backdate(instance: Request | Comment | Notification, created: datetime) -> None:
     # auto_now_add ignores a value passed to create(), and a later save() writes
     # back whatever the instance holds.
     instance.created = created
@@ -85,6 +97,7 @@ def _video_data(request: Request, title: str, status: int, aired) -> dict:
         data["publishing"] = {
             "website": f"https://example.com/videok/{slugify(f'{request.title} {title}')}",
             "email_sent_to_user": True,
+            "notification_sent_to_user": True,
             "posted_on_mattermost": True,
         }
     if status >= Video.Statuses.DONE:
@@ -107,6 +120,26 @@ def add_comment(
     )
     _backdate(comment, created)
     return comment
+
+
+def add_notification(
+    request: Request,
+    recipient: User,
+    kind: str,
+    body: str,
+    *,
+    created: datetime,
+    read: bool = False,
+) -> Notification:
+    notification = Notification.objects.create(
+        request=request,
+        recipient=recipient,
+        kind=kind,
+        body=body,
+        read_at=created if read else None,
+    )
+    _backdate(notification, created)
+    return notification
 
 
 def add_crew(request: Request, *crew: tuple[User, str]) -> None:
