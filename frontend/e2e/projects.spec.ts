@@ -177,13 +177,23 @@ test.describe('as an admin', () => {
       .filter({ hasText: 'Törlendő' })
       .getByRole('link', { name: 'Projekt szerkesztése' })
       .click();
+    // The dialog names the project as saved, not as typed.
+    await page.getByLabel('Projekt neve').fill('Átírt név');
     await page.getByRole('button', { name: 'Projekt törlése' }).click();
+    await expect(
+      page.getByRole('dialog', {
+        name: 'Biztosan törölni akarod a projektet?',
+      }),
+    ).toContainText('„Törlendő”');
     await page.getByRole('button', { exact: true, name: 'Igen' }).click();
 
     await expect(page).toHaveURL(/\/admin\/projects$/);
     await expect(
       page.getByRole('row').filter({ hasText: 'Törlendő' }),
     ).toHaveCount(0);
+    // The deleted project's page is not in the history any more.
+    await page.goBack();
+    await expect(page).toHaveURL(/\/admin\/projects$/);
     await page.goto(await adminRequestPath(page, 'Megmaradó'));
     await expect(projectRow(page)).toHaveCount(0);
   });
@@ -373,5 +383,25 @@ test.describe('as an admin', () => {
     await expect(
       page.getByRole('row').filter({ hasText: 'Kollégiumi hét – Koncert' }),
     ).toBeVisible();
+  });
+
+  test('a project deleted meanwhile still leaves the editor', async ({
+    page,
+  }) => {
+    await page.goto('/admin/projects');
+    await page
+      .getByRole('row')
+      .filter({ hasText: 'Kollégiumi hét' })
+      .getByRole('link', { name: 'Projekt szerkesztése' })
+      .click();
+    await page.route('**/api/v1/admin/projects/*', (route) =>
+      route.request().method() === 'DELETE'
+        ? route.fulfill({ json: { detail: 'Nem található.' }, status: 404 })
+        : route.fallback(),
+    );
+    await page.getByRole('button', { name: 'Projekt törlése' }).click();
+    await page.getByRole('button', { exact: true, name: 'Igen' }).click();
+
+    await expect(page).toHaveURL(/\/admin\/projects$/);
   });
 });

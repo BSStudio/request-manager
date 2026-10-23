@@ -45,6 +45,7 @@ import { showErrorToast } from 'admin/helpers/showErrorToast';
 import useMobile from 'admin/hooks/useMobile';
 import type { LoadErrorState } from 'admin/pages/ErrorPage';
 import { useToast } from 'admin/providers/ToastProvider';
+import { isNotFound } from 'api/errors';
 import type {
   ProjectRequest,
   RequestAdminList,
@@ -297,11 +298,15 @@ const ProjectCreatorEditorPage = () => {
         try {
           await deleteProject();
         } catch (error) {
-          showErrorToast(error);
-          return;
+          // Deleted meanwhile: the result is the same.
+          if (!isNotFound(error)) {
+            showErrorToast(error);
+            return;
+          }
         }
         // Left first: refetching the deleted project here would end in a 404.
-        await navigate('/projects');
+        // Replaced, so going back does not lead to it either.
+        await navigate('/projects', { replace: true });
         await queryClient.invalidateQueries({ queryKey: queryKeys.projects() });
         await queryClient.invalidateQueries({ queryKey: queryKeys.requests() });
       },
@@ -310,7 +315,7 @@ const ProjectCreatorEditorPage = () => {
       defaultFocus: 'reject',
       header: 'Biztosan törölni akarod a projektet?',
       icon: 'pi pi-exclamation-triangle',
-      message: `A(z) „${name}” projekt törlődik. A felkérései megmaradnak, csak kikerülnek a projektből.`,
+      message: `A(z) „${project?.name}” projekt törlődik. A felkérései megmaradnak, csak kikerülnek a projektből.`,
       style: { width: '50vw' },
     });
   };
