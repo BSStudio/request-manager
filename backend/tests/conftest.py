@@ -9,11 +9,11 @@ from cryptography.hazmat.primitives.serialization import (
 )
 from django.db import transaction
 from py_vapid import Vapid01
+from py_vapid.utils import b64urlencode
 from rest_framework.test import APIClient
 
 from tests.factories import make_user
 from tests.helpers.oauth2 import MockedProvider, reset_social_core_caches
-from tests.helpers.push import b64
 
 
 @pytest.fixture
@@ -80,7 +80,7 @@ def run_tasks_eagerly(monkeypatch, settings):
 def push_on(settings):
     vapid = Vapid01()
     vapid.generate_keys()
-    settings.WEB_PUSH_VAPID_PRIVATE_KEY = b64(
+    settings.WEB_PUSH_VAPID_PRIVATE_KEY = b64urlencode(
         vapid.private_key.private_bytes(
             Encoding.DER, PrivateFormat.PKCS8, NoEncryption()
         )

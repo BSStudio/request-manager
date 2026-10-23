@@ -2,11 +2,12 @@ import pytest
 import requests
 import responses
 from model_bakery import baker
+from py_vapid.utils import b64urlencode
 
 from common.models import PushSubscription
 from common.push import PUSH_TTL, push_enabled, send_push
 from tests.factories import make_user
-from tests.helpers.push import b64, subscribe
+from tests.helpers.push import subscribe
 
 pytestmark = pytest.mark.django_db
 
@@ -83,7 +84,9 @@ def test_a_failing_push_service_is_logged_without_the_endpoint(push_on, caplog, 
 
 
 @pytest.mark.parametrize(
-    "p256dh", [b64(b"\x04" + b"\x01" * 64), "a"], ids=["off_curve", "not_base64"]
+    "p256dh",
+    [b64urlencode(b"\x04" + b"\x01" * 64), "a"],
+    ids=["off_curve", "not_base64"],
 )
 @responses.activate
 def test_a_browser_with_broken_keys_is_logged(push_on, caplog, p256dh):

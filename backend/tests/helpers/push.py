@@ -1,14 +1,10 @@
 import os
-from base64 import urlsafe_b64encode
 
 from cryptography.hazmat.primitives.asymmetric import ec
 from cryptography.hazmat.primitives.serialization import Encoding, PublicFormat
+from py_vapid.utils import b64urlencode
 
 from common.models import PushSubscription
-
-
-def b64(data: bytes) -> str:
-    return urlsafe_b64encode(data).rstrip(b"=").decode()
 
 
 def subscribe(user, endpoint="https://fcm.googleapis.com/fcm/send/abc"):
@@ -17,8 +13,8 @@ def subscribe(user, endpoint="https://fcm.googleapis.com/fcm/send/abc"):
     return PushSubscription.objects.create(
         user=user,
         endpoint=endpoint,
-        p256dh=b64(
+        p256dh=b64urlencode(
             browser_key.public_bytes(Encoding.X962, PublicFormat.UncompressedPoint)
         ),
-        auth=b64(os.urandom(16)),
+        auth=b64urlencode(os.urandom(16)),
     )
