@@ -1,5 +1,14 @@
 @import 'theme.css';
 
+.p-inline-message.p-inline-message-info {
+  background: rgb(7, 19, 24);
+  border: solid rgb(41, 182, 246);
+  border-width: 1px;
+  color: rgb(184, 231, 251);
+}
+.p-inline-message.p-inline-message-info .p-inline-message-icon {
+  color: rgb(41, 182, 246);
+}
 .p-inline-message.p-inline-message-warn {
   background: rgb(25, 18, 7);
   border: solid rgb(255, 167, 38);

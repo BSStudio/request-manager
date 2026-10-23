@@ -2,21 +2,27 @@ import { useMutation, useQuery } from '@tanstack/react-query';
 import { Button } from 'primereact/button';
 import { ProgressBar } from 'primereact/progressbar';
 import { Ripple } from 'primereact/ripple';
+import { href } from 'react-router';
 
+import LinkButton from 'admin/components/LinkButton/LinkButton';
 import NotificationLink from 'admin/components/Notifications/NotificationLink';
 import NotificationText, {
   noNotificationsText,
 } from 'admin/components/Notifications/NotificationText';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
+import { getUserId } from 'helpers/LocalStorageHelper';
 import {
   groupByDay,
   markNotificationsRead,
   notificationsQuery,
 } from 'helpers/notifications';
+import { pushPageHint } from 'helpers/push';
+import { usePushOffered } from 'hooks/usePushSubscription';
 import { useUnreadCount } from 'hooks/useUnreadCount';
 
 const NotificationsPage = () => {
   const count = useUnreadCount();
+  const pushOffered = usePushOffered();
   const { data, isError, isLoading, isRefetching, refetch } =
     useQuery(notificationsQuery());
   const markAll = useMutation({
@@ -36,6 +42,22 @@ const NotificationsPage = () => {
           outlined
         />
       </div>
+      {pushOffered && (
+        <div className="align-items-center flex flex-wrap gap-2 mb-3 text-600">
+          <i className="pi pi-bell" />
+          <span>{pushPageHint}</span>
+          <LinkButton
+            buttonProps={{
+              className: 'p-button-sm p-button-text px-1 py-0',
+              icon: 'pi pi-angle-right',
+              label: 'Ugrás',
+            }}
+            linkProps={{
+              to: `${href('/users/:userId', { userId: getUserId().toString() })}?section=notifications`,
+            }}
+          />
+        </div>
+      )}
       <div className="border-round p-3 shadow-2 sm:p-4 surface-card">
         {isLoading && <ProgressBar mode="indeterminate" />}
         {isError && (
