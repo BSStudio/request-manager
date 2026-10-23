@@ -4,7 +4,7 @@
 tests/unit/video_requests/deadline_tests.py.
 """
 
-from datetime import timedelta
+from datetime import date, datetime, timedelta
 
 import pytest
 from django.utils.timezone import localtime
@@ -118,3 +118,72 @@ def test_leaving_the_end_datetime_alone_leaves_the_deadline_alone(
 
     assert response.status_code == HTTP_200_OK
     assert response.data["deadline"] == str(video_request.deadline)
+
+
+# Just after midnight in Budapest, so still the day before in UTC, which is how
+# the database hands end_datetime back.
+@pytest.mark.parametrize(
+    "end, deadline",
+    [
+        ("2026-01-15T00:30:00+01:00", date(2026, 2, 5)),
+        ("2026-07-15T00:30:00+02:00", date(2026, 8, 5)),
+        ("2026-10-15T00:30:00+02:00", date(2026, 11, 5)),
+    ],
+    ids=["winter_time", "summer_time", "clocks_go_back_before_the_deadline"],
+)
+def test_an_event_ending_after_midnight_keeps_moving_its_deadline(
+    admin_user, api_client, deadline, end
+):
+    login(api_client, admin_user)
+    end = datetime.fromisoformat(end)
+
+    created = api_client.post(
+        reverse("api:v1:admin:requests:request-list"),
+        {
+            "title": "Test Request",
+            "start_datetime": end - timedelta(hours=2),
+            "end_datetime": end,
+            "place": "Test place",
+            "type": "Test type",
+        },
+    )
+    moved = api_client.patch(
+        reverse(
+            "api:v1:admin:requests:request-detail", kwargs={"pk": created.data["id"]}
+        ),
+        {"end_datetime": end + timedelta(days=1)},
+    )
+
+    assert created.data["deadline"] == str(deadline)
+    assert moved.status_code == HTTP_200_OK
+    assert moved.data["deadline"] == str(deadline + timedelta(days=1))
+
+
+@pytest.mark.parametrize(
+    "end",
+    ["2026-01-15T00:30:00+01:00", "2026-07-15T00:30:00+02:00"],
+    ids=["winter_time", "summer_time"],
+)
+@pytest.mark.parametrize(
+    "send_end_datetime", [False, True], ids=["omitted", "unchanged"]
+)
+def test_a_deadline_on_the_day_an_event_ends_after_midnight_is_rejected(
+    admin_user, api_client, end, send_end_datetime
+):
+    login(api_client, admin_user)
+    end = datetime.fromisoformat(end)
+    video_request = baker.make(
+        "video_requests.Request",
+        requester=admin_user,
+        start_datetime=end - timedelta(hours=2),
+        end_datetime=end,
+    )
+
+    body = {"deadline": end.date()}
+    if send_end_datetime:
+        body |= {"end_datetime": end}
+
+    response = api_client.patch(detail_url(video_request), body)
+
+    assert response.status_code == HTTP_400_BAD_REQUEST
+    assert response.data["deadline"][0] == "Must be later than the end of the event."
