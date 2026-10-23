@@ -4,32 +4,54 @@ on:
   workflow_dispatch:
   pull_request:
     paths:
-      - 'backend/**'
-      - '.github/workflows/schema-validation.yml'
+      - "backend/**"
+      - ".github/workflows/schema-validation.yml"
 
 permissions:
   contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+defaults:
+  run:
+    shell: bash
+    working-directory: backend
 
 jobs:
   validate-schema:
     name: OpenAPI schema validation
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend
+    timeout-minutes: 10
     env:
       DJANGO_SETTINGS_MODULE: core.settings.ci
-
     steps:
-      - name: Checkout
+      - name: Check out
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
       - name: Install uv
         uses: astral-sh/setup-uv@1c37ad07a6a961277cf70c0d37d6f313000f5884 # v10.3.0
+
       - name: Install dyff
-        run: curl --silent --location https://git.io/JYfAY | sudo bash
+        working-directory: ${{ runner.temp }}
+        env:
+          # renovate: datasource=github-releases depName=homeport/dyff extractVersion=^v(?<version>.+)$
+          DYFF_VERSION: 1.12.0
+        run: |
+          base="https://github.com/homeport/dyff/releases/download/v$DYFF_VERSION"
+          archive="dyff_${DYFF_VERSION}_linux_amd64.tar.gz"
+          curl --silent --show-error --fail --location --remote-name "$base/$archive" --remote-name "$base/checksums.txt"
+          sha256sum --check --ignore-missing checksums.txt
+          sudo tar --extract --gzip --file "$archive" --directory /usr/local/bin dyff
+
       - name: Install dependencies
         run: uv sync --locked --no-group debug --no-group test
+
       - name: Generate schema from code
         run: uv run --no-sync python manage.py spectacular --file schema.new.yaml --validate --fail-on-warn
+
       - name: Compare version controlled schema file with newly generated one
         run: dyff between schema.yaml schema.new.yaml --set-exit-code

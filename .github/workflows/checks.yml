@@ -1,0 +1,20 @@
+name: Checks
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+jobs:
+  checks:
+    name: Checks
+    uses: BSStudio/.github/.github/workflows/shared-checks.yml@f6b54b356dd9be27367b470b6d00c0c7634f96f8 # v1.1.0
+    with:
+      dependency-review: true

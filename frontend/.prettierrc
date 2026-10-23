@@ -1,3 +1,9 @@
 {
-  "singleQuote": true
+  "singleQuote": true,
+  "overrides": [
+    {
+      "files": "../.github/**/*.yml",
+      "options": { "singleQuote": false }
+    }
+  ]
 }
