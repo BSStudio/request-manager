@@ -14,7 +14,7 @@ from model_bakery import baker
 from common.models import get_system_user
 from tests.factories import make_user
 from video_requests.models import Request, Todo, Video
-from video_requests.utilities import update_video_status
+from video_requests.utilities import is_status_by_admin, update_video_status
 
 pytestmark = pytest.mark.django_db
 
@@ -81,6 +81,37 @@ class TestStatusSetByAdmin:
         update_video_status(video)
 
         assert video.status == Video.Statuses.EDITED
+
+    @pytest.mark.parametrize(
+        "extra,forced",
+        [
+            ({}, False),
+            ({"status_by_admin": None}, False),
+            ({"status_by_admin": {}}, False),
+            ({"status_by_admin": {"status": None}}, False),
+            ({"status_by_admin": {"status": True}}, False),
+            ({"status_by_admin": {"status": Video.Statuses.PENDING}}, True),
+        ],
+        ids=[
+            "nothing_forced",
+            "null_stamp",
+            "no_status_key",
+            "status_cleared",
+            "bool",
+            "pending",
+        ],
+    )
+    def test_is_status_by_admin_agrees_with_the_status(self, extra, forced):
+        # Everything else here says EDITED.
+        video = make_video(additional_data=EDITED_DATA | extra)
+
+        update_video_status(video)
+
+        assert is_status_by_admin(video) is forced
+        expected = (
+            extra["status_by_admin"]["status"] if forced else Video.Statuses.EDITED
+        )
+        assert video.status == expected
 
 
 class TestDerivedStatus:

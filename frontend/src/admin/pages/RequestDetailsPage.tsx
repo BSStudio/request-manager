@@ -400,7 +400,7 @@ const RequestDetailsPage = () => {
       </Suspense>
       <Suspense>
         <RequestStatusHelperSlideover
-          adminStatusOverride={!!data.additional_data.status_by_admin?.status}
+          adminStatusOverride={data.status_by_admin}
           allVideosDone={data.videos_edited}
           copiedToDrive={!!data.additional_data.recording?.copied_to_gdrive}
           id="requestStatusHelper"
@@ -415,7 +415,7 @@ const RequestDetailsPage = () => {
             </div>
             <div className="font-medium mb-3 sm:mb-0 text-500 text-sm">
               <RequestStatusTag
-                modified={!!data.additional_data.status_by_admin?.status}
+                modified={data.status_by_admin}
                 statusNum={data.status}
               />
             </div>
@@ -484,7 +484,7 @@ const RequestDetailsPage = () => {
             <DetailsRow
               content={
                 <RequestStatusTag
-                  modified={!!data.additional_data.status_by_admin?.status}
+                  modified={data.status_by_admin}
                   statusNum={data.status}
                 />
               }

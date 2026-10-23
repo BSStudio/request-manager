@@ -23,21 +23,15 @@ def check_and_remove_unauthorized_additional_data(
         additional_data.pop("calendar_id", None)
     else:
         if "status_by_admin" in additional_data:
-            """
-            Do not need to check whether other fields exists because validation schema makes
-            both status and admin_id required at save.
-            """
             original_additional_data = (
                 original_data.additional_data if original_data else {}
             )
-            if (
-                "status_by_admin" in original_additional_data
-                and original_additional_data["status_by_admin"].get("status")
-                == additional_data["status_by_admin"].get("status")
-            ) or (
-                "status_by_admin" not in original_additional_data
-                and not additional_data["status_by_admin"].get("status")
-            ):
+            stored_status = original_additional_data.get("status_by_admin", {}).get(
+                "status"
+            )
+            # Only a change of the status moves the stamp; a missing status changes nothing.
+            new_status = additional_data["status_by_admin"].get("status", stored_status)
+            if new_status == stored_status:
                 additional_data.pop("status_by_admin")
             else:
                 additional_data["status_by_admin"].update({"admin_id": user.id})
@@ -81,13 +75,6 @@ def handle_additional_data(
                 original_data.additional_data, validated_data["additional_data"]
             )
     return validated_data
-
-
-def is_status_by_admin(obj: Request | Video) -> bool:
-    try:
-        return isinstance(obj.additional_data.get("status_by_admin").get("status"), int)
-    except AttributeError:
-        return False
 
 
 def update_additional_data(orig_dict: dict, new_dict: dict) -> dict:

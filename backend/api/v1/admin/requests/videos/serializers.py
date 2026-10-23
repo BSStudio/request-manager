@@ -9,10 +9,10 @@ from rest_framework.fields import (
 )
 from rest_framework.serializers import ModelSerializer, Serializer
 
-from api.v1.admin.requests.helpers import handle_additional_data, is_status_by_admin
+from api.v1.admin.requests.helpers import handle_additional_data
 from api.v1.admin.users.serializers import UserNestedListSerializer
 from video_requests.models import Video
-from video_requests.utilities import update_video_status
+from video_requests.utilities import is_status_by_admin, update_video_status
 
 
 class VideoAdminListSerializer(Serializer):

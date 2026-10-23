@@ -9,7 +9,6 @@ from model_bakery import baker
 
 from api.v1.admin.requests.helpers import (
     check_and_remove_unauthorized_additional_data,
-    is_status_by_admin,
     update_additional_data,
 )
 from tests.factories import make_user
@@ -175,6 +174,19 @@ class TestStatusByAdminStamp:
             "admin_name": admin.get_full_name_eastern_order(),
         }
 
+    def test_denied_is_a_status_too(self, admin):
+        cleaned = check_and_remove_unauthorized_additional_data(
+            self.forced(Request.Statuses.DENIED),
+            admin,
+            baker.make("video_requests.Request"),
+        )
+
+        assert cleaned["status_by_admin"] == {
+            "status": Request.Statuses.DENIED,
+            "admin_id": admin.id,
+            "admin_name": admin.get_full_name_eastern_order(),
+        }
+
     def test_resending_the_same_status_does_not_reassign_it(self, admin, other_admin):
         video_request = baker.make(
             "video_requests.Request",
@@ -216,6 +228,32 @@ class TestStatusByAdminStamp:
             "admin_name": other_admin.get_full_name_eastern_order(),
         }
 
+    @pytest.mark.parametrize(
+        "status_by_admin",
+        [{}, {"admin_id": 123, "admin_name": "Sent in"}],
+        ids=["empty", "stamp_only"],
+    )
+    def test_leaving_out_the_status_does_not_reassign_it(
+        self, admin, other_admin, status_by_admin
+    ):
+        video_request = baker.make(
+            "video_requests.Request",
+            additional_data={
+                "status_by_admin": {
+                    "status": Request.Statuses.ARCHIVED,
+                    "admin_id": admin.id,
+                    "admin_name": admin.get_full_name_eastern_order(),
+                }
+            },
+        )
+
+        cleaned = check_and_remove_unauthorized_additional_data(
+            {"status_by_admin": status_by_admin}, other_admin, video_request
+        )
+
+        # The merge keeps the stored status, so nothing changed hands.
+        assert "status_by_admin" not in cleaned
+
     def test_clearing_the_status_reassigns_it_too(self, admin, other_admin):
         video_request = baker.make(
             "video_requests.Request",
@@ -255,29 +293,3 @@ class TestStatusByAdminStamp:
         )
 
         assert "status_by_admin" not in cleaned
-
-
-class TestIsStatusByAdmin:
-    def test_true_when_a_status_is_forced(self):
-        video_request = baker.make(
-            "video_requests.Request",
-            additional_data={"status_by_admin": {"status": Request.Statuses.DONE}},
-        )
-
-        assert is_status_by_admin(video_request) is True
-
-    @pytest.mark.parametrize(
-        "additional_data",
-        [
-            {},
-            {"status_by_admin": {}},
-            {"status_by_admin": {"status": None}},
-        ],
-        ids=["nothing_forced", "no_status_key", "status_cleared"],
-    )
-    def test_false_otherwise(self, additional_data):
-        video_request = baker.make(
-            "video_requests.Request", additional_data=additional_data
-        )
-
-        assert is_status_by_admin(video_request) is False

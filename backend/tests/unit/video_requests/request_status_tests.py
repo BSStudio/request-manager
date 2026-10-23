@@ -12,7 +12,7 @@ from django.utils.timezone import localtime
 from model_bakery import baker
 
 from video_requests.models import Request, Video
-from video_requests.utilities import update_request_status
+from video_requests.utilities import is_status_by_admin, update_request_status
 
 pytestmark = pytest.mark.django_db
 
@@ -83,6 +83,39 @@ class TestStatusSetByAdmin:
         update_request_status(video_request)
 
         assert video_request.status == Request.Statuses.ACCEPTED
+
+    @pytest.mark.parametrize(
+        "extra,forced",
+        [
+            ({}, False),
+            ({"status_by_admin": None}, False),
+            ({"status_by_admin": {}}, False),
+            ({"status_by_admin": {"status": None}}, False),
+            ({"status_by_admin": {"status": True}}, False),
+            ({"status_by_admin": {"status": Request.Statuses.DENIED}}, True),
+            ({"status_by_admin": {"status": Request.Statuses.DONE}}, True),
+        ],
+        ids=[
+            "nothing_forced",
+            "null_stamp",
+            "no_status_key",
+            "status_cleared",
+            "bool",
+            "denied",
+            "done",
+        ],
+    )
+    def test_is_status_by_admin_agrees_with_the_status(self, extra, forced):
+        # Everything else here says ACCEPTED.
+        video_request = make_request(additional_data={"accepted": True} | extra)
+
+        update_request_status(video_request)
+
+        assert is_status_by_admin(video_request) is forced
+        expected = (
+            extra["status_by_admin"]["status"] if forced else Request.Statuses.ACCEPTED
+        )
+        assert video_request.status == expected
 
 
 class TestDerivedStatus:
