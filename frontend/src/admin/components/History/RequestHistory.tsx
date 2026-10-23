@@ -14,6 +14,7 @@ import {
   dateTimeToLocaleString,
   dateToLocaleString,
 } from 'admin/helpers/DateToLocaleStringCoverters';
+import { formatJson } from 'admin/helpers/formatJson';
 
 import HistoryComponent, { getHistory } from './History';
 
@@ -54,7 +55,7 @@ const RequestHistory = ({ requestId }: RequestHistoryProps) => {
       return 'Nincs';
     }
     if (name === 'additional_data') {
-      return JSON.stringify(JSON.parse(value), null, 2);
+      return formatJson(value);
     }
     if (['created', 'end_datetime', 'start_datetime'].includes(name)) {
       return dateTimeToLocaleString(parseISO(value));

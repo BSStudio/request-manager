@@ -10,6 +10,7 @@ import {
 import { VideoStatusTag } from 'admin/components/StatusTag/StatusTag';
 import User from 'admin/components/User/User';
 import { dateToLocaleString } from 'admin/helpers/DateToLocaleStringCoverters';
+import { formatJson } from 'admin/helpers/formatJson';
 
 import HistoryComponent, { getHistory } from './History';
 
@@ -42,7 +43,7 @@ const VideoHistory = ({ requestId, videoId }: VideoHistoryProps) => {
       return 'Nincs';
     }
     if (name === 'additional_data') {
-      return JSON.stringify(JSON.parse(value), null, 2);
+      return formatJson(value);
     }
     if (name === 'edited_at') {
       return dateToLocaleString(parseISO(value));
