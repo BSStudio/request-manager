@@ -291,7 +291,7 @@ class TestSchEventsNotification:
     @pytest.fixture
     def notify(self):
         with patch(
-            "video_requests.utilities.notify_sch_event_management_system.delay"
+            "video_requests.utilities.notify_sch_event_management_system.delay_on_commit"
         ) as delay:
             yield delay
 

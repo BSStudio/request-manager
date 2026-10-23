@@ -23,7 +23,7 @@ class ContactView(CreateAPIView):
         email = serializer.data["email"]
         message = serializer.data["message"]
         name = serializer.data["name"]
-        email_contact_message.delay(name, email, message)
+        email_contact_message.delay_on_commit(name, email, message)
 
 
 # The frontend reports to Sentry through here, because ad blockers block

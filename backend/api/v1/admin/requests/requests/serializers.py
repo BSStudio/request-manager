@@ -142,11 +142,11 @@ class RequestAdminUpdateSerializer(ModelSerializer):
             changed_values = self.get_changed_values(instance, validated_data)
         request = super().update(instance, validated_data)
         if send_notification and changed_values:
-            email_crew_request_modified.delay(
+            email_crew_request_modified.delay_on_commit(
                 request.id, changed_by, changed_datetime, changed_values
             )
         update_request_status(request)
-        update_calendar_event.delay(request.id)
+        update_calendar_event.delay_on_commit(request.id)
         return request
 
     def validate(self, attrs):

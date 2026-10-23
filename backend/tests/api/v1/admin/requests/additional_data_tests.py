@@ -307,8 +307,7 @@ class TestPublishingNotificationFlag:
     """Nobody may claim, or un-claim, that the requester has been e-mailed."""
 
     @pytest.fixture
-    def coded_video(self, admin_user, api_client, settings):
-        settings.CELERY_TASK_ALWAYS_EAGER = True
+    def coded_video(self, admin_user, api_client, run_tasks_eagerly):
         # The request has to *derive* UPLOADED: every video change recalculates
         # it, and a status merely assigned would fall straight back to felkérés.
         start = localtime() - timedelta(days=2)
