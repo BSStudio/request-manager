@@ -1,8 +1,9 @@
 import { useEffect } from 'react';
 
-import { useQuery } from '@tanstack/react-query';
+import { useQuery, useQueryClient } from '@tanstack/react-query';
 
-import { unreadCountQuery } from 'helpers/notifications';
+import { notificationsQuery, unreadCountQuery } from 'helpers/notifications';
+import { NOTIFICATION_MESSAGE } from 'helpers/pushWorker';
 import { setAppBadge } from 'helpers/pwa';
 import { useSessionUser } from 'helpers/session';
 
@@ -12,6 +13,22 @@ export function useUnreadCount() {
   const count = loggedIn ? data : 0;
 
   useEffect(() => setAppBadge(count), [count]);
+
+  const queryClient = useQueryClient();
+  useEffect(() => {
+    const refresh = (event: MessageEvent) => {
+      if (
+        (event.data as { type?: string } | null)?.type === NOTIFICATION_MESSAGE
+      ) {
+        void queryClient.invalidateQueries({
+          queryKey: notificationsQuery().queryKey,
+        });
+      }
+    };
+    navigator.serviceWorker?.addEventListener('message', refresh);
+    return () =>
+      navigator.serviceWorker?.removeEventListener('message', refresh);
+  }, [queryClient]);
 
   return count;
 }

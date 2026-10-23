@@ -2,6 +2,9 @@
 // client or anything else that needs a window.
 import { isAdminPath } from 'helpers/isAdminPath';
 
+// Posted to open windows when a push arrives, so their bells refresh.
+export const NOTIFICATION_MESSAGE = 'NOTIFICATION';
+
 export type PushPayload = {
   body: string;
   tag: string;
@@ -17,7 +20,7 @@ export function base64UrlToUint8Array(value: string) {
 }
 
 export function windowFor<T extends { url: string }>(
-  clients: T[],
+  clients: readonly T[],
   target: string,
 ) {
   const admin = isAdminPath(target);
