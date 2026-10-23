@@ -3,7 +3,8 @@
   "extends": [
     "github>BSStudio/renovate-config",
     "github>BSStudio/renovate-config:weekly",
-    "github>BSStudio/renovate-config:approve-merges"
+    "github>BSStudio/renovate-config:approve-merges",
+    "customManagers:githubActionsVersions"
   ],
   "customManagers": [
     {

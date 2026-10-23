@@ -6,22 +6,32 @@ on:
   push:
     branches: [main]
     paths:
-      - 'frontend/**'
-      - '.github/workflows/frontend.yml'
+      - "frontend/**"
+      - ".github/workflows/frontend.yml"
 
 permissions:
   contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
+defaults:
+  run:
+    shell: bash
+    working-directory: frontend
 
 jobs:
   run-tests:
     name: Frontend tests
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: frontend
+    timeout-minutes: 10
     steps:
-      - name: Checkout
+      - name: Check out
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+
       - name: Set up pnpm, Node.js and dependencies
         uses: pnpm/setup@a0881977cd8ea73b1ed212236c99ca10dcc80cf4 # v3.1.1
         with:
@@ -29,12 +39,15 @@ jobs:
           node-version-file: .nvmrc
           cache: true
           require-lockfile: true
+
       - name: Run ESLint config check and lint
         run: |
           pnpm run check-eslint-config
           pnpm run lint
+
       - name: Run tests
         run: pnpm test run --coverage --reporter=default --reporter=junit --outputFile.junit=junit.xml
+
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
@@ -43,8 +56,9 @@ jobs:
           flags: frontend
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
       - name: Upload test results to Codecov
-        if: ${{ !cancelled() }}
+        if: "!cancelled()"
         uses: codecov/codecov-action@303a32d7a59b442fa8d48b6a1cc6825c09c847a5 # v7.1.1
         with:
           files: frontend/junit.xml
@@ -52,7 +66,8 @@ jobs:
           report_type: test_results
         env:
           CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
       - name: Build
-        run: pnpm run build
         env:
-          CI: ''
+          CI: ""
+        run: pnpm run build
