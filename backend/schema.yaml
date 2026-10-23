@@ -2210,6 +2210,67 @@ paths:
               schema:
                 $ref: '#/components/schemas/UnreadCount'
           description: ''
+  /api/v1/me/push-subscriptions:
+    post:
+      operationId: me_push_subscriptions_create
+      tags:
+        - me
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PushSubscriptionRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PushSubscriptionRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PushSubscriptionRequest'
+        required: true
+      security:
+        - tokenAuth: []
+        - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/v1/me/push-subscriptions/key:
+    get:
+      operationId: me_push_subscriptions_key_retrieve
+      tags:
+        - me
+      security:
+        - tokenAuth: []
+        - cookieAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VapidPublicKey'
+          description: ''
+  /api/v1/me/push-subscriptions/remove:
+    post:
+      operationId: me_push_subscriptions_remove_create
+      tags:
+        - me
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PushSubscriptionRemoveRequest'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PushSubscriptionRemoveRequest'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PushSubscriptionRemoveRequest'
+        required: true
+      security:
+        - tokenAuth: []
+        - cookieAuth: []
+      responses:
+        '204':
+          description: No response body
   /api/v1/me/social/{provider}:
     post:
       operationId: me_social_create
@@ -3618,6 +3679,43 @@ components:
         - status_by_admin
         - title
         - type
+    PushSubscriptionKeysRequest:
+      type: object
+      properties:
+        auth:
+          type: string
+          minLength: 1
+          maxLength: 100
+        p256dh:
+          type: string
+          minLength: 1
+          maxLength: 200
+      required:
+        - auth
+        - p256dh
+    PushSubscriptionRemoveRequest:
+      type: object
+      properties:
+        endpoint:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 1000
+      required:
+        - endpoint
+    PushSubscriptionRequest:
+      type: object
+      properties:
+        endpoint:
+          type: string
+          format: uri
+          minLength: 1
+          maxLength: 1000
+        keys:
+          $ref: '#/components/schemas/PushSubscriptionKeysRequest'
+      required:
+        - endpoint
+        - keys
     RatingAdminCreateUpdate:
       type: object
       properties:
@@ -4613,6 +4711,13 @@ components:
       required:
         - provider
         - uid
+    VapidPublicKey:
+      type: object
+      properties:
+        public_key:
+          type: string
+      required:
+        - public_key
     VideoAdminCreateUpdateRequest:
       type: object
       properties:

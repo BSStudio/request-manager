@@ -5,6 +5,7 @@ from api.v1.me.views import (
     MeViewSet,
     NotificationViewSet,
     OAuth2ConnectDisconnectView,
+    PushSubscriptionViewSet,
 )
 from common.rest_framework.routers import DetailOnlyRouter
 
@@ -16,9 +17,15 @@ notification_router.register(
     r"me/notifications", NotificationViewSet, basename="notification"
 )
 
+push_subscription_router = SimpleRouter(trailing_slash=False)
+push_subscription_router.register(
+    r"me/push-subscriptions", PushSubscriptionViewSet, basename="push-subscription"
+)
+
 urlpatterns = [
     path("", include(me_router.urls)),
     path("", include(notification_router.urls)),
+    path("", include(push_subscription_router.urls)),
     path(
         "me/social/<str:provider>",
         OAuth2ConnectDisconnectView.as_view(),

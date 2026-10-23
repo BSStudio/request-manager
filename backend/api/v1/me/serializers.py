@@ -1,7 +1,15 @@
+from urllib.parse import urlparse
+
 from django.utils.translation import gettext_lazy as _
 from phonenumber_field.serializerfields import PhoneNumberField
 from rest_framework.exceptions import ValidationError
-from rest_framework.fields import CharField, ChoiceField, EmailField, IntegerField
+from rest_framework.fields import (
+    CharField,
+    ChoiceField,
+    EmailField,
+    IntegerField,
+    URLField,
+)
 from rest_framework.relations import SlugRelatedField
 from rest_framework.serializers import ModelSerializer, Serializer
 from social_django.models import UserSocialAuth
@@ -102,3 +110,41 @@ class UnreadCountSerializer(Serializer):
 
 class MarkNotificationsReadSerializer(Serializer):
     request = IntegerField(required=False)
+
+
+# The push services of the browsers we support. Any other endpoint would make
+# the server send requests wherever a user points it, internal hosts included.
+PUSH_SERVICE_HOSTS = (
+    "fcm.googleapis.com",
+    "notify.windows.com",
+    "push.apple.com",
+    "push.services.mozilla.com",
+)
+
+
+class PushSubscriptionKeysSerializer(Serializer):
+    auth = CharField(max_length=100)
+    p256dh = CharField(max_length=200)
+
+
+class PushSubscriptionSerializer(Serializer):
+    endpoint = URLField(max_length=1000)
+    keys = PushSubscriptionKeysSerializer()
+
+    def validate_endpoint(self, endpoint):
+        url = urlparse(endpoint)
+        host = url.hostname or ""
+        if url.scheme != "https" or not any(
+            host == service or host.endswith(f".{service}")
+            for service in PUSH_SERVICE_HOSTS
+        ):
+            raise ValidationError(_("Unsupported push service."))
+        return endpoint
+
+
+class PushSubscriptionRemoveSerializer(Serializer):
+    endpoint = URLField(max_length=1000)
+
+
+class VapidPublicKeySerializer(Serializer):
+    public_key = CharField()
