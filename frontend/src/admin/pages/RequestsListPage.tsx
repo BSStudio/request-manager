@@ -12,6 +12,7 @@ import {
   getLatestSemester,
   getSemesters,
 } from 'admin/helpers/SemesterHelper';
+import { isNotFound } from 'api/errors';
 import { queryClient } from 'api/queryClient';
 
 type Sort = { field: string; order: 1 | -1 };
@@ -47,16 +48,31 @@ const RequestsListPage = () => {
   );
   const [{ first, rows }, setPage] = useState(firstPage);
   const [sort, setSort] = useState(defaultSort);
-  const { data, dataUpdatedAt, isLoading, isPlaceholderData, refetch } =
-    useQuery({
-      ...requestsListQuery(
-        selectedSemester,
-        first / rows + 1,
-        rows,
-        toOrdering(sort),
-      ),
-      placeholderData: keepPreviousData,
-    });
+  const [handledNotFoundAt, setHandledNotFoundAt] = useState(Date.now);
+  const {
+    data,
+    dataUpdatedAt,
+    error,
+    errorUpdatedAt,
+    isLoading,
+    isPlaceholderData,
+    refetch,
+  } = useQuery({
+    ...requestsListQuery(
+      selectedSemester,
+      first / rows + 1,
+      rows,
+      toOrdering(sort),
+    ),
+    placeholderData: keepPreviousData,
+  });
+
+  // A vanished page answers 404 and keeps its stale rows. Only newer 404s
+  // count: older ones stay cached while their page may be back.
+  if (isNotFound(error) && errorUpdatedAt > handledNotFoundAt) {
+    setHandledNotFoundAt(errorUpdatedAt);
+    setPage({ first: 0, rows });
+  }
 
   return (
     <div className="p-3 sm:p-5 surface-ground">

@@ -2,6 +2,7 @@ import { Semester } from 'admin/helpers/SemesterHelper';
 
 import { queryKeys } from './queryKeys';
 import { AdminTodosListStatusEnum } from '../../api/endpoints/admin-api';
+import { isNotFound } from '../../api/errors';
 import { adminApi } from '../../api/http';
 
 export const projectRequestsListQuery = (projectId: number) => ({
@@ -233,6 +234,8 @@ export const requestsListQuery = (
       pageSize,
     }),
     refetchInterval: 1000 * 30,
+    retry: (failureCount: number, error: Error) =>
+      !isNotFound(error) && failureCount < 1,
   };
 };
 
