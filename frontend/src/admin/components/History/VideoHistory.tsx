@@ -42,14 +42,7 @@ const VideoHistory = ({ requestId, videoId }: VideoHistoryProps) => {
       return 'Nincs';
     }
     if (name === 'additional_data') {
-      const obj = JSON.parse(
-        value
-          .replace(/'/g, '"')
-          .replaceAll('True', 'true')
-          .replaceAll('False', 'false')
-          .replaceAll('None', 'null'),
-      );
-      return JSON.stringify(obj, null, 2);
+      return JSON.stringify(JSON.parse(value), null, 2);
     }
     if (name === 'edited_at') {
       return dateToLocaleString(parseISO(value));

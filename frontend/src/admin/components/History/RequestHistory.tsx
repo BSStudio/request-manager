@@ -54,14 +54,7 @@ const RequestHistory = ({ requestId }: RequestHistoryProps) => {
       return 'Nincs';
     }
     if (name === 'additional_data') {
-      const obj = JSON.parse(
-        value
-          .replace(/'/g, '"')
-          .replaceAll('True', 'true')
-          .replaceAll('False', 'false')
-          .replaceAll('None', 'null'),
-      );
-      return JSON.stringify(obj, null, 2);
+      return JSON.stringify(JSON.parse(value), null, 2);
     }
     if (['created', 'end_datetime', 'start_datetime'].includes(name)) {
       return dateTimeToLocaleString(parseISO(value));
