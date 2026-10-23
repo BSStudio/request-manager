@@ -235,6 +235,23 @@ class Ban(models.Model):
             return super().save(*args, **kwargs)
 
 
+class PushSubscription(models.Model):
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="push_subscriptions",
+    )
+    endpoint = models.URLField(max_length=1000, unique=True)
+    p256dh = models.CharField(max_length=200)
+    auth = models.CharField(max_length=100)
+    created = models.DateTimeField(auto_now_add=True)
+    last_used = models.DateTimeField(auto_now=True)
+
+    # The endpoint is a capability: anyone holding it can push to the browser.
+    def __str__(self):
+        return f"{self.user} || {self.created:%Y-%m-%d}"
+
+
 class AbstractComment(models.Model):
     author = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.SET(get_sentinel_user)
