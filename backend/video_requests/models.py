@@ -237,9 +237,10 @@ class Video(models.Model):
             aired.sort(
                 key=lambda date: datetime.strptime(date, "%Y-%m-%d"), reverse=True
             )
-        # The date of the latest cut. Only unchecking editing_done clears it:
-        # the status also drops when the request changes.
-        if not self.additional_data.get("editing_done"):
+        # The date of the latest cut. Only unchecking editing_done or skipping the
+        # cut clears it: the status also drops when the request changes.
+        skipped = self.additional_data.get("editing_skipped")
+        if skipped or not self.additional_data.get("editing_done"):
             self.edited_at = None
         elif self.status >= Video.Statuses.EDITED and not self.edited_at:
             self.edited_at = localdate()

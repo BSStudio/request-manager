@@ -58,6 +58,7 @@ VIDEO_ADDITIONAL_DATA_SCHEMA = {
             "additionalProperties": False,
         },
         "editing_done": {"type": "boolean"},
+        "editing_skipped": {"type": "boolean"},
         "length": {"type": ["number", "null"]},
         "coding": {
             "type": "object",

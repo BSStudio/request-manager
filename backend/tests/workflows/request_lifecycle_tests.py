@@ -190,6 +190,40 @@ def test_a_request_walks_from_felkeres_to_lezarva(admin_user, admin_api_client):
         )
 
 
+def test_a_video_kept_as_it_was_moves_its_request_without_an_editor(
+    admin_api_client,
+):
+    response = admin_api_client.post(
+        request_url(),
+        {
+            "title": "Test Request",
+            "start_datetime": localtime() - timedelta(days=1),
+            "end_datetime": localtime() - timedelta(days=1) + timedelta(hours=4),
+            "place": "Test place",
+            "type": "Test type",
+        },
+    )
+    assert response.status_code == HTTP_201_CREATED
+    request_id = response.data["id"]
+    detail = request_url(request_id)
+    patch(
+        admin_api_client,
+        detail,
+        {"additional_data": {"accepted": True, "recording": {"path": "N:/test"}}},
+        Request.Statuses.UPLOADED,
+    )
+
+    response = admin_api_client.post(
+        video_url(request_id),
+        {"title": "Live stream", "additional_data": {"editing_skipped": True}},
+    )
+
+    assert response.status_code == HTTP_201_CREATED
+    assert response.data["status"] == Video.Statuses.EDITED
+    assert response.data["edited_at"] is None
+    assert status_of(admin_api_client, detail) == Request.Statuses.EDITED
+
+
 def test_an_admin_can_force_the_status_of_a_request_and_its_video(
     admin_user, admin_api_client
 ):

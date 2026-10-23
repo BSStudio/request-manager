@@ -2,12 +2,13 @@ import { useEffect, useMemo } from 'react';
 
 import { useMutation, useQuery } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
+import { Checkbox } from 'primereact/checkbox';
 import { Divider } from 'primereact/divider';
 import { InputText } from 'primereact/inputtext';
 import { Message } from 'primereact/message';
 import { SplitButton } from 'primereact/splitbutton';
 import { ToggleButton } from 'primereact/togglebutton';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, useForm, useWatch } from 'react-hook-form';
 import type { SubmitHandler } from 'react-hook-form';
 import {
   type LoaderFunctionArgs,
@@ -46,6 +47,7 @@ export interface IVideoCreator {
       website: boolean;
     };
     editing_done: boolean;
+    editing_skipped: boolean;
     length?: string;
     publishing: {
       website: string;
@@ -76,6 +78,7 @@ const VideoCreatorEditorPage = () => {
           website: false,
         },
         editing_done: false,
+        editing_skipped: false,
         length: undefined,
         publishing: {
           website: '',
@@ -93,9 +96,17 @@ const VideoCreatorEditorPage = () => {
     handleSubmit,
     reset,
     setError,
+    setValue,
   } = useForm<IVideoCreator>({
     defaultValues,
     mode: 'onChange',
+  });
+  // Disables the editor and the cut on their inputs only: react-hook-form
+  // leaves disabled fields out of the submitted data, so their clearing would
+  // not be saved.
+  const editingSkipped = useWatch({
+    control,
+    name: 'additional_data.editing_skipped',
   });
   const { requestId, videoId } = useParams();
   const { showToast } = useToast();
@@ -260,16 +271,41 @@ const VideoCreatorEditorPage = () => {
           <Divider align="center" type="dashed">
             <b>Opcionális mezők</b>
           </Divider>
-          <FormField
-            className="col-12 mb-4 md:col-6"
-            control={control}
-            disabled={isPending}
-            inputId
-            label="Vágó"
-            name="editor"
-          >
-            <AutoCompleteStaff />
-          </FormField>
+          <div className="col-12 mb-4 md:col-6">
+            <FormField
+              className="mb-2"
+              control={control}
+              inputId
+              label="Vágó"
+              name="editor"
+            >
+              <AutoCompleteStaff disabled={isPending || editingSkipped} />
+            </FormField>
+            <Controller
+              control={control}
+              disabled={isPending}
+              name="additional_data.editing_skipped"
+              render={({ field }) => (
+                <div className="field-checkbox mb-0">
+                  <Checkbox
+                    {...field}
+                    checked={!!field.value}
+                    inputId={field.name}
+                    onChange={(e) => {
+                      field.onChange(e.checked);
+                      if (e.checked) {
+                        setValue('editor', null, { shouldDirty: true });
+                        setValue('additional_data.editing_done', false, {
+                          shouldDirty: true,
+                        });
+                      }
+                    }}
+                  />
+                  <label htmlFor={field.name}>Nem kell vágni</label>
+                </div>
+              )}
+            />
+          </div>
           <FormField
             className="col-12 mb-4 md:col-6"
             control={control}
@@ -302,6 +338,7 @@ const VideoCreatorEditorPage = () => {
                 <ToggleButton
                   {...field}
                   checked={field.value || false}
+                  disabled={field.disabled || editingSkipped}
                   id={field.name}
                   offIcon="bi bi-scissors"
                   offLabel="Vágandó"

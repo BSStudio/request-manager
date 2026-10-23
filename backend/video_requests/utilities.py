@@ -175,6 +175,12 @@ def update_video_status(
                 else status
             )
 
+        # A video kept as it was, like a live stream, needs neither an editor nor a cut
+        if video.additional_data.get("editing_skipped") and (
+            max(video.request.status, request_status) >= Request.Statuses.UPLOADED
+        ):
+            status = Video.Statuses.EDITED
+
         # Check if the video is coded on the website
         if (
             status == Video.Statuses.EDITED

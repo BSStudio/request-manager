@@ -247,6 +247,7 @@ const VideoDetailsPage = () => {
           adminStatusOverride={
             !!queryResult.additional_data.status_by_admin?.status
           }
+          editingSkipped={!!queryResult.additional_data.editing_skipped}
           editor={!!queryResult.editor}
           id="videoStatusHelper"
           status={queryResult.status}
@@ -353,6 +354,13 @@ const VideoDetailsPage = () => {
                     name={queryResult.editor.full_name}
                     imageUrl={queryResult.editor.avatar_url}
                   />
+                ) : queryResult.additional_data.editing_skipped ? (
+                  <Tag
+                    className="mr-2"
+                    icon="bi bi-scissors"
+                    severity="info"
+                    value="Nem kell vágni"
+                  />
                 ) : (
                   <Tag
                     className="mr-2"
@@ -373,7 +381,11 @@ const VideoDetailsPage = () => {
                     className="mr-2"
                     icon="bi bi-scissors"
                     severity="info"
-                    value="Még nincs megvágva"
+                    value={
+                      queryResult.additional_data.editing_skipped
+                        ? 'Nem kell vágni'
+                        : 'Még nincs megvágva'
+                    }
                   />
                 )
               }
@@ -475,14 +487,17 @@ const VideoDetailsPage = () => {
                     className="mr-2"
                     icon="bi bi-scissors"
                     severity={
-                      queryResult.additional_data.editing_done
+                      queryResult.additional_data.editing_done ||
+                      queryResult.additional_data.editing_skipped
                         ? 'success'
                         : 'warning'
                     }
                     value={
                       queryResult.additional_data.editing_done
                         ? 'Megvágva'
-                        : 'Vágásra vár'
+                        : queryResult.additional_data.editing_skipped
+                          ? 'Nem kell vágni'
+                          : 'Vágásra vár'
                     }
                   />
                   <Tag

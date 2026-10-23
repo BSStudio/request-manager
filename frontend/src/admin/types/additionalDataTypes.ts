@@ -34,6 +34,7 @@ export type VideoAdditionalDataType = {
     website?: boolean;
   };
   editing_done?: boolean;
+  editing_skipped?: boolean;
   length?: number | null;
   publishing?: {
     email_sent_to_user?: boolean;
