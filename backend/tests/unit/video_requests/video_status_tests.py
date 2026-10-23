@@ -127,6 +127,24 @@ class TestDerivedStatus:
 
         assert video.status == expected
 
+    @pytest.mark.parametrize("editor", [False, True])
+    def test_skipping_the_edit_makes_it_edited(self, editor):
+        video = make_video(editor=editor, additional_data={"editing_skipped": True})
+
+        update_video_status(video)
+
+        assert video.status == Video.Statuses.EDITED
+
+    def test_skipping_the_edit_before_the_material_is_uploaded_is_not_enough(self):
+        video = make_video(
+            request_status=Request.Statuses.ACCEPTED,
+            additional_data={"editing_skipped": True},
+        )
+
+        update_video_status(video)
+
+        assert video.status == Video.Statuses.PENDING
+
     @pytest.mark.parametrize(
         "website,expected",
         [(True, Video.Statuses.CODED), (False, Video.Statuses.EDITED)],
