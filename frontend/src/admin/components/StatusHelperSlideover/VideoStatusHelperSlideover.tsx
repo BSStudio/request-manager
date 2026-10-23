@@ -18,6 +18,7 @@ import {
 
 type VideoStatusHelperSlideoverProps = {
   adminStatusOverride: boolean;
+  editingSkipped: boolean;
   editor: boolean;
   id: string;
   status: number;
@@ -25,6 +26,7 @@ type VideoStatusHelperSlideoverProps = {
 
 const VideoStatusHelperSlideover = ({
   adminStatusOverride,
+  editingSkipped,
   editor,
   id,
   status,
@@ -81,7 +83,9 @@ const VideoStatusHelperSlideover = ({
                 label={VIDEO_STATUSES[VideoStatus.PENDING].text}
               >
                 <ActivePendingTaskItem label="Felkérés beírva státuszú" />
-                {editor ? (
+                {editingSkipped ? (
+                  <ActiveCompleteTaskItem label="Nem kell vágni" />
+                ) : editor ? (
                   <ActiveCompleteTaskItem label="Vágó kijelölése" />
                 ) : (
                   <ActivePendingTaskItem label="Vágó kijelölése" />
