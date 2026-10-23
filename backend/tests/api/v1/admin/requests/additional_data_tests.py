@@ -270,6 +270,60 @@ class TestForcedStatusOverSeveralRequests:
         assert stamp["admin_id"] == admin_user.id
         assert response.data["status"] == Request.Statuses.DONE
 
+    def test_denied_can_be_forced_and_cleared(
+        self, admin_user, api_client, video_request
+    ):
+        login(api_client, admin_user)
+
+        response = api_client.patch(
+            request_url(video_request.id),
+            {
+                "additional_data": {
+                    "status_by_admin": {"status": Request.Statuses.DENIED}
+                }
+            },
+        )
+
+        assert response.data["status"] == Request.Statuses.DENIED
+        assert response.data["status_by_admin"] is True
+        assert response.data["additional_data"]["status_by_admin"] == {
+            "status": Request.Statuses.DENIED,
+            "admin_id": admin_user.id,
+            "admin_name": admin_user.get_full_name_eastern_order(),
+        }
+
+        response = api_client.patch(
+            request_url(video_request.id),
+            {"additional_data": {"status_by_admin": {"status": None}}},
+        )
+
+        assert response.data["status"] == Request.Statuses.REQUESTED
+        assert response.data["status_by_admin"] is False
+
+    def test_a_stamp_without_a_status_changes_nothing(
+        self, admin_user, api_client, patch_data, video_request
+    ):
+        login(api_client, admin_user)
+        api_client.patch(request_url(video_request.id), patch_data)
+
+        other_admin = make_user(is_admin=True, first_name="NewAdmin")
+        login(api_client, other_admin)
+        response = api_client.patch(
+            request_url(video_request.id),
+            {
+                "additional_data": {
+                    "status_by_admin": {"admin_id": 123, "admin_name": "Random Name"}
+                }
+            },
+        )
+
+        assert response.data["status"] == Request.Statuses.ARCHIVED
+        assert response.data["additional_data"]["status_by_admin"] == {
+            "status": Request.Statuses.ARCHIVED,
+            "admin_id": admin_user.id,
+            "admin_name": admin_user.get_full_name_eastern_order(),
+        }
+
 
 @pytest.mark.parametrize("field", ["accepted", "canceled", "failed"])
 class TestUnsettingAField:
@@ -447,6 +501,19 @@ class TestRequesterChangesAndAdditionalData:
 
 
 class TestSchemaValidation:
+    def test_a_null_status_by_admin_is_rejected(
+        self, admin_user, api_client, video_request
+    ):
+        # Clearing a forced status sends "status": null instead.
+        login(api_client, admin_user)
+
+        response = api_client.patch(
+            request_url(video_request.id),
+            {"additional_data": {"status_by_admin": None}},
+        )
+
+        assert response.status_code == HTTP_400_BAD_REQUEST
+
     def test_an_unknown_request_key_is_rejected(
         self, admin_user, api_client, video_request
     ):

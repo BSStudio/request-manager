@@ -11,7 +11,6 @@ from rest_framework.fields import (
 from rest_framework.relations import PrimaryKeyRelatedField
 from rest_framework.serializers import ModelSerializer, Serializer
 
-from api.v1.admin.requests.helpers import is_status_by_admin
 from api.v1.admin.requests.requests.serializers import RequestAdminCreateSerializer
 from api.v1.admin.users.serializers import (
     UserNestedDetailSerializer,
@@ -19,6 +18,7 @@ from api.v1.admin.users.serializers import (
 )
 from video_requests.models import Project, Request
 from video_requests.services import set_project
+from video_requests.utilities import is_status_by_admin
 
 
 class ProjectAdminListSerializer(Serializer):

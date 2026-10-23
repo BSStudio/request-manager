@@ -244,9 +244,7 @@ const VideoDetailsPage = () => {
       </Suspense>
       <Suspense>
         <VideoStatusHelperSlideover
-          adminStatusOverride={
-            !!queryResult.additional_data.status_by_admin?.status
-          }
+          adminStatusOverride={queryResult.status_by_admin}
           editingSkipped={!!queryResult.additional_data.editing_skipped}
           editor={!!queryResult.editor}
           id="videoStatusHelper"
@@ -262,7 +260,7 @@ const VideoDetailsPage = () => {
             </div>
             <div className="font-medium mb-3 sm:mb-0 text-500 text-sm">
               <VideoStatusTag
-                modified={!!queryResult.additional_data.status_by_admin?.status}
+                modified={queryResult.status_by_admin}
                 statusNum={queryResult.status}
               />
             </div>
@@ -323,9 +321,7 @@ const VideoDetailsPage = () => {
             <DetailsRow
               content={
                 <VideoStatusTag
-                  modified={
-                    !!queryResult.additional_data.status_by_admin?.status
-                  }
+                  modified={queryResult.status_by_admin}
                   statusNum={queryResult.status}
                 />
               }

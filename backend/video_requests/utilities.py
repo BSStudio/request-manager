@@ -18,13 +18,14 @@ from video_requests.notifications import (
 )
 
 
+def is_status_by_admin(obj: Request | Video) -> bool:
+    status = obj.additional_data.get("status_by_admin", {}).get("status")
+    return isinstance(status, int) and not isinstance(status, bool)
+
+
 def update_request_status(request: Request, called_from_video: bool = False) -> None:
     # Check if the status is set by admin (overwrites everything)
-    if (
-        "status_by_admin" in request.additional_data
-        and "status" in request.additional_data["status_by_admin"]
-        and request.additional_data["status_by_admin"].get("status")
-    ):
+    if is_status_by_admin(request):
         request.status = request.additional_data["status_by_admin"]["status"]
 
     # If status is not set by admin follow the flow and check if all required data are provided.
@@ -145,11 +146,7 @@ def update_video_status(
     video: Video, called_from_request: bool = False, request_status: int = 1
 ) -> None:
     # Check if the status is set by admin (overwrites everything)
-    if (
-        "status_by_admin" in video.additional_data
-        and "status" in video.additional_data["status_by_admin"]
-        and video.additional_data["status_by_admin"].get("status")
-    ):
+    if is_status_by_admin(video):
         video.status = video.additional_data["status_by_admin"]["status"]
 
     # If status is not set by admin follow the flow and check if all required data are provided.
