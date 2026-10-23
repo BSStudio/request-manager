@@ -27,6 +27,17 @@ All settings are read from `backend/.env`. Start from [`.env.sample`](.env.sampl
 DJANGO_SETTINGS_MODULE = core.settings.debug
 ```
 
+#### Web push keys
+
+Push notifications stay off until `WEB_PUSH_CONTACT`, `WEB_PUSH_VAPID_PRIVATE_KEY` and `WEB_PUSH_VAPID_PUBLIC_KEY` are all set. Generate one key pair per environment:
+
+```bash
+uv run vapid --gen
+uv run vapid --applicationServerKey
+```
+
+`--gen` writes `private_key.pem` and `public_key.pem`; `--applicationServerKey` prints the value for `WEB_PUSH_VAPID_PUBLIC_KEY`. `WEB_PUSH_VAPID_PRIVATE_KEY` is the base64 body of `private_key.pem` on one line, without the `BEGIN` and `END` lines. Then delete both `.pem` files: git does not ignore them. Keep the pair once browsers have subscribed: a subscription only accepts pushes signed with the key it was made with.
+
 ### Settings modules
 
 `DJANGO_SETTINGS_MODULE` selects the configuration (`core.settings.*`):

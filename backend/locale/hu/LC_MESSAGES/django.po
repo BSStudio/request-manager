@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: BSS Request Manager\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-10-22 01:39+0200\n"
+"POT-Creation-Date: 2026-10-23 04:43+0200\n"
 "PO-Revision-Date: 2023-09-07 03:30+0200\n"
 "Last-Translator: Olivér Kecskeméty <kecskemety.oliver@simonyi.bme.hu>\n"
 "Language: Hungarian\n"
@@ -17,12 +17,12 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: .\api\v1\admin\projects\serializers.py:81
+#: .\api\v1\admin\projects\serializers.py:90
 #, python-format
 msgid "%(title)s belongs to another project."
 msgstr "%(title)s egy másik projekthez tartozik."
 
-#: .\api\v1\admin\projects\serializers.py:90
+#: .\api\v1\admin\projects\serializers.py:99
 #, python-format
 msgid "%(title)s is not in this project."
 msgstr "%(title)s nem tartozik ehhez a projekthez."
@@ -64,13 +64,17 @@ msgstr "Felelős"
 msgid "Editor"
 msgstr "Vágó"
 
-#: .\api\v1\login\serializers.py:45 .\api\v1\me\views.py:79
+#: .\api\v1\login\serializers.py:45 .\api\v1\me\views.py:164
 msgid "Invalid provider."
 msgstr "Érvénytelen szogláltató."
 
-#: .\api\v1\me\serializers.py:81 .\common\models.py:121
+#: .\api\v1\me\serializers.py:90 .\common\models.py:121
 msgid "E-mail address already in use."
 msgstr "Az e-mail cím már használatban van."
+
+#: .\api\v1\me\serializers.py:141
+msgid "Unsupported push service."
+msgstr "Nem támogatott push szolgáltatás."
 
 #: .\api\v1\requests\ratings\views.py:48
 msgid "The video has not been published yet."
@@ -171,11 +175,11 @@ msgstr "Lapokra tördelt választ ad vissza."
 msgid "Error verifying captcha, please try again."
 msgstr "Hiba a captcha ellenőrzésekor, kérlek próbáld újra."
 
-#: .\core\settings\base.py:282
+#: .\core\settings\base.py:290
 msgid "English"
 msgstr "angol"
 
-#: .\core\settings\base.py:283
+#: .\core\settings\base.py:291
 msgid "Hungarian"
 msgstr "magyar"
 
@@ -196,61 +200,61 @@ msgstr "Kijelentkezés"
 msgid "Log in"
 msgstr "Bejelentkezés"
 
-#: .\video_requests\admin.py:102
+#: .\video_requests\admin.py:104
 msgid "Number of videos"
 msgstr "Videók száma"
 
-#: .\video_requests\admin.py:106
+#: .\video_requests\admin.py:108
 msgid "Requester"
 msgstr "Felkérő"
 
-#: .\video_requests\admin.py:188
+#: .\video_requests\admin.py:193
 msgid "Deleted at"
 msgstr "Törlés ideje"
 
-#: .\video_requests\admin.py:192
+#: .\video_requests\admin.py:197
 msgid "Deleted by"
 msgstr "Törölte"
 
-#: .\video_requests\admin.py:197
+#: .\video_requests\admin.py:202
 msgid "Restore selected requests with everything deleted with them"
 msgstr "Kiválasztott felkérések visszaállítása mindenestül"
 
-#: .\video_requests\admin.py:203
+#: .\video_requests\admin.py:208
 #, python-format
 msgid "Restored: %(title)s"
 msgstr "Visszaállítva: %(title)s"
 
-#: .\video_requests\admin.py:215 .\video_requests\admin.py:238
-#: .\video_requests\admin.py:264 .\video_requests\admin.py:335
+#: .\video_requests\admin.py:220 .\video_requests\admin.py:243
+#: .\video_requests\admin.py:269 .\video_requests\admin.py:340
 msgid "Request"
 msgstr "Felkérés"
 
-#: .\video_requests\admin.py:219
+#: .\video_requests\admin.py:224
 msgid "Crew member"
 msgstr "Stábtag"
 
-#: .\video_requests\admin.py:242
+#: .\video_requests\admin.py:247
 msgid "Average rating"
 msgstr "Átlagos értékelés"
 
-#: .\video_requests\admin.py:260
+#: .\video_requests\admin.py:265
 msgid "Comment"
 msgstr "Hozzászólás"
 
-#: .\video_requests\admin.py:268 .\video_requests\admin.py:296
+#: .\video_requests\admin.py:273 .\video_requests\admin.py:301
 msgid "Author"
 msgstr "Szerző"
 
-#: .\video_requests\admin.py:288
+#: .\video_requests\admin.py:293
 msgid "Review"
 msgstr "Szöveges értékelés"
 
-#: .\video_requests\admin.py:292 .\video_requests\admin.py:339
+#: .\video_requests\admin.py:297 .\video_requests\admin.py:344
 msgid "Video"
 msgstr "Videó"
 
-#: .\video_requests\admin.py:345
+#: .\video_requests\admin.py:350
 msgid "Assignees"
 msgstr "Felelősök"
 
@@ -274,7 +278,7 @@ msgstr ""
 msgid "Beírva"
 msgstr ""
 
-#: .\video_requests\models.py:73 .\video_requests\models.py:177
+#: .\video_requests\models.py:73 .\video_requests\models.py:180
 msgid "Megvágva"
 msgstr ""
 
@@ -282,8 +286,8 @@ msgstr ""
 msgid "Archiválva"
 msgstr ""
 
-#: .\video_requests\models.py:75 .\video_requests\models.py:180
-#: .\video_requests\models.py:268
+#: .\video_requests\models.py:75 .\video_requests\models.py:183
+#: .\video_requests\models.py:271
 msgid "Lezárva"
 msgstr ""
 
@@ -295,74 +299,74 @@ msgstr ""
 msgid "Meghiúsult"
 msgstr ""
 
-#: .\video_requests\models.py:136
+#: .\video_requests\models.py:139
 msgid "Must be later than the start of the event."
 msgstr "Későbbinek kell lennie mint az esemény kezdése."
 
-#: .\video_requests\models.py:140
+#: .\video_requests\models.py:143
 msgid "Must be later than the end of the event."
 msgstr "Későbbinek kell lennie mint az esemény vége."
 
-#: .\video_requests\models.py:159
+#: .\video_requests\models.py:162
 msgid "deleted request"
 msgstr "törölt felkérés"
 
-#: .\video_requests\models.py:160
+#: .\video_requests\models.py:163
 msgid "deleted requests"
 msgstr "törölt felkérések"
 
-#: .\video_requests\models.py:175
+#: .\video_requests\models.py:178
 msgid "Vágásra vár"
 msgstr ""
 
-#: .\video_requests\models.py:176
+#: .\video_requests\models.py:179
 msgid "Vágás alatt"
 msgstr ""
 
-#: .\video_requests\models.py:178
+#: .\video_requests\models.py:181
 msgid "Kikódolva"
 msgstr ""
 
-#: .\video_requests\models.py:179
+#: .\video_requests\models.py:182
 msgid "Közzétéve"
 msgstr ""
 
-#: .\video_requests\models.py:267
+#: .\video_requests\models.py:270
 msgid "Nyitva"
 msgstr ""
 
-#: .\video_requests\models.py:269
+#: .\video_requests\models.py:272
 msgid "Elvetve"
 msgstr ""
 
-#: .\video_requests\models.py:294
+#: .\video_requests\models.py:297
 msgid "The video must belong to this request."
 msgstr "A videónak ehhez a felkéréshez kell tartoznia."
 
-#: .\video_requests\models.py:303
+#: .\video_requests\models.py:306
 msgid "Új üzenet a BSS-től"
 msgstr ""
 
-#: .\video_requests\models.py:304
+#: .\video_requests\models.py:307
 msgid "Elvállaltuk a felkérésed"
 msgstr ""
 
-#: .\video_requests\models.py:305
+#: .\video_requests\models.py:308
 msgid "Közzétettük a videót"
 msgstr ""
 
-#: .\video_requests\models.py:306
+#: .\video_requests\models.py:309
 msgid "Új felkérés"
 msgstr ""
 
-#: .\video_requests\models.py:307
+#: .\video_requests\models.py:310
 msgid "Új üzenet a felkérőtől"
 msgstr ""
 
-#: .\video_requests\models.py:308
+#: .\video_requests\models.py:311
 msgid "Új belső megjegyzés"
 msgstr ""
 
-#: .\video_requests\models.py:309
+#: .\video_requests\models.py:312
 msgid "Feladatot rendeltek hozzád"
 msgstr ""

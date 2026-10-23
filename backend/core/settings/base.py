@@ -408,6 +408,14 @@ TURNSTILE_SECRET_KEY = config("TURNSTILE_SECRET_KEY", default=None)
 # Published videos are posted here; without it, nothing is posted.
 MATTERMOST_WEBHOOK_URL = config("MATTERMOST_WEBHOOK_URL", default=None)
 
+# Web push
+# https://datatracker.ietf.org/doc/html/rfc8292
+
+# Push is off unless all three are set; the contact is a mailto: address.
+WEB_PUSH_CONTACT = config("WEB_PUSH_CONTACT", default=None)
+WEB_PUSH_VAPID_PRIVATE_KEY = config("WEB_PUSH_VAPID_PRIVATE_KEY", default=None)
+WEB_PUSH_VAPID_PUBLIC_KEY = config("WEB_PUSH_VAPID_PUBLIC_KEY", default=None)
+
 # Sentry
 # https://docs.sentry.io/platforms/python/configuration/options/#data_collection
 

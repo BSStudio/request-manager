@@ -25,6 +25,7 @@ dependencies = [
     "jsonschema[format]==4.26.0",
     "libgravatar==1.0.4",
     "python-decouple==3.8",
+    "pywebpush==2.5.0",
     "requests==2.34.2",
     "sentry-sdk==2.72.0",
     "social-auth-app-django==7.1.0",

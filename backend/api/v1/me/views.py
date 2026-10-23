@@ -10,7 +10,7 @@ from django.views.decorators.cache import never_cache
 from drf_spectacular.types import OpenApiTypes
 from drf_spectacular.utils import OpenApiParameter, extend_schema
 from rest_framework.decorators import action
-from rest_framework.exceptions import ValidationError
+from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, UpdateModelMixin
 from rest_framework.response import Response
@@ -28,10 +28,14 @@ from api.v1.me.serializers import (
     MarkNotificationsReadSerializer,
     NotificationSerializer,
     OAuth2ConnectSerializer,
+    PushSubscriptionRemoveSerializer,
+    PushSubscriptionSerializer,
     UnreadCountSerializer,
     UserSerializer,
+    VapidPublicKeySerializer,
 )
-from common.models import User
+from common.models import PushSubscription, User
+from common.push import push_enabled
 from common.rest_framework.pagination import ExtendedPagination
 from common.rest_framework.permissions import IsAuthenticated, IsStaffUser
 from common.social_core.helpers import decorate_request, handle_exception
@@ -111,6 +115,42 @@ class NotificationViewSet(ListModelMixin, GenericViewSet):
         if "request" in serializer.validated_data:
             unread = unread.filter(request_id=serializer.validated_data["request"])
         unread.update(read_at=now())
+        return Response(status=HTTP_204_NO_CONTENT)
+
+
+class PushSubscriptionViewSet(GenericViewSet):
+    permission_classes = [IsAuthenticated]
+    serializer_class = PushSubscriptionSerializer
+
+    @extend_schema(responses={HTTP_204_NO_CONTENT: None})
+    def create(self, request):
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        # A browser re-registered by someone else, a shared one, moves to them.
+        PushSubscription.objects.update_or_create(
+            endpoint=serializer.validated_data["endpoint"],
+            defaults={"user": request.user, **serializer.validated_data["keys"]},
+        )
+        return Response(status=HTTP_204_NO_CONTENT)
+
+    @extend_schema(responses=VapidPublicKeySerializer)
+    @action(detail=False, filter_backends=[], pagination_class=None)
+    def key(self, request):
+        if not push_enabled():
+            raise NotFound()
+        return Response({"public_key": settings.WEB_PUSH_VAPID_PUBLIC_KEY})
+
+    @extend_schema(
+        request=PushSubscriptionRemoveSerializer,
+        responses={HTTP_204_NO_CONTENT: None},
+    )
+    @action(detail=False, methods=["post"])
+    def remove(self, request):
+        serializer = PushSubscriptionRemoveSerializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        PushSubscription.objects.filter(
+            endpoint=serializer.validated_data["endpoint"], user=request.user
+        ).delete()
         return Response(status=HTTP_204_NO_CONTENT)
 
 
