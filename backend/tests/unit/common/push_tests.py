@@ -1,6 +1,53 @@
-import pytest
+import os
+from base64 import urlsafe_b64encode
 
-from common.push import push_enabled
+import pytest
+import requests
+import responses
+from cryptography.hazmat.primitives.asymmetric import ec
+from cryptography.hazmat.primitives.serialization import (
+    Encoding,
+    NoEncryption,
+    PrivateFormat,
+    PublicFormat,
+)
+from py_vapid import Vapid01
+
+from common.models import PushSubscription
+from common.push import PUSH_TTL, push_enabled, send_push
+from tests.factories import make_user
+
+pytestmark = pytest.mark.django_db
+
+
+def b64(data: bytes) -> str:
+    return urlsafe_b64encode(data).rstrip(b"=").decode()
+
+
+@pytest.fixture
+def push_on(settings):
+    vapid = Vapid01()
+    vapid.generate_keys()
+    settings.WEB_PUSH_VAPID_PRIVATE_KEY = b64(
+        vapid.private_key.private_bytes(
+            Encoding.DER, PrivateFormat.PKCS8, NoEncryption()
+        )
+    )
+    settings.WEB_PUSH_VAPID_PUBLIC_KEY = "public"
+    settings.WEB_PUSH_CONTACT = "mailto:push@example.com"
+
+
+def subscribe(user, endpoint="https://fcm.googleapis.com/fcm/send/abc"):
+    """A subscription with real browser keys, which the payload is encrypted to."""
+    browser_key = ec.generate_private_key(ec.SECP256R1()).public_key()
+    return PushSubscription.objects.create(
+        user=user,
+        endpoint=endpoint,
+        p256dh=b64(
+            browser_key.public_bytes(Encoding.X962, PublicFormat.UncompressedPoint)
+        ),
+        auth=b64(os.urandom(16)),
+    )
 
 
 @pytest.mark.parametrize(
@@ -20,3 +67,61 @@ def test_push_is_on_only_with_all_three_settings(
     settings.WEB_PUSH_CONTACT = contact
 
     assert push_enabled() is enabled
+
+
+@responses.activate
+def test_a_push_goes_to_every_browser_with_a_week_to_live(push_on):
+    user = make_user()
+    for name in ("a", "b"):
+        subscribe(user, f"https://fcm.googleapis.com/fcm/send/{name}")
+        responses.post(f"https://fcm.googleapis.com/fcm/send/{name}", status=201)
+
+    send_push(user, {"title": "Új felkérés"})
+
+    assert len(responses.calls) == 2
+    for call in responses.calls:
+        assert call.request.headers["TTL"] == str(PUSH_TTL)
+        assert call.request.headers["Authorization"].startswith("vapid ")
+
+
+@pytest.mark.parametrize("status", [404, 410])
+@responses.activate
+def test_a_gone_browser_is_forgotten(push_on, status):
+    subscription = subscribe(make_user())
+    responses.post(subscription.endpoint, status=status)
+
+    send_push(subscription.user, {})
+
+    assert not PushSubscription.objects.exists()
+
+
+@pytest.mark.parametrize(
+    "answer",
+    [{"status": 500}, {"body": requests.ConnectionError("down")}],
+    ids=["server_error", "unreachable"],
+)
+@responses.activate
+def test_a_failing_push_service_is_logged_without_the_endpoint(push_on, caplog, answer):
+    user = make_user()
+    failing = subscribe(user, "https://fcm.googleapis.com/fcm/send/failing")
+    working = subscribe(user, "https://fcm.googleapis.com/fcm/send/working")
+    responses.post(failing.endpoint, **answer)
+    responses.post(working.endpoint, status=201)
+
+    send_push(user, {})
+
+    assert PushSubscription.objects.count() == 2
+    assert len(responses.calls) == 2
+    assert f"subscription {failing.id}" in caplog.text
+    assert failing.endpoint not in caplog.text
+
+
+@responses.activate
+def test_nothing_is_sent_while_push_is_off(settings):
+    settings.WEB_PUSH_VAPID_PRIVATE_KEY = None
+    user = make_user()
+    subscribe(user)
+
+    send_push(user, {})
+
+    assert not responses.calls

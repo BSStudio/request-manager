@@ -1,4 +1,15 @@
+import json
+import logging
+
 from django.conf import settings
+from pywebpush import WebPushException, webpush
+from requests import RequestException
+
+from common.models import User
+
+logger = logging.getLogger(__name__)
+
+PUSH_TTL = 60 * 60 * 24 * 7
 
 
 def push_enabled() -> bool:
@@ -9,3 +20,28 @@ def push_enabled() -> bool:
             settings.WEB_PUSH_VAPID_PUBLIC_KEY,
         )
     )
+
+
+def send_push(user: User, payload: dict) -> None:
+    if not push_enabled():
+        return
+    data = json.dumps(payload)
+    for subscription in user.push_subscriptions.all():
+        try:
+            webpush(
+                subscription_info={
+                    "endpoint": subscription.endpoint,
+                    "keys": {"auth": subscription.auth, "p256dh": subscription.p256dh},
+                },
+                data=data,
+                vapid_private_key=settings.WEB_PUSH_VAPID_PRIVATE_KEY,
+                vapid_claims={"sub": settings.WEB_PUSH_CONTACT},
+                ttl=PUSH_TTL,
+            )
+        except (RequestException, WebPushException) as error:
+            # The push service forgot the browser: unsubscribed or reinstalled.
+            if error.response is not None and error.response.status_code in (404, 410):
+                subscription.delete()
+            else:
+                # The id, not the endpoint: see PushSubscription.__str__.
+                logger.exception("Push to subscription %s failed", subscription.id)
