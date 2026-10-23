@@ -12,6 +12,7 @@ from django.utils.translation import gettext_lazy as _
 from simple_history.admin import SimpleHistoryAdmin
 from simple_history.manager import SIMPLE_HISTORY_REVERSE_ATTR_NAME
 
+from common.utilities import create_calendar_event
 from video_requests.models import (
     Comment,
     CrewMember,
@@ -136,9 +137,12 @@ def restore_deleted_request(deleted):
         and not Project.objects.filter(pk=request.project_id).exists()
     ):
         request.project = None
+    # A restored request needs a new calendar event: deleting it removed the old one.
+    request.additional_data.pop("calendar_id", None)
 
     with transaction.atomic():
         request.save(force_insert=True)
+        create_calendar_event.delay_on_commit(request.id)
         videos = list(records(Video, request_id=deleted.id))
         for record in [
             *videos,

@@ -1,5 +1,5 @@
 from datetime import timedelta
-from unittest.mock import ANY
+from unittest.mock import ANY, patch
 
 import pytest
 from django.apps import apps
@@ -11,6 +11,7 @@ from django.utils import timezone
 from model_bakery import baker
 from rest_framework.status import HTTP_200_OK, HTTP_302_FOUND
 
+from common.utilities import create_calendar_event
 from tests.factories import make_user
 from video_requests.models import (
     Comment,
@@ -279,8 +280,9 @@ def test_restoring_a_request_brings_back_what_was_deleted_with_it(
     assert response.status_code == HTTP_302_FOUND
     assert rows_without_created() == before
     assert list(Todo.objects.get().assignees.all()) == [admin]
-    # The assignee e-mail and notification wait for the restore to commit.
-    assert len(callbacks) == 2
+    # The assignee e-mail, its notification and the calendar event wait for the
+    # restore to commit.
+    assert len(callbacks) == 3
 
 
 @pytest.mark.django_db
@@ -299,6 +301,32 @@ def test_restoring_a_request_whose_project_is_gone_clears_its_project(client):
 
     assert response.status_code == HTTP_302_FOUND
     assert Request.objects.get(pk=request_id).project is None
+
+
+@pytest.mark.django_db
+def test_restoring_a_request_puts_it_back_in_the_calendar(
+    client, django_capture_on_commit_callbacks
+):
+    admin = make_user(username="restoring_admin", is_admin=True, is_superuser=True)
+    request_id = baker.make(
+        "video_requests.Request", additional_data={"calendar_id": "abc123"}
+    ).id
+    Request.objects.get(pk=request_id).delete()
+
+    client.force_login(admin)
+    with patch.object(create_calendar_event, "delay") as delay:
+        with django_capture_on_commit_callbacks(execute=True):
+            client.post(
+                reverse("admin:video_requests_deletedrequest_changelist"),
+                {
+                    "action": "restore",
+                    "_selected_action": [Request.history.latest().pk],
+                },
+            )
+            delay.assert_not_called()
+
+    assert "calendar_id" not in Request.objects.get(pk=request_id).additional_data
+    delay.assert_called_once_with(request_id)
 
 
 @pytest.mark.django_db
