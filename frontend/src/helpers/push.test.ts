@@ -15,7 +15,10 @@ vi.mock('api/http', () => ({
     mePushSubscriptionsRemoveCreate: vi.fn(),
   },
 }));
-vi.mock('helpers/pwa', () => ({ isStandalone: vi.fn(() => false) }));
+vi.mock('helpers/pwa', async (importOriginal) => ({
+  ...(await importOriginal()),
+  isStandalone: vi.fn(() => false),
+}));
 
 const iPhone =
   'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1';

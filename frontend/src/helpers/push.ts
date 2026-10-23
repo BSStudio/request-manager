@@ -4,7 +4,7 @@ import { isNotFound } from 'api/errors';
 import { meApi } from 'api/http';
 import type { PushSubscriptionRequest } from 'api/models';
 import { base64UrlToUint8Array } from 'helpers/pushWorker';
-import { isStandalone } from 'helpers/pwa';
+import { getPushManager, isStandalone } from 'helpers/pwa';
 
 export type PushState = 'denied' | 'ios-install' | 'off' | 'on' | 'unsupported';
 
@@ -46,11 +46,6 @@ export const pushKeyQuery = () =>
 
 export const pushStateQuery = () =>
   queryOptions({ queryFn: readPushState, queryKey: ['push', 'state'] });
-
-// Not `ready`, which never settles where service workers are blocked.
-async function getPushManager() {
-  return (await navigator.serviceWorker?.getRegistration())?.pushManager;
-}
 
 function isAppleMobile() {
   return (
@@ -98,8 +93,7 @@ export async function disablePush() {
       pushSubscriptionRemoveRequest: { endpoint: subscription.endpoint },
     });
   } finally {
-    // Even when the server was not told: it drops the endpoint once the push
-    // service answers 410 for it.
+    // Even when the server was not told, like unsubscribePush.
     await subscription.unsubscribe();
   }
 }

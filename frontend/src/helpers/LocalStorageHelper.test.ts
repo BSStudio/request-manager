@@ -94,6 +94,23 @@ describe('session', () => {
     delete (navigator as Partial<Navigator>).setAppBadge;
     delete (navigator as Partial<Navigator>).clearAppBadge;
   });
+
+  it('unsubscribes this browser from push', async () => {
+    const unsubscribe = vi.fn(() => Promise.resolve(true));
+    const pushManager = {
+      getSubscription: () => Promise.resolve({ unsubscribe }),
+    };
+    Object.assign(navigator, {
+      serviceWorker: {
+        getRegistration: () => Promise.resolve({ pushManager }),
+      },
+    });
+
+    clearSession();
+
+    await vi.waitFor(() => expect(unsubscribe).toHaveBeenCalledOnce());
+    delete (navigator as { serviceWorker?: unknown }).serviceWorker;
+  });
 });
 
 describe('popRedirectedFrom', () => {
