@@ -4,6 +4,7 @@ from celery import shared_task
 from django.utils.text import Truncator
 
 from common.models import User
+from common.push import send_push
 from common.utilities import get_editor_in_chief
 from video_requests.models import Comment, Notification, Request, Todo, Video
 
@@ -29,6 +30,18 @@ def get_crew_users(request: Request) -> set[User]:
     return users
 
 
+def push_payload(notification: Notification) -> dict:
+    return {
+        "title": str(notification.title),
+        "body": notification.body,
+        "url": notification.url,
+        "tag": f"request:{notification.request_id}",
+        "unreadCount": notification.recipient.notifications.filter(
+            read_at__isnull=True
+        ).count(),
+    }
+
+
 def notify(
     recipients: Iterable[User],
     *,
@@ -37,11 +50,14 @@ def notify(
     body: str,
     actor: User | None = None,
 ) -> list[Notification]:
-    return Notification.objects.bulk_create(
+    rows = Notification.objects.bulk_create(
         Notification(recipient=recipient, kind=kind, request=request, body=body)
         for recipient in set(recipients)
         if recipient != actor
     )
+    for notification in rows:
+        send_push(notification.recipient, push_payload(notification))
+    return rows
 
 
 def comment_body(comment: Comment) -> str:

@@ -1,53 +1,13 @@
-import os
-from base64 import urlsafe_b64encode
-
 import pytest
 import requests
 import responses
-from cryptography.hazmat.primitives.asymmetric import ec
-from cryptography.hazmat.primitives.serialization import (
-    Encoding,
-    NoEncryption,
-    PrivateFormat,
-    PublicFormat,
-)
-from py_vapid import Vapid01
 
 from common.models import PushSubscription
 from common.push import PUSH_TTL, push_enabled, send_push
 from tests.factories import make_user
+from tests.helpers.push import subscribe
 
 pytestmark = pytest.mark.django_db
-
-
-def b64(data: bytes) -> str:
-    return urlsafe_b64encode(data).rstrip(b"=").decode()
-
-
-@pytest.fixture
-def push_on(settings):
-    vapid = Vapid01()
-    vapid.generate_keys()
-    settings.WEB_PUSH_VAPID_PRIVATE_KEY = b64(
-        vapid.private_key.private_bytes(
-            Encoding.DER, PrivateFormat.PKCS8, NoEncryption()
-        )
-    )
-    settings.WEB_PUSH_VAPID_PUBLIC_KEY = "public"
-    settings.WEB_PUSH_CONTACT = "mailto:push@example.com"
-
-
-def subscribe(user, endpoint="https://fcm.googleapis.com/fcm/send/abc"):
-    """A subscription with real browser keys, which the payload is encrypted to."""
-    browser_key = ec.generate_private_key(ec.SECP256R1()).public_key()
-    return PushSubscription.objects.create(
-        user=user,
-        endpoint=endpoint,
-        p256dh=b64(
-            browser_key.public_bytes(Encoding.X962, PublicFormat.UncompressedPoint)
-        ),
-        auth=b64(os.urandom(16)),
-    )
 
 
 @pytest.mark.parametrize(

@@ -4,10 +4,15 @@ Which API action queues which task is tested in
 tests/workflows/notifications_tests.py.
 """
 
+from unittest.mock import patch
+
 import pytest
+import responses
+from django.utils import timezone
 from model_bakery import baker
 
 from tests.factories import make_user
+from tests.helpers.push import subscribe
 from video_requests.models import Notification
 from video_requests.notifications import (
     notify_crew_new_comment,
@@ -255,3 +260,54 @@ class TestTodoAssigned:
 
         row = Notification.objects.get()
         assert (row.request, row.body) == (video.request, "Döntő: Vágás")
+
+
+class TestPush:
+    def test_an_acceptance_is_pushed_with_the_unread_count(self, requester):
+        baker.make(Notification, recipient=requester)
+        baker.make(Notification, recipient=requester, read_at=timezone.now())
+        video_request = baker.make(
+            "video_requests.Request", title="Gólyabál", requester=requester
+        )
+
+        with patch("video_requests.notifications.send_push") as send_push:
+            notify_user_request_accepted(video_request.id)
+
+        send_push.assert_called_once_with(
+            requester,
+            {
+                "title": "Elvállaltuk a felkérésed",
+                "body": "Gólyabál",
+                "url": f"/my-requests/{video_request.id}",
+                "tag": f"request:{video_request.id}",
+                "unreadCount": 2,
+            },
+        )
+
+    def test_a_requester_message_is_pushed_to_each_of_the_crew(
+        self, crewed_request, editor_in_chief, requester
+    ):
+        comment = baker.make(
+            "video_requests.Comment", request=crewed_request, author=requester
+        )
+
+        with patch("video_requests.notifications.send_push") as send_push:
+            notify_crew_new_comment(comment.id)
+
+        pushed = [call.args[0] for call in send_push.call_args_list]
+        assert len(pushed) == 3
+        assert set(pushed) == staff_crew(crewed_request) | {
+            editor_in_chief,
+            crewed_request.responsible,
+        }
+
+    @responses.activate
+    def test_a_failing_push_service_still_leaves_the_rows(self, push_on, requester):
+        subscription = subscribe(requester)
+        responses.post(subscription.endpoint, status=500)
+        video_request = baker.make("video_requests.Request", requester=requester)
+
+        notify_user_request_accepted(video_request.id)
+
+        assert len(responses.calls) == 1
+        assert Notification.objects.filter(recipient=requester).exists()
