@@ -14,14 +14,14 @@
 
 // May contain unused imports in some cases
 // @ts-ignore
-import type { PaginatedRequestAdminListListLinks } from './paginated-request-admin-list-list-links';
+import type { PaginatedNotificationListLinks } from './paginated-notification-list-links';
 // May contain unused imports in some cases
 // @ts-ignore
 import type { VideoAdminSearch } from './video-admin-search';
 
 export interface PaginatedVideoAdminSearchList {
   count?: number;
-  links?: PaginatedRequestAdminListListLinks;
+  links?: PaginatedNotificationListLinks;
   results?: Array<VideoAdminSearch>;
   total_pages?: number;
 }

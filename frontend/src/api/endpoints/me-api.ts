@@ -40,9 +40,15 @@ import {
   operationServerMap,
 } from '../base';
 // @ts-ignore
+import type { MarkNotificationsReadRequest } from '../models';
+// @ts-ignore
 import type { OAuth2ConnectRequest } from '../models';
 // @ts-ignore
+import type { PaginatedNotificationList } from '../models';
+// @ts-ignore
 import type { PatchedUserRequest } from '../models';
+// @ts-ignore
+import type { UnreadCount } from '../models';
 // @ts-ignore
 import type { User } from '../models';
 // @ts-ignore
@@ -54,6 +60,178 @@ import type { UserRequest } from '../models';
  */
 export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
   return {
+    /**
+     *
+     * @param {number} [page] A page number within the paginated result set.
+     * @param {number} [pageSize] Number of results to return per page.
+     * @param {boolean} [pagination] Return paginated response.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    meNotificationsList: async (
+      page?: number,
+      pageSize?: number,
+      pagination?: boolean,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/api/v1/me/notifications`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication tokenAuth required
+      await setApiKeyToObject(
+        localVarHeaderParameter,
+        'Authorization',
+        configuration,
+      );
+
+      // authentication cookieAuth required
+
+      if (page !== undefined) {
+        localVarQueryParameter['page'] = page;
+      }
+
+      if (pageSize !== undefined) {
+        localVarQueryParameter['page_size'] = pageSize;
+      }
+
+      if (pagination !== undefined) {
+        localVarQueryParameter['pagination'] = pagination;
+      }
+
+      localVarHeaderParameter['Accept'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {MarkNotificationsReadRequest} [markNotificationsReadRequest]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    meNotificationsReadCreate: async (
+      markNotificationsReadRequest?: MarkNotificationsReadRequest,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/api/v1/me/notifications/read`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'POST',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication tokenAuth required
+      await setApiKeyToObject(
+        localVarHeaderParameter,
+        'Authorization',
+        configuration,
+      );
+
+      // authentication cookieAuth required
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        markNotificationsReadRequest,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    meNotificationsUnreadCountRetrieve: async (
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/api/v1/me/notifications/unread-count`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication tokenAuth required
+      await setApiKeyToObject(
+        localVarHeaderParameter,
+        'Authorization',
+        configuration,
+      );
+
+      // authentication cookieAuth required
+
+      localVarHeaderParameter['Accept'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
     /**
      *
      * @param {PatchedUserRequest} [patchedUserRequest]
@@ -424,6 +602,102 @@ export const MeApiFp = function (configuration?: Configuration) {
   return {
     /**
      *
+     * @param {number} [page] A page number within the paginated result set.
+     * @param {number} [pageSize] Number of results to return per page.
+     * @param {boolean} [pagination] Return paginated response.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async meNotificationsList(
+      page?: number,
+      pageSize?: number,
+      pagination?: boolean,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (
+        axios?: AxiosInstance,
+        basePath?: string,
+      ) => AxiosPromise<PaginatedNotificationList>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.meNotificationsList(
+          page,
+          pageSize,
+          pagination,
+          options,
+        );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['MeApi.meNotificationsList']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
+    },
+    /**
+     *
+     * @param {MarkNotificationsReadRequest} [markNotificationsReadRequest]
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async meNotificationsReadCreate(
+      markNotificationsReadRequest?: MarkNotificationsReadRequest,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.meNotificationsReadCreate(
+          markNotificationsReadRequest,
+          options,
+        );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['MeApi.meNotificationsReadCreate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
+    },
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async meNotificationsUnreadCountRetrieve(
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<UnreadCount>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.meNotificationsUnreadCountRetrieve(
+          options,
+        );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['MeApi.meNotificationsUnreadCountRetrieve']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
+    },
+    /**
+     *
      * @param {PatchedUserRequest} [patchedUserRequest]
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -617,6 +891,54 @@ export const MeApiFactory = function (
   return {
     /**
      *
+     * @param {MeApiMeNotificationsListRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    meNotificationsList(
+      requestParameters: MeApiMeNotificationsListRequest = {},
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<PaginatedNotificationList> {
+      return localVarFp
+        .meNotificationsList(
+          requestParameters.page,
+          requestParameters.pageSize,
+          requestParameters.pagination,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {MeApiMeNotificationsReadCreateRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    meNotificationsReadCreate(
+      requestParameters: MeApiMeNotificationsReadCreateRequest = {},
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .meNotificationsReadCreate(
+          requestParameters.markNotificationsReadRequest,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    meNotificationsUnreadCountRetrieve(
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<UnreadCount> {
+      return localVarFp
+        .meNotificationsUnreadCountRetrieve(options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {MeApiMePartialUpdateRequest} requestParameters Request parameters.
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
@@ -708,6 +1030,33 @@ export const MeApiFactory = function (
 };
 
 /**
+ * Request parameters for meNotificationsList operation in MeApi.
+ */
+export interface MeApiMeNotificationsListRequest {
+  /**
+   * A page number within the paginated result set.
+   */
+  readonly page?: number;
+
+  /**
+   * Number of results to return per page.
+   */
+  readonly pageSize?: number;
+
+  /**
+   * Return paginated response.
+   */
+  readonly pagination?: boolean;
+}
+
+/**
+ * Request parameters for meNotificationsReadCreate operation in MeApi.
+ */
+export interface MeApiMeNotificationsReadCreateRequest {
+  readonly markNotificationsReadRequest?: MarkNotificationsReadRequest;
+}
+
+/**
  * Request parameters for mePartialUpdate operation in MeApi.
  */
 export interface MeApiMePartialUpdateRequest {
@@ -761,6 +1110,55 @@ export interface MeApiMeWorkedOnListRequest {
  * MeApi - object-oriented interface
  */
 export class MeApi extends BaseAPI {
+  /**
+   *
+   * @param {MeApiMeNotificationsListRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public meNotificationsList(
+    requestParameters: MeApiMeNotificationsListRequest = {},
+    options?: RawAxiosRequestConfig,
+  ) {
+    return MeApiFp(this.configuration)
+      .meNotificationsList(
+        requestParameters.page,
+        requestParameters.pageSize,
+        requestParameters.pagination,
+        options,
+      )
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {MeApiMeNotificationsReadCreateRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public meNotificationsReadCreate(
+    requestParameters: MeApiMeNotificationsReadCreateRequest = {},
+    options?: RawAxiosRequestConfig,
+  ) {
+    return MeApiFp(this.configuration)
+      .meNotificationsReadCreate(
+        requestParameters.markNotificationsReadRequest,
+        options,
+      )
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public meNotificationsUnreadCountRetrieve(options?: RawAxiosRequestConfig) {
+    return MeApiFp(this.configuration)
+      .meNotificationsUnreadCountRetrieve(options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
   /**
    *
    * @param {MeApiMePartialUpdateRequest} requestParameters Request parameters.

@@ -67,6 +67,10 @@ function PrivacyPolicyPage() {
         store a link to your profile picture from the selected provider if
         available.
       </p>
+      <p>
+        We keep the notifications we send you about your requests, and when you
+        read them, for 30 days.
+      </p>
       <h3>Use of Your Personal Data</h3>
       <p>We may use Personal Data for the following purposes:</p>
       <ul>

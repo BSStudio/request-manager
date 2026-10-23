@@ -177,6 +177,16 @@ def test_seeding_sends_no_mail_and_queues_no_task(django_capture_on_commit_callb
     assert mail.outbox == []
 
 
+def test_seeds_unread_notifications_for_a_requester_and_the_admin():
+    seed()
+
+    elek = User.objects.get(username="teszt.elek")
+    aladar = User.objects.get(username="admin.aladar")
+    assert elek.notifications.count() == 3
+    assert elek.notifications.filter(read_at__isnull=True).count() == 2
+    assert aladar.notifications.filter(read_at__isnull=True).count() == 2
+
+
 def test_every_run_creates_the_same_data():
     def snapshot():
         return sorted(

@@ -153,6 +153,11 @@ const router = sentryCreateBrowserRouter(
           ],
         },
         {
+          path: 'notifications',
+          handle: { crumb: () => 'Értesítések' },
+          lazy: () => import('admin/pages/NotificationsPage'),
+        },
+        {
           path: 'projects',
           handle: { crumb: () => 'Projektek' },
           children: [

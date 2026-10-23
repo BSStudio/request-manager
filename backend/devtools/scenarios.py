@@ -1,14 +1,19 @@
+from datetime import timedelta
+
+from django.utils import timezone
+
 from common.models import User
 from devtools.builders import (
     add_comment,
     add_crew,
+    add_notification,
     add_rating,
     add_todo,
     add_video,
     at,
     create_request,
 )
-from video_requests.models import Project, Request, Todo, Video
+from video_requests.models import Notification, Project, Request, Todo, Video
 from video_requests.services import set_project
 from video_requests.utilities import update_request_status
 
@@ -297,7 +302,53 @@ def create_scenarios(people: dict[str, User]) -> dict[str, Request]:
 
     for request in scenarios.values():
         update_request_status(request)
+    add_notifications(people, scenarios)
     return scenarios
+
+
+def add_notifications(people: dict[str, User], scenarios: dict[str, Request]) -> None:
+    # On requests the e2e tests of their recipient never open: opening one marks
+    # its notifications read.
+    elek = people["teszt.elek"]
+    admin = people["admin.aladar"]
+    half_an_hour_ago = timezone.now() - timedelta(minutes=30)
+    add_notification(
+        scenarios["denied"],
+        elek,
+        Notification.Kinds.STUDIO_MESSAGE,
+        "Szülinapi buli a koliban: Sajnos magánrendezvényt nem vállalunk, "
+        "de szívesen adunk tippeket a felvételhez.",
+        created=half_an_hour_ago,
+    )
+    add_notification(
+        scenarios["uploaded"],
+        elek,
+        Notification.Kinds.REQUEST_ACCEPTED,
+        "Kollégiumi kulturális est",
+        created=at(-1, 18),
+    )
+    add_notification(
+        scenarios["canceled"],
+        elek,
+        Notification.Kinds.STUDIO_MESSAGE,
+        "Hallgatói fórum: Köszönjük, hogy szóltál, levettük a naptárunkról.",
+        created=at(-10, 12),
+        read=True,
+    )
+    add_notification(
+        scenarios["pinned"],
+        admin,
+        Notification.Kinds.NEW_REQUEST,
+        "Félévnyitó koncert · Minta Anna",
+        created=half_an_hour_ago,
+    )
+    add_notification(
+        scenarios["failed"],
+        admin,
+        Notification.Kinds.REQUESTER_MESSAGE,
+        "Éjszakai kosármeccs: Kár, hogy nem sikerült, legközelebb korábban szólunk.",
+        created=at(-1, 20),
+    )
 
 
 def create_projects(people: dict[str, User]) -> list[Project]:

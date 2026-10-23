@@ -29,8 +29,12 @@ models/crew-member-admin-list-retrieve.ts
 models/history-changes.ts
 models/history.ts
 models/index.ts
+models/mark-notifications-read-request.ts
+models/notification-kind-enum.ts
+models/notification.ts
 models/oauth2-connect-request.ts
-models/paginated-request-admin-list-list-links.ts
+models/paginated-notification-list-links.ts
+models/paginated-notification-list.ts
 models/paginated-request-admin-list-list.ts
 models/paginated-request-list-list.ts
 models/paginated-todo-admin-list-retrieve-list.ts
@@ -76,6 +80,7 @@ models/status-enum.ts
 models/todo-admin-create-update-request.ts
 models/todo-admin-list-retrieve.ts
 models/todo-nested-request-video.ts
+models/unread-count.ts
 models/user-admin-list.ts
 models/user-admin-retrieve-update-request.ts
 models/user-admin-retrieve-update.ts

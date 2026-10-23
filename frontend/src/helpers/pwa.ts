@@ -35,6 +35,14 @@ export function useCanInstall() {
   return useSyncExternalStore(subscribe, () => installPrompt !== null);
 }
 
+export function setAppBadge(count: number) {
+  if (!('setAppBadge' in navigator)) return;
+  // Browsers may refuse it, e.g. outside an installed app; nothing to do then.
+  (count ? navigator.setAppBadge(count) : navigator.clearAppBadge()).catch(
+    () => {},
+  );
+}
+
 export async function promptInstall() {
   const event = installPrompt;
   // A prompt can only be shown once.

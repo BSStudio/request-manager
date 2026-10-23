@@ -12,6 +12,7 @@ import {
 import { Link, useParams } from 'react-router';
 
 import { isNotFound } from 'api/errors';
+import { markRequestRead } from 'helpers/notifications';
 import { useSessionUser } from 'helpers/session';
 import { usePageTitle } from 'hooks/usePageTitle';
 import DetailCard from 'site/components/DetailCard';
@@ -52,6 +53,11 @@ function RequestDetail({ id }: { id: number }) {
   useEffect(() => {
     if (toAdmin) window.location.replace(`/admin/requests/${id}`);
   }, [id, toAdmin]);
+
+  const loaded = data !== undefined;
+  useEffect(() => {
+    if (loaded) markRequestRead(id);
+  }, [id, loaded]);
 
   if (toAdmin) return null;
   if (notFound) return <NotFoundPage />;

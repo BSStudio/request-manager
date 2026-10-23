@@ -12,7 +12,17 @@
  * Do not edit the class manually.
  */
 
-export interface PaginatedRequestAdminListListLinks {
-  next?: string | null;
-  previous?: string | null;
+// May contain unused imports in some cases
+// @ts-ignore
+import type { NotificationKindEnum } from './notification-kind-enum';
+
+export interface Notification {
+  body: string;
+  created: string;
+  id: number;
+  kind: NotificationKindEnum;
+  read_at: string | null;
+  request: number;
+  title: string;
+  url: string;
 }
