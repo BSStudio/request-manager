@@ -62,9 +62,9 @@ test('every page opens from the menu', async ({ page }) => {
 test('the request list goes back to page 1 when its page is gone', async ({
   page,
 }) => {
-  const isSecondPage = (url: URL) =>
+  const isGone = (url: URL) =>
     url.pathname === '/api/v1/admin/requests' &&
-    url.searchParams.get('page') === '2';
+    ['2', '3'].includes(url.searchParams.get('page') ?? '');
   const firstPage = page.getByRole('button', { name: '1. oldal' });
   const secondPage = page.getByRole('button', { name: '2. oldal' });
   const newest = page
@@ -78,14 +78,16 @@ test('the request list goes back to page 1 when its page is gone', async ({
   await expect(newest).toBeHidden();
 
   // As if requests were deleted meanwhile: a page past the end answers 404.
-  await page.route(isSecondPage, (route) =>
+  await page.route(isGone, (route) =>
     route.fulfill({ json: { detail: 'Érvénytelen oldal.' }, status: 404 }),
   );
   await page.getByText('frissítés').click();
   await expect(firstPage).toHaveAttribute('aria-current', 'true');
   await expect(newest).toBeVisible();
+  await page.getByRole('button', { name: '3. oldal' }).click();
+  await expect(firstPage).toHaveAttribute('aria-current', 'true');
 
-  await page.unroute(isSecondPage);
+  await page.unroute(isGone);
   await secondPage.click();
   await expect(secondPage).toHaveAttribute('aria-current', 'true');
   await expect(newest).toBeHidden();

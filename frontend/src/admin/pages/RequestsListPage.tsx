@@ -48,7 +48,7 @@ const RequestsListPage = () => {
   );
   const [{ first, rows }, setPage] = useState(firstPage);
   const [sort, setSort] = useState(defaultSort);
-  const [handledNotFoundAt, setHandledNotFoundAt] = useState(0);
+  const [handledNotFoundAt, setHandledNotFoundAt] = useState(Date.now);
   const {
     data,
     dataUpdatedAt,
@@ -67,9 +67,9 @@ const RequestsListPage = () => {
     placeholderData: keepPreviousData,
   });
 
-  // A vanished page answers 404 and keeps its stale rows. Once per 404: it
-  // stays cached, and the page may be back when reopened.
-  if (isNotFound(error) && errorUpdatedAt !== handledNotFoundAt) {
+  // A vanished page answers 404 and keeps its stale rows. Only newer 404s
+  // count: older ones stay cached while their page may be back.
+  if (isNotFound(error) && errorUpdatedAt > handledNotFoundAt) {
     setHandledNotFoundAt(errorUpdatedAt);
     setPage({ first: 0, rows });
   }
