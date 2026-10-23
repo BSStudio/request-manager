@@ -59,6 +59,38 @@ test('every page opens from the menu', async ({ page }) => {
   await expect(page).toHaveTitle(crumbs('Keresés'));
 });
 
+test('the request list goes back to page 1 when its page is gone', async ({
+  page,
+}) => {
+  const isSecondPage = (url: URL) =>
+    url.pathname === '/api/v1/admin/requests' &&
+    url.searchParams.get('page') === '2';
+  const firstPage = page.getByRole('button', { name: '1. oldal' });
+  const secondPage = page.getByRole('button', { name: '2. oldal' });
+  const newest = page
+    .getByRole('row')
+    .filter({ hasText: 'Szakkollégiumi nyílt nap' });
+  await page.goto('/admin/requests');
+  // Early in a semester its seeded requests fit on one page.
+  await page.getByLabel('Törlés', { exact: true }).click();
+  await secondPage.click();
+  await expect(secondPage).toHaveAttribute('aria-current', 'true');
+  await expect(newest).toBeHidden();
+
+  // As if requests were deleted meanwhile: a page past the end answers 404.
+  await page.route(isSecondPage, (route) =>
+    route.fulfill({ json: { detail: 'Érvénytelen oldal.' }, status: 404 }),
+  );
+  await page.getByText('frissítés').click();
+  await expect(firstPage).toHaveAttribute('aria-current', 'true');
+  await expect(newest).toBeVisible();
+
+  await page.unroute(isSecondPage);
+  await secondPage.click();
+  await expect(secondPage).toHaveAttribute('aria-current', 'true');
+  await expect(newest).toBeHidden();
+});
+
 test('the request form takes a date and time typed key by key', async ({
   page,
 }) => {
