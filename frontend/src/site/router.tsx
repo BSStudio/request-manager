@@ -68,6 +68,11 @@ const router = sentryCreateBrowserRouter([
                 lazy: () => import('site/pages/RequestDetailPage'),
               },
               {
+                path: 'notifications',
+                handle: overlayHeader,
+                lazy: () => import('site/pages/NotificationsPage'),
+              },
+              {
                 path: 'profile',
                 handle: overlayHeader,
                 lazy: () => import('site/pages/ProfilePage'),

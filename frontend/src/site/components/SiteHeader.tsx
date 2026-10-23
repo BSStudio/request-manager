@@ -5,6 +5,7 @@ import { Link, useLocation } from 'react-router';
 import { useSessionUser } from 'helpers/session';
 import BssLogo from 'site/components/BssLogo';
 import MobileNav from 'site/components/MobileNav';
+import NotificationBell from 'site/components/NotificationBell';
 import { Button } from 'site/components/ui/button';
 import UserMenu from 'site/components/UserMenu';
 import { useScrolled } from 'site/hooks/useScrolled';
@@ -59,6 +60,7 @@ export default function SiteHeader({ overlay }: { overlay: boolean }) {
           ))}
         </nav>
         <div className="ml-auto hidden items-center gap-1 md:flex">
+          {user && <NotificationBell className={onDark} />}
           {user && <UserMenu className={onDark} user={user} />}
           {!user && location.pathname !== '/login' && (
             <Button asChild className={onDark} variant="ghost">
@@ -79,10 +81,10 @@ export default function SiteHeader({ overlay }: { overlay: boolean }) {
             </Button>
           )}
         </div>
-        <MobileNav
-          className={cn('-mr-2 ml-auto md:hidden', onDark)}
-          user={user}
-        />
+        <div className="-mr-2 ml-auto flex items-center md:hidden">
+          {user && <NotificationBell className={onDark} />}
+          <MobileNav className={onDark} user={user} />
+        </div>
       </div>
     </header>
   );
