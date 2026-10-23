@@ -256,15 +256,12 @@ const RequestCreatorEditorPage = () => {
         await queryClient.invalidateQueries({
           queryKey: queryKeys.projects(),
         });
+        // All of them: the request also shows in lists, its project's included.
+        await queryClient.invalidateQueries({
+          queryKey: queryKeys.requests(),
+        });
         if (requestId) {
-          await queryClient.invalidateQueries({
-            queryKey: queryKeys.request(requestId),
-          });
           await revalidator.revalidate();
-        } else {
-          await queryClient.invalidateQueries({
-            queryKey: queryKeys.requests(),
-          });
         }
 
         if (watchCreateMore) {

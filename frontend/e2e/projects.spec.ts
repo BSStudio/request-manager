@@ -404,4 +404,47 @@ test.describe('as an admin', () => {
 
     await expect(page).toHaveURL(/\/admin\/projects$/);
   });
+
+  test('a project shows a request taken out on its own page', async ({
+    page,
+  }) => {
+    await page.goto('/admin/projects');
+    await page
+      .getByRole('row')
+      .filter({ hasText: 'Kollégiumi hét' })
+      .getByRole('button', { name: /^Kiterjed/ })
+      .click();
+    await page
+      .getByRole('cell', { exact: true, name: 'Kollégiumi hét – Vetélkedő' })
+      .locator('..')
+      .getByRole('link', { name: 'Ugrás a felkéréshez' })
+      .click();
+    await page.getByRole('link', { name: 'Felkérés szerkesztése' }).click();
+    await page.locator('.p-dropdown-clear-icon').click();
+    await page.getByRole('button', { exact: true, name: 'Mentés' }).click();
+    await expect(page).toHaveURL(/\/admin\/requests\/\d+$/);
+
+    // Within the app, while the list it showed before is still cached.
+    await page
+      .getByRole('banner')
+      .getByRole('link', { name: 'Projektek' })
+      .click();
+    await page
+      .getByRole('row')
+      .filter({ hasText: 'Kollégiumi hét' })
+      .getByRole('button', { name: /^Kiterjed/ })
+      .click();
+    await expect(
+      page.getByRole('cell', {
+        exact: true,
+        name: 'Kollégiumi hét – Megnyitó',
+      }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('cell', {
+        exact: true,
+        name: 'Kollégiumi hét – Vetélkedő',
+      }),
+    ).toHaveCount(0);
+  });
 });
