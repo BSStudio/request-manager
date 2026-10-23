@@ -75,12 +75,14 @@ const UserProfilePage = () => {
   const { data, dataUpdatedAt, refetch } = useSuspenseQuery(
     usersRetrieveQuery(userId),
   );
-  const { data: pushKey } = useQuery(pushKeyQuery());
-
   // Push is per browser, so only the user's own profile can turn it on.
+  const ownProfile = data.id === getUserId();
+  const { data: pushKey } = useQuery({
+    ...pushKeyQuery(),
+    enabled: ownProfile,
+  });
   const shown = sections.filter(
-    ({ name }) =>
-      name !== 'notifications' || (!!pushKey && data.id === getUserId()),
+    ({ name }) => name !== 'notifications' || (ownProfile && !!pushKey),
   );
   const section =
     shown.find(({ name }) => name === searchParams.get('section'))?.name ??

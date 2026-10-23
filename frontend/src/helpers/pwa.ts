@@ -48,15 +48,6 @@ export async function getPushManager() {
   return (await navigator.serviceWorker?.getRegistration())?.pushManager;
 }
 
-// Only in this browser: the server drops the endpoint once the push service
-// answers 410 for it.
-export function unsubscribePush() {
-  getPushManager()
-    .then((pushManager) => pushManager?.getSubscription())
-    .then((subscription) => subscription?.unsubscribe())
-    .catch(() => {});
-}
-
 export async function promptInstall() {
   const event = installPrompt;
   // A prompt can only be shown once.

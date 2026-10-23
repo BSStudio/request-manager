@@ -3,6 +3,12 @@ import { queryOptions } from '@tanstack/react-query';
 import { isNotFound } from 'api/errors';
 import { meApi } from 'api/http';
 import type { PushSubscriptionRequest } from 'api/models';
+import { queryClient } from 'api/queryClient';
+import {
+  getPushUserId,
+  getUserId,
+  setPushUserId,
+} from 'helpers/LocalStorageHelper';
 import { base64UrlToUint8Array } from 'helpers/pushWorker';
 import { getPushManager, isStandalone } from 'helpers/pwa';
 
@@ -56,12 +62,17 @@ function isAppleMobile() {
 }
 
 export async function readPushState(): Promise<PushState> {
-  const pushManager = await getPushManager();
-  if (!pushManager) {
-    return isAppleMobile() && !isStandalone() ? 'ios-install' : 'unsupported';
+  try {
+    const pushManager = await getPushManager();
+    if (!pushManager) {
+      return isAppleMobile() && !isStandalone() ? 'ios-install' : 'unsupported';
+    }
+    if (Notification.permission === 'denied') return 'denied';
+    return (await pushManager.getSubscription()) ? 'on' : 'off';
+  } catch {
+    // Service workers blocked along with site data, or no Notification API.
+    return 'unsupported';
   }
-  if (Notification.permission === 'denied') return 'denied';
-  return (await pushManager.getSubscription()) ? 'on' : 'off';
 }
 
 function saveSubscription(subscription: PushSubscription) {
@@ -81,8 +92,24 @@ export async function enablePush(publicKey: string): Promise<PushState> {
     applicationServerKey: base64UrlToUint8Array(publicKey),
     userVisibleOnly: true,
   });
-  await saveSubscription(subscription);
+  try {
+    await saveSubscription(subscription);
+  } catch (error) {
+    // Otherwise the switch would show on while the server knows nothing of it.
+    await subscription.unsubscribe();
+    throw error;
+  }
+  setPushUserId(getUserId());
   return 'on';
+}
+
+// Only in this browser: the server drops the endpoint once the push service
+// answers 410 for it.
+export async function forgetPushSubscription() {
+  // First, so a failed unsubscribe is retried at the next login.
+  setPushUserId(null);
+  const subscription = await (await getPushManager())?.getSubscription();
+  await subscription?.unsubscribe();
 }
 
 export async function disablePush() {
@@ -93,17 +120,26 @@ export async function disablePush() {
       pushSubscriptionRemoveRequest: { endpoint: subscription.endpoint },
     });
   } finally {
-    // Even when the server was not told, like unsubscribePush.
-    await subscription.unsubscribe();
+    // Even when the server was not told.
+    await forgetPushSubscription();
   }
 }
 
-// The browser may renew its subscription, and the server drops one the push
-// service refused, so each load hands the current one over again.
-export async function syncPushSubscription() {
+// Runs whenever a session starts or is confirmed. Someone else's subscription
+// is dropped, so nobody gets another user's pushes. The user's own is handed
+// over again: the browser may have renewed it, or the server dropped it.
+export async function syncPushSubscription(userId: number) {
   try {
     const subscription = await (await getPushManager())?.getSubscription();
-    if (subscription) await saveSubscription(subscription);
+    if (!subscription) return;
+    if (getPushUserId() === userId) {
+      await saveSubscription(subscription);
+    } else {
+      await forgetPushSubscription();
+      await queryClient.invalidateQueries({
+        queryKey: pushStateQuery().queryKey,
+      });
+    }
   } catch {
     // The next load tries again.
   }

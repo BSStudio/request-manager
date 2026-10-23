@@ -5,6 +5,7 @@ import {
   getAvatar,
   getGroups,
   getName,
+  getPushUserId,
   getUserId,
   hasSession,
   isAdmin,
@@ -12,6 +13,7 @@ import {
   popRedirectedFrom,
   SESSION_CHANGE_EVENT,
   setDarkMode,
+  setPushUserId,
   setRedirectedFrom,
   setSession,
 } from 'helpers/LocalStorageHelper';
@@ -95,21 +97,12 @@ describe('session', () => {
     delete (navigator as Partial<Navigator>).clearAppBadge;
   });
 
-  it('unsubscribes this browser from push', async () => {
-    const unsubscribe = vi.fn(() => Promise.resolve(true));
-    const pushManager = {
-      getSubscription: () => Promise.resolve({ unsubscribe }),
-    };
-    Object.assign(navigator, {
-      serviceWorker: {
-        getRegistration: () => Promise.resolve({ pushManager }),
-      },
-    });
-
+  it('keeps who turned push on', () => {
+    setSession(sessionUser);
+    setPushUserId(42);
     clearSession();
 
-    await vi.waitFor(() => expect(unsubscribe).toHaveBeenCalledOnce());
-    delete (navigator as { serviceWorker?: unknown }).serviceWorker;
+    expect(getPushUserId()).toBe(42);
   });
 });
 

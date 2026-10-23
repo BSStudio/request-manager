@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest';
 
 import { meApi } from 'api/http';
+import { getPushUserId, setPushUserId } from 'helpers/LocalStorageHelper';
 import {
   disablePush,
   enablePush,
@@ -48,9 +49,10 @@ function stubBrowser({
   subscription?: ReturnType<typeof fakeSubscription> | null;
   userAgent?: string;
 } = {}) {
+  const created = fakeSubscription();
   const pushManager = {
     getSubscription: vi.fn(() => Promise.resolve(subscription)),
-    subscribe: vi.fn(() => Promise.resolve(fakeSubscription())),
+    subscribe: vi.fn(() => Promise.resolve(created)),
   };
   const notification = {
     permission,
@@ -68,10 +70,11 @@ function stubBrowser({
     },
     userAgent,
   });
-  return { notification, pushManager };
+  return { created, notification, pushManager };
 }
 
 afterEach(() => {
+  localStorage.clear();
   vi.unstubAllGlobals();
   vi.clearAllMocks();
 });
@@ -87,6 +90,17 @@ describe('readPushState', () => {
     expect(await readPushState()).toBe('ios-install');
 
     vi.mocked(isStandalone).mockReturnValueOnce(true);
+    expect(await readPushState()).toBe('unsupported');
+  });
+
+  it('is unsupported where the service worker cannot be reached', async () => {
+    vi.stubGlobal('navigator', {
+      serviceWorker: {
+        getRegistration: () =>
+          Promise.reject(new DOMException('', 'SecurityError')),
+      },
+      userAgent: 'Chrome',
+    });
     expect(await readPushState()).toBe('unsupported');
   });
 
@@ -111,6 +125,7 @@ describe('enablePush', () => {
   });
 
   it('subscribes and hands the subscription to the server', async () => {
+    localStorage.setItem('user_id', '42');
     const { pushManager } = stubBrowser({ answer: 'granted' });
 
     expect(await enablePush('-_8')).toBe('on');
@@ -121,6 +136,18 @@ describe('enablePush', () => {
     expect(meApi.mePushSubscriptionsCreate).toHaveBeenCalledExactlyOnceWith({
       pushSubscriptionRequest: fakeSubscription().toJSON(),
     });
+    expect(getPushUserId()).toBe(42);
+  });
+
+  it('unsubscribes again when the server cannot be told', async () => {
+    const { created } = stubBrowser({ answer: 'granted' });
+    vi.mocked(meApi.mePushSubscriptionsCreate).mockRejectedValueOnce(
+      new Error('offline'),
+    );
+
+    await expect(enablePush('-_8')).rejects.toThrow('offline');
+    expect(created.unsubscribe).toHaveBeenCalledOnce();
+    expect(getPushUserId()).toBeNull();
   });
 });
 
@@ -128,6 +155,7 @@ describe('disablePush', () => {
   it('tells the server, then unsubscribes', async () => {
     const subscription = fakeSubscription();
     stubBrowser({ permission: 'granted', subscription });
+    setPushUserId(42);
 
     await disablePush();
 
@@ -137,6 +165,7 @@ describe('disablePush', () => {
       pushSubscriptionRemoveRequest: { endpoint: subscription.endpoint },
     });
     expect(subscription.unsubscribe).toHaveBeenCalledOnce();
+    expect(getPushUserId()).toBeNull();
   });
 
   it('unsubscribes even when the server cannot be told', async () => {
@@ -152,13 +181,26 @@ describe('disablePush', () => {
 });
 
 describe('syncPushSubscription', () => {
-  it('hands an existing subscription over again, quietly', async () => {
+  it("hands the user's own subscription over again, quietly", async () => {
     stubBrowser({ permission: 'granted', subscription: fakeSubscription() });
+    setPushUserId(42);
     vi.mocked(meApi.mePushSubscriptionsCreate).mockRejectedValueOnce(
       new Error('offline'),
     );
 
-    await expect(syncPushSubscription()).resolves.toBeUndefined();
+    await expect(syncPushSubscription(42)).resolves.toBeUndefined();
     expect(meApi.mePushSubscriptionsCreate).toHaveBeenCalledOnce();
+  });
+
+  it("drops another user's subscription", async () => {
+    const subscription = fakeSubscription();
+    stubBrowser({ permission: 'granted', subscription });
+    setPushUserId(7);
+
+    await syncPushSubscription(42);
+
+    expect(subscription.unsubscribe).toHaveBeenCalledOnce();
+    expect(meApi.mePushSubscriptionsCreate).not.toHaveBeenCalled();
+    expect(getPushUserId()).toBeNull();
   });
 });

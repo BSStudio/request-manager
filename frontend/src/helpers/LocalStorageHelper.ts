@@ -1,5 +1,5 @@
 import type { SessionUser } from 'api/models';
-import { setAppBadge, unsubscribePush } from 'helpers/pwa';
+import { setAppBadge } from 'helpers/pwa';
 
 export const SESSION_CHANGE_EVENT = 'session-change';
 
@@ -9,7 +9,6 @@ const sessionKeys = ['avatar', 'groups', 'name', 'role', 'user_id'];
 export function clearSession() {
   sessionKeys.forEach((key) => localStorage.removeItem(key));
   setAppBadge(0);
-  unsubscribePush();
   window.dispatchEvent(new Event(SESSION_CHANGE_EVENT));
 }
 
@@ -27,6 +26,13 @@ export function getGroups() {
 
 export function getName() {
   return localStorage.getItem('name') || '';
+}
+
+// Who turned push on in this browser. Not a session key: push outlives an
+// expired session, and only another user's login turns it off.
+export function getPushUserId() {
+  const id = localStorage.getItem('push_user_id');
+  return id === null ? null : Number(id);
 }
 
 export function getRole() {
@@ -57,6 +63,14 @@ export function popRedirectedFrom() {
 
 export function setDarkMode(darkMode: boolean) {
   localStorage.setItem('dark-mode', JSON.stringify(darkMode));
+}
+
+export function setPushUserId(id: number | null) {
+  if (id === null) {
+    localStorage.removeItem('push_user_id');
+  } else {
+    localStorage.setItem('push_user_id', String(id));
+  }
 }
 
 export function setRedirectedFrom(redirectedFrom: string) {

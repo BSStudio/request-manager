@@ -18,7 +18,7 @@ import {
   setSession,
 } from 'helpers/LocalStorageHelper';
 import { formatName } from 'helpers/names';
-import { disablePush, syncPushSubscription } from 'helpers/push';
+import { forgetPushSubscription, syncPushSubscription } from 'helpers/push';
 
 export type CurrentUser = {
   avatar?: string;
@@ -84,8 +84,9 @@ export function revalidateSession() {
   sessionCheck = (async () => {
     if (!hasSession()) return;
     try {
-      cacheUser(await queryClient.query(meQuery()));
-      void syncPushSubscription();
+      const user = await queryClient.query(meQuery());
+      cacheUser(user);
+      void syncPushSubscription(user.id);
     } catch (error) {
       // The API client already clears the session on 401.
       if (isAxiosError(error) && error.response?.status === 403) {
@@ -108,18 +109,19 @@ export async function signIn(provider: string, code: string, nonce: string) {
     socialLoginRequest: { code, nonce, provider },
   });
   setSession(data);
+  void syncPushSubscription(data.id);
   queryClient.removeQueries({ queryKey: meQuery().queryKey });
   return data;
 }
 
 export async function signOut() {
-  await disablePush().catch(() => {});
   try {
     await logoutApi.logoutCreate();
   } catch (error) {
     // Only a 401 means the server has no session left to end.
     if (!isAxiosError(error) || error.response?.status !== 401) throw error;
   }
+  await forgetPushSubscription().catch(() => {});
   clearSession();
   queryClient.clear();
 }
