@@ -22,6 +22,12 @@ STORAGES["staticfiles"] = {
 WHITENOISE_ROOT = FRONTEND_DIR / "build"
 WHITENOISE_USE_FINDERS = True
 
+# Shows the push switches. Nothing is ever sent: the tests block service
+# workers, so no browser subscribes.
+WEB_PUSH_CONTACT = "mailto:e2e@example.com"
+WEB_PUSH_VAPID_PRIVATE_KEY = "e2e"
+WEB_PUSH_VAPID_PUBLIC_KEY = "e2e"
+
 # E-mail tasks run in the request, so a broken template fails the test, and
 # neither Redis nor a worker is needed.
 CELERY_TASK_ALWAYS_EAGER = True

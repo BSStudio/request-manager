@@ -10,6 +10,13 @@ import {
   pushStateQuery,
 } from 'helpers/push';
 
+// The notifications pages point to the profile while push could be turned on.
+export function usePushOffered() {
+  const { data: publicKey } = useQuery(pushKeyQuery());
+  const { data: state } = useQuery(pushStateQuery());
+  return !!publicKey && state === 'off';
+}
+
 export function usePushSubscription(
   onError: (message: string, error: unknown) => void,
 ) {

@@ -56,6 +56,19 @@ test.describe('requester', () => {
       page.getByRole('button', { name: 'Mindet elolvastam' }),
     ).toBeDisabled();
   });
+
+  test('the push switch says when the browser cannot receive push', async ({
+    page,
+  }) => {
+    await page.goto('/profile');
+
+    await expect(
+      page.getByRole('switch', { name: 'Push értesítések' }),
+    ).toBeDisabled();
+    await expect(
+      page.getByText('Ez a böngésző nem tud push értesítést fogadni.'),
+    ).toBeVisible();
+  });
 });
 
 test.describe('staff', () => {
