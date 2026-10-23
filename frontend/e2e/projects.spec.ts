@@ -447,4 +447,110 @@ test.describe('as an admin', () => {
       }),
     ).toHaveCount(0);
   });
+
+  test('the editor leaves out a request deleted on its own page', async ({
+    page,
+  }) => {
+    await page.goto('/admin/projects/new');
+    await page.getByLabel('Projekt neve').fill('Fogyatkozó');
+    await videoType(page, 'Videó típusa').fill('Élő közvetítés');
+    await page.getByLabel('Helyszín', { exact: true }).fill('Aula');
+    await page.getByRole('button', { name: 'Új felkérés' }).click();
+    await page
+      .getByLabel('Esemény neve, 1. új felkérés')
+      .fill('Elmaradó alkalom');
+    await fillDateTime(page, 'Kezdés, 1. új felkérés', inDays(41, 18));
+    await fillDateTime(page, 'Befejezés, 1. új felkérés', inDays(41, 20));
+    await page.getByRole('button', { exact: true, name: 'Mentés' }).click();
+    await expect(page).toHaveURL(/\/admin\/projects$/);
+    const project = page.getByRole('row').filter({ hasText: 'Fogyatkozó' });
+    const request = page.getByRole('cell', {
+      exact: true,
+      name: 'Elmaradó alkalom',
+    });
+    // Opened once, so the project is cached when the editor opens again.
+    await project.getByRole('link', { name: 'Projekt szerkesztése' }).click();
+    await expect(request).toBeVisible();
+    await page.getByRole('button', { name: 'Mégsem' }).click();
+
+    await project.getByRole('button', { name: /^Kiterjed/ }).click();
+    await request
+      .locator('..')
+      .getByRole('link', { name: 'Ugrás a felkéréshez' })
+      .click();
+    await page.getByRole('button', { name: 'Felkérés törlése' }).click();
+    await page.getByRole('button', { exact: true, name: 'Igen' }).click();
+    await expect(page).toHaveURL(/\/admin\/requests$/);
+
+    await page
+      .getByRole('banner')
+      .getByRole('link', { name: 'Projektek' })
+      .click();
+    await project.getByRole('link', { name: 'Projekt szerkesztése' }).click();
+    await expect(page.getByLabel('Projekt neve')).toHaveValue('Fogyatkozó');
+    await expect(request).toHaveCount(0);
+  });
+
+  test('a project shows the status its request got on its own page', async ({
+    page,
+  }) => {
+    await page.goto('/admin/projects/new');
+    await page.getByLabel('Projekt neve').fill('Elbírálandó');
+    await videoType(page, 'Videó típusa').fill('Élő közvetítés');
+    await page.getByLabel('Helyszín', { exact: true }).fill('Aula');
+    await page.getByRole('button', { name: 'Új felkérés' }).click();
+    await page
+      .getByLabel('Esemény neve, 1. új felkérés')
+      .fill('Elbírált alkalom');
+    await fillDateTime(page, 'Kezdés, 1. új felkérés', inDays(42, 18));
+    await fillDateTime(page, 'Befejezés, 1. új felkérés', inDays(42, 20));
+    await page.getByRole('button', { exact: true, name: 'Mentés' }).click();
+    await expect(page).toHaveURL(/\/admin\/projects$/);
+    const project = page.getByRole('row').filter({ hasText: 'Elbírálandó' });
+    const request = page
+      .getByRole('cell', { exact: true, name: 'Elbírált alkalom' })
+      .locator('..');
+
+    await project.getByRole('button', { name: /^Kiterjed/ }).click();
+    await expect(request).toContainText('Felkérés');
+    await request.getByRole('link', { name: 'Ugrás a felkéréshez' }).click();
+    await page.getByRole('button', { name: 'Felkérés elbírálása' }).click();
+    const dialog = page.getByRole('dialog', { name: 'Felkérés elfogadása' });
+    await dialog.getByRole('button', { name: 'Elfogadva' }).click();
+    await dialog.getByRole('button', { exact: true, name: 'Mentés' }).click();
+    await expect(dialog).toBeHidden();
+
+    // Within the app, while the list it showed before is still cached.
+    await page
+      .getByRole('banner')
+      .getByRole('link', { name: 'Projektek' })
+      .click();
+    await project.getByRole('button', { name: /^Kiterjed/ }).click();
+    await expect(request).toContainText('Elvállalva');
+  });
+
+  test('keeps the requests picked in an earlier search', async ({ page }) => {
+    await page.goto('/admin/projects/new');
+    await page
+      .getByRole('button', { name: 'Meglévő felkérések hozzáadása…' })
+      .click();
+    const dialog = page.getByRole('dialog', {
+      name: 'Meglévő felkérések hozzáadása',
+    });
+    const search = dialog.getByPlaceholder('Keresés a felkérések címében');
+    await search.fill('Hallgatói fórum');
+    await dialog.getByLabel('Hallgatói fórum', { exact: true }).check();
+    await search.fill('Éjszakai kosármeccs');
+    await dialog.getByLabel('Éjszakai kosármeccs', { exact: true }).check();
+
+    await expect(
+      dialog.getByLabel('Hallgatói fórum', { exact: true }),
+    ).toBeChecked();
+    await dialog.getByRole('button', { name: 'Hozzáadás' }).click();
+    for (const title of ['Hallgatói fórum', 'Éjszakai kosármeccs']) {
+      await expect(
+        page.getByRole('row').filter({ hasText: title }),
+      ).toContainText('Hozzáadva');
+    }
+  });
 });

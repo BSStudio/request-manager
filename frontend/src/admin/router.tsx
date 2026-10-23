@@ -30,11 +30,11 @@ async function projectLoader({ params }: LoaderFunctionArgs) {
   if (!params.projectId) {
     throw new Error('No project ID provided');
   }
-  // Not static like the other crumbs: the editor fills its form from this
-  // cache once, so it must not be stale.
-  const project = await queryClient.query(
-    projectRetrieveQuery(params.projectId),
-  );
+  // Fetched on every visit: the editor fills its form from it only once.
+  const project = await queryClient.query({
+    ...projectRetrieveQuery(params.projectId),
+    staleTime: 0,
+  });
   return { projectId: params.projectId, projectName: project.name };
 }
 

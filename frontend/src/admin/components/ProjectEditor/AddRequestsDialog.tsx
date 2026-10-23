@@ -36,6 +36,11 @@ const AddRequestsDialog = ({
   const results = (data ?? []).filter(
     (request) => !excludedIds.includes(request.id),
   );
+  // Picks from an earlier search stay listed, so nothing unseen gets added.
+  const listed = [
+    ...picked.filter((request) => !results.some(({ id }) => id === request.id)),
+    ...results,
+  ];
 
   const close = () => {
     setSearch('');
@@ -100,12 +105,7 @@ const AddRequestsDialog = ({
         />
       </IconField>
       {isFetching && <ProgressBar mode="indeterminate" />}
-      {query.enabled && !isFetching && !results.length && (
-        <p className="text-600">
-          Nincs projekt nélküli felkérés ezzel a címmel.
-        </p>
-      )}
-      {results.map((request) => {
+      {listed.map((request) => {
         const inputId = `add-request-${request.id}`;
         return (
           <div
@@ -130,6 +130,11 @@ const AddRequestsDialog = ({
           </div>
         );
       })}
+      {query.enabled && !isFetching && !results.length && (
+        <p className="text-600">
+          Nincs projekt nélküli felkérés ezzel a címmel.
+        </p>
+      )}
     </Dialog>
   );
 };

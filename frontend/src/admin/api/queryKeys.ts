@@ -7,7 +7,6 @@ type Id = string | number | undefined;
 
 export const queryKeys = {
   project: (projectId: Id) => ['projects', Number(projectId)],
-  // Under requests, so a change to any request refreshes it.
   projectRequests: (projectId: Id) => [
     'requests',
     'project',

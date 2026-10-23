@@ -14,6 +14,9 @@ export const projectRequestsListQuery = (projectId: number) => ({
     return requests.data.results ?? [];
   },
   queryKey: queryKeys.projectRequests(projectId),
+  // Most changes to a request refresh only its own queries, so the project
+  // views refetch whenever they are shown.
+  staleTime: 0,
 });
 
 export const projectRetrieveQuery = (projectId: string | number) => ({
@@ -33,6 +36,7 @@ export const projectsListQuery = () => ({
   },
   queryKey: queryKeys.projects(),
   refetchInterval: 1000 * 30,
+  staleTime: 0,
 });
 
 export const reportQuery = (dateAfter: string, dateBefore: string) => ({
