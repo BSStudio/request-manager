@@ -28,6 +28,11 @@ def create_request(
     created: datetime | None = None,
 ) -> Request:
     """Without ``created``, submitted three weeks before the event, or now."""
+    additional_data = dict(additional_data or {})
+    # Seeding must queue no task: without this flag, update_request_status()
+    # notifies the requester of the acceptance.
+    if additional_data.get("accepted") is True:
+        additional_data["accepted_notification_sent"] = True
     request = Request.objects.create(
         title=title,
         start_datetime=start,
@@ -37,7 +42,7 @@ def create_request(
         requester=requester,
         requested_by=requested_by or requester,
         responsible=responsible,
-        additional_data=additional_data or {},
+        additional_data=additional_data,
     )
     _backdate(request, created or min(timezone.now(), start - timedelta(weeks=3)))
     return request

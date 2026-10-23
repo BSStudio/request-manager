@@ -52,7 +52,7 @@ def update_request_status(request: Request, called_from_video: bool = False) -> 
                     and status == Request.Statuses.DENIED
                 )
             ):
-                notify_sch_event_management_system.delay(request.id)
+                notify_sch_event_management_system.delay_on_commit(request.id)
 
         # If the request is accepted but canceled by requester set the status
         if (
@@ -214,7 +214,7 @@ def update_video_status(
                     )
                     and not video.request.requester.is_staff
                 ):
-                    email_user_video_published.delay(video.id)
+                    email_user_video_published.delay_on_commit(video.id)
                 if not video.additional_data["publishing"].get(
                     "notification_sent_to_user", False
                 ):
@@ -223,7 +223,7 @@ def update_video_status(
                 if settings.MATTERMOST_WEBHOOK_URL and not video.additional_data[
                     "publishing"
                 ].get("posted_on_mattermost", False):
-                    post_video_published_to_mattermost.delay(video.id)
+                    post_video_published_to_mattermost.delay_on_commit(video.id)
 
         # Check if the HQ export has been moved to its place
         if (

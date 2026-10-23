@@ -287,9 +287,7 @@ def test_create_comment_errors(
 
 
 @responses.activate
-def test_external_callback_on_status_changes(admin_user, api_client, settings):
-    settings.CELERY_TASK_ALWAYS_EAGER = True
-
+def test_external_callback_on_status_changes(admin_user, api_client, run_tasks_eagerly):
     login(api_client, admin_user)
 
     external_url_1 = "https://example.com/api/callback/123"
@@ -342,9 +340,8 @@ def test_external_callback_on_status_changes(admin_user, api_client, settings):
 @responses.activate
 @pytest.mark.parametrize("accepted", [True, False])
 def test_external_callback_on_status_changes_redirect_and_result(
-    accepted, admin_user, api_client, settings
+    accepted, admin_user, api_client, run_tasks_eagerly, settings
 ):
-    settings.CELERY_TASK_ALWAYS_EAGER = True
     settings.CELERY_TASK_STORE_EAGER_RESULT = True
 
     callback_url = "https://example.com/api/callback/123"
@@ -396,8 +393,7 @@ def test_external_callback_on_status_changes_redirect_and_result(
 
 
 @responses.activate
-def test_external_callback_retry(admin_user, api_client, settings):
-    settings.CELERY_TASK_ALWAYS_EAGER = True
+def test_external_callback_retry(admin_user, api_client, run_tasks_eagerly, settings):
     settings.CELERY_TASK_STORE_EAGER_RESULT = True
 
     callback_url = "https://example.com/api/callback/123"

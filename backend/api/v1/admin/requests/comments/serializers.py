@@ -29,8 +29,8 @@ class CommentAdminCreateUpdateSerializer(ModelSerializer):
     def create(self, validated_data):
         comment = super().create(validated_data)
         if not comment.internal and not comment.request.requester.is_banned:
-            email_user_new_comment.delay(comment.id)
+            email_user_new_comment.delay_on_commit(comment.id)
             notify_user_new_comment.delay_on_commit(comment.id)
-        email_crew_new_comment.delay(comment.id)
+        email_crew_new_comment.delay_on_commit(comment.id)
         notify_crew_new_comment.delay_on_commit(comment.id)
         return comment

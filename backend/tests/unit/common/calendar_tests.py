@@ -72,13 +72,17 @@ class TestWithoutCredentials:
         settings.GOOGLE_SERVICE_ACCOUNT_KEY_FILE_PATH = None
 
     @pytest.mark.parametrize(
-        "task", [create_calendar_event, update_calendar_event, remove_calendar_event]
+        "run",
+        [
+            lambda request: create_calendar_event(request.id),
+            lambda request: update_calendar_event(request.id),
+            lambda request: remove_calendar_event(EVENT_ID, request.title),
+        ],
+        ids=["create", "update", "remove"],
     )
-    def test_every_task_says_so_and_stops(self, task, video_request):
+    def test_every_task_says_so_and_stops(self, run, video_request):
         with patch("common.utilities.get_google_calendar_service") as service:
-            assert task(video_request.id) == (
-                "Missing credentials file for Google Calendar"
-            )
+            assert run(video_request) == "Missing credentials file for Google Calendar"
 
         service.assert_not_called()
 
@@ -95,34 +99,35 @@ class TestCreate:
         )
 
 
-class TestUpdateAndRemove:
-    @pytest.mark.parametrize(
-        "task,verb,expected_call",
-        [
-            (update_calendar_event, "updated", "patch"),
-            (remove_calendar_event, "deleted", "delete"),
-        ],
-    )
-    def test_a_request_with_an_event_is_kept_in_step(
-        self, calendar, expected_call, task, verb, video_request
-    ):
+class TestUpdate:
+    def test_a_request_with_an_event_is_kept_in_step(self, calendar, video_request):
         video_request.additional_data["calendar_id"] = EVENT_ID
         video_request.save()
 
-        result = task(video_request.id)
+        result = update_calendar_event(video_request.id)
 
-        assert result == f"Calendar event for Test Request was {verb} successfully."
-        call = getattr(calendar, expected_call)
-        assert call.call_args.kwargs["eventId"] == EVENT_ID
-        assert call.call_args.kwargs["calendarId"] == settings.GOOGLE_CALENDAR_ID
+        assert result == "Calendar event for Test Request was updated successfully."
+        assert calendar.patch.call_args.kwargs["eventId"] == EVENT_ID
+        assert calendar.patch.call_args.kwargs["calendarId"] == (
+            settings.GOOGLE_CALENDAR_ID
+        )
 
-    @pytest.mark.parametrize("task", [update_calendar_event, remove_calendar_event])
     def test_a_request_that_never_reached_the_calendar_is_left_alone(
-        self, calendar, task, video_request
+        self, calendar, video_request
     ):
-        assert task(video_request.id) is None
+        assert update_calendar_event(video_request.id) is None
         calendar.patch.assert_not_called()
-        calendar.delete.assert_not_called()
+
+
+class TestRemove:
+    def test_it_deletes_the_event(self, calendar):
+        result = remove_calendar_event(EVENT_ID, "Test Request")
+
+        assert result == "Calendar event for Test Request was deleted successfully."
+        assert calendar.delete.call_args.kwargs["eventId"] == EVENT_ID
+        assert calendar.delete.call_args.kwargs["calendarId"] == (
+            settings.GOOGLE_CALENDAR_ID
+        )
 
 
 class TestMemoryCache:

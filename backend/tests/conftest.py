@@ -2,6 +2,7 @@
 
 import pytest
 import responses
+from django.db import transaction
 from rest_framework.test import APIClient
 
 from tests.factories import make_user
@@ -58,6 +59,14 @@ def production_manager():
 @pytest.fixture
 def pr_responsible():
     return make_user(is_staff=True, groups=("PR felelős",))
+
+
+@pytest.fixture
+def run_tasks_eagerly(monkeypatch, settings):
+    """Run Celery tasks inline, without waiting for a commit that never comes
+    inside the test's transaction."""
+    settings.CELERY_TASK_ALWAYS_EAGER = True
+    monkeypatch.setattr(transaction, "on_commit", lambda func, **kwargs: func())
 
 
 @pytest.fixture
