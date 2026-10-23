@@ -36,9 +36,9 @@ def create_request(
     created: datetime | None = None,
 ) -> Request:
     """Without ``created``, submitted three weeks before the event, or now."""
-    additional_data = additional_data or {}
+    additional_data = dict(additional_data or {})
+    # Seeding announces nothing, as the migration did for real requests.
     if additional_data.get("accepted") is True:
-        # Seeding announces nothing, as the migration did for real requests.
         additional_data["accepted_notification_sent"] = True
     request = Request.objects.create(
         title=title,

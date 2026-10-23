@@ -1,15 +1,18 @@
 import { InputText } from 'primereact/inputtext';
-import type { Control } from 'react-hook-form';
+import type { Control, Path } from 'react-hook-form';
 
 import FormField from 'admin/components/FormField/FormField';
-import { IRequestCreator } from 'admin/pages/RequestCreatorEditorPage';
+import type { RequesterValues } from 'admin/helpers/requester';
 
-type NewRequesterFormProps = {
-  control: Control<IRequestCreator>;
+type NewRequesterFormProps<T extends RequesterValues> = {
+  control: Control<T>;
   disabled: boolean;
 };
 
-const NewRequesterForm = ({ control, disabled }: NewRequesterFormProps) => {
+const NewRequesterForm = <T extends RequesterValues>({
+  control,
+  disabled,
+}: NewRequesterFormProps<T>) => {
   return (
     <>
       <FormField
@@ -17,7 +20,7 @@ const NewRequesterForm = ({ control, disabled }: NewRequesterFormProps) => {
         control={control}
         disabled={disabled}
         label="Vezetéknév"
-        name="requester_last_name"
+        name={'requester_last_name' as Path<T>}
       >
         <InputText type="text" />
       </FormField>
@@ -26,7 +29,7 @@ const NewRequesterForm = ({ control, disabled }: NewRequesterFormProps) => {
         control={control}
         disabled={disabled}
         label="Keresztnév"
-        name="requester_first_name"
+        name={'requester_first_name' as Path<T>}
       >
         <InputText type="text" />
       </FormField>
@@ -36,7 +39,7 @@ const NewRequesterForm = ({ control, disabled }: NewRequesterFormProps) => {
         disabled={disabled}
         icon="pi-envelope"
         label="E-mail cím"
-        name="requester_email"
+        name={'requester_email' as Path<T>}
       >
         <InputText type="email" />
       </FormField>
@@ -46,7 +49,7 @@ const NewRequesterForm = ({ control, disabled }: NewRequesterFormProps) => {
         disabled={disabled}
         icon="pi-phone"
         label="Telefonszám"
-        name="requester_mobile"
+        name={'requester_mobile' as Path<T>}
       >
         <InputText type="tel" />
       </FormField>

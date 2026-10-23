@@ -169,11 +169,9 @@ def test_answering_yes_seeds(monkeypatch):
 
 
 def test_seeding_sends_no_mail_and_queues_no_task(django_capture_on_commit_callbacks):
-    with (
-        patch("celery.app.task.Task.apply_async") as apply_async,
-        django_capture_on_commit_callbacks(execute=True),
-    ):
-        seed()
+    with patch("celery.app.task.Task.apply_async") as apply_async:
+        with django_capture_on_commit_callbacks(execute=True):
+            seed()
 
     apply_async.assert_not_called()
     assert mail.outbox == []
@@ -254,11 +252,9 @@ def test_an_unknown_me_changes_nothing():
 def test_me_sends_no_mail_and_queues_no_task(django_capture_on_commit_callbacks):
     sso_user("me.sso")
 
-    with (
-        patch("celery.app.task.Task.apply_async") as apply_async,
-        django_capture_on_commit_callbacks(execute=True),
-    ):
-        seed(me="me.sso")
+    with patch("celery.app.task.Task.apply_async") as apply_async:
+        with django_capture_on_commit_callbacks(execute=True):
+            seed(me="me.sso")
 
     apply_async.assert_not_called()
     assert mail.outbox == []

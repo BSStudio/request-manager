@@ -5,16 +5,41 @@ import {
   CrewMemberAdminCreateUpdateRequest,
   PatchedCommentAdminCreateUpdateRequest,
   PatchedCrewMemberAdminCreateUpdateRequest,
+  PatchedProjectAdminWriteRequest,
   PatchedRatingAdminCreateUpdateRequest,
   PatchedRequestAdminUpdateRequest,
   PatchedTodoAdminCreateUpdateRequest,
   PatchedUserAdminRetrieveUpdateRequest,
   PatchedVideoAdminCreateUpdateRequest,
+  ProjectAdminWriteRequest,
   RatingAdminCreateUpdateRequest,
   RequestAdminCreateRequest,
   TodoAdminCreateUpdateRequest,
   VideoAdminCreateUpdateRequest,
 } from '../../api/models';
+
+export const projectCreateMutation = () => ({
+  mutationFn: (newProject: ProjectAdminWriteRequest) => {
+    return adminApi.adminProjectsCreate({
+      projectAdminWriteRequest: newProject,
+    });
+  },
+});
+
+export const projectDeleteMutation = (projectId: number) => ({
+  mutationFn: () => {
+    return adminApi.adminProjectsDestroy({ id: projectId });
+  },
+});
+
+export const projectUpdateMutation = (projectId: number) => ({
+  mutationFn: (updateProject: PatchedProjectAdminWriteRequest) => {
+    return adminApi.adminProjectsPartialUpdate({
+      id: projectId,
+      patchedProjectAdminWriteRequest: updateProject,
+    });
+  },
+});
 
 export const requestCommentCreateMutation = (requestId: number) => ({
   mutationFn: (newComment: CommentAdminCreateUpdateRequest) => {

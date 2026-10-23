@@ -6,6 +6,13 @@
 type Id = string | number | undefined;
 
 export const queryKeys = {
+  project: (projectId: Id) => ['projects', Number(projectId)],
+  projectRequests: (projectId: Id) => [
+    'requests',
+    'project',
+    Number(projectId),
+  ],
+  projects: () => ['projects'],
   report: (dateAfter: string, dateBefore: string) => [
     'requests',
     'report',
@@ -30,6 +37,11 @@ export const queryKeys = {
     page: number;
     pageSize: number;
   }) => ['requests', 'list', params],
+  requestsWithoutProject: (search: string) => [
+    'requests',
+    'without-project',
+    search,
+  ],
   todo: (todoId: Id) => ['todos', `id:${Number(todoId)}`],
   todos: () => ['todos'],
   user: (userId: Id) => ['users', Number(userId)],

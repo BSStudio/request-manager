@@ -22,14 +22,16 @@ pytestmark = pytest.mark.django_db
 @pytest.fixture(autouse=True)
 def published_email():
     """Every PUBLISHED transition tries to send this; tests opt in to asserting."""
-    with patch("video_requests.utilities.email_user_video_published.delay") as delay:
+    with patch(
+        "video_requests.utilities.email_user_video_published.delay_on_commit"
+    ) as delay:
         yield delay
 
 
 @pytest.fixture(autouse=True)
 def mattermost_post():
     with patch(
-        "video_requests.utilities.post_video_published_to_mattermost.delay"
+        "video_requests.utilities.post_video_published_to_mattermost.delay_on_commit"
     ) as delay:
         yield delay
 

@@ -54,6 +54,7 @@ const Menubar = () => {
               },
             ]}
           />
+          <Button icon="pi-folder" label="Projektek" path="/projects" />
           <Button icon="pi-list-check" label="Feladatok" path="/todos" />
           <Button icon="pi-users" label="Felhasználók" path="/users" />
           <Button icon="pi-search" label="Keresés" path="/search" />

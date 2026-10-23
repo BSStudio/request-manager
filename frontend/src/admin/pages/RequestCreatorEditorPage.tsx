@@ -28,13 +28,20 @@ import {
   requestCreateMutation,
   requestUpdateMutation,
 } from 'admin/api/mutations';
-import { requestRetrieveQuery } from 'admin/api/queries';
+import { projectsListQuery, requestRetrieveQuery } from 'admin/api/queries';
 import { queryKeys } from 'admin/api/queryKeys';
 import AutoCompleteStaff from 'admin/components/AutoCompleteStaff/AutoCompleteStaff';
 import FormField from 'admin/components/FormField/FormField';
 import LastUpdatedAt from 'admin/components/LastUpdatedAt/LastUpdatedAt';
+import NewRequesterForm from 'admin/components/RequestCreator/NewRequesterForm';
 import { getErrorMessage } from 'admin/helpers/ErrorMessageProvider';
+import { parseDateTimeInput } from 'admin/helpers/parseDateTimeInput';
 import { pickDirtyFields } from 'admin/helpers/pickDirtyFields';
+import {
+  type RequesterValues,
+  requesterPayload,
+} from 'admin/helpers/requester';
+import { requestTypeOptions } from 'admin/helpers/requestTypes';
 import { showErrorToast } from 'admin/helpers/showErrorToast';
 import useMobile from 'admin/hooks/useMobile';
 import type { LoadErrorState } from 'admin/pages/ErrorPage';
@@ -43,28 +50,19 @@ import { isNotFound, setFieldErrors } from 'api/errors';
 import { UserNestedDetail } from 'api/models';
 import { queryClient } from 'api/queryClient';
 import { getName } from 'helpers/LocalStorageHelper';
-import { toE164 } from 'helpers/phone';
 
-const NewRequesterForm = lazy(
-  () => import('admin/components/RequestCreator/NewRequesterForm'),
-);
 const UsersDataTable = lazy(
   () => import('admin/components/UsersDataTable/UsersDataTable'),
 );
 
-export interface IRequestCreator {
+export interface IRequestCreator extends RequesterValues {
   comment: string;
   createMore: boolean;
   deadline: Date | null;
   end_datetime: Date | null;
   place: string;
+  project: number | null;
   responsible: UserNestedDetail | null;
-  requester: UserNestedDetail | null;
-  requester_email: string;
-  requester_first_name: string;
-  requester_last_name: string;
-  requester_mobile: string;
-  requesterType: string;
   send_notification: boolean;
   start_datetime: Date | null;
   title: string;
@@ -82,13 +80,14 @@ export async function loader({ params }: LoaderFunctionArgs) {
 }
 
 const RequestCreatorEditorPage = () => {
-  const defaultValues = useMemo(() => {
+  const defaultValues = useMemo((): IRequestCreator => {
     return {
       comment: '',
       createMore: false,
       deadline: null,
       end_datetime: null,
       place: '',
+      project: null,
       requester: null,
       requester_email: '',
       requester_first_name: '',
@@ -123,6 +122,7 @@ const RequestCreatorEditorPage = () => {
     requestUpdateMutation(Number(requestId)),
   );
   const isPending = isCreating || isUpdating;
+  const { data: projects } = useQuery(projectsListQuery());
   const query = useQuery({
     ...requestRetrieveQuery(Number(requestId)),
     enabled: !!requestId,
@@ -152,6 +152,7 @@ const RequestCreatorEditorPage = () => {
         ...loaderData,
         deadline: parseISO(loaderData.deadline),
         end_datetime: new Date(loaderData.end_datetime),
+        project: loaderData.project?.id ?? null,
         start_datetime: new Date(loaderData.start_datetime),
       });
     }
@@ -185,14 +186,6 @@ const RequestCreatorEditorPage = () => {
     { icon: 'pi pi-plus', text: 'Új felhasználó hozzáadása', value: 'new' },
   ];
 
-  const typeOptions = [
-    'Zenés hangulatvideó',
-    'Zenés hangulatvideó riportokkal',
-    'Promóciós videó',
-    'Élő közvetítés',
-    'Előadás/rendezvény dokumentálás jellegű rögzítése',
-  ];
-
   const requesterTypeOptionTemplate = (option: {
     icon: IconType<IRequestCreator>;
     text: string;
@@ -212,27 +205,15 @@ const RequestCreatorEditorPage = () => {
   const onSubmit: SubmitHandler<IRequestCreator> = async (data) => {
     if (!data.start_datetime || !data.end_datetime) return;
 
-    let requester = {};
-    if (data.requesterType == 'search') {
-      if (!data.requester) {
-        showToast({
-          detail: 'Nincs kijelölve felkérő',
-          life: 3000,
-          severity: 'error',
-          summary: 'Hiba',
-        });
-        return;
-      }
-      requester = {
-        requester: data.requester.id,
-      };
-    } else if (data.requesterType == 'new') {
-      requester = {
-        requester_email: data.requester_email,
-        requester_first_name: data.requester_first_name,
-        requester_last_name: data.requester_last_name,
-        requester_mobile: toE164(data.requester_mobile),
-      };
+    const requester = requesterPayload(data);
+    if (!requester) {
+      showToast({
+        detail: 'Nincs kijelölve felkérő',
+        life: 3000,
+        severity: 'error',
+        summary: 'Hiba',
+      });
+      return;
     }
 
     const deadline = data.deadline
@@ -244,6 +225,7 @@ const RequestCreatorEditorPage = () => {
       deadline: deadline,
       end_datetime: data.end_datetime.toISOString(),
       place: data.place,
+      project: data.project ?? null,
       responsible: data.responsible?.id || null,
       start_datetime: data.start_datetime.toISOString(),
       title: data.title,
@@ -271,15 +253,15 @@ const RequestCreatorEditorPage = () => {
           summary: 'Siker',
         });
 
+        await queryClient.invalidateQueries({
+          queryKey: queryKeys.projects(),
+        });
+        // All of them: the request also shows in lists, its project's included.
+        await queryClient.invalidateQueries({
+          queryKey: queryKeys.requests(),
+        });
         if (requestId) {
-          await queryClient.invalidateQueries({
-            queryKey: queryKeys.request(requestId),
-          });
           await revalidator.revalidate();
-        } else {
-          await queryClient.invalidateQueries({
-            queryKey: queryKeys.requests(),
-          });
         }
 
         if (watchCreateMore) {
@@ -367,6 +349,7 @@ const RequestCreatorEditorPage = () => {
           >
             <Calendar
               mask="9999.99.99 99:99"
+              parseDateTime={parseDateTimeInput}
               showButtonBar
               showIcon
               showOnFocus={false}
@@ -384,6 +367,7 @@ const RequestCreatorEditorPage = () => {
           >
             <Calendar
               mask="9999.99.99 99:99"
+              parseDateTime={parseDateTimeInput}
               showButtonBar
               showIcon
               showOnFocus={false}
@@ -422,7 +406,11 @@ const RequestCreatorEditorPage = () => {
               },
             }}
           >
-            <Dropdown aria-label="Típus" editable options={typeOptions} />
+            <Dropdown
+              aria-label="Típus"
+              editable
+              options={requestTypeOptions}
+            />
           </FormField>
           <Divider align="center" type="dashed">
             <b>Opcionális mezők</b>
@@ -442,7 +430,7 @@ const RequestCreatorEditorPage = () => {
             </>
           )}
           <FormField
-            className="col-12 mb-4 md:col-6 md:mb-0"
+            className="col-12 mb-4 md:col-4 md:mb-0"
             control={control}
             disabled={isPending}
             inputId
@@ -452,7 +440,7 @@ const RequestCreatorEditorPage = () => {
             <AutoCompleteStaff />
           </FormField>
           <FormField
-            className="col-12 mb-0 md:col-6"
+            className="col-12 mb-4 md:col-4 md:mb-0"
             control={control}
             disabled={isPending}
             inputId
@@ -466,6 +454,23 @@ const RequestCreatorEditorPage = () => {
               }
               showIcon
               showOnFocus={false}
+            />
+          </FormField>
+          <FormField
+            className="col-12 mb-0 md:col-4"
+            control={control}
+            disabled={isPending}
+            inputId
+            label="Projekt"
+            name="project"
+          >
+            <Dropdown
+              filter
+              optionLabel="name"
+              optionValue="id"
+              options={projects ?? []}
+              placeholder="Nincs projekt"
+              showClear
             />
           </FormField>
           <Divider align="center" type="dashed">
@@ -525,9 +530,7 @@ const RequestCreatorEditorPage = () => {
             />
           )}
           {watchRequesterType === 'new' && (
-            <Suspense fallback={<ProgressBar mode="indeterminate" />}>
-              <NewRequesterForm control={control} disabled={isPending} />
-            </Suspense>
+            <NewRequesterForm control={control} disabled={isPending} />
           )}
           <Divider />
 

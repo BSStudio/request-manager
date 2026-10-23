@@ -60,10 +60,10 @@ class RequestAdminViewSet(ModelViewSet):
             output_serializer.data, status=HTTP_201_CREATED, headers=headers
         )
 
-    def destroy(self, request, *args, **kwargs):
-        video_request = get_object_or_404(Request, pk=self.kwargs["pk"])
-        remove_calendar_event.delay(video_request.id)
-        return super().destroy(request, *args, **kwargs)
+    def perform_destroy(self, instance):
+        super().perform_destroy(instance)
+        if calendar_id := instance.additional_data.get("calendar_id"):
+            remove_calendar_event.delay_on_commit(calendar_id, instance.title)
 
     def get_permissions(self):
         if self.request.method == "DELETE":

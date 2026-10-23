@@ -1,6 +1,7 @@
 from copy import deepcopy
 from datetime import timedelta
 from itertools import combinations
+from unittest.mock import patch
 
 import pytest
 from django.utils.timezone import localtime
@@ -17,6 +18,7 @@ from rest_framework.status import (
 )
 
 from common.models import User
+from common.utilities import remove_calendar_event
 from tests.api.asserts import assert_exact_fields
 from tests.api.helpers import do_login, get_response, login
 from tests.api.matrix import admin_only, staff_only
@@ -689,3 +691,41 @@ def test_destroy_others_request(api_client, expected, request, scenario, user):
     response = api_client.delete(url)
 
     assert response.status_code == expected
+
+
+def test_destroying_a_request_removes_its_calendar_event_after_the_commit(
+    admin_user, api_client, django_capture_on_commit_callbacks
+):
+    video_request = baker.make(
+        "video_requests.Request",
+        title="Megnyitó",
+        additional_data={"calendar_id": "abc123"},
+    )
+    login(api_client, admin_user)
+    url = reverse(
+        "api:v1:admin:requests:request-detail", kwargs={"pk": video_request.id}
+    )
+
+    with patch.object(remove_calendar_event, "delay") as delay:
+        with django_capture_on_commit_callbacks(execute=True):
+            response = api_client.delete(url)
+            delay.assert_not_called()
+
+    assert response.status_code == HTTP_204_NO_CONTENT
+    delay.assert_called_once_with("abc123", "Megnyitó")
+
+
+def test_destroying_a_request_without_a_calendar_event_queues_nothing(
+    admin_user, api_client
+):
+    video_request = baker.make("video_requests.Request")
+    login(api_client, admin_user)
+    url = reverse(
+        "api:v1:admin:requests:request-detail", kwargs={"pk": video_request.id}
+    )
+
+    with patch.object(remove_calendar_event, "delay_on_commit") as queue:
+        response = api_client.delete(url)
+
+    assert response.status_code == HTTP_204_NO_CONTENT
+    queue.assert_not_called()

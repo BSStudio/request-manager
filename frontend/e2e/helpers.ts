@@ -1,5 +1,11 @@
 import type { Locator, Page } from '@playwright/test';
-import { differenceInCalendarMonths, format } from 'date-fns';
+import {
+  addDays,
+  differenceInCalendarMonths,
+  format,
+  setHours,
+  startOfDay,
+} from 'date-fns';
 import { hu } from 'date-fns/locale';
 
 import { expect } from './fixtures';
@@ -43,4 +49,16 @@ export function requestLink(page: Page, title: string) {
   return page
     .getByRole('link')
     .filter({ has: page.getByText(title, { exact: true }) });
+}
+
+// Seeded data is relative to today, so tests build their dates the same way.
+export function inDays(days: number, hour = 0) {
+  return setHours(startOfDay(addDays(new Date(), days)), hour);
+}
+
+// PrimeReact's masked Calendar takes typed text and parses it on blur.
+export async function fillDateTime(page: Page, label: string, date: Date) {
+  const input = page.getByLabel(label, { exact: true });
+  await input.fill(format(date, 'yyyy.MM.dd HH:mm'));
+  await input.press('Tab');
 }
