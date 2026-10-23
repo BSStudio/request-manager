@@ -7,6 +7,26 @@ test.describe.configure({ mode: 'serial' });
 test.describe('requester', () => {
   test.use({ storageState: loginAs('teszt.elek') });
 
+  test('the bell says when the notifications fail to load', async ({
+    page,
+  }) => {
+    const isList = (url: URL) => url.pathname === '/api/v1/me/notifications';
+    await page.route(isList, (route) =>
+      route.fulfill({ body: 'Server Error', status: 500 }),
+    );
+    await page.goto('/my-requests');
+    await page.getByRole('button', { name: /^Értesítések/ }).click();
+    await expect(
+      page.getByText('Nem sikerült betölteni az értesítéseidet.'),
+    ).toBeVisible();
+
+    await page.unroute(isList);
+    await page.getByRole('button', { name: 'Újrapróbálom' }).click();
+    await expect(
+      page.getByRole('link', { name: /Szülinapi buli a koliban: Sajnos/ }),
+    ).toBeVisible();
+  });
+
   test('opening a notification marks its request read', async ({ page }) => {
     await page.goto('/my-requests');
     await page

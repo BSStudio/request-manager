@@ -5,6 +5,8 @@ import type { Notification as ApiNotification } from 'api/models';
 import { isAdminPath } from 'helpers/isAdminPath';
 import { formatMessageTime } from 'site/lib/dates';
 
+export const loadErrorText = 'Nem sikerült betölteni az értesítéseidet.';
+
 export const noNotificationsText =
   'Itt látod majd, ha üzenetet írunk neked, vagy változik valami a felkéréseddel.';
 

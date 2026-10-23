@@ -12,6 +12,7 @@ import { usePageTitle } from 'hooks/usePageTitle';
 import { useUnreadCount } from 'hooks/useUnreadCount';
 import LoadError from 'site/components/LoadError';
 import NotificationItem, {
+  loadErrorText,
   noNotificationsText,
 } from 'site/components/NotificationItem';
 import PageHero from 'site/components/PageHero';
@@ -74,7 +75,7 @@ function NotificationsPage() {
             <LoadError
               onRetry={() => void refetch()}
               retrying={isRefetching}
-              title="Nem sikerült betölteni az értesítéseidet."
+              title={loadErrorText}
             />
           )}
           {data?.length === 0 && (

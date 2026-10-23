@@ -2,12 +2,13 @@ import { useState } from 'react';
 
 import { useQuery } from '@tanstack/react-query';
 import { cn } from 'cn';
-import { BellIcon } from 'lucide-react';
+import { BellIcon, RefreshCwIcon } from 'lucide-react';
 import { Link } from 'react-router';
 
 import { notificationsQuery, unreadLabel } from 'helpers/notifications';
 import { useUnreadCount } from 'hooks/useUnreadCount';
 import NotificationItem, {
+  loadErrorText,
   noNotificationsText,
 } from 'site/components/NotificationItem';
 import { Button } from 'site/components/ui/button';
@@ -27,7 +28,10 @@ export default function NotificationBell({
 }) {
   const count = useUnreadCount();
   const [open, setOpen] = useState(false);
-  const { data } = useQuery({ ...notificationsQuery(), enabled: open });
+  const { data, isError, isRefetching, refetch } = useQuery({
+    ...notificationsQuery(),
+    enabled: open,
+  });
   const close = () => setOpen(false);
 
   return (
@@ -56,7 +60,25 @@ export default function NotificationBell({
         collisionPadding={16}
       >
         <p className="border-b px-4 py-3 font-semibold sm:px-5">Értesítések</p>
-        {!data && (
+        {isError && (
+          <div className="px-4 py-4 text-sm sm:px-5">
+            <p className="text-muted-foreground">{loadErrorText}</p>
+            <Button
+              className="mt-3"
+              disabled={isRefetching}
+              onClick={() => void refetch()}
+              size="sm"
+              variant="outline"
+            >
+              <RefreshCwIcon
+                className={isRefetching ? 'animate-spin' : undefined}
+                data-icon="inline-start"
+              />
+              Újrapróbálom
+            </Button>
+          </div>
+        )}
+        {!data && !isError && (
           <div aria-busy className="space-y-2 px-4 py-4 sm:px-5">
             <Skeleton className="h-4 w-2/3" />
             <Skeleton className="h-4 w-1/2" />
