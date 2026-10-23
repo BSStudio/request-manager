@@ -1,4 +1,4 @@
-from datetime import datetime, timedelta
+from datetime import date, datetime, timedelta
 
 from django.conf import settings
 from django.core.exceptions import ValidationError
@@ -61,6 +61,12 @@ class Project(models.Model):
 
     def __str__(self):
         return self.name
+
+
+def automatic_deadline(end_datetime: datetime) -> date:
+    # The weeks go on the local day: added to a UTC datetime they can cross a
+    # clock change and end on another local day.
+    return localdate(end_datetime) + timedelta(weeks=3)
 
 
 class Request(models.Model):
@@ -138,7 +144,7 @@ class Request(models.Model):
             raise ValidationError(
                 {"end_datetime": [_("Must be later than the start of the event.")]}
             )
-        if self.deadline and self.end_datetime.date() >= self.deadline:
+        if self.deadline and localdate(self.end_datetime) >= self.deadline:
             raise ValidationError(
                 {"deadline": [_("Must be later than the end of the event.")]}
             )
@@ -148,7 +154,7 @@ class Request(models.Model):
 
     def save(self, *args, **kwargs):
         if not self.deadline and self.end_datetime:
-            self.deadline = (self.end_datetime + timedelta(weeks=3)).date()
+            self.deadline = automatic_deadline(self.end_datetime)
         self.full_clean(exclude=["additional_data"])
         super().save(*args, **kwargs)
 

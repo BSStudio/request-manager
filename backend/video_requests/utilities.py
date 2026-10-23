@@ -1,5 +1,4 @@
 import json
-from datetime import timedelta
 
 import requests
 from celery import shared_task
@@ -11,7 +10,7 @@ from common.models import get_system_user
 from common.utilities import get_pr_responsible
 from video_requests.emails import email_user_video_published
 from video_requests.mattermost import post_video_published_to_mattermost
-from video_requests.models import Request, Todo, Video
+from video_requests.models import Request, Todo, Video, automatic_deadline
 from video_requests.notifications import (
     notify_user_request_accepted,
     notify_user_video_published,
@@ -264,10 +263,10 @@ def recalculate_deadline(instance: Request, data: dict) -> dict:
     end_datetime = data.get("end_datetime")
     if end_datetime and end_datetime != instance.end_datetime:
         deadline = data.get("deadline")
-        if (not deadline or deadline == instance.deadline) and (
-            instance.end_datetime + timedelta(weeks=3)
-        ).date() == instance.deadline:
-            data["deadline"] = (end_datetime + timedelta(weeks=3)).date()
+        if (not deadline or deadline == instance.deadline) and automatic_deadline(
+            instance.end_datetime
+        ) == instance.deadline:
+            data["deadline"] = automatic_deadline(end_datetime)
     return data
 
 

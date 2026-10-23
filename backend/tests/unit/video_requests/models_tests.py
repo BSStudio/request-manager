@@ -1,4 +1,4 @@
-from datetime import date, timedelta
+from datetime import UTC, date, datetime, timedelta
 
 import pytest
 from django.apps import apps
@@ -141,6 +141,18 @@ class TestRequestValidation:
             video_request.full_clean()
 
         assert error.value.messages[0] == "Must be later than the end of the event."
+
+    def test_the_default_deadline_counts_from_the_local_day_of_the_event(self):
+        # 00:30 in Budapest, still the 14th in UTC.
+        end = datetime(2026, 1, 14, 23, 30, tzinfo=UTC)
+
+        video_request = baker.make(
+            "video_requests.Request",
+            start_datetime=end - timedelta(hours=2),
+            end_datetime=end,
+        )
+
+        assert video_request.deadline == date(2026, 2, 5)
 
     @pytest.mark.parametrize("field", ["end_datetime", "start_datetime"])
     def test_a_missing_event_time_is_a_validation_error(self, field):
