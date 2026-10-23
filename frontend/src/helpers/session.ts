@@ -18,6 +18,7 @@ import {
   setSession,
 } from 'helpers/LocalStorageHelper';
 import { formatName } from 'helpers/names';
+import { disablePush, syncPushSubscription } from 'helpers/push';
 
 export type CurrentUser = {
   avatar?: string;
@@ -84,6 +85,7 @@ export function revalidateSession() {
     if (!hasSession()) return;
     try {
       cacheUser(await queryClient.query(meQuery()));
+      void syncPushSubscription();
     } catch (error) {
       // The API client already clears the session on 401.
       if (isAxiosError(error) && error.response?.status === 403) {
@@ -111,6 +113,7 @@ export async function signIn(provider: string, code: string, nonce: string) {
 }
 
 export async function signOut() {
+  await disablePush().catch(() => {});
   try {
     await logoutApi.logoutCreate();
   } catch (error) {
