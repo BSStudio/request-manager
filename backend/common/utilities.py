@@ -101,14 +101,11 @@ def update_calendar_event(request_id):
 
 
 @shared_task
-def remove_calendar_event(request_id):
+def remove_calendar_event(calendar_id, title):
     if not settings.GOOGLE_SERVICE_ACCOUNT_KEY_FILE_PATH:
         return "Missing credentials file for Google Calendar"
-    request = Request.objects.get(pk=request_id)  # nosec B113
-    if request.additional_data and "calendar_id" in request.additional_data:
-        service = get_google_calendar_service()
-        service.events().delete(
-            calendarId=settings.GOOGLE_CALENDAR_ID,
-            eventId=request.additional_data["calendar_id"],
-        ).execute()
-        return f"Calendar event for {request.title} was deleted successfully."
+    service = get_google_calendar_service()
+    service.events().delete(
+        calendarId=settings.GOOGLE_CALENDAR_ID, eventId=calendar_id
+    ).execute()
+    return f"Calendar event for {title} was deleted successfully."

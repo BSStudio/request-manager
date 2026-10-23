@@ -62,8 +62,10 @@ class RequestAdminViewSet(ModelViewSet):
 
     def destroy(self, request, *args, **kwargs):
         video_request = get_object_or_404(Request, pk=self.kwargs["pk"])
-        remove_calendar_event.delay(video_request.id)
-        return super().destroy(request, *args, **kwargs)
+        response = super().destroy(request, *args, **kwargs)
+        if calendar_id := video_request.additional_data.get("calendar_id"):
+            remove_calendar_event.delay_on_commit(calendar_id, video_request.title)
+        return response
 
     def get_permissions(self):
         if self.request.method == "DELETE":

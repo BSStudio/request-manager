@@ -137,7 +137,9 @@ class Command(BaseCommand):
 
                 # Delete the event from the calendar
                 self.stdout.write("----------- Deleting the event -----------")
-                remove_calendar_event(request.id)
+                remove_calendar_event(
+                    request.additional_data["calendar_id"], request.title
+                )
                 self.stdout.write(
                     self.style.SUCCESS(
                         "Event was deleted successfully. Check the calendar."
