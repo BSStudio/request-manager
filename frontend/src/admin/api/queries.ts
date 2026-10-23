@@ -4,6 +4,41 @@ import { queryKeys } from './queryKeys';
 import { AdminTodosListStatusEnum } from '../../api/endpoints/admin-api';
 import { adminApi } from '../../api/http';
 
+export const projectRequestsListQuery = (projectId: number) => ({
+  queryFn: async () => {
+    const requests = await adminApi.adminRequestsList({
+      ordering: 'start_datetime',
+      pageSize: 10000,
+      project: projectId,
+    });
+    return requests.data.results ?? [];
+  },
+  queryKey: queryKeys.projectRequests(projectId),
+  // Most changes to a request refresh only its own queries, so the project
+  // views refetch whenever they are shown.
+  staleTime: 0,
+});
+
+export const projectRetrieveQuery = (projectId: string | number) => ({
+  queryFn: async () => {
+    const project = await adminApi.adminProjectsRetrieve({
+      id: Number(projectId),
+    });
+    return project.data;
+  },
+  queryKey: queryKeys.project(projectId),
+});
+
+export const projectsListQuery = () => ({
+  queryFn: async () => {
+    const projects = await adminApi.adminProjectsList();
+    return projects.data;
+  },
+  queryKey: queryKeys.projects(),
+  refetchInterval: 1000 * 30,
+  staleTime: 0,
+});
+
 export const reportQuery = (dateAfter: string, dateBefore: string) => ({
   queryFn: async () => {
     const report = await adminApi.adminReportRetrieve({
@@ -200,6 +235,20 @@ export const requestsListQuery = (
     refetchInterval: 1000 * 30,
   };
 };
+
+export const requestsWithoutProjectQuery = (search: string) => ({
+  enabled: search.trim().length >= 2,
+  queryFn: async () => {
+    const requests = await adminApi.adminRequestsList({
+      hasProject: false,
+      ordering: '-start_datetime',
+      pageSize: 50,
+      search: search.trim(),
+    });
+    return requests.data.results ?? [];
+  },
+  queryKey: queryKeys.requestsWithoutProject(search.trim()),
+});
 
 export const todosListQuery = (
   assignees: Array<number>,

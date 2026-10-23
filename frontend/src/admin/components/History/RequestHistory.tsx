@@ -3,7 +3,11 @@ import { parseISO } from 'date-fns';
 import { ProgressBar } from 'primereact/progressbar';
 import { Skeleton } from 'primereact/skeleton';
 
-import { requestHistoryListQuery, usersListQuery } from 'admin/api/queries';
+import {
+  projectsListQuery,
+  requestHistoryListQuery,
+  usersListQuery,
+} from 'admin/api/queries';
 import { RequestStatusTag } from 'admin/components/StatusTag/StatusTag';
 import User from 'admin/components/User/User';
 import {
@@ -23,6 +27,7 @@ const RequestFieldNames: Record<string, string> = {
   deadline: 'Határidő',
   end_datetime: 'Esemény vége',
   place: 'Helyszín',
+  project: 'Projekt',
   requested_by: 'Beküldő',
   requester: 'Felkérő',
   responsible: 'Felelős',
@@ -38,6 +43,7 @@ const RequestHistory = ({ requestId }: RequestHistoryProps) => {
     select: getHistory,
   });
   const { data: users } = useQuery(usersListQuery());
+  const { data: projects } = useQuery(projectsListQuery());
 
   const getFieldName = (name: string) => {
     return RequestFieldNames[name];
@@ -74,6 +80,12 @@ const RequestHistory = ({ requestId }: RequestHistoryProps) => {
           </div>
         );
       return <User name={user.full_name} imageUrl={user.avatar_url} />;
+    }
+    if (name === 'project') {
+      // A deleted project is no longer in the list.
+      return (
+        projects?.find((project) => project.id === Number(value))?.name ?? value
+      );
     }
     if (name === 'status') {
       return <RequestStatusTag statusNum={Number(value)} />;
