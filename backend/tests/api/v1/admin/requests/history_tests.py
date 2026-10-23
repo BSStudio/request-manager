@@ -1,3 +1,4 @@
+import json
 from datetime import timedelta, timezone
 
 import pytest
@@ -11,7 +12,7 @@ from rest_framework.status import (
 
 from common.models import User
 from tests.api.asserts import assert_exact_fields
-from tests.api.helpers import do_login
+from tests.api.helpers import do_login, login
 from tests.api.matrix import staff_only
 
 pytestmark = pytest.mark.django_db
@@ -31,6 +32,10 @@ def assert_response(history, fields_changed, new_values, old_values, user):
         assert_exact_fields(change, ["field", "new", "old"])
 
         field = change["field"]
+        if field == "additional_data":
+            assert json.loads(change["new"]) == new_values[field]
+            assert json.loads(change["old"]) == old_values[field]
+            continue
         if field.endswith("datetime"):
             new_value = str(new_values[field].astimezone(timezone.utc))
             old_value = str(old_values[field].astimezone(timezone.utc))
@@ -259,6 +264,28 @@ def test_list_request_history(api_client, expected, request, user):
             {"title": original_data["title"]},
             user,
         )
+
+
+def test_additional_data_changes_are_json(api_client, staff_user):
+    video_request = baker.make("video_requests.Request")
+    additional_data = {
+        "recording": {"path": "//nas/None/True/False"},
+        "requester": {"first_name": "Patrick", "last_name": "O'Neil"},
+    }
+    video_request.additional_data = additional_data
+    video_request.save()
+
+    login(api_client, staff_user)
+    url = reverse(
+        "api:v1:admin:requests:request-history", kwargs={"pk": video_request.id}
+    )
+    response = api_client.get(url)
+
+    assert response.status_code == HTTP_200_OK
+    [change] = response.data[0]["changes"]
+    assert change["field"] == "additional_data"
+    assert json.loads(change["new"]) == additional_data
+    assert json.loads(change["old"]) == {}
 
 
 @staff_only(HTTP_200_OK)
