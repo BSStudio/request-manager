@@ -4,7 +4,7 @@ from celery import shared_task
 from django.utils.text import Truncator
 
 from common.models import User
-from common.push import send_push
+from common.push import push_enabled, send_push
 from common.utilities import get_editor_in_chief
 from video_requests.models import Comment, Notification, Request, Todo, Video
 
@@ -55,8 +55,9 @@ def notify(
         for recipient in set(recipients)
         if recipient != actor
     )
-    for notification in rows:
-        send_push(notification.recipient, push_payload(notification))
+    if push_enabled():
+        for notification in rows:
+            send_push(notification.recipient, push_payload(notification))
     return rows
 
 

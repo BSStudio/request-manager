@@ -263,7 +263,7 @@ class TestTodoAssigned:
 
 
 class TestPush:
-    def test_an_acceptance_is_pushed_with_the_unread_count(self, requester):
+    def test_an_acceptance_is_pushed_with_the_unread_count(self, push_on, requester):
         baker.make(Notification, recipient=requester)
         baker.make(Notification, recipient=requester, read_at=timezone.now())
         video_request = baker.make(
@@ -285,7 +285,7 @@ class TestPush:
         )
 
     def test_a_requester_message_is_pushed_to_each_of_the_crew(
-        self, crewed_request, editor_in_chief, requester
+        self, crewed_request, editor_in_chief, push_on, requester
     ):
         comment = baker.make(
             "video_requests.Comment", request=crewed_request, author=requester
@@ -300,6 +300,14 @@ class TestPush:
             editor_in_chief,
             crewed_request.responsible,
         }
+
+    def test_nothing_is_pushed_while_push_is_off(self, requester):
+        video_request = baker.make("video_requests.Request", requester=requester)
+
+        with patch("video_requests.notifications.send_push") as send_push:
+            notify_user_request_accepted(video_request.id)
+
+        send_push.assert_not_called()
 
     @responses.activate
     def test_a_failing_push_service_still_leaves_the_rows(self, push_on, requester):

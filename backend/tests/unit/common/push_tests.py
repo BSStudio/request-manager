@@ -1,11 +1,12 @@
 import pytest
 import requests
 import responses
+from model_bakery import baker
 
 from common.models import PushSubscription
 from common.push import PUSH_TTL, push_enabled, send_push
 from tests.factories import make_user
-from tests.helpers.push import subscribe
+from tests.helpers.push import b64, subscribe
 
 pytestmark = pytest.mark.django_db
 
@@ -42,6 +43,7 @@ def test_a_push_goes_to_every_browser_with_a_week_to_live(push_on):
     for call in responses.calls:
         assert call.request.headers["TTL"] == str(PUSH_TTL)
         assert call.request.headers["Authorization"].startswith("vapid ")
+        assert call.request.req_kwargs["timeout"] == 10
 
 
 @pytest.mark.parametrize("status", [404, 410])
@@ -57,8 +59,12 @@ def test_a_gone_browser_is_forgotten(push_on, status):
 
 @pytest.mark.parametrize(
     "answer",
-    [{"status": 500}, {"body": requests.ConnectionError("down")}],
-    ids=["server_error", "unreachable"],
+    [
+        {"status": 500},
+        {"body": requests.ConnectionError("down")},
+        {"body": requests.Timeout("slow")},
+    ],
+    ids=["server_error", "unreachable", "timeout"],
 )
 @responses.activate
 def test_a_failing_push_service_is_logged_without_the_endpoint(push_on, caplog, answer):
@@ -74,6 +80,29 @@ def test_a_failing_push_service_is_logged_without_the_endpoint(push_on, caplog, 
     assert len(responses.calls) == 2
     assert f"subscription {failing.id}" in caplog.text
     assert failing.endpoint not in caplog.text
+
+
+@pytest.mark.parametrize(
+    "p256dh", [b64(b"\x04" + b"\x01" * 64), "a"], ids=["off_curve", "not_base64"]
+)
+@responses.activate
+def test_a_browser_with_broken_keys_is_logged(push_on, caplog, p256dh):
+    user = make_user()
+    broken = baker.make(
+        PushSubscription,
+        user=user,
+        endpoint="https://fcm.googleapis.com/fcm/send/broken",
+        p256dh=p256dh,
+        auth="YXV0aA",
+    )
+    working = subscribe(user, "https://fcm.googleapis.com/fcm/send/working")
+    responses.post(working.endpoint, status=201)
+
+    send_push(user, {})
+
+    assert len(responses.calls) == 1
+    assert PushSubscription.objects.count() == 2
+    assert f"subscription {broken.id}" in caplog.text
 
 
 @responses.activate

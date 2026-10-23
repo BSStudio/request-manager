@@ -36,7 +36,7 @@ uv run vapid --gen
 uv run vapid --applicationServerKey
 ```
 
-`--gen` writes `private_key.pem` and `public_key.pem`; `--applicationServerKey` prints the value for `WEB_PUSH_VAPID_PUBLIC_KEY`. `WEB_PUSH_VAPID_PRIVATE_KEY` is the base64 body of `private_key.pem` on one line, without the `BEGIN` and `END` lines. Then delete both `.pem` files, git does not ignore them. Keep the pair once browsers have subscribed: a subscription only accepts pushes signed with the key it was made with.
+`--gen` writes `private_key.pem` and `public_key.pem`; `--applicationServerKey` prints the value for `WEB_PUSH_VAPID_PUBLIC_KEY`. `WEB_PUSH_VAPID_PRIVATE_KEY` is the base64 body of `private_key.pem` on one line, without the `BEGIN` and `END` lines. Then delete both `.pem` files: git does not ignore them. Keep the pair once browsers have subscribed: a subscription only accepts pushes signed with the key it was made with.
 
 ### Settings modules
 

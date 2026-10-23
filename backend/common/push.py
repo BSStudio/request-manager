@@ -37,10 +37,13 @@ def send_push(user: User, payload: dict) -> None:
                 vapid_private_key=settings.WEB_PUSH_VAPID_PRIVATE_KEY,
                 vapid_claims={"sub": settings.WEB_PUSH_CONTACT},
                 ttl=PUSH_TTL,
+                timeout=10,
             )
-        except (RequestException, WebPushException) as error:
+        # ValueError: browser keys that do not decode.
+        except (RequestException, ValueError, WebPushException) as error:
+            response = getattr(error, "response", None)
             # The push service forgot the browser: unsubscribed or reinstalled.
-            if error.response is not None and error.response.status_code in (404, 410):
+            if response is not None and response.status_code in (404, 410):
                 subscription.delete()
             else:
                 # The id, not the endpoint: see PushSubscription.__str__.
