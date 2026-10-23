@@ -28,6 +28,13 @@ export function getName() {
   return localStorage.getItem('name') || '';
 }
 
+// Who turned push on in this browser. Not a session key: push outlives an
+// expired session, and only another user's login turns it off.
+export function getPushUserId() {
+  const id = localStorage.getItem('push_user_id');
+  return id === null ? null : Number(id);
+}
+
 export function getRole() {
   return localStorage.getItem('role') || '';
 }
@@ -56,6 +63,14 @@ export function popRedirectedFrom() {
 
 export function setDarkMode(darkMode: boolean) {
   localStorage.setItem('dark-mode', JSON.stringify(darkMode));
+}
+
+export function setPushUserId(id: number | null) {
+  if (id === null) {
+    localStorage.removeItem('push_user_id');
+  } else {
+    localStorage.setItem('push_user_id', String(id));
+  }
 }
 
 export function setRedirectedFrom(redirectedFrom: string) {

@@ -1,5 +1,6 @@
 import { useMutation, useQuery } from '@tanstack/react-query';
-import { BellIcon, CheckCheckIcon } from 'lucide-react';
+import { BellIcon, BellRingIcon, CheckCheckIcon } from 'lucide-react';
+import { Link } from 'react-router';
 import { toast } from 'sonner';
 
 import { getApiErrorMessage } from 'api/errors';
@@ -8,7 +9,9 @@ import {
   markNotificationsRead,
   notificationsQuery,
 } from 'helpers/notifications';
+import { pushPageHint } from 'helpers/push';
 import { usePageTitle } from 'hooks/usePageTitle';
+import { usePushOffered } from 'hooks/usePushSubscription';
 import { useUnreadCount } from 'hooks/useUnreadCount';
 import LoadError from 'site/components/LoadError';
 import NotificationItem, {
@@ -35,6 +38,7 @@ function LoadingRows() {
 function NotificationsPage() {
   usePageTitle('Értesítések');
   const count = useUnreadCount();
+  const pushOffered = usePushOffered();
   const { data, isError, isPending, isRefetching, refetch } =
     useQuery(notificationsQuery());
   const markAll = useMutation({
@@ -67,6 +71,15 @@ function NotificationsPage() {
             ? `${count} olvasatlan értesítésed van.`
             : 'Mindet elolvastad.'}
         </p>
+        {pushOffered && (
+          <Link
+            className="mt-4 inline-flex gap-2 text-sm text-white/70 underline underline-offset-4 hover:text-white"
+            to="/profile"
+          >
+            <BellRingIcon className="mt-0.5 size-4 shrink-0" />
+            {pushPageHint}
+          </Link>
+        )}
       </PageHero>
       <div className="relative z-10 mx-auto -mt-16 w-full max-w-6xl px-4 pb-24 sm:px-6">
         <div className="overflow-hidden rounded-3xl border bg-card shadow-sm">

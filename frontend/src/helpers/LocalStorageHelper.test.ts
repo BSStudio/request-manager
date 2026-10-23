@@ -5,6 +5,7 @@ import {
   getAvatar,
   getGroups,
   getName,
+  getPushUserId,
   getUserId,
   hasSession,
   isAdmin,
@@ -12,6 +13,7 @@ import {
   popRedirectedFrom,
   SESSION_CHANGE_EVENT,
   setDarkMode,
+  setPushUserId,
   setRedirectedFrom,
   setSession,
 } from 'helpers/LocalStorageHelper';
@@ -93,6 +95,14 @@ describe('session', () => {
     expect(clear).toHaveBeenCalledOnce();
     delete (navigator as Partial<Navigator>).setAppBadge;
     delete (navigator as Partial<Navigator>).clearAppBadge;
+  });
+
+  it('keeps who turned push on', () => {
+    setSession(sessionUser);
+    setPushUserId(42);
+    clearSession();
+
+    expect(getPushUserId()).toBe(42);
   });
 });
 

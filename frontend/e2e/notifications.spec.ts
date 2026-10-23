@@ -56,6 +56,19 @@ test.describe('requester', () => {
       page.getByRole('button', { name: 'Mindet elolvastam' }),
     ).toBeDisabled();
   });
+
+  test('the push switch says when the browser cannot receive push', async ({
+    page,
+  }) => {
+    await page.goto('/profile');
+
+    await expect(
+      page.getByRole('switch', { name: 'Push értesítések' }),
+    ).toBeDisabled();
+    await expect(
+      page.getByText('Ez a böngésző nem tud push értesítést fogadni.'),
+    ).toBeVisible();
+  });
 });
 
 test.describe('staff', () => {
@@ -115,5 +128,34 @@ test.describe('staff', () => {
     await expect(
       page.getByRole('button', { exact: true, name: 'Értesítések' }),
     ).toBeVisible();
+  });
+
+  test('the own profile has the push switch', async ({ page }) => {
+    await page.goto('/admin');
+    await page.getByLabel('Fiók').click();
+    await page.getByRole('link', { name: 'Profilom' }).click();
+    await page.getByRole('link', { exact: true, name: 'Értesítések' }).click();
+
+    await expect(
+      page.getByRole('switch', { name: 'Push értesítések' }),
+    ).toBeDisabled();
+    await expect(
+      page.getByText('Ez a böngésző nem tud push értesítést fogadni.'),
+    ).toBeVisible();
+  });
+
+  test("another user's profile has no push switch", async ({ page }) => {
+    await page.goto('/admin/users');
+    await page.getByRole('textbox', { name: 'Keresés' }).fill('Tiltott');
+    await page
+      .getByRole('row')
+      .filter({ hasText: 'Tiltott Tamás' })
+      .getByRole('link', { name: 'Ugrás a profilra' })
+      .click();
+
+    await expect(page.getByRole('link', { name: 'Kitiltás' })).toBeVisible();
+    await expect(
+      page.getByRole('link', { exact: true, name: 'Értesítések' }),
+    ).toBeHidden();
   });
 });

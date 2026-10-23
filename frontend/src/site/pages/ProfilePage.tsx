@@ -9,6 +9,7 @@ import PageHero from 'site/components/PageHero';
 import AvatarPicker from 'site/components/profile/AvatarPicker';
 import LoginMethods from 'site/components/profile/LoginMethods';
 import PersonalDetails from 'site/components/profile/PersonalDetails';
+import PushSwitch from 'site/components/profile/PushSwitch';
 import { Skeleton } from 'site/components/ui/skeleton';
 import UserAvatar from 'site/components/UserAvatar';
 
@@ -82,6 +83,7 @@ function ProfilePage() {
               <DetailCard title="Bejelentkezés">
                 <LoginMethods user={user} />
               </DetailCard>
+              <PushSwitch />
             </div>
             <aside className="space-y-6 lg:sticky lg:top-24">
               <DetailCard title="Profilkép">

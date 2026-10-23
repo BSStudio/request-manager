@@ -48,6 +48,10 @@ import type { PaginatedNotificationList } from '../models';
 // @ts-ignore
 import type { PatchedUserRequest } from '../models';
 // @ts-ignore
+import type { PushSubscriptionRemoveRequest } from '../models';
+// @ts-ignore
+import type { PushSubscriptionRequest } from '../models';
+// @ts-ignore
 import type { UnreadCount } from '../models';
 // @ts-ignore
 import type { User } from '../models';
@@ -55,6 +59,8 @@ import type { User } from '../models';
 import type { UserAdminWorkedOn } from '../models';
 // @ts-ignore
 import type { UserRequest } from '../models';
+// @ts-ignore
+import type { VapidPublicKey } from '../models';
 /**
  * MeApi - axios parameter creator
  */
@@ -280,6 +286,179 @@ export const MeApiAxiosParamCreator = function (configuration?: Configuration) {
       };
       localVarRequestOptions.data = serializeDataIfNeeded(
         patchedUserRequest,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {PushSubscriptionRequest} pushSubscriptionRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    mePushSubscriptionsCreate: async (
+      pushSubscriptionRequest: PushSubscriptionRequest,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'pushSubscriptionRequest' is not null or undefined
+      assertParamExists(
+        'mePushSubscriptionsCreate',
+        'pushSubscriptionRequest',
+        pushSubscriptionRequest,
+      );
+      const localVarPath = `/api/v1/me/push-subscriptions`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'POST',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication tokenAuth required
+      await setApiKeyToObject(
+        localVarHeaderParameter,
+        'Authorization',
+        configuration,
+      );
+
+      // authentication cookieAuth required
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        pushSubscriptionRequest,
+        localVarRequestOptions,
+        configuration,
+      );
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    mePushSubscriptionsKeyRetrieve: async (
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      const localVarPath = `/api/v1/me/push-subscriptions/key`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'GET',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication tokenAuth required
+      await setApiKeyToObject(
+        localVarHeaderParameter,
+        'Authorization',
+        configuration,
+      );
+
+      // authentication cookieAuth required
+
+      localVarHeaderParameter['Accept'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+
+      return {
+        url: toPathString(localVarUrlObj),
+        options: localVarRequestOptions,
+      };
+    },
+    /**
+     *
+     * @param {PushSubscriptionRemoveRequest} pushSubscriptionRemoveRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    mePushSubscriptionsRemoveCreate: async (
+      pushSubscriptionRemoveRequest: PushSubscriptionRemoveRequest,
+      options: RawAxiosRequestConfig = {},
+    ): Promise<RequestArgs> => {
+      // verify required parameter 'pushSubscriptionRemoveRequest' is not null or undefined
+      assertParamExists(
+        'mePushSubscriptionsRemoveCreate',
+        'pushSubscriptionRemoveRequest',
+        pushSubscriptionRemoveRequest,
+      );
+      const localVarPath = `/api/v1/me/push-subscriptions/remove`;
+      // use dummy base URL string because the URL constructor only accepts absolute URLs.
+      const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+      let baseOptions;
+      if (configuration) {
+        baseOptions = configuration.baseOptions;
+      }
+
+      const localVarRequestOptions = {
+        method: 'POST',
+        ...baseOptions,
+        ...options,
+      };
+      const localVarHeaderParameter = {} as any;
+      const localVarQueryParameter = {} as any;
+
+      // authentication tokenAuth required
+      await setApiKeyToObject(
+        localVarHeaderParameter,
+        'Authorization',
+        configuration,
+      );
+
+      // authentication cookieAuth required
+
+      localVarHeaderParameter['Content-Type'] = 'application/json';
+
+      setSearchParams(localVarUrlObj, localVarQueryParameter);
+      let headersFromBaseOptions =
+        baseOptions && baseOptions.headers ? baseOptions.headers : {};
+      localVarRequestOptions.headers = {
+        ...localVarHeaderParameter,
+        ...headersFromBaseOptions,
+        ...options.headers,
+      };
+      localVarRequestOptions.data = serializeDataIfNeeded(
+        pushSubscriptionRemoveRequest,
         localVarRequestOptions,
         configuration,
       );
@@ -727,6 +906,91 @@ export const MeApiFp = function (configuration?: Configuration) {
     },
     /**
      *
+     * @param {PushSubscriptionRequest} pushSubscriptionRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async mePushSubscriptionsCreate(
+      pushSubscriptionRequest: PushSubscriptionRequest,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.mePushSubscriptionsCreate(
+          pushSubscriptionRequest,
+          options,
+        );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['MeApi.mePushSubscriptionsCreate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
+    },
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async mePushSubscriptionsKeyRetrieve(
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<VapidPublicKey>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.mePushSubscriptionsKeyRetrieve(options);
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['MeApi.mePushSubscriptionsKeyRetrieve']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
+    },
+    /**
+     *
+     * @param {PushSubscriptionRemoveRequest} pushSubscriptionRemoveRequest
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    async mePushSubscriptionsRemoveCreate(
+      pushSubscriptionRemoveRequest: PushSubscriptionRemoveRequest,
+      options?: RawAxiosRequestConfig,
+    ): Promise<
+      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<void>
+    > {
+      const localVarAxiosArgs =
+        await localVarAxiosParamCreator.mePushSubscriptionsRemoveCreate(
+          pushSubscriptionRemoveRequest,
+          options,
+        );
+      const localVarOperationServerIndex = configuration?.serverIndex ?? 0;
+      const localVarOperationServerBasePath =
+        operationServerMap['MeApi.mePushSubscriptionsRemoveCreate']?.[
+          localVarOperationServerIndex
+        ]?.url;
+      return (axios, basePath) =>
+        createRequestFunction(
+          localVarAxiosArgs,
+          globalAxios,
+          BASE_PATH,
+          configuration,
+        )(axios, localVarOperationServerBasePath || basePath);
+    },
+    /**
+     *
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -953,6 +1217,52 @@ export const MeApiFactory = function (
     },
     /**
      *
+     * @param {MeApiMePushSubscriptionsCreateRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    mePushSubscriptionsCreate(
+      requestParameters: MeApiMePushSubscriptionsCreateRequest,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .mePushSubscriptionsCreate(
+          requestParameters.pushSubscriptionRequest,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    mePushSubscriptionsKeyRetrieve(
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<VapidPublicKey> {
+      return localVarFp
+        .mePushSubscriptionsKeyRetrieve(options)
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
+     * @param {MeApiMePushSubscriptionsRemoveCreateRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     */
+    mePushSubscriptionsRemoveCreate(
+      requestParameters: MeApiMePushSubscriptionsRemoveCreateRequest,
+      options?: RawAxiosRequestConfig,
+    ): AxiosPromise<void> {
+      return localVarFp
+        .mePushSubscriptionsRemoveCreate(
+          requestParameters.pushSubscriptionRemoveRequest,
+          options,
+        )
+        .then((request) => request(axios, basePath));
+    },
+    /**
+     *
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
@@ -1064,6 +1374,20 @@ export interface MeApiMePartialUpdateRequest {
 }
 
 /**
+ * Request parameters for mePushSubscriptionsCreate operation in MeApi.
+ */
+export interface MeApiMePushSubscriptionsCreateRequest {
+  readonly pushSubscriptionRequest: PushSubscriptionRequest;
+}
+
+/**
+ * Request parameters for mePushSubscriptionsRemoveCreate operation in MeApi.
+ */
+export interface MeApiMePushSubscriptionsRemoveCreateRequest {
+  readonly pushSubscriptionRemoveRequest: PushSubscriptionRemoveRequest;
+}
+
+/**
  * Request parameters for meSocialCreate operation in MeApi.
  */
 export interface MeApiMeSocialCreateRequest {
@@ -1171,6 +1495,53 @@ export class MeApi extends BaseAPI {
   ) {
     return MeApiFp(this.configuration)
       .mePartialUpdate(requestParameters.patchedUserRequest, options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {MeApiMePushSubscriptionsCreateRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public mePushSubscriptionsCreate(
+    requestParameters: MeApiMePushSubscriptionsCreateRequest,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return MeApiFp(this.configuration)
+      .mePushSubscriptionsCreate(
+        requestParameters.pushSubscriptionRequest,
+        options,
+      )
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public mePushSubscriptionsKeyRetrieve(options?: RawAxiosRequestConfig) {
+    return MeApiFp(this.configuration)
+      .mePushSubscriptionsKeyRetrieve(options)
+      .then((request) => request(this.axios, this.basePath));
+  }
+
+  /**
+   *
+   * @param {MeApiMePushSubscriptionsRemoveCreateRequest} requestParameters Request parameters.
+   * @param {*} [options] Override http request option.
+   * @throws {RequiredError}
+   */
+  public mePushSubscriptionsRemoveCreate(
+    requestParameters: MeApiMePushSubscriptionsRemoveCreateRequest,
+    options?: RawAxiosRequestConfig,
+  ) {
+    return MeApiFp(this.configuration)
+      .mePushSubscriptionsRemoveCreate(
+        requestParameters.pushSubscriptionRemoveRequest,
+        options,
+      )
       .then((request) => request(this.axios, this.basePath));
   }
 

@@ -43,6 +43,11 @@ export function setAppBadge(count: number) {
   );
 }
 
+// Not `ready`, which never settles where service workers are blocked.
+export async function getPushManager() {
+  return (await navigator.serviceWorker?.getRegistration())?.pushManager;
+}
+
 export async function promptInstall() {
   const event = installPrompt;
   // A prompt can only be shown once.

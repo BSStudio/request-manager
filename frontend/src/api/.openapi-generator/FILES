@@ -57,6 +57,9 @@ models/project-admin-retrieve.ts
 models/project-admin-write-request.ts
 models/project-nested.ts
 models/project-request.ts
+models/push-subscription-keys-request.ts
+models/push-subscription-remove-request.ts
+models/push-subscription-request.ts
 models/rating-admin-create-update-request.ts
 models/rating-admin-create-update.ts
 models/rating-admin-list-retrieve.ts
@@ -90,6 +93,7 @@ models/user-nested-list.ts
 models/user-request.ts
 models/user-social-auth.ts
 models/user.ts
+models/vapid-public-key.ts
 models/video-admin-create-update-request.ts
 models/video-admin-list.ts
 models/video-admin-retrieve.ts
