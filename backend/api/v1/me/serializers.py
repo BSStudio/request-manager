@@ -134,9 +134,16 @@ class PushSubscriptionSerializer(Serializer):
     def validate_endpoint(self, endpoint):
         url = urlparse(endpoint)
         host = url.hostname or ""
-        if url.scheme != "https" or not any(
-            host == service or host.endswith(f".{service}")
-            for service in PUSH_SERVICE_HOSTS
+        # Only a bare host, as browsers send it: requests splits a URL with a
+        # backslash differently and would connect to another host.
+        if (
+            url.scheme != "https"
+            or "\\" in endpoint
+            or url.netloc != host
+            or not any(
+                host == service or host.endswith(f".{service}")
+                for service in PUSH_SERVICE_HOSTS
+            )
         ):
             raise ValidationError(_("Unsupported push service."))
         return endpoint

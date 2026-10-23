@@ -58,6 +58,11 @@ def test_a_browser_registered_by_someone_else_moves_to_me(api_client, basic_user
         "http://localhost:6379/",
         "https://fcm.googleapis.com.example.com/x",
         "https://evilfcm.googleapis.com/x",
+        # requests connects to evil.example.
+        "https://evil.example\\@fcm.googleapis.com/x",
+        "https://user@fcm.googleapis.com/x",
+        "https://fcm.googleapis.com:8443/x",
+        "https://fcm.googleapis.com:99999/x",
     ],
 )
 def test_only_push_service_endpoints_are_accepted(api_client, basic_user, endpoint):

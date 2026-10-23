@@ -46,5 +46,11 @@ def send_push(user: User, payload: dict) -> None:
             if response is not None and response.status_code in (404, 410):
                 subscription.delete()
             else:
-                # The id, not the endpoint: see PushSubscription.__str__.
-                logger.exception("Push to subscription %s failed", subscription.id)
+                # No exception text: it can quote the endpoint, see
+                # PushSubscription.__str__.
+                logger.error(
+                    "Push to subscription %s failed: %s, status %s",
+                    subscription.id,
+                    type(error).__name__,
+                    None if response is None else response.status_code,
+                )

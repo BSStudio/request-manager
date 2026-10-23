@@ -58,19 +58,23 @@ def test_a_gone_browser_is_forgotten(push_on, status):
     assert not PushSubscription.objects.exists()
 
 
+# requests errors quote the URL's path, as WebPushException quotes the answer.
+TOKEN = "fcm/send/secret-token"
+
+
 @pytest.mark.parametrize(
     "answer",
     [
-        {"status": 500},
-        {"body": requests.ConnectionError("down")},
-        {"body": requests.Timeout("slow")},
+        {"status": 500, "body": f"Unknown subscription /{TOKEN}"},
+        {"body": requests.ConnectionError(f"Max retries exceeded with url: /{TOKEN}")},
+        {"body": requests.ConnectTimeout(f"Max retries exceeded with url: /{TOKEN}")},
     ],
     ids=["server_error", "unreachable", "timeout"],
 )
 @responses.activate
 def test_a_failing_push_service_is_logged_without_the_endpoint(push_on, caplog, answer):
     user = make_user()
-    failing = subscribe(user, "https://fcm.googleapis.com/fcm/send/failing")
+    failing = subscribe(user, f"https://fcm.googleapis.com/{TOKEN}")
     working = subscribe(user, "https://fcm.googleapis.com/fcm/send/working")
     responses.post(failing.endpoint, **answer)
     responses.post(working.endpoint, status=201)
@@ -80,7 +84,7 @@ def test_a_failing_push_service_is_logged_without_the_endpoint(push_on, caplog, 
     assert PushSubscription.objects.count() == 2
     assert len(responses.calls) == 2
     assert f"subscription {failing.id}" in caplog.text
-    assert failing.endpoint not in caplog.text
+    assert TOKEN not in caplog.text
 
 
 @pytest.mark.parametrize(
