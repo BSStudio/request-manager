@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-
 import {
   addEventProcessor,
   init,
@@ -42,12 +40,11 @@ export function initSentry(app: 'admin' | 'site') {
       ...defaults.filter(({ name }) => name !== 'BrowserSession'),
       reactRouterBrowserTracingIntegration({
         createRoutesFromChildren,
-        // Named after the element, whose alt text or label can be a name.
-        enableInp: false,
         matchRoutes,
-        useEffect,
         useLocation,
         useNavigationType,
+        // INP is named after the element, whose alt text or label can be a name.
+        webVitals: { ignore: ['inp'] },
       }),
     ],
     // Clicked elements and visited URLs can carry personal data.
