@@ -1,5 +1,7 @@
+import hashlib
 import logging
 
+from django.core.cache import cache
 from drf_spectacular.utils import extend_schema
 from rest_framework import generics
 from rest_framework.exceptions import ParseError, ValidationError
@@ -18,24 +20,48 @@ from video_requests.models import Request
 
 logger = logging.getLogger(__name__)
 
+BAD_REQUEST_REPORT_INTERVAL = 60 * 60 * 24
+
 
 def external_api_exception_handler(exc, context):
     if isinstance(exc, (ValidationError, ParseError)):
-        request = context.get("request")
-        logger.exception(
+        request = context["request"]
+        path = request.get_full_path()
+        # Sentry records only errors, and bejelentes.sch retries a rejected
+        # request every few minutes: each body is an error once a day.
+        first = cache.add(
+            f"sch-events-bad-request:{path}:{hashlib.sha256(request.body).hexdigest()}",
+            True,
+            timeout=BAD_REQUEST_REPORT_INTERVAL,
+        )
+        logger.log(
+            logging.ERROR if first else logging.WARNING,
             "SCH Events (bejelentes.sch) bad request: %s %s body=%s",
-            request.method if request else "?",
-            request.get_full_path() if request else "?",
-            getattr(request, "data", None),
+            request.method,
+            path,
+            request.body.decode(errors="backslashreplace"),
+            exc_info=True,
         )
     return exception_handler(exc, context)
+
+
+class ExternalSchEventsBadRequestMixin:
+    def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
+        # Django keeps the raw body only if it is read before DRF parses the stream.
+        request.body
+
+    def get_exception_handler(self):
+        return external_api_exception_handler
 
 
 @extend_schema(
     request=RequestExternalSchEventsCreateSerializer,
     responses=RequestRetrieveSerializer,
 )
-class RequestExternalSchEventsCreateView(CreateAPIView):
+class RequestExternalSchEventsCreateView(
+    ExternalSchEventsBadRequestMixin, CreateAPIView
+):
     permission_classes = [IsServiceAccount]
     serializer_class = RequestExternalSchEventsCreateSerializer
 
@@ -51,9 +77,6 @@ class RequestExternalSchEventsCreateView(CreateAPIView):
             output_serializer.data, status=HTTP_201_CREATED, headers=headers
         )
 
-    def get_exception_handler(self):
-        return external_api_exception_handler
-
 
 class RequestExternalSchEventsRetrieveView(RetrieveAPIView):
     permission_classes = [IsServiceAccount]
@@ -63,12 +86,11 @@ class RequestExternalSchEventsRetrieveView(RetrieveAPIView):
         return Request.objects.filter(requested_by=self.request.user)
 
 
-class CommentExternalSchEventsCreateView(generics.CreateAPIView):
+class CommentExternalSchEventsCreateView(
+    ExternalSchEventsBadRequestMixin, generics.CreateAPIView
+):
     permission_classes = [IsServiceAccount]
     serializer_class = CommentCreateUpdateSerializer
-
-    def get_exception_handler(self):
-        return external_api_exception_handler
 
     def perform_create(self, serializer):
         serializer.save(
