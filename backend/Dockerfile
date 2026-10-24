@@ -35,7 +35,7 @@ FROM backend-base AS backend-builder
 RUN apk update && apk add postgresql-dev gcc musl-dev python3-dev
 
 # Install uv
-COPY --from=ghcr.io/astral-sh/uv:0.13.1 /uv /bin/uv
+COPY --from=ghcr.io/astral-sh/uv:0.13.5 /uv /bin/uv
 
 # Set work directory
 WORKDIR $PYSETUP_PATH
