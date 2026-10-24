@@ -12,10 +12,14 @@ type ThemeProviderProps = {
 export const ThemeProvider = ({ children }: ThemeProviderProps) => {
   const [darkMode] = useTheme();
 
+  // The children stay outside the Suspense: a boundary that delays their
+  // commit makes RouterProvider subscribe too late and miss the first route.
   return (
-    <Suspense fallback={<span />}>
-      {darkMode ? <DarkTheme /> : <LightTheme />}
+    <>
+      <Suspense fallback={<span />}>
+        {darkMode ? <DarkTheme /> : <LightTheme />}
+      </Suspense>
       {children}
-    </Suspense>
+    </>
   );
 };
