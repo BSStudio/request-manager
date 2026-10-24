@@ -4,7 +4,7 @@ Templates and recipient lists are tested on the builders themselves, in
 tests/unit/video_requests/emails_tests.py.
 """
 
-from datetime import timedelta
+from datetime import UTC, datetime, timedelta
 from unittest.mock import patch
 
 import pytest
@@ -563,6 +563,29 @@ class TestWhichChangesAreWorthAnEmail:
             {
                 "title": "TC2",
                 "deadline": (video_request.end_datetime + timedelta(weeks=2)).date(),
+                "send_notification": True,
+            },
+        )
+
+        assert response.status_code == HTTP_200_OK
+        notify.assert_called_once()
+        assert [change["name"] for change in notify.call_args.args[3]] == [
+            "Esemény neve"
+        ]
+
+    def test_an_unchanged_time_in_the_dst_fold_is_left_out(
+        self, api_client, notify, video_request
+    ):
+        # 02:30 happens twice in Budapest that night.
+        video_request.start_datetime = datetime(2026, 10, 24, 22, 30, tzinfo=UTC)
+        video_request.end_datetime = datetime(2026, 10, 25, 0, 30, tzinfo=UTC)
+        video_request.save()
+
+        response = api_client.patch(
+            self.url(video_request),
+            {
+                "title": "TC4",
+                "end_datetime": video_request.end_datetime,
                 "send_notification": True,
             },
         )

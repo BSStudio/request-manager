@@ -1,3 +1,5 @@
+from datetime import UTC, datetime
+
 from django.utils.timezone import now
 from django.utils.translation import gettext_lazy as _
 from drf_spectacular.utils import extend_schema_field
@@ -123,6 +125,9 @@ class RequestAdminUpdateSerializer(ModelSerializer):
         for field in fields_to_check:
             next_value = validated_data.get(field, None)
             prev_value = getattr(instance, field)
+            if isinstance(next_value, datetime):
+                # Compare in UTC, like the stored value: a time in the DST fold never equals one in another zone.
+                next_value = next_value.astimezone(UTC)
             if next_value and prev_value != next_value:
                 changed_field = dict()
                 changed_field["name"] = self.field_name_translations[field]
