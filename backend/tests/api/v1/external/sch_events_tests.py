@@ -10,13 +10,14 @@ from rest_framework.reverse import reverse
 from rest_framework.status import (
     HTTP_200_OK,
     HTTP_201_CREATED,
+    HTTP_400_BAD_REQUEST,
     HTTP_404_NOT_FOUND,
     is_success,
 )
 
 from common.models import User
 from tests.api.asserts import assert_exact_fields
-from tests.api.helpers import do_login, login
+from tests.api.helpers import authorize, do_login, login
 from tests.api.matrix import service_account_only
 from video_requests.models import Comment, Request
 
@@ -158,6 +159,50 @@ def test_create_request(
             assert comment
             assert comment.text == data["comment"]
             assert comment.author == requester
+
+
+@pytest.mark.parametrize(
+    "encoding,logged_title",
+    [
+        pytest.param("latin-1", r"G\xf3lyab\xe1l", id="parse-error"),
+        pytest.param("utf-8", "Gólyabál", id="validation-error"),
+    ],
+)
+def test_create_request_bad_request_logs_body(
+    api_client, caplog, encoding, logged_title, service_account
+):
+    authorize(api_client, service_account)
+
+    url = reverse("api:v1:external:sch-events:requests:request-create")
+    response = api_client.post(
+        url, '{"title": "Gólyabál"}'.encode(encoding), content_type="application/json"
+    )
+
+    assert response.status_code == HTTP_400_BAD_REQUEST
+    (record,) = (r for r in caplog.records if r.name.endswith("sch_events.views"))
+    assert record.getMessage() == (
+        f"SCH Events (bejelentes.sch) bad request: POST {url} "
+        f'body={{"title": "{logged_title}"}}'
+    )
+
+
+def test_create_comment_bad_request_logs_body(api_client, caplog, service_account):
+    authorize(api_client, service_account)
+    video_request = baker.make("video_requests.Request", requested_by=service_account)
+
+    url = reverse(
+        "api:v1:external:sch-events:requests:request-comment-create",
+        kwargs={"request_pk": video_request.id},
+    )
+    response = api_client.post(
+        url, '{"text": "Kávé"}'.encode("latin-1"), content_type="application/json"
+    )
+
+    assert response.status_code == HTTP_400_BAD_REQUEST
+    (record,) = (r for r in caplog.records if r.name.endswith("sch_events.views"))
+    assert record.getMessage() == (
+        rf'SCH Events (bejelentes.sch) bad request: POST {url} body={{"text": "K\xe1v\xe9"}}'
+    )
 
 
 @service_account_only(HTTP_200_OK)
