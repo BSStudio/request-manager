@@ -1,5 +1,7 @@
+import hashlib
 import logging
 
+from django.core.cache import cache
 from drf_spectacular.utils import extend_schema
 from rest_framework import generics
 from rest_framework.exceptions import ParseError, ValidationError
@@ -18,15 +20,27 @@ from video_requests.models import Request
 
 logger = logging.getLogger(__name__)
 
+BAD_REQUEST_REPORT_INTERVAL = 60 * 60 * 24
+
 
 def external_api_exception_handler(exc, context):
     if isinstance(exc, (ValidationError, ParseError)):
         request = context["request"]
-        logger.exception(
+        path = request.get_full_path()
+        # Sentry records only errors, and bejelentes.sch retries a rejected
+        # request every few minutes: each body is an error once a day.
+        first = cache.add(
+            f"sch-events-bad-request:{path}:{hashlib.sha256(request.body).hexdigest()}",
+            True,
+            timeout=BAD_REQUEST_REPORT_INTERVAL,
+        )
+        logger.log(
+            logging.ERROR if first else logging.WARNING,
             "SCH Events (bejelentes.sch) bad request: %s %s body=%s",
             request.method,
-            request.get_full_path(),
+            path,
             request.body.decode(errors="backslashreplace"),
+            exc_info=True,
         )
     return exception_handler(exc, context)
 

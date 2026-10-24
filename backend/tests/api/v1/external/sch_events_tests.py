@@ -1,8 +1,10 @@
 import json
+import logging
 from datetime import timedelta
 
 import pytest
 import responses
+from django.core.cache import cache
 from django.utils.timezone import localtime
 from django_celery_results.models import TaskResult
 from model_bakery import baker
@@ -22,6 +24,12 @@ from tests.api.matrix import service_account_only
 from video_requests.models import Comment, Request
 
 pytestmark = pytest.mark.django_db
+
+
+@pytest.fixture(autouse=True)
+def clear_cache():
+    # Bad requests already reported are remembered there.
+    cache.clear()
 
 
 def assert_comment_response_keys(comment):
@@ -203,6 +211,22 @@ def test_create_comment_bad_request_logs_body(api_client, caplog, service_accoun
     assert record.getMessage() == (
         rf'SCH Events (bejelentes.sch) bad request: POST {url} body={{"text": "K\xe1v\xe9"}}'
     )
+
+
+def test_repeated_bad_request_logs_a_warning(api_client, caplog, service_account):
+    authorize(api_client, service_account)
+
+    url = reverse("api:v1:external:sch-events:requests:request-create")
+    for _ in range(2):
+        api_client.post(
+            url,
+            '{"title": "Gólyabál"}'.encode("latin-1"),
+            content_type="application/json",
+        )
+
+    assert [
+        r.levelno for r in caplog.records if r.name.endswith("sch_events.views")
+    ] == [logging.ERROR, logging.WARNING]
 
 
 @service_account_only(HTTP_200_OK)
