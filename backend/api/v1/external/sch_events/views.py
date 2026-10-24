@@ -33,9 +33,9 @@ def external_api_exception_handler(exc, context):
 
 class ExternalSchEventsBadRequestMixin:
     def initial(self, request, *args, **kwargs):
+        super().initial(request, *args, **kwargs)
         # Django keeps the raw body only if it is read before DRF parses the stream.
         request.body
-        super().initial(request, *args, **kwargs)
 
     def get_exception_handler(self):
         return external_api_exception_handler
