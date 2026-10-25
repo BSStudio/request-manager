@@ -39,11 +39,13 @@ jobs:
       id-token: write
       attestations: write
     outputs:
-      release: ${{ steps.release.outputs.name }}
+      version: ${{ steps.version.outputs.value }}
     steps:
       - name: Check out
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          # The version counts the commits since the last release tag.
+          fetch-depth: 0
           persist-credentials: false
 
       - name: Set up Docker Buildx
@@ -68,14 +70,31 @@ jobs:
             type=semver,pattern={{version}}
             type=semver,pattern={{major}}.{{minor}}
 
-      # Sentry reads package@version names as semantic versions.
-      - name: Name the Sentry release
-        id: release
+      # Sentry parses the version as semver, which has no leading v. Mirrors
+      # gitVersion in frontend/vite.config.mts, which versions local builds.
+      - name: Resolve the version
+        id: version
         run: |
           if [ "$GITHUB_REF_TYPE" = tag ]; then
-            echo "name=request-manager@${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+            echo "value=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+
+          describe=$(git describe --tags --first-parent --long --abbrev=7 --match 'v[0-9]*.[0-9]*.[0-9]*' --exclude '*-*')
+          [[ $describe =~ ^v([0-9]+\.[0-9]+\.[0-9]+)-([0-9]+)-g([0-9a-f]+)$ ]]
+          tag=${BASH_REMATCH[1]}
+          distance=${BASH_REMATCH[2]}
+          hash=${BASH_REMATCH[3]}
+          branch=${GITHUB_REF_NAME//[^0-9A-Za-z-]/-}
+
+          # Later commits must sort higher in Sentry, which compares the
+          # revision numerically and prereleases as text.
+          if [ "$distance" = 0 ]; then
+            echo "value=$tag" >> "$GITHUB_OUTPUT"
+          elif [ "$branch" = main ]; then
+            echo "value=$tag.$distance+$hash" >> "$GITHUB_OUTPUT"
           else
-            echo "name=$GITHUB_SHA" >> "$GITHUB_OUTPUT"
+            echo "value=$tag.$distance+$branch.$hash" >> "$GITHUB_OUTPUT"
           fi
 
       - name: Build and push Docker image
@@ -86,7 +105,7 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          build-args: SENTRY_RELEASE=${{ steps.release.outputs.name }}
+          build-args: VERSION=${{ steps.version.outputs.value }}
           # Pull request images are not pushed, and their code is not reviewed
           # yet, Renovate's included. Without the token the upload is skipped.
           secrets: ${{ github.event_name != 'pull_request' && format('SENTRY_AUTH_TOKEN={0}', secrets.SENTRY_AUTH_TOKEN) || '' }}
@@ -128,5 +147,5 @@ jobs:
           SENTRY_ORG: budavari-schonherz-studio
         with:
           projects: request-manager-backend request-manager-frontend
-          release: ${{ needs.build-and-push.outputs.release }}
+          release: request-manager@${{ needs.build-and-push.outputs.version }}
           disable_telemetry: true
