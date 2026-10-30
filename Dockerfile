@@ -7,7 +7,7 @@
 # Stage 1 - Build Frontend
 
 # Pull base image
-FROM node:24-alpine AS frontend-build
+FROM node:26-alpine AS frontend-build
 
 # pnpm store location (shared with the BuildKit cache mount below)
 ENV PNPM_HOME="/pnpm"
