@@ -34,7 +34,7 @@ repos:
         additional_dependencies:
           - pyyaml==6.0.3
   - repo: https://github.com/astral-sh/uv-pre-commit
-    rev: 0.13.4
+    rev: 0.13.6
     hooks:
       - id: uv-lock
         name: 'Verify that uv.lock is consistent with pyproject.toml'
