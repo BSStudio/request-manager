@@ -7,7 +7,7 @@
 # Stage 1 - Build Frontend
 
 # Pull base image
-FROM node:24-alpine AS frontend-build
+FROM node:26-alpine AS frontend-build
 
 # pnpm store location (shared with the BuildKit cache mount below)
 ENV PNPM_HOME="/pnpm"
@@ -19,8 +19,8 @@ WORKDIR /app/frontend
 # Copy manifest, pnpm lockfile and workspace config to Docker environment
 COPY ./frontend/package.json ./frontend/pnpm-lock.yaml ./frontend/pnpm-workspace.yaml /app/frontend/
 
-# Enable pnpm via Corepack and install all required node packages
-RUN corepack enable
+# Install the pnpm version from packageManager and all required node packages
+RUN npm install -g "$(node -p "require('./package.json').packageManager")"
 RUN --mount=type=cache,id=pnpm,target=/pnpm/store pnpm install --frozen-lockfile
 
 # Copy everything over to Docker environment
