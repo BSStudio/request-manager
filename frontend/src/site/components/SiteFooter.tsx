@@ -9,16 +9,17 @@ type FooterLink = { external?: boolean; label: string; to: string };
 
 const repoUrl = 'https://github.com/BSStudio/request-manager';
 
-// Tagged builds are released as request-manager@<version>, others by commit.
-function releaseLink(release?: string) {
-  if (!release) return null;
-  const version = release.split('@')[1];
-  return version
-    ? { label: `v${version}`, url: `${repoUrl}/releases/tag/v${version}` }
-    : { label: release.slice(0, 7), url: `${repoUrl}/commit/${release}` };
+// Tagged builds are versioned X.Y.Z, others X.Y.Z.<commits>+[<branch>.]<hash>.
+function releaseLink(version?: string) {
+  if (!version) return null;
+  if (/^\d+\.\d+\.\d+$/.test(version)) {
+    return { label: `v${version}`, url: `${repoUrl}/releases/tag/v${version}` };
+  }
+  const hash = version.split(/[+.]/).at(-1);
+  return { label: hash, url: `${repoUrl}/commit/${hash}` };
 }
 
-const release = releaseLink(import.meta.env.RELEASE);
+const release = releaseLink(import.meta.env.VERSION);
 
 function FooterColumn({
   links,
