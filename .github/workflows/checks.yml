@@ -15,6 +15,6 @@ concurrency:
 jobs:
   checks:
     name: Checks
-    uses: BSStudio/.github/.github/workflows/shared-checks.yml@1bee7a7ec6481ec9b591405f76c94a6bdbc4b688 # v1.1.1
+    uses: BSStudio/.github/.github/workflows/shared-checks.yml@a0efb9f8ba70ee2a58fc00158ec66efa34da0bf5 # v1.1.2
     with:
       dependency-review: true
