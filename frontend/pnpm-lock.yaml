@@ -245,8 +245,8 @@ importers:
         specifier: 2.0.8
         version: 2.0.8(@types/react@19.3.0)(react-dom@19.3.1(react@19.3.1))(react@19.3.1)
       timeago.js:
-        specifier: 4.3.0
-        version: 4.3.0
+        specifier: 4.0.2
+        version: 4.0.2
       tw-animate-css:
         specifier: 1.4.0
         version: 1.4.0
@@ -5078,8 +5078,8 @@ packages:
     engines: {node: '>=10'}
     hasBin: true
 
-  timeago.js@4.3.0:
-    resolution: {integrity: sha512-/pZHN79A/m+GqVa0UZD4YS91AFsTiXN8vmKb2VYM+NK/v6LcH6enmFXNcLgkojEMXXhocc4r3IHMspngyX3Pfg==}
+  timeago.js@4.0.2:
+    resolution: {integrity: sha512-a7wPxPdVlQL7lqvitHGGRsofhdwtkoSXPGATFuSOA2i1ZNQEPLrGnj68vOp2sOJTCFAQVXPeNMX/GctBaO9L2w==}
 
   tinybench@6.2.2:
     resolution: {integrity: sha512-nIZ2N2dFpjBsg2hgitKu7mA+FvsIJuGJOwysRngmVRRmWgR/UyPjwJj8c/fT/dhm8EkHnF5EOogRf+0Z2qrimA==}
@@ -10424,7 +10424,7 @@ snapshots:
       commander: 2.20.3
       source-map-support: 0.5.21
 
-  timeago.js@4.3.0: {}
+  timeago.js@4.0.2: {}
 
   tinybench@6.2.2: {}
 

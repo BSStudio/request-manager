@@ -64,6 +64,12 @@
       "allowedVersions": "<6.1"
     },
     {
+      "description": "timeago.js 4.1.0 and 4.3.0 ship an exports map without types conditions, so TypeScript cannot find their types.",
+      "matchManagers": ["npm"],
+      "matchPackageNames": ["timeago.js"],
+      "allowedVersions": "<4.1.0"
+    },
+    {
       "description": "A new generator version changes the generated client, which no check regenerates.",
       "matchDepNames": ["org.openapitools:openapi-generator-cli"],
       "prBodyNotes": [
