@@ -53,7 +53,7 @@ repos:
         name: 'Upgrade Django syntax to newer versions'
         args: [--target-version, '6.1']
   - repo: https://github.com/hadialqattan/pycln
-    rev: v2.6.0
+    rev: v2.6.1
     hooks:
       - id: pycln
         name: 'Remove unused Python imports'
@@ -75,7 +75,7 @@ repos:
         name: 'Format Django templates'
         files: ^backend/templates/
   - repo: https://github.com/PyCQA/flake8
-    rev: 7.4.1
+    rev: 7.5.0
     hooks:
       - id: flake8
         name: 'Lint Python code'
@@ -98,7 +98,7 @@ repos:
           - python
         args: [--config, ./frontend/.prettierrc]
   - repo: https://github.com/pre-commit/mirrors-eslint
-    rev: v10.13.0
+    rev: v10.14.0
     hooks:
       - id: eslint
         name: 'Lint TypeScript code'
