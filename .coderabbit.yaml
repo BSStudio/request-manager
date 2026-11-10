@@ -1,0 +1,20 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
+reviews:
+  high_level_summary: false
+  estimate_code_review_effort: false
+  related_issues: false
+  related_prs: false
+  suggested_labels: false
+  auto_review:
+    enabled: false
+  # The generated API client files, as listed in frontend/eslint.config.cjs.
+  path_filters:
+    - '!frontend/src/api/{api,base,common,configuration,index}.ts'
+    - '!frontend/src/api/endpoints/**'
+    - '!frontend/src/api/models/**'
+    - '!frontend/src/api/git_push.sh'
+    - '!frontend/src/api/.openapi-generator/**'
+    - '!backend/schema.yaml'
+  finishing_touches:
+    unit_tests:
+      enabled: false
