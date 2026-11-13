@@ -22,6 +22,10 @@ uv run pytest
 pre-commit run --files <changed files>
 ```
 
+In a fresh worktree, copy the gitignored `backend/.env` from the main clone first. Parallel `uv run pytest` runs share Postgres and Redis: give each worktree its own `DATABASE_NAME=rm_<name>` and `CACHE_REDIS=redis://localhost:6379/<n>` as environment variables, which take precedence over `.env`.
+
+For a browser check, don't start a second Vite dev server from `frontend/` in the same checkout: it shares `node_modules/.vite` with the maintainer's and breaks it. Check through `e2e_server` instead (see [End-to-end tests](frontend/README.md#end-to-end-tests)).
+
 ## Commits and branches
 
 Commit messages and PR titles are plain imperative sentences, with no `feat:`-style prefixes. PRs are squash-merged: the PR title becomes the commit on `main`, with an empty body. Renames and deletions go in their own commit, apart from behavior changes, so the diff stays readable.
@@ -35,6 +39,12 @@ Commit messages and PR titles are plain imperative sentences, with no `feat:`-st
 - `src/api/` is generated from the backend's OpenAPI schema with `pnpm generate-client`; do not edit the generated files. The hand-written ones there are `http.ts`, `errors.ts` and `queryClient.ts`.
 - Both apps log in with the session cookie and send the CSRF token. The public build-time values (OAuth client IDs, Sentry DSN, Turnstile site key) are in `frontend/.env.production`.
 - Frontend dependencies are pinned to exact versions: add them with `pnpm add --save-exact`. The `@pnpm/exe` entries in `frontend/pnpm-lock.yaml` belong there: pnpm records its own version under `packageManagerDependencies`.
+- On admin details pages, a `DetailsRow`'s content is plain text, never a link: navigation goes through the row's `button`, a `LinkButton` labelled "Ugrás" as in `VideoDetailsPage`. In admin editor forms every row uses the full width: split it evenly (`md:col-6`, `md:col-4`) instead of leaving one field half-wide.
+- Admin edit forms send only the changed fields (`pickDirtyFields`).
+
+### Backend
+
+- Production has no `ModelBackend`, so only superusers get Django admin permissions; this is intended. The admin may allow more than the API, but neither may let a user create invalid or inconsistent data.
 
 ### Data and privacy
 
