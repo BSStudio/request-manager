@@ -24,7 +24,7 @@ pre-commit run --files <changed files>
 
 In a fresh worktree, copy the gitignored `backend/.env` from the main clone first. Parallel `uv run pytest` runs share Postgres and Redis: give each worktree its own `DATABASE_NAME=rm_<name>` and `CACHE_REDIS=redis://localhost:6379/<n>` as environment variables, which take precedence over `.env`.
 
-For a browser check, don't start a second Vite dev server from `frontend/` in the same checkout: it shares `node_modules/.vite` with the maintainer's and breaks it. Check through `e2e_server` instead (see [End-to-end tests](frontend/README.md#end-to-end-tests)).
+For a browser check, don't start a second Vite dev server from `frontend/` in the same checkout: it shares `node_modules/.vite` with the maintainer's and breaks it. Check through `e2e_server` instead (see [Checking a page in a browser](frontend/README.md#checking-a-page-in-a-browser)).
 
 ## Commits and branches
 

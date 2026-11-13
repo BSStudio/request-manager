@@ -82,6 +82,22 @@ End-to-end tests in `e2e/` run the app in Chromium with Playwright. `pnpm e2e` b
 
 Download Chromium once with `pnpm exec playwright install chromium`. Tests log in by loading a login file, `test.use({ storageState: loginAs('minta.anna') })`, and can only reach localhost and Cloudflare's Turnstile. Only one run can go at a time, because the port and the database are fixed. A run leaves its own build in `build/`, so run `pnpm build` again before `pnpm preview` or before Django serves the build. CI runs the end-to-end tests on every pull request and keeps the traces of failed tests as a downloadable artifact.
 
+### Checking a page in a browser
+
+To look at a page with the test data, serve an end-to-end build the way the tests do, on another port:
+
+```bash
+# in frontend/
+pnpm exec vite build --mode e2e
+
+# in backend/
+uv run python manage.py e2e_server localhost:8011 --storage-state-dir <dir> --settings core.settings.e2e
+```
+
+The app is then at <http://localhost:8011>, over plain http. Django caches `index.html` after the first request, so restart the server after every build; each start recreates the `request_manager_e2e` database and rewrites the logins. Stop it before `pnpm e2e`, which drops the same database.
+
+To log in as a test user, take `<dir>/<username>.json`, a Playwright storage state, and set its cookies and `localStorage` entries in the browser, then reload. Do it in a private window: the page cannot overwrite the cookie of an existing login.
+
 ## Code style
 
 Formatting and linting (Prettier + ESLint) are enforced by pre-commit. Install the hooks once from the repository root with `pre-commit install`.
