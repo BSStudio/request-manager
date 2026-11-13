@@ -22,7 +22,7 @@ uv run pytest
 pre-commit run --files <changed files>
 ```
 
-In a fresh worktree, copy the gitignored `backend/.env` from the main clone first. Parallel `uv run pytest` runs share Postgres and Redis: give each worktree its own `DATABASE_NAME=rm_<name>` and `CACHE_REDIS=redis://localhost:6379/<n>` as environment variables, which take precedence over `.env`.
+In a fresh worktree, first copy the gitignored `backend/.env` from the main clone and collect the static files (see [Testing](backend/README.md#testing)). Parallel `uv run pytest` runs share Postgres and Redis: give each worktree its own `DATABASE_NAME=rm_<name>` and `CACHE_REDIS=redis://localhost:6379/<n>` as environment variables, which take precedence over `.env`. `pnpm e2e` and the browser-check server below share the `request_manager_e2e` database, so only one of them can run at a time across all worktrees.
 
 For a browser check, don't start a second Vite dev server from `frontend/` in the same checkout: it shares `node_modules/.vite` with the maintainer's and breaks it. Check through `e2e_server` instead (see [Checking a page in a browser](frontend/README.md#checking-a-page-in-a-browser)).
 

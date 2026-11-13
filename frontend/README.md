@@ -91,12 +91,17 @@ To look at a page with the test data, serve an end-to-end build the way the test
 pnpm exec vite build --mode e2e
 
 # in backend/
-uv run python manage.py e2e_server localhost:8011 --storage-state-dir <dir> --settings core.settings.e2e
+uv run python manage.py e2e_server localhost:8011 --settings core.settings.e2e
 ```
 
-The app is then at <http://localhost:8011>, over plain http. Django caches `index.html` after the first request, so restart the server after every build; each start recreates the `request_manager_e2e` database and rewrites the logins. Stop it before `pnpm e2e`, which drops the same database.
+The app is then at <http://localhost:8011>, over plain http. Like `pnpm e2e`, this leaves the end-to-end build in `build/`. Django caches `index.html` after the first request, so restart the server after every build; each start recreates the `request_manager_e2e` database, which ends earlier logins. Stop it before `pnpm e2e`, which drops the same database.
 
-To log in as a test user, take `<dir>/<username>.json`, a Playwright storage state, and set its cookies and `localStorage` entries in the browser, then reload. Do it in a private window: the page cannot overwrite the cookie of an existing login.
+To log in, create a session with the end-to-end settings and paste the line it prints into the browser console on <http://localhost:8011>, in a private window (see [Test data](../backend/README.md#test-data)):
+
+```bash
+# in backend/
+uv run python manage.py dev_session admin.aladar --settings core.settings.e2e
+```
 
 ## Code style
 
