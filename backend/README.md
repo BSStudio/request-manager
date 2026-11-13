@@ -60,9 +60,10 @@ uv run celery -A core beat      # scheduler
 
 ## Testing
 
-Tests run with [pytest](https://docs.pytest.org/):
+Tests run with [pytest](https://docs.pytest.org/). They use the production static files storage, so in a fresh checkout collect the static files once first, as CI does; without them, every test that renders a template fails with "Missing staticfiles manifest entry". Don't pass `--clear`: it deletes the tracked `staticfiles/.placeholder`.
 
 ```bash
+uv run python manage.py collectstatic --no-input --settings core.settings.test
 uv run pytest
 ```
 
