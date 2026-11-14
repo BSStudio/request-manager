@@ -7,7 +7,7 @@ authors = [
 description = "Workflow Support System for managing video shooting, filming and live streaming requests of Budavári Schönherz Stúdió."
 requires-python = ">=3.15,<4.0"
 dependencies = [
-    "celery[redis]==5.6.3",
+    "celery[redis]==5.7.0",
     "django==6.0.10",
     "djangorestframework==3.18.3",
     "django-cacheops==7.2",
@@ -27,7 +27,7 @@ dependencies = [
     "python-decouple==3.8",
     "pywebpush==2.5.0",
     "requests==2.34.2",
-    "sentry-sdk==2.73.0",
+    "sentry-sdk==2.74.0",
     "social-auth-app-django==8.0.0",
     "whitenoise[brotli]==6.12.0"
 ]
@@ -37,11 +37,11 @@ ci = ["pytest-github-actions-annotate-failures==0.4.2"]
 debug = ["django-debug-toolbar==8.0.0"]
 dev = [
     "pre-commit==4.7.0",
-    "psycopg[binary]==3.3.7"
+    "psycopg[binary]==3.3.8"
 ]
 prod = [
     "gunicorn==27.0.0",
-    "psycopg[c]==3.3.7"
+    "psycopg[c]==3.3.8"
 ]
 test = [
     "model_bakery==1.24.2",
