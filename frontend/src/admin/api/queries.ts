@@ -1,9 +1,9 @@
 import { Semester } from 'admin/helpers/SemesterHelper';
 
-import { queryKeys } from './queryKeys';
 import { AdminTodosListStatusEnum } from '../../api/endpoints/admin-api';
 import { isNotFound } from '../../api/errors';
 import { adminApi } from '../../api/http';
+import { queryKeys } from './queryKeys';
 
 export const projectRequestsListQuery = (projectId: number) => ({
   queryFn: async () => {
