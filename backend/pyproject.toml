@@ -65,6 +65,7 @@ omit = [
     "*/migrations/*",
     "*/admin.py",
     "manage.py",
+    "devtools/dev_setup.py",
 ]
 exclude_lines = [
     "pragma: no cover",

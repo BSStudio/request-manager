@@ -11,7 +11,7 @@ import re
 import shutil
 import subprocess  # nosec B404
 import sys
-from collections.abc import Iterable
+from collections.abc import Iterable, Mapping
 from pathlib import Path
 from urllib.parse import urlsplit, urlunsplit
 
@@ -22,8 +22,11 @@ from psycopg import sql
 WORKTREE_FILES = ["backend/.env", "frontend/.env"]
 PREFIX = "rm_"
 MAX_IDENTIFIER_BYTES = 63
-MAIN_REDIS_INDEXES = {0, 1}
 # The fallbacks core/settings/base.py uses.
+REDIS_DEFAULTS = {
+    "CACHE_REDIS": "redis://redis:6379/0",
+    "CELERY_BROKER": "redis://redis:6379/1",
+}
 DATABASE_DEFAULTS = {
     "DATABASE_HOST": "postgres",
     "DATABASE_PORT": "5432",
@@ -117,6 +120,16 @@ def free_redis_pair(claimed: set[int]) -> tuple[int, int]:
     )
 
 
+def claimed_redis_indexes(envs: Iterable[Mapping[str, str]]) -> set[int]:
+    claimed = set()
+    for env in envs:
+        for key, default in REDIS_DEFAULTS.items():
+            index = redis_index(env.get(key, default))
+            if index is not None:
+                claimed.add(index)
+    return claimed
+
+
 def stale_databases(
     existing: Iterable[str], live: Iterable[str], prefix: str = PREFIX
 ) -> list[str]:
@@ -138,7 +151,8 @@ def main(argv: list[str] | None = None) -> int:
     )
     args = parser.parse_args(argv)
     # Keeps these lines in order with manage.py's output when stdout is a pipe or a file.
-    sys.stdout.reconfigure(line_buffering=True)
+    if hasattr(sys.stdout, "reconfigure"):
+        sys.stdout.reconfigure(line_buffering=True)
 
     root = worktree_root(Path.cwd())
     if root is None:
@@ -219,23 +233,20 @@ def _setup(root: Path, main_checkout: Path | None) -> None:
 
 def _worktree_values(root: Path, main_checkout: Path, env_path: Path) -> dict[str, str]:
     data = RepositoryEnv(str(env_path)).data
-    cache = data.get("CACHE_REDIS", "redis://redis:6379/0")
-    broker = data.get("CELERY_BROKER", "redis://redis:6379/1")
+    cache = data.get("CACHE_REDIS", REDIS_DEFAULTS["CACHE_REDIS"])
+    broker = data.get("CELERY_BROKER", REDIS_DEFAULTS["CELERY_BROKER"])
     own = redis_index(cache)
     if own in range(2, 15, 2) and redis_index(broker) == own + 1:
         first = own
     else:
-        claimed = set(MAIN_REDIS_INDEXES)
-        for other in worktree_roots(root):
-            if other.resolve() in (root.resolve(), main_checkout.resolve()):
-                continue
-            other_env = other / "backend" / ".env"
-            if other_env.exists():
-                other_data = RepositoryEnv(str(other_env)).data
-                for key in ("CACHE_REDIS", "CELERY_BROKER"):
-                    index = redis_index(other_data.get(key, ""))
-                    if index is not None:
-                        claimed.add(index)
+        others = [
+            other / "backend" / ".env"
+            for other in worktree_roots(root)
+            if other.resolve() != root.resolve()
+        ]
+        claimed = claimed_redis_indexes(
+            RepositoryEnv(str(env)).data for env in others if env.exists()
+        )
         try:
             first, _ = free_redis_pair(claimed)
         except RuntimeError as error:

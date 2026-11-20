@@ -5,6 +5,7 @@ from pathlib import Path
 import pytest
 
 from devtools.dev_setup import (
+    claimed_redis_indexes,
     database_name,
     free_redis_pair,
     main_checkout_of,
@@ -76,6 +77,22 @@ def test_free_redis_pair_skips_claimed_indexes():
     assert free_redis_pair({0, 1, 3}) == (4, 5)
 
 
+def test_claimed_redis_indexes_read_every_env_with_the_settings_defaults():
+    worktree = {
+        "CACHE_REDIS": "redis://localhost:6381/4",
+        "CELERY_BROKER": "redis://localhost:6381/5",
+    }
+    assert claimed_redis_indexes([worktree, {}]) == {0, 1, 4, 5}
+
+
+def test_claimed_redis_indexes_follow_a_main_checkout_off_0_and_1():
+    main = {
+        "CACHE_REDIS": "redis://localhost:6381/2",
+        "CELERY_BROKER": "redis://localhost:6381/3",
+    }
+    assert free_redis_pair(claimed_redis_indexes([main])) == (4, 5)
+
+
 def test_no_free_pair_raises():
     with pytest.raises(RuntimeError):
         free_redis_pair(set(range(16)) - {15})
@@ -94,22 +111,20 @@ def test_prune_spares_main_e2e_and_test_databases():
 
 
 @pytest.fixture
-def repo(tmp_path):
+def repo(tmp_path, monkeypatch):
     root = (tmp_path / "repo").resolve()
     root.mkdir()
     empty_config = tmp_path / "gitconfig"
     empty_config.touch()
-    # The developer's own git config (commit signing, hooks) has no say in a throwaway repo.
-    env = {
-        **os.environ,
-        "GIT_CONFIG_GLOBAL": str(empty_config),
-        "GIT_CONFIG_NOSYSTEM": "1",
-    }
+    # Neither the developer's git config (commit signing, hooks) nor a calling hook's
+    # GIT_DIR / GIT_INDEX_FILE has a say in a throwaway repo.
+    for key in [key for key in os.environ if key.startswith("GIT_")]:
+        monkeypatch.delenv(key)
+    monkeypatch.setenv("GIT_CONFIG_GLOBAL", str(empty_config))
+    monkeypatch.setenv("GIT_CONFIG_NOSYSTEM", "1")
 
     def git(*args):
-        subprocess.run(
-            ["git", *args], cwd=root, check=True, capture_output=True, env=env
-        )
+        subprocess.run(["git", *args], cwd=root, check=True, capture_output=True)
 
     git("init", "-q", "-b", "main")
     (root / "README.md").write_text("x\n")

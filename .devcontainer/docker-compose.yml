@@ -1,7 +1,5 @@
 # Devcontainer overlay. Adds the `app` workspace container to the dev stack
 # defined in ../docker-compose.dev.yaml (postgres + redis).
-# Its own project with unpublished databases, so it runs beside the main dev stack
-# and seeds its own database; the environment overrides a host-shaped backend/.env.
 name: request-manager-devcontainer
 services:
   app:
@@ -13,6 +11,7 @@ services:
     command: sleep infinity
     extra_hosts:
       - 'host.docker.internal:host-gateway'
+    # Wins over the host's backend/.env, which the mounted repo brings along.
     environment:
       - DATABASE_NAME=request_manager_db
       - DATABASE_HOST=postgres
