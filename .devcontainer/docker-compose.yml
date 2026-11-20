@@ -1,5 +1,6 @@
 # Devcontainer overlay. Adds the `app` workspace container to the dev stack
 # defined in ../docker-compose.dev.yaml (postgres + redis).
+name: request-manager-devcontainer
 services:
   app:
     image: mcr.microsoft.com/devcontainers/base:bookworm
@@ -10,8 +11,21 @@ services:
     command: sleep infinity
     extra_hosts:
       - 'host.docker.internal:host-gateway'
+    # Wins over the host's backend/.env, which the mounted repo brings along.
+    environment:
+      - DATABASE_NAME=request_manager_db
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - CACHE_REDIS=redis://redis:6379/0
+      - CELERY_BROKER=redis://redis:6379/1
     depends_on:
       postgres:
         condition: service_healthy
       redis:
         condition: service_started
+
+  postgres:
+    ports: !reset []
+
+  redis:
+    ports: !reset []

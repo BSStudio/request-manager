@@ -1,3 +1,4 @@
+name: request-manager
 services:
   server:
     image: ghcr.io/bsstudio/request-manager:main
@@ -11,6 +12,11 @@ services:
       - 'host.docker.internal:host-gateway'
     env_file:
       - ./backend/.env
+    environment:
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - CACHE_REDIS=redis://redis:6379/0
+      - CELERY_BROKER=redis://redis:6379/1
     depends_on:
       - postgres
       - redis
@@ -23,6 +29,10 @@ services:
       - ./backend/.env
     environment:
       - DJANGO_CONTAINER=false
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - CACHE_REDIS=redis://redis:6379/0
+      - CELERY_BROKER=redis://redis:6379/1
     volumes:
       - credentials:/app/backend/credentials/:ro
     extra_hosts:
@@ -40,6 +50,10 @@ services:
       - ./backend/.env
     environment:
       - DJANGO_CONTAINER=false
+      - DATABASE_HOST=postgres
+      - DATABASE_PORT=5432
+      - CACHE_REDIS=redis://redis:6379/0
+      - CELERY_BROKER=redis://redis:6379/1
     depends_on:
       - server
       - postgres
