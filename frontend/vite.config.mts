@@ -1,4 +1,3 @@
-import { execFileSync } from 'child_process';
 import path from 'path';
 
 import { sentryVitePlugin } from '@sentry/vite-plugin';
@@ -8,56 +7,12 @@ import react from '@vitejs/plugin-react';
 import { defineConfig, loadEnv } from 'vite';
 import { VitePWA } from 'vite-plugin-pwa';
 
-function git(...args: string[]) {
-  return execFileSync('git', args, {
-    cwd: import.meta.dirname,
-    stdio: ['ignore', 'pipe', 'ignore'],
-  })
-    .toString()
-    .trim();
-}
-
-// Mirrors the "Resolve the version" step of
-// .github/workflows/docker-publish.yml, which versions image builds.
-function gitVersion() {
-  try {
-    const describe = git(
-      'describe',
-      '--tags',
-      '--first-parent',
-      '--long',
-      '--abbrev=7',
-      '--match=v[0-9]*.[0-9]*.[0-9]*',
-      '--exclude=*-*',
-    );
-    const match = /^v(\d+\.\d+\.\d+)-(\d+)-g([0-9a-f]+)$/.exec(describe);
-    if (!match) return '';
-    const [, tag, distance, hash] = match;
-
-    if (distance === '0' && git('status', '--porcelain') === '') return tag;
-
-    // Later commits must sort higher in Sentry, which compares the revision
-    // numerically and prereleases as text.
-    const branch = git('branch', '--show-current').replace(
-      /[^0-9A-Za-z-]/g,
-      '-',
-    );
-    return branch === '' || branch === 'main'
-      ? `${tag}.${distance}+${hash}`
-      : `${tag}.${distance}+${branch}.${hash}`;
-  } catch {
-    // No git or no release tag, as in the Docker build and shallow clones.
-    return '';
-  }
-}
-
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const { BACKEND_URL, VERSION } = loadEnv(mode, import.meta.dirname, '');
-  const version = VERSION || gitVersion();
+  const { BACKEND_URL, VERSION = '' } = loadEnv(mode, import.meta.dirname, '');
   // Release names are shared across the Sentry organization, hence the app
   // name. The backend reports the same release.
-  const release = version && `request-manager@${version}`;
+  const release = VERSION && `request-manager@${VERSION}`;
 
   return {
     build: {
@@ -66,7 +21,7 @@ export default defineConfig(({ mode }) => {
       sourcemap: 'hidden',
     },
     define: {
-      'import.meta.env.VERSION': JSON.stringify(version),
+      'import.meta.env.VERSION': JSON.stringify(VERSION),
     },
     plugins: [
       basicSsl(),

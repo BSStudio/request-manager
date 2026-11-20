@@ -9,7 +9,7 @@ type FooterLink = { external?: boolean; label: string; to: string };
 
 const repoUrl = 'https://github.com/BSStudio/request-manager';
 
-// Tagged builds are versioned X.Y.Z, others X.Y.Z.<commits>+[<branch>.]<hash>.
+// Tagged builds are versioned X.Y.Z, other image builds 0.0.0+<hash>.
 function releaseLink(version?: string) {
   if (!version) return null;
   if (/^\d+\.\d+\.\d+$/.test(version)) {
