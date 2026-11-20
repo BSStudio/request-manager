@@ -18,118 +18,21 @@ concurrency:
   group: ${{ github.workflow }}-${{ github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
-defaults:
-  run:
-    shell: bash
-
-env:
-  REGISTRY: ghcr.io
-  IMAGE_NAME: bsstudio/request-manager
-
 jobs:
-  build-and-push:
-    name: Build and push
-    runs-on: ubuntu-latest
-    timeout-minutes: 30
-    # Pull requests build without logging in, pushing or attesting, so the write scopes are never used there.
+  docker:
+    name: Docker
+    uses: BSStudio/.github/.github/workflows/shared-publish.yml@14e6deaf34d65dd4db67c19f146449c1cf99c1cc # v1.3.0
     permissions:
       contents: read
       packages: write
-      # Mint the OIDC token and write the build provenance attestation.
       id-token: write
       attestations: write
-    outputs:
-      version: ${{ steps.version.outputs.value }}
-    steps:
-      - name: Check out
-        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
-        with:
-          # The version counts the commits since the last release tag.
-          fetch-depth: 0
-          persist-credentials: false
-
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@f87e5991a6d7451dcb8d9637bfbc97413f497069 # v4.4.1
-
-      - name: Log into registry ${{ env.REGISTRY }}
-        if: github.event_name != 'pull_request'
-        uses: docker/login-action@8aa5831fb8d48d8f76594c7ddde61ae58019f550 # v4.8.0
-        with:
-          registry: ${{ env.REGISTRY }}
-          username: ${{ github.actor }}
-          password: ${{ secrets.GITHUB_TOKEN }}
-
-      - name: Extract Docker metadata
-        id: meta
-        uses: docker/metadata-action@dc802804100637a589fabce1cb79ff13a1411302 # v6.2.0
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-
-      # Sentry parses the version as semver, which has no leading v. Mirrors
-      # gitVersion in frontend/vite.config.mts, which versions local builds.
-      - name: Resolve the version
-        id: version
-        run: |
-          if [ "$GITHUB_REF_TYPE" = tag ]; then
-            echo "value=${GITHUB_REF_NAME#v}" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          describe=$(git describe --tags --first-parent --long --abbrev=7 --match 'v[0-9]*.[0-9]*.[0-9]*' --exclude '*-*')
-          [[ $describe =~ ^v([0-9]+\.[0-9]+\.[0-9]+)-([0-9]+)-g([0-9a-f]+)$ ]]
-          tag=${BASH_REMATCH[1]}
-          distance=${BASH_REMATCH[2]}
-          hash=${BASH_REMATCH[3]}
-          branch=${GITHUB_REF_NAME//[^0-9A-Za-z-]/-}
-
-          # Later commits must sort higher in Sentry, which compares the
-          # revision numerically and prereleases as text.
-          if [ "$distance" = 0 ]; then
-            echo "value=$tag" >> "$GITHUB_OUTPUT"
-          elif [ "$branch" = main ]; then
-            echo "value=$tag.$distance+$hash" >> "$GITHUB_OUTPUT"
-          else
-            echo "value=$tag.$distance+$branch.$hash" >> "$GITHUB_OUTPUT"
-          fi
-
-      - name: Build and push Docker image
-        id: build-and-push
-        uses: docker/build-push-action@c3c9e263c25d99ce0380d002d59b67737d91b0dc # v7.4.0
-        with:
-          context: .
-          push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          build-args: VERSION=${{ steps.version.outputs.value }}
-          # Pull request images are not pushed, and their code is not reviewed
-          # yet, Renovate's included. Without the token the upload is skipped.
-          secrets: ${{ github.event_name != 'pull_request' && format('SENTRY_AUTH_TOKEN={0}', secrets.SENTRY_AUTH_TOKEN) || '' }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
-          # Provenance handled by the attest step below; buildkit's own
-          # attestations would push untagged "unknown/unknown" manifests to ghcr.
-          provenance: false
-          sbom: false
-
-      - name: Attest build provenance
-        if: github.event_name != 'pull_request'
-        uses: actions/attest@1e69f48acb82d1966a394da916b4c1698aa569d6 # v4.2.2
-        with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          subject-digest: ${{ steps.build-and-push.outputs.digest }}
-          # Keep the attestation in GitHub's store only; pushing to ghcr would add
-          # an untagged referrer artifact. Verify with:
-          #   gh attestation verify oci://<image> --owner BSStudio
-          push-to-registry: false
+    secrets:
+      sentry-auth-token: ${{ github.ref_type == 'tag' && secrets.SENTRY_AUTH_TOKEN || '' }}
 
   sentry-release:
     name: Create Sentry release
-    needs: build-and-push
+    needs: docker
     if: github.ref_type == 'tag'
     runs-on: ubuntu-latest
     timeout-minutes: 10
@@ -147,5 +50,5 @@ jobs:
           SENTRY_ORG: budavari-schonherz-studio
         with:
           projects: request-manager-backend request-manager-frontend
-          release: request-manager@${{ needs.build-and-push.outputs.version }}
+          release: request-manager@${{ needs.docker.outputs.version }}
           disable_telemetry: true
