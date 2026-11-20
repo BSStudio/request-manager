@@ -1,9 +1,11 @@
+name: request-manager
 services:
   postgres:
     restart: unless-stopped
     image: postgres:18-alpine
     ports:
-      - 5432:5432
+      - '127.0.0.1:${POSTGRES_PORT:-5581}:5432'
+      - '[::1]:${POSTGRES_PORT:-5581}:5432'
     volumes:
       - postgres:/var/lib/postgresql
     environment:
@@ -24,7 +26,8 @@ services:
     restart: unless-stopped
     image: redis:8-alpine
     ports:
-      - 6379:6379
+      - '127.0.0.1:${REDIS_PORT:-6381}:6379'
+      - '[::1]:${REDIS_PORT:-6381}:6379'
     volumes:
       - redis:/data
 

@@ -21,10 +21,14 @@ The API is now available at <http://localhost:8000>.
 
 ### Environment
 
-All settings are read from `backend/.env`. Start from [`.env.sample`](.env.sample), which documents every variable and its default. For local development set:
+All settings are read from `backend/.env`. Start from [`.env.sample`](.env.sample), which documents every variable and its default. For local development set the debug settings and point at the dev stack's host ports (`.env.sample`'s defaults are the in-container `postgres` and `redis`):
 
 ```ini
 DJANGO_SETTINGS_MODULE = core.settings.debug
+DATABASE_HOST = localhost
+DATABASE_PORT = 5581
+CACHE_REDIS = redis://localhost:6381/0
+CELERY_BROKER = redis://localhost:6381/1
 ```
 
 #### Web push keys

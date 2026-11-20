@@ -18,7 +18,7 @@ EXPECTED_CHECKS = [
     "Storage(alias='default')",
 ]
 
-REDIS_CHECK = re.compile(r"Redis\(host='[^']+', port=6379\)")
+REDIS_CHECK = re.compile(r"Redis\(host='[^']+', port=\d+\)")
 
 
 def test_the_endpoint_reports_every_backing_service(client):
