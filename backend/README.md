@@ -19,6 +19,8 @@ uv run python manage.py runserver
 
 The API is now available at <http://localhost:8000>.
 
+In a git worktree, run `uv run python -m devtools.dev_setup` after `uv sync` instead of the `.env`, `migrate` and seed steps: it copies `backend/.env` and `frontend/.env` from the main checkout, gives the worktree its own database and Redis indexes, migrates, collects static files and seeds once. `--prune` drops the databases of removed worktrees, and `--prune --dry-run` lists them without dropping.
+
 ### Environment
 
 All settings are read from `backend/.env`. Start from [`.env.sample`](.env.sample), which documents every variable and its default. For local development set the debug settings and point at the dev stack's host ports (`.env.sample`'s defaults are the in-container `postgres` and `redis`):
