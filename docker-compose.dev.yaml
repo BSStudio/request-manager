@@ -2,7 +2,7 @@ name: request-manager
 services:
   postgres:
     restart: unless-stopped
-    image: postgres:18-alpine
+    image: postgres:19-alpine
     ports:
       - '127.0.0.1:${POSTGRES_PORT:-5581}:5432'
       - '[::1]:${POSTGRES_PORT:-5581}:5432'
