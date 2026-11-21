@@ -86,7 +86,7 @@ Node and Python versions are pinned in a single place each and kept up to date b
 
 ## Releases
 
-Publishing a GitHub release with a `vX.Y.Z` tag builds the Docker image tagged `X.Y.Z`, `X.Y` and `latest`, and creates the Sentry release `request-manager@X.Y.Z` with its commits, which the backend and the frontend both report. Every other image is versioned `0.0.0+<commit>`, uploads nothing to Sentry and creates no release. The images are built by the [shared publish workflow](https://github.com/BSStudio/.github/blob/main/docs/workflows.md#calling-the-shared-publish-workflow) of `BSStudio/.github`. The workflow needs the `SENTRY_AUTH_TOKEN` repository secret, a Sentry organization token, to create the release and upload the frontend's source maps.
+Publishing a GitHub release with a `vX.Y.Z` tag builds the Docker image tagged `X.Y.Z`, `X.Y` and `latest`, and creates the Sentry release `request-manager@X.Y.Z` with its commits, which the backend and the frontend both report. Every other image is versioned `0.0.0+<commit>`, uploads nothing to Sentry and creates no release; a local build is versioned `dev`. The footer links a tag build's release, any other image's commit, and the repository for `dev`. The images are built by the [shared publish workflow](https://github.com/BSStudio/.github/blob/main/docs/workflows.md#calling-the-shared-publish-workflow) of `BSStudio/.github`. The workflow needs the `SENTRY_AUTH_TOKEN` repository secret, a Sentry organization token, to create the release and upload the frontend's source maps.
 
 ## License
 

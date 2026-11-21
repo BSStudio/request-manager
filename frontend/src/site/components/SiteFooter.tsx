@@ -1,23 +1,12 @@
 import { ArrowUpRightIcon, MailIcon } from 'lucide-react';
 import { Link } from 'react-router';
 
+import { releaseLink } from 'helpers/releaseLink';
 import { useSessionUser } from 'helpers/session';
 import BssLogo from 'site/components/BssLogo';
 import SocialLinks from 'site/components/SocialLinks';
 
 type FooterLink = { external?: boolean; label: string; to: string };
-
-const repoUrl = 'https://github.com/BSStudio/request-manager';
-
-// Tagged builds are versioned X.Y.Z, other image builds 0.0.0+<hash>.
-function releaseLink(version?: string) {
-  if (!version) return null;
-  if (/^\d+\.\d+\.\d+$/.test(version)) {
-    return { label: `v${version}`, url: `${repoUrl}/releases/tag/v${version}` };
-  }
-  const hash = version.split(/[+.]/).at(-1);
-  return { label: hash, url: `${repoUrl}/commit/${hash}` };
-}
 
 const release = releaseLink(import.meta.env.VERSION);
 
@@ -135,21 +124,17 @@ export default function SiteFooter() {
           <SocialLinks className="text-white md:order-last" />
           <p className="text-sm text-white/50">
             © {new Date().getFullYear()} Budavári Schönherz Stúdió
-            {release && (
-              <>
-                {' · '}
-                <a
-                  aria-label={`Verzió: ${release.label}`}
-                  className="group inline-flex items-center gap-1 font-mono transition-colors hover:text-white"
-                  href={release.url}
-                  rel="noreferrer"
-                  target="_blank"
-                >
-                  {release.label}
-                  <ArrowUpRightIcon className="size-3.5 opacity-50 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100" />
-                </a>
-              </>
-            )}
+            {' · '}
+            <a
+              aria-label={`Verzió: ${release.label}`}
+              className="group inline-flex items-center gap-1 font-mono transition-colors hover:text-white"
+              href={release.url}
+              rel="noreferrer"
+              target="_blank"
+            >
+              {release.label}
+              <ArrowUpRightIcon className="size-3.5 opacity-50 transition group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:opacity-100" />
+            </a>
           </p>
         </div>
       </div>
