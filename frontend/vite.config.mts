@@ -9,10 +9,11 @@ import { VitePWA } from 'vite-plugin-pwa';
 
 // https://vitejs.dev/config/
 export default defineConfig(({ mode }) => {
-  const { BACKEND_URL, VERSION = '' } = loadEnv(mode, import.meta.dirname, '');
+  const { BACKEND_URL, VERSION } = loadEnv(mode, import.meta.dirname, '');
+  const version = VERSION || 'dev';
   // Release names are shared across the Sentry organization, hence the app
   // name. The backend reports the same release.
-  const release = VERSION && `request-manager@${VERSION}`;
+  const release = `request-manager@${version}`;
 
   return {
     build: {
@@ -21,7 +22,7 @@ export default defineConfig(({ mode }) => {
       sourcemap: 'hidden',
     },
     define: {
-      'import.meta.env.VERSION': JSON.stringify(VERSION),
+      'import.meta.env.VERSION': JSON.stringify(version),
     },
     plugins: [
       basicSsl(),
@@ -93,8 +94,7 @@ export default defineConfig(({ mode }) => {
         org: 'budavari-schonherz-studio',
         project: 'request-manager-frontend',
         // Only tagged versions become releases, created with their commits by
-        // the release workflow. An empty name injects none, where the plugin
-        // would otherwise fall back to the commit hash.
+        // the release workflow.
         release: {
           create: false,
           finalize: false,

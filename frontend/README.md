@@ -30,7 +30,7 @@ The dev server runs at <https://localhost:5173> and the admin dashboard at <http
 
 Configuration is read from `frontend/.env`. Start from [`.env.sample`](.env.sample). Variables prefixed with `VITE_` are built into the app, the rest only configure the dev server. Production builds, the Docker image included, take the `VITE_` values from the committed [`.env.production`](.env.production); for a local production build with other values, override them in `.env.production.local`.
 
-Builds also read two variables, which the Docker workflow sets: `VERSION` is the version the app reports to Sentry as the release `request-manager@<version>` (no release when unset, as in local builds), and with `SENTRY_AUTH_TOKEN`, which the workflow passes to tag builds only, the build uploads its source maps to Sentry and fails if the upload does. The source maps stay in `build/` for `pnpm analyze`; the Docker image leaves them out.
+Builds also read two variables, which the Docker workflow sets: `VERSION` is the version the footer shows and the app reports to Sentry as the release `request-manager@<version>` (`dev` when unset, as in local builds), and with `SENTRY_AUTH_TOKEN`, which the workflow passes to tag builds only, the build uploads its source maps to Sentry and fails if the upload does. The source maps stay in `build/` for `pnpm analyze`; the Docker image leaves them out.
 
 The app calls the API on its own origin, because the login is a session cookie. In production Django serves both, in development the dev server proxies `/api` to `BACKEND_URL` (default `http://localhost:8000`).
 
