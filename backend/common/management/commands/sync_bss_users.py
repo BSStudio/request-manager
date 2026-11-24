@@ -135,9 +135,7 @@ class Command(BaseCommand):
             update_bss_login_avatar(user, None)
             user.save()  # Save modifications
             total_demoted += 1
-            logger.info(
-                "%s (%s) has been demoted.", user.get_full_name(), user.username
-            )
+            logger.info("%s has been demoted.", user.username)
 
         self.stdout.write(
             self.style.SUCCESS(

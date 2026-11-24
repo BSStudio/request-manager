@@ -99,6 +99,19 @@ def test_sync_drops_a_photo_removed_from_the_directory():
 
 @pytest.mark.django_db
 @responses.activate
+def test_sync_logs_a_demotion_by_username_only(caplog):
+    user = make_user(is_staff=True, first_name="Anna", last_name="Kovács")
+    mock_directory()
+
+    with caplog.at_level(logging.INFO):
+        call_command("sync_bss_users")
+
+    assert f"{user.username} has been demoted." in caplog.text
+    assert "Kovács" not in caplog.text
+
+
+@pytest.mark.django_db
+@responses.activate
 def test_sync_drops_the_photo_of_a_demoted_user():
     user = make_user(
         is_staff=True,

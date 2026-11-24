@@ -4,6 +4,7 @@ from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.logging import ignore_logger
 from sentry_sdk.integrations.redis import RedisIntegration
 
+from common.sentry import before_send_log
 from core.settings._auth_social import *
 
 # Require an explicit secret key; base.py's random fallback differs per process
@@ -43,10 +44,13 @@ GOOGLE_CALENDAR_ID = config("GOOGLE_CALENDAR_ID")
 # https://sentry.io
 
 sentry_sdk.init(
+    before_send_log=before_send_log,
     data_collection=SENTRY_DATA_COLLECTION,
     # It records Redis keys, and the session cache keys are the session IDs.
     disabled_integrations=[RedisIntegration()],
     dsn=config("SENTRY_URL"),
+    # INFO and above, the logging integration's default.
+    enable_logs=True,
     integrations=[
         CeleryIntegration(monitor_beat_tasks=True),
         DjangoIntegration(middleware_spans=True),

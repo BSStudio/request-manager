@@ -74,11 +74,7 @@ def set_user_active_when_first_logs_in(backend, user=None, *args, **kwargs):
     if user and not backend.strategy.storage.user.get_social_auth_for_user(user):
         user.is_active = True
         user.save()
-        logger.info(
-            "User account has been activated for %s (%s)",
-            user.get_full_name(),
-            user.username,
-        )
+        logger.info("User account has been activated for %s", user.username)
 
 
 def check_if_admin_or_staff_user_already_associated(
