@@ -199,6 +199,9 @@ CELERY_TIMEZONE = config("TIME_ZONE", default="Europe/Budapest")
 # or external notifications and aren't idempotent, so redelivery would double-send.
 CELERY_WORKER_PREFETCH_MULTIPLIER = 1
 
+# Keeps LOGGING's INFO root level in the worker instead of Celery's WARNING one.
+CELERY_WORKER_HIJACK_ROOT_LOGGER = False
+
 # Scheduled tasks
 # https://docs.celeryproject.org/en/stable/userguide/periodic-tasks.html
 

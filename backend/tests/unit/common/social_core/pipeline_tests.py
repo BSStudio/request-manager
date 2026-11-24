@@ -1,3 +1,4 @@
+import logging
 from types import SimpleNamespace
 from unittest.mock import patch
 
@@ -18,6 +19,7 @@ from common.social_core.pipeline import (
     delete_avatar,
     disconnect_all_other_profiles_and_change_username_on_first_bss_login,
     set_groups_and_permissions_for_staff,
+    set_user_active_when_first_logs_in,
     update_bss_login_avatar,
 )
 from tests.factories import make_user
@@ -104,6 +106,18 @@ def test_first_bss_login_drops_other_profiles_and_syncs_the_username():
     user.refresh_from_db()
     assert user.username == "directory.name"
     assert not UserSocialAuth.objects.filter(user=user).exists()
+
+
+@pytest.mark.django_db
+def test_first_login_activation_logs_the_username_only(caplog):
+    user = make_user(first_name="Anna", last_name="Kovács")
+    user.is_active = False
+
+    with caplog.at_level(logging.INFO):
+        set_user_active_when_first_logs_in(FakeBackend("bss-login"), user=user)
+
+    assert f"User account has been activated for {user.username}" in caplog.text
+    assert "Kovács" not in caplog.text
 
 
 @pytest.mark.django_db

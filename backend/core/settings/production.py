@@ -4,6 +4,7 @@ from sentry_sdk.integrations.django import DjangoIntegration
 from sentry_sdk.integrations.logging import ignore_logger
 from sentry_sdk.integrations.redis import RedisIntegration
 
+from common.sentry import EXCLUDED_BEAT_TASKS, before_send_log, traces_sampler
 from core.settings._auth_social import *
 
 # Require an explicit secret key; base.py's random fallback differs per process
@@ -43,17 +44,19 @@ GOOGLE_CALENDAR_ID = config("GOOGLE_CALENDAR_ID")
 # https://sentry.io
 
 sentry_sdk.init(
+    before_send_log=before_send_log,
     data_collection=SENTRY_DATA_COLLECTION,
     # It records Redis keys, and the session cache keys are the session IDs.
     disabled_integrations=[RedisIntegration()],
     dsn=config("SENTRY_URL"),
+    # INFO and above, the logging integration's default.
+    enable_logs=True,
     integrations=[
-        CeleryIntegration(monitor_beat_tasks=True),
+        CeleryIntegration(
+            exclude_beat_tasks=EXCLUDED_BEAT_TASKS, monitor_beat_tasks=True
+        ),
         DjangoIntegration(middleware_spans=True),
     ],
-    # Set traces_sample_rate to 1.0 to capture 100%
-    # of transactions for performance monitoring.
-    # We recommend adjusting this value in production,
-    traces_sample_rate=0.15,
+    traces_sampler=traces_sampler,
 )
 ignore_logger("django.security.DisallowedHost")
