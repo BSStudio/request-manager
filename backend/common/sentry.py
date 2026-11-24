@@ -3,6 +3,12 @@ from typing import Any
 
 REDACTED = "[redacted]"
 
+TRACES_SAMPLE_RATE = 0.5
+
+# The free plan has one cron monitor. The SDK appends "$" and matches the beat
+# schedule entry name, Celery's own celery.backend_cleanup included.
+EXCLUDED_BEAT_TASKS = [r"^(?!sync_bss_users$).*$"]
+
 # The email and phone patterns match backstage's lib/observability/scrub.ts.
 _PATTERNS = [
     re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+"),
@@ -25,6 +31,15 @@ def redact(text: str) -> str:
     for pattern in _PATTERNS:
         text = pattern.sub(REDACTED, text)
     return text
+
+
+def traces_sampler(context: dict[str, Any]) -> float:
+    # Also matches the token-protected health/<token>/ path.
+    if context.get("wsgi_environ", {}).get("PATH_INFO", "").startswith("/health"):
+        return 0
+    if context.get("parent_sampled") is not None:
+        return float(context["parent_sampled"])
+    return TRACES_SAMPLE_RATE
 
 
 def before_send_log(log: dict[str, Any], _hint: dict[str, Any]) -> dict[str, Any]:

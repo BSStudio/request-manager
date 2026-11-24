@@ -49,7 +49,7 @@ export function initSentry(app: 'admin' | 'site') {
     ],
     // Clicked elements and visited URLs can carry personal data.
     maxBreadcrumbs: 0,
-    tracesSampleRate: 0.15,
+    tracesSampleRate: 0.3,
     tunnel: '/api/v1/misc/tunnel',
   });
   // Only the ID: personal data stays out of Sentry.
