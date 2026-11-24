@@ -56,8 +56,10 @@ def test_before_send_log_redacts_body_and_string_attributes():
     }
 
 
-@pytest.mark.parametrize("path", ["/health", "/health/secret-token/"])
-def test_traces_sampler_drops_health_checks(path):
+@pytest.mark.parametrize(
+    "path", ["/health", "/health/secret-token/", "/livez", "/readyz"]
+)
+def test_traces_sampler_drops_health_checks_and_probes(path):
     assert traces_sampler(request_context(path)) == 0
 
 

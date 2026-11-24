@@ -9,6 +9,9 @@ TRACES_SAMPLE_RATE = 0.5
 # schedule entry name, Celery's own celery.backend_cleanup included.
 EXCLUDED_BEAT_TASKS = [r"^(?!sync_bss_users$).*$"]
 
+# The probes' /livez and /readyz, and /health with its optional /<token>/ suffix.
+_UNTRACED_PATHS = ("/health", "/livez", "/readyz")
+
 # The email and phone patterns match backstage's lib/observability/scrub.ts.
 _PATTERNS = [
     re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+"),
@@ -34,8 +37,8 @@ def redact(text: str) -> str:
 
 
 def traces_sampler(context: dict[str, Any]) -> float:
-    # Also matches the token-protected health/<token>/ path.
-    if context.get("wsgi_environ", {}).get("PATH_INFO", "").startswith("/health"):
+    path = context.get("wsgi_environ", {}).get("PATH_INFO", "")
+    if path.startswith(_UNTRACED_PATHS):
         return 0
     if context.get("parent_sampled") is not None:
         return float(context["parent_sampled"])
