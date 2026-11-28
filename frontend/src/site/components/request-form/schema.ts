@@ -22,7 +22,7 @@ const timeSchema = z
   .string()
   .min(1, 'Add meg az időpontot!')
   .refine((value) => parseTime(value) !== null, {
-    message: 'Érvénytelen időpont, így add meg: 18:30',
+    error: 'Érvénytelen időpont, így add meg: 18:30',
   });
 
 const maxLength = (max: number) => `Legfeljebb ${max} karakter lehet.`;
