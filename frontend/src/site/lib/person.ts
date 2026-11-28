@@ -28,5 +28,5 @@ export const phoneSchema = z
   .trim()
   .min(1, 'Add meg a telefonszámod!')
   .refine((value) => isValidPhoneNumber(value, 'HU'), {
-    message: 'Érvénytelen telefonszám.',
+    error: 'Érvénytelen telefonszám.',
   });
