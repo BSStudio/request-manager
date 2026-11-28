@@ -27,7 +27,7 @@ dependencies = [
     "python-decouple==3.8",
     "pywebpush==2.5.0",
     "requests==2.34.2",
-    "sentry-sdk==2.75.0",
+    "sentry-sdk==3.0.0",
     "social-auth-app-django==8.1.0",
     "whitenoise[brotli]==6.12.0"
 ]

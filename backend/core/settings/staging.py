@@ -1,7 +1,12 @@
+import logging
+
 import sentry_sdk
 from sentry_sdk.integrations.celery import CeleryIntegration
 from sentry_sdk.integrations.django import DjangoIntegration
-from sentry_sdk.integrations.logging import ignore_logger
+from sentry_sdk.integrations.logging import (
+    LoggingIntegration,
+    ignore_logger_for_events,
+)
 from sentry_sdk.integrations.redis import RedisIntegration
 
 from common.sentry import EXCLUDED_BEAT_TASKS, before_send_log
@@ -37,13 +42,12 @@ sentry_sdk.init(
     data_collection=SENTRY_DATA_COLLECTION,
     disabled_integrations=[RedisIntegration()],
     dsn=config("SENTRY_URL"),
-    # INFO and above, the logging integration's default.
-    enable_logs=True,
     integrations=[
         CeleryIntegration(
             exclude_beat_tasks=EXCLUDED_BEAT_TASKS, monitor_beat_tasks=True
         ),
-        DjangoIntegration(middleware_spans=True),
+        DjangoIntegration(cache_spans=False, middleware_spans=True),
+        LoggingIntegration(event_level=logging.ERROR),
     ],
 )
-ignore_logger("django.security.DisallowedHost")
+ignore_logger_for_events("django.security.DisallowedHost")
