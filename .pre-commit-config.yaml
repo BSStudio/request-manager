@@ -32,7 +32,7 @@ repos:
         language: python
         files: (^.pre-commit/)|(package.json$)
         additional_dependencies:
-          - pyyaml==6.0.3
+          - pyyaml==6.0.4
   - repo: https://github.com/astral-sh/uv-pre-commit
     rev: 0.13.9
     hooks:
