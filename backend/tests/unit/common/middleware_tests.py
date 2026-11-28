@@ -3,8 +3,10 @@ from unittest.mock import patch
 import pytest
 import sentry_sdk
 from django.contrib.auth.models import AnonymousUser
+from django.db import DatabaseError
 from django.http import HttpResponse
 from django.test import RequestFactory
+from django.utils.functional import SimpleLazyObject
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -88,5 +90,15 @@ def test_sentry_user_of_api_token(service_account):
 def test_sentry_user_not_set_when_logged_out():
     request = RequestFactory().get("/")
     request.user = AnonymousUser()
+
+    assert sentry_user(request) is None
+
+
+def test_sentry_user_lookup_failure_keeps_the_event():
+    def get_user():
+        raise DatabaseError
+
+    request = RequestFactory().get("/")
+    request.user = SimpleLazyObject(get_user)
 
     assert sentry_user(request) is None

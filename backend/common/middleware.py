@@ -1,5 +1,6 @@
 import logging
 import time
+from contextlib import suppress
 from ipaddress import ip_address
 
 import sentry_sdk
@@ -23,8 +24,11 @@ class SentryUserMiddleware:
 
     @staticmethod
     def _add_user_id(event, request):
-        if request.user.is_authenticated:
-            event["user"] = {"id": request.user.pk}
+        # Raising would drop the event, and the user lookup fails while the
+        # database is down.
+        with suppress(Exception):
+            if request.user.is_authenticated:
+                event["user"] = {"id": request.user.pk}
         return event
 
 
